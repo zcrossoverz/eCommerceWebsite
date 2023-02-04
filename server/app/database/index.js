@@ -25,9 +25,15 @@ const convertToMySQLFormat = (obj) => {
   return mysqlString.slice(0, -2);
 };
 
-const covertArrayToColumn = (obj) => {
-  obj.join(", ");
+const convertArrayToColumn = (obj) => {
+  return obj.join(", ");
 };
+
+const insertDataFormat = (arr) => {
+  return "(" + arr.map((element) => {
+    return typeof element === 'string' ? `'${element}'` : element;
+  }).join(", ") + ")";
+}
 
 module.exports = {
   updateData: async (table, data, conditions) => {
@@ -42,15 +48,33 @@ module.exports = {
       connection.release();
     }
   },
-  queryData: async (table, column = {}, conditions) => {
+  insertData: async (table, data) => {
+    const connection = await getConnection();
+    try {
+
+      let key = Object.keys(data);
+      let value = Object.values(data);
+
+      let query = `INSERT INTO ${table} (${key.join(', ')}) VALUES ${insertDataFormat(value)}`;
+      console.log(`INSERT : ${query}`);
+      const [rows] = await connection.execute(query, [data]);
+      console.log(rows.insertId);
+      return (rows.insertId) ? {status:'success',insert_id:rows.insertId}:{status:'error'}; 
+    } finally {
+      connection.release();
+    }
+  },
+  queryData: async (table, column = [], conditions) => {
     const connection = await getConnection();
     try {
       let query = column
-        ? `SELECT ${covertArrayToColumn(
+        ? `SELECT ${convertArrayToColumn(
             column
           )} FROM ${table} WHERE ${convertToMySQLFormat(conditions)}`
         : `SELECT * FROM ${table} WHERE ${convertToMySQLFormat(conditions)}`;
-      const [rows, fields] = await connection.query(query, conditions);
+      const [rows] = await connection.query(query, conditions);
+      // console.log(convertArrayToColumn(column));
+      console.log(`QUERY : ${query}`);
       return rows;
     } finally {
       connection.release();
@@ -66,7 +90,7 @@ module.exports = {
     const connection = await getConnection();
     try {
       let query = column
-        ? `SELECT ${covertArrayToColumn(
+        ? `SELECT ${convertArrayToColumn(
             column
           )} FROM ${table1} INNER JOIN ${table2} ON ${convertToMySQLFormat(
             joinConditions
