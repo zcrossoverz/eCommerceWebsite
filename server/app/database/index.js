@@ -20,60 +20,62 @@ async function getConnection() {
 const convertToMySQLFormat = (obj) => {
   let mysqlString = "";
   for (const key in obj) {
-    mysqlString += `${key} = '${obj[key]}', `;
+    let value = (typeof obj[key]) === 'string' ? `'${obj[key]}'`:obj[key];
+    mysqlString += '`'+`${key}`+'`'+` = ${value}, `;
   }
   return mysqlString.slice(0, -2);
 };
 
 const convertArrayToColumn = (obj) => {
-  return obj.join(", ");
+  return obj.map(e => '`'+e+'`').join(", ");
 };
 
 const insertDataFormat = (arr) => {
   return "(" + arr.map((element) => {
     return typeof element === 'string' ? `'${element}'` : element;
   }).join(", ") + ")";
-}
+};
+
 
 module.exports = {
-  updateData: async (table, data, conditions) => {
+  updateData: async (table = '', data = {}, conditions = []) => {
     const connection = await getConnection();
     try {
       let query = `UPDATE ${table} SET ${convertToMySQLFormat(
         data
-      )} WHERE ${convertToMySQLFormat(conditions)}`;
-      const [result] = await connection.query(query, [data, conditions]);
-      return result;
+      )} WHERE ${conditions.join(' AND ')}`;
+      const [rows] = await connection.execute(query);
+      console.log(query);
+      return rows.affectedRows ? {status:'success'}:{status:'failed'};
     } finally {
       connection.release();
     }
   },
-  insertData: async (table, data) => {
+  insertData: async (table = '', data = {}) => {
     const connection = await getConnection();
     try {
 
       let key = Object.keys(data);
       let value = Object.values(data);
 
-      let query = `INSERT INTO ${table} (${key.join(', ')}) VALUES ${insertDataFormat(value)}`;
+      let query = `INSERT INTO ${table} (${key.map(e => '`'+e+'`').join(', ')}) VALUES ${insertDataFormat(value)}`;
       console.log(`INSERT : ${query}`);
-      const [rows] = await connection.execute(query, [data]);
+      const [rows] = await connection.execute(query);
       console.log(rows.insertId);
-      return (rows.insertId) ? {status:'success',insert_id:rows.insertId}:{status:'error'}; 
+      return (rows.insertId) ? {status:'success',insert_id:rows.insertId}:{status:'failed'}; 
     } finally {
       connection.release();
     }
   },
-  queryData: async (table, column = [], conditions) => {
+  queryData: async (table = '', column = [], conditions = []) => {
     const connection = await getConnection();
     try {
       let query = column
         ? `SELECT ${convertArrayToColumn(
             column
-          )} FROM ${table} WHERE ${convertToMySQLFormat(conditions)}`
-        : `SELECT * FROM ${table} WHERE ${convertToMySQLFormat(conditions)}`;
-      const [rows] = await connection.query(query, conditions);
-      // console.log(convertArrayToColumn(column));
+          )} FROM ${table} WHERE ${conditions.join(' AND ')}`
+        : `SELECT * FROM ${table} WHERE ${conditions.join(' AND ')}`;
+      const [rows] = await connection.query(query);
       console.log(`QUERY : ${query}`);
       return rows;
     } finally {
@@ -81,11 +83,10 @@ module.exports = {
     }
   },
   queryJoin: async (
-    table1,
-    table2,
-    column = {},
-    joinConditions,
-    conditions
+    table = [],
+    column = [],
+    joinConditions = [],
+    conditions = []
   ) => {
     const connection = await getConnection();
     try {
@@ -104,14 +105,13 @@ module.exports = {
       connection.release();
     }
   },
-  deleteData: async (table, conditions) => {
+  deleteData: async (table = '', conditions = []) => {
     const connection = await getConnection();
     try {
-      let query = `DELETE FROM ${table} WHERE ${convertToMySQLFormat(
-        conditions
-      )}`;
-      const [result] = await connection.query(query, conditions);
-      return result;
+      let query = `DELETE FROM ${table} WHERE ${conditions.join(' AND ')}`;
+      console.log(query);
+      const [result] = await connection.execute(query);
+      return result.affectedRows ? {status:'success'}:{status:'failed'};
     } finally {
       connection.release();
     }

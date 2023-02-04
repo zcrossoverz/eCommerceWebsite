@@ -7,15 +7,30 @@ const getAll = async (req, res) => {
 
 
 const createNewUser = async (req, res) => {
-    const result =  await db.insertData('users', {email:'nhan@gmail.com', password:123435786, name:'nhan', address:'duong 3/2, ninh kieu, cna tho'}); 
+    const result =  await db.insertData('specifications', {key:'test', product_id: 1, value:' hihi'}); 
     res.json(result)
 }
 
 const getOne = async (req, res) => {
-    const result =  await db.queryData('users', ['name','password'], {id:req.params.id});
+    const result =  await db.queryData('users', ['name','password'], [`id=${req.params.id}`]);
     res.json(result);
 }
 
+const updateOne = async (req, res) => {
+    const result = await db.updateData('users', {name:'nguyen trung nhan', password:99999}, {id:req.params.id});
+    res.json(result)
+}
+
+const deleteOne = async (req, res) => {
+    const result = await db.deleteData('users', [`id=${req.params.id}`]);
+    res.json(result);
+}
+
+const testJoin = async (req, res) => {
+    const result = await db.queryJoin();
+    res.json(result)
+}
+
 module.exports = {
-    getAll, createNewUser, getOne
+    getAll, createNewUser, getOne, updateOne, deleteOne, testJoin
 };

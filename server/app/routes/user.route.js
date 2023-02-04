@@ -7,6 +7,9 @@ module.exports = (app) => {
     router.get("/", user.getAll);
     router.get("/add", user.createNewUser); // test
     router.get("/:id", user.getOne);; // test
+    router.get("/:id/update", user.updateOne); // test
+    router.get("/:id/delete", user.deleteOne);
+    router.get("/join", user.testJoin)
 
     app.use("/api/user", router);
 }
