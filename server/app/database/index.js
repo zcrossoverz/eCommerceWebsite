@@ -82,29 +82,6 @@ module.exports = {
       connection.release();
     }
   },
-  queryJoin: async (
-    table = [],
-    column = [],
-    joinConditions = [],
-    conditions = []
-  ) => {
-    const connection = await getConnection();
-    try {
-      let query = column
-        ? `SELECT ${convertArrayToColumn(
-            column
-          )} FROM ${table1} INNER JOIN ${table2} ON ${convertToMySQLFormat(
-            joinConditions
-          )} WHERE ${convertToMySQLFormat(conditions)}`
-        : `SELECT * FROM ${table1} INNER JOIN ${table2} ON ${convertToMySQLFormat(
-            joinConditions
-          )} WHERE ${convertToMySQLFormat(conditions)}`;
-      const [rows, fields] = await connection.query(query, conditions);
-      return rows;
-    } finally {
-      connection.release();
-    }
-  },
   deleteData: async (table = '', conditions = []) => {
     const connection = await getConnection();
     try {
