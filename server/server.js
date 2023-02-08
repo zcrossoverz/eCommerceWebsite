@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 
-// load config
+// load config d
 dotenv.config();
 
 const app = express();
