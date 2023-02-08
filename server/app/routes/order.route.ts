@@ -1,7 +1,8 @@
 const order = require("../controllers/order.controller");
-const express = require("express");
+import express, { Express } from "express";
 
-module.exports = (app) => {
+export const OrderRoutes = (app: Express) => {
+    
     let router = express.Router();
 
     router.get("/", order.getAll);

@@ -1,7 +1,7 @@
 const product = require("../controllers/product.controller");
-const express = require("express");
+import express, { Express } from "express";
 
-module.exports = (app) => {
+export const ProductRoutes = (app: Express) => {
     let router = express.Router();
 
     router.get("/", product.getAll);
