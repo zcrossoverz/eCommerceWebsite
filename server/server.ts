@@ -1,24 +1,31 @@
 import "reflect-metadata";
-import express, { Express, Request, Response } from "express";
+import express, { Express } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 dotenv.config();
+import { AppDataSource } from "./app/database";
+import { Routes } from "./app/routes";
 
-const PORT = process.env.PORT || 5050;
-const app: Express = express();
+AppDataSource.initialize()
+  .then(async () => {
+      
+    console.log("database connected!!");
 
-// 
-app.use(cors());
-app.use(express.json());
+    const PORT = process.env.PORT || 5050;
+    const app: Express = express();
 
+    // setup middle ware
+    app.use(cors());
+    app.use(express.json());
 
-app.get("/", (req: Request, res: Response) => {
-    // res.json(DataSourceOptions);
-    res.json({h:"hello!!!"})!
-});
+    // setup route
+    Routes.forEach(setUpRoute => {
+        setUpRoute(app);
+    });
 
+    app.listen(PORT, () => {
+      console.log(`Server is listening on port ${PORT}.`);
+    });
 
-
-app.listen(PORT, () => {
-    console.log(`Server is listening on port ${PORT}.`);
-});
+  })
+  .catch((error) => console.log("error when connect to database", error));

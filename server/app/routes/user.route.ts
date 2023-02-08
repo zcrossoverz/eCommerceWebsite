@@ -1,7 +1,7 @@
 const user = require("../controllers/user.controller");
-const express = require("express");
+import express, { Express } from "express";
 
-module.exports = (app) => {
+export const UserRoutes = (app: Express) => {
     let router = express.Router();
 
     router.get("/", user.getAll);
