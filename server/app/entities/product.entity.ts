@@ -1,6 +1,9 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { Category } from "./category.entity";
 import { Specification } from "./specification.entity";
+import { Image } from "./image.entity";
+import { ProductOption } from "./productOption.entity";
+import { OrderItem } from "./orderItem.entity";
 
 @Entity("products")
 export class Product {
@@ -32,5 +35,26 @@ export class Product {
         () => Specification,
         specification => specification.product
     )
-    specifications!: Specification[]
+    specifications!: Specification[];
+
+
+    @OneToMany(
+        () => Image,
+        image => image.product
+    )
+    images!: Image[];
+
+    @OneToMany(
+        () => ProductOption,
+        productOption => productOption.product
+    )
+    productOptions!: ProductOption[];
+
+
+    @OneToMany(
+        () => OrderItem,
+        orderItem => orderItem.product
+    )
+    orderItems!: OrderItem[];
+
 }
