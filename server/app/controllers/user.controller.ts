@@ -1,13 +1,32 @@
 import { Request, Response } from "express";
+import { createUserService } from "../services/user/createUser.service";
+
+
 
 const getAll = async (req: Request, res: Response) => {
-    res.send("get all users");
+    return res.send("get all users");
 }
 
 
 const createNewUser = async (req: Request, res: Response) => {
-   // const result =  await db.insertData('specifications', {key:'test', product_id: 1, value:' hihi'}); 
-    res.json({a:1})
+    const {
+        email,
+        password,
+        firstName,
+        lastName,
+        address,
+        phone
+    } = req.body;
+    const createService = new createUserService();
+    const result = await createService.execute({
+        email,
+        password,
+        firstName,
+        lastName,
+        address,
+        phone
+    });
+    return res.json(result);
 }
 
 const getOne = async (req: Request, res: Response) => {
