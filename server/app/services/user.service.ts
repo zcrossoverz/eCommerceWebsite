@@ -1,5 +1,5 @@
-import { AppDataSource } from "../../database";
-import { User } from "../../entities/user.entity";
+import { AppDataSource } from "../database";
+import { User } from "../entities/user.entity";
 
 enum UserRole {
   ADMIN = "admin",
@@ -21,16 +21,16 @@ interface UserReturnInterface extends UserInterface {
   isActive: boolean;
 }
 
-export class createUserService {
-  async execute({
+const userRepository = AppDataSource.getRepository(User);
+
+export const createUser = async ({
     email,
     password,
     firstName,
     lastName,
     address,
-    phone,
-  }: UserInterface): Promise<Error | UserReturnInterface> {
-    const userRepository = await AppDataSource.getRepository(User);
+    phone
+}: UserInterface): Promise<Error | UserReturnInterface> =>  {
 
     const newUser = await userRepository.create({
       email,
@@ -42,5 +42,13 @@ export class createUserService {
     });
     const create = await userRepository.save(newUser);
     return create;
-  }
+};
+
+export const getOneUser = async (id: number): Promise<null | UserReturnInterface> => {
+    const result = userRepository.findOneBy({
+        id: id
+    });
+
+    return result;
 }
+

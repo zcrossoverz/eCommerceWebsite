@@ -6,7 +6,7 @@ export const UserRoutes = (app: Express) => {
 
     router.get("/", user.getAll);
     router.post("/", user.createNewUser);
-    router.get("/:id", user.getOne);; // test
+    router.get("/:id", user.getOne);
     router.get("/:id/update", user.updateOne); // test
     router.get("/:id/delete", user.deleteOne);
     router.get("/join", user.testJoin)
