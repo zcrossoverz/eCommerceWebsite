@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { createUserService } from "../services/user/createUser.service";
+import { createUser, getOneUser } from "../services/user.service";
 
 
 
@@ -17,8 +17,7 @@ const createNewUser = async (req: Request, res: Response) => {
         address,
         phone
     } = req.body;
-    const createService = new createUserService();
-    const result = await createService.execute({
+    const result = await createUser({
         email,
         password,
         firstName,
@@ -30,8 +29,9 @@ const createNewUser = async (req: Request, res: Response) => {
 }
 
 const getOne = async (req: Request, res: Response) => {
-    //const result =  await db.queryData('users', ['name','password'], [`id=${req.params.id}`]);
-    res.json({a:1});
+    const user_id = Number(req.params.id);
+    const result = await getOneUser(user_id);
+    return res.json(result);
 }
 
 const updateOne = async (req: Request, res: Response) => {
