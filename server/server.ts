@@ -14,7 +14,7 @@ AppDataSource.initialize()
     const PORT = process.env.PORT || 5050;
     const app: Express = express();
 
-    // setup middle ware
+    // setup middleware
     app.use(cors());
     app.use(express.json());
 
