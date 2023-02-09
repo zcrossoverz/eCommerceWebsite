@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany } from "typeorm";
 import { Order } from "./order.entity";
 
-export enum UserRole {
+enum UserRole {
     ADMIN = 'admin',
     MEMBER = 'member'
 };
@@ -31,7 +31,8 @@ export class User {
     @Column({
         type: "varchar",
         length: 10,
-        unique: true
+        unique: true,
+        nullable: true
     })
     phone!: string;
 

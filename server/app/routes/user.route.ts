@@ -5,7 +5,7 @@ export const UserRoutes = (app: Express) => {
     let router = express.Router();
 
     router.get("/", user.getAll);
-    router.get("/add", user.createNewUser); // test
+    router.post("/", user.createNewUser);
     router.get("/:id", user.getOne);; // test
     router.get("/:id/update", user.updateOne); // test
     router.get("/:id/delete", user.deleteOne);
