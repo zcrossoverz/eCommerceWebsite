@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn } from "typeorm";
+import { Coupon } from "./coupon.entity";
 
 export enum StatusOrder {
     "pending", // has been placed but hasn't yet been confirm or process - da ghi nhan don dat hang nhung chua duoc xu ly
@@ -27,9 +28,12 @@ export class Order {
     @UpdateDateColumn()
     updateAt!: Date;
 
-    @Column({
-        type: "int",
-        nullable: true
+
+
+    @OneToOne(() => Coupon, { nullable:true })
+    @JoinColumn({
+        name: "coupon_id"
     })
-    coupon_id!: number;
+    coupon_id!: Coupon;
+
 }
