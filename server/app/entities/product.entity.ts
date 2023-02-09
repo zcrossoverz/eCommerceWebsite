@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 import { Category } from "./category.entity";
+import { Specification } from "./specification.entity";
 
 @Entity("products")
 export class Product {
@@ -26,4 +27,10 @@ export class Product {
         name:"category_id"
     })
     category!: Category;
+
+    @OneToMany(
+        () => Specification,
+        specification => specification.product
+    )
+    specifications!: Specification[]
 }
