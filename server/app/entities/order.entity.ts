@@ -1,5 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn, ManyToOne, OneToMany } from "typeorm";
 import { Coupon } from "./coupon.entity";
+import { User } from "./user.entity";
+import { OrderItem } from "./orderItem.entity";
 
 export enum StatusOrder {
     "pending", // has been placed but hasn't yet been confirm or process - da ghi nhan don dat hang nhung chua duoc xu ly
@@ -35,5 +37,21 @@ export class Order {
         name: "coupon_id"
     })
     coupon_id!: Coupon;
+
+
+    @ManyToOne(
+        () => User,
+        user => user.orders
+    )
+    @JoinColumn({
+        name: "user_id"
+    })
+    user!: User;
+
+    @OneToMany(
+        () => OrderItem,
+        orderItem => orderItem.order
+    )
+    orderItems!: OrderItem[];
 
 }

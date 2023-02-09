@@ -1,5 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToOne, JoinColumn } from "typeorm";
-import { Image } from "./image.entity";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany } from "typeorm";
+import { Order } from "./order.entity";
 
 export enum UserRole {
     ADMIN = 'admin',
@@ -48,10 +48,11 @@ export class User {
     @Column()
     isActive: boolean = true;
 
-    @OneToOne(() => Image)
-    @JoinColumn({
-        name: "avatar"
-    })
-    image!: Image;
+
+    @OneToMany(
+        () => Order,
+        order => order.user
+    )
+    orders!: Order[]
 
 }
