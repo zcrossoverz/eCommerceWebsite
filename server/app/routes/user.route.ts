@@ -10,5 +10,6 @@ export const UserRoutes = (app: Express) => {
     router.put("/:id", user.updateOne); 
     router.delete("/:id", user.deleteOne);
 
+
     app.use("/api/user", router);
 }
