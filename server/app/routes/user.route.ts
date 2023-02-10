@@ -1,15 +1,14 @@
-const user = require("../controllers/user.controller");
+import * as user from "../controllers/user.controller";
 import express, { Express } from "express";
 
 export const UserRoutes = (app: Express) => {
     let router = express.Router();
 
     router.get("/", user.getAll);
-    router.post("/", user.createNewUser);
+    router.post("/", user.createNew);
     router.get("/:id", user.getOne);
-    router.get("/:id/update", user.updateOne); // test
-    router.get("/:id/delete", user.deleteOne);
-    router.get("/join", user.testJoin)
+    router.put("/:id", user.updateOne); 
+    router.delete("/:id", user.deleteOne);
 
     app.use("/api/user", router);
 }
