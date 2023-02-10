@@ -33,6 +33,9 @@ export const createUser = async ({
   address,
   phone,
 }: UserInterface): Promise<ErrorInterface | UserReturnInterface> => {
+
+  if(!email) return BadRequestError("email cannot empty!");
+  
   const emailExists = await userRepository.findOneBy({ email: email });
   if (emailExists) return BadRequestError("email already exists!");
 
