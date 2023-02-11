@@ -2,6 +2,7 @@ import { DeleteResult, UpdateResult } from "typeorm";
 import { AppDataSource } from "../database";
 import { User } from "../entities/user.entity";
 import { BadRequestError, ErrorInterface } from "../utils/error";
+import bcryptjs from "bcryptjs";
 
 enum UserRole {
   ADMIN = "admin",
@@ -21,6 +22,7 @@ interface UserReturnInterface extends UserInterface {
   role: UserRole;
   createAt: Date;
   isActive: boolean;
+  id: number;
 }
 
 const userRepository = AppDataSource.getRepository(User);
@@ -35,6 +37,7 @@ export const createUser = async ({
 }: UserInterface): Promise<ErrorInterface | UserReturnInterface> => {
 
   if(!email) return BadRequestError("email cannot empty!");
+  if(!password) return BadRequestError("password cannot empty!");
   
   const emailExists = await userRepository.findOneBy({ email: email });
   if (emailExists) return BadRequestError("email already exists!");
@@ -44,13 +47,15 @@ export const createUser = async ({
     if (phoneExists) return BadRequestError("phone number already exists!");
   }
 
+  const passwordHash = bcryptjs.hashSync(password, 8);
+
   const newUser = userRepository.create({
     email,
-    password,
+    password: passwordHash,
     firstName,
     lastName,
     address,
-    phone,
+    phone
   });
   return await userRepository.save(newUser);
 };
@@ -66,10 +71,12 @@ export const updateOneUser = async (
   id: number,
   user: UserInterface
 ): Promise<ErrorInterface | UpdateResult> => {
+
+
   const findUser = await userRepository.findOneBy({ id });
   if (!findUser) return BadRequestError("user not found!");
 
-  const { email, phone } = user;
+  const { email, phone, password } = user;
   if (email) {
     const emailExists = await userRepository.findOneBy({ email });
     if (emailExists) return BadRequestError("email already exists!");
@@ -80,6 +87,13 @@ export const updateOneUser = async (
     if (phoneExists) return BadRequestError("phone number already exists!");
   }
 
+  if(password){
+    user.password = bcryptjs.hashSync(password, 8);
+  }
+
+  console.log(user);
+  
+  // return BadRequestError("test")
   return await userRepository.update({ id }, user);
 };
 
@@ -93,3 +107,10 @@ export const deleteOneUser = async (id: number): Promise<ErrorInterface | Delete
 export const getAllUser = async (): Promise<Array<UserReturnInterface>> => {
   return await userRepository.find();
 }
+
+export const findOneUser = async (
+  email: string
+): Promise<ErrorInterface | UserReturnInterface> => {
+  const result = await userRepository.findOneBy({ email });
+  return result ? result : BadRequestError("user not found!");
+};
