@@ -2,10 +2,10 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn
 import { Product } from "./product.entity";
 import { User } from "./user.entity";
 
-export enum Type {
-    "avatar", // avatar user
-    "thumbnail", // thumbnail
-    "options" // options of product
+export enum TypeImage {
+    avatar = "avatar", // avatar user
+    thumbnail = "thumbnail", // thumbnail
+    options = "options" // options of product
 }
 
 @Entity("images")
@@ -16,9 +16,9 @@ export class Image {
 
     @Column({
         type: "enum",
-        enum: Type,
+        enum: TypeImage,
     })
-    type!: Type;
+    type!: TypeImage;
 
     @Column()
     image_url!: string;

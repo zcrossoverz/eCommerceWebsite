@@ -26,7 +26,7 @@ passport.use(new Strategy({
 export const login = async (req: Request, res: Response) => {
     const { email, password } = req.body;
     if(email && password) {
-        const user = await userServices.findOneUser(email);
+        const user = await userServices.findOneByEmail(email);
         if(isError(user)){
             return res.json(BadRequestError("user not found!"));
         }

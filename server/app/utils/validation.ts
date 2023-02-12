@@ -6,3 +6,7 @@ export const checkEmail = (email: string): boolean => {
     return /^(([\w]+)(\.*))+@((\w+)(\.)){1,}(com|net|co|vn|edu|gov|biz|org|uk)$/g.test(email);
 }
 
+export const checkImageExtension = (name: string): boolean => {
+    const regex = /^((([a-zA-Z0-9]+)(\s*))+(\_*)*(\-*))+(.jpg|.png|.jpeg)$/gmi;
+    return regex.test(name);
+}

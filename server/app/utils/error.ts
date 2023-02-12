@@ -1,5 +1,3 @@
-// import { Response } from "express";
-
 export interface ErrorInterface {
     statusCode: number;
     error: string;
