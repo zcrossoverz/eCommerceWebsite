@@ -27,7 +27,7 @@ interface UserReturnInterface extends UserInterface {
 
 const userRepository = AppDataSource.getRepository(User);
 
-export const createUser = async ({
+export const create = async ({
   email,
   password,
   firstName,
@@ -60,14 +60,14 @@ export const createUser = async ({
   return await userRepository.save(newUser);
 };
 
-export const getOneUser = async (
+export const getOne = async (
   id: number
 ): Promise<ErrorInterface | UserReturnInterface> => {
   const result = await userRepository.findOneBy({ id });
   return result ? result : BadRequestError("user not found!");
 };
 
-export const updateOneUser = async (
+export const updateOne = async (
   id: number,
   user: UserInterface
 ): Promise<ErrorInterface | UpdateResult> => {
@@ -97,18 +97,18 @@ export const updateOneUser = async (
   return await userRepository.update({ id }, user);
 };
 
-export const deleteOneUser = async (id: number): Promise<ErrorInterface | DeleteResult> => {
+export const deleteOne = async (id: number): Promise<ErrorInterface | DeleteResult> => {
   const findUser = await userRepository.findOneBy({ id });
   if (!findUser) return BadRequestError("user not found!");
 
   return await userRepository.delete({ id });
 };
 
-export const getAllUser = async (): Promise<Array<UserReturnInterface>> => {
+export const getAll = async (): Promise<Array<UserReturnInterface>> => {
   return await userRepository.find();
 }
 
-export const findOneUser = async (
+export const findOneByEmail = async (
   email: string
 ): Promise<ErrorInterface | UserReturnInterface> => {
   const result = await userRepository.findOneBy({ email });

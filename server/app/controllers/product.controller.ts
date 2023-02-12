@@ -1,8 +1,16 @@
 import { Request, Response } from "express";
-const getAll = async (req: Request, res: Response) => {
-    res.send("get all product");
+import * as productServices from "../services/product.service";
+
+
+
+export const getAll = async (req: Request, res: Response) => {
+    return res.json(await productServices.getAll());   
 }
 
-module.exports = {
-    getAll
-};
+export const create = async (req: Request, res: Response) => {
+    const { name, description, ram, rom, color, price } = req.body;
+    const file = req.file;
+    if (!file) return res.json({msg: "image for product is required!"});
+    const { path } = file;
+    return res.json(await productServices.create({ name, description }, { ram, rom, color, price }, path));
+}
