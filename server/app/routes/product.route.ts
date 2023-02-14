@@ -9,5 +9,6 @@ export const ProductRoutes = (app: Express) => {
 
     router.get("/", product.getAll);
     router.post("/", [upload.single('image'), validation.validateImageExtension], product.create);
+    router.get("/:id", product.getOneById);
     app.use("/api/product", router);
 }

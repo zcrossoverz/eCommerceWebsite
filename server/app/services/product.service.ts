@@ -68,3 +68,20 @@ export const create = async (
 
   return BadRequestError("missing information!");
 };
+
+
+export const getOneById = async (id: number) => {
+  const product = productRepository.findOne({
+    where: {
+      id
+    },
+    relations: {
+      category: true,
+      specifications: true,
+      images: true,
+      productOptions: true
+    }
+  });
+  return await product ? product : BadRequestError("product not found!");
+}
+
