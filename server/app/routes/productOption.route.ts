@@ -5,6 +5,7 @@ export const ProductOptionRoutes = (app: Express) => {
     let router = express.Router();
 
     router.post("/:id", productOption.create);
-
+    router.delete("/:id", productOption.deleteOne);
+    router.put("/:id", productOption.updateOne)
     app.use("/api/product_option", router);
 }
