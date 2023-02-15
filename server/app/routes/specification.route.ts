@@ -3,7 +3,10 @@ import express, { Express } from "express";
 
 export const specificationRoutes = (app: Express) => {
     let router = express.Router();
+
     router.post("/:id", specification.create);
+    router.delete("/:id", specification.deleteOne);
+    router.put("/:id", specification.updateOne);
 
     app.use("/api/specification", router);
 }
