@@ -24,3 +24,13 @@ export const create = async (product_id: number, spec: SpecificationInterface) =
     return BadRequestError("please fill all the information");
 };
 
+export const deleteOne = async (id: number) => {
+    const result = await specificationRepository.delete({id});
+    return result.affected ? { msg:"delete success" } : BadRequestError("option not found");
+};
+
+export const updateOne = async (id: number, data: SpecificationInterface) => {
+    const spec = await specificationRepository.findOneBy({id});
+    if(!spec) return BadRequestError("option not found");
+    return await specificationRepository.update({id}, {...data});
+};

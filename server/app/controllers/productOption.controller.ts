@@ -1,10 +1,11 @@
 import { Request, Response } from "express";
 import * as productOptionServices from "../services/productOption.service";
+import { BadRequestError } from "../utils/error";
 
 export const create = async (req: Request, res: Response) => {
     const { color, ram, rom, price } = req.body;
-    const { id } = req.params;
-    return res.json(await productOptionServices.create(Number(id), {color, ram, rom, price}));
+    const { product_id } = req.params;
+    return res.json(await productOptionServices.create(Number(product_id), {color, ram, rom, price}));
 }
 
 export const deleteOne = async (req: Request, res: Response) => {
@@ -13,5 +14,6 @@ export const deleteOne = async (req: Request, res: Response) => {
 
 export const updateOne = async (req: Request, res: Response) => {
     const { color, ram, rom, price } = req.body;
+    if(!color && !ram && !rom && !price) return res.json(BadRequestError("data empty"));
     return res.json(await productOptionServices.updateOne(Number(req.params.id), { color, ram, rom, price }));
 }
