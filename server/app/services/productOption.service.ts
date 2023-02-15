@@ -24,4 +24,9 @@ export const create = async (product_id: number, product_options: ProductOptionI
     }
     return BadRequestError("please fill all the information");
 
+};
+
+export const deleteOne = async (id: number) => {
+    const result = await productOptionRepository.delete({id});
+    return result.affected ? { msg:"delete success" } : BadRequestError("option not found");
 }
