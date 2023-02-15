@@ -17,7 +17,7 @@ interface ProductOptionInterface {
 }
 
 
-const productRepository = AppDataSource.getRepository(Product);
+export const productRepository = AppDataSource.getRepository(Product);
 
 export const getAll = async () => {
   const result = await productRepository.find();
