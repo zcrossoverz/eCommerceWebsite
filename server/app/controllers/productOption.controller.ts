@@ -10,3 +10,8 @@ export const create = async (req: Request, res: Response) => {
 export const deleteOne = async (req: Request, res: Response) => {
     return res.json(await productOptionServices.deleteOne(Number(req.params.id)));
 }
+
+export const updateOne = async (req: Request, res: Response) => {
+    const { color, ram, rom, price } = req.body;
+    return res.json(await productOptionServices.updateOne(Number(req.params.id), { color, ram, rom, price }));
+}

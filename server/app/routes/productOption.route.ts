@@ -6,6 +6,6 @@ export const ProductOptionRoutes = (app: Express) => {
 
     router.post("/:id", productOption.create);
     router.delete("/:id", productOption.deleteOne);
-
+    router.put("/:id", productOption.updateOne)
     app.use("/api/product_option", router);
 }
