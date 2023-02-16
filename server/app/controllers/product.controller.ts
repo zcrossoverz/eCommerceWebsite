@@ -19,3 +19,15 @@ export const getOneById = async (req: Request, res: Response) => {
     const { id } = req.params;
     return res.json(await productServices.getOneById(Number(id)));
 }
+
+export const addCategory = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { category_id } = req.body;
+    return res.json(await productServices.addCategory(Number(id), category_id));
+}
+
+export const update = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { name, description } = req.body;
+    return res.json(await productServices.update(Number(id), { name, description }));
+}

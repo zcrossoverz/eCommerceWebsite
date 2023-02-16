@@ -1,20 +1,15 @@
 import { AppDataSource } from "../database";
+import { Category } from "../entities/category.entity";
 import { Image, TypeImage } from "../entities/image.entity";
 import { Product } from "../entities/product.entity";
 import { ProductOption } from "../entities/productOption.entity";
 import { BadRequestError } from "../utils/error";
+import { ProductOptionInterface } from "./productOption.service";
 
 interface ProductInterface {
   name: string;
   description: string;
-}
-
-interface ProductOptionInterface {
-  color: string;
-  ram: string;
-  rom: string;
-  price: number;
-}
+};
 
 
 export const productRepository = AppDataSource.getRepository(Product);
@@ -41,47 +36,70 @@ export const create = async (
     const { color, ram, rom, price } = options;
     const opt =
       color && ram && rom && price
-        ? productOptionRepository.create({ color, ram, rom, price, product: newProduct })
+        ? productOptionRepository.create({
+            color,
+            ram,
+            rom,
+            price,
+            product: newProduct,
+          })
         : productOptionRepository.create({
             color: "black",
             ram: "8GB",
             rom: "128GB",
             price: 1000000,
-            product: newProduct
+            product: newProduct,
           });
 
     const newOtp = await productOptionRepository.save(opt);
-    
+
     const imageRepo = AppDataSource.getRepository(Image);
     const tempImage = imageRepo.create({
-        image_url: image_path,
-        product: newProduct,
-        type: TypeImage.thumbnail
+      image_url: image_path,
+      product: newProduct,
+      type: TypeImage.thumbnail,
     });
-    const newImage = await imageRepo.save(tempImage);    
+    const newImage = await imageRepo.save(tempImage);
     return {
-        new_product: newProduct,
-        new_options: newOtp,
-        new_image: newImage
+      new_product: newProduct,
+      new_options: newOtp,
+      new_image: newImage,
     };
   }
 
   return BadRequestError("missing information!");
 };
 
-
 export const getOneById = async (id: number) => {
   const product = productRepository.findOne({
     where: {
-      id
+      id,
     },
     relations: {
       category: true,
       specifications: true,
       images: true,
-      productOptions: true
-    }
+      productOptions: true,
+    },
   });
-  return await product ? product : BadRequestError("product not found!");
+  return (await product) ? product : BadRequestError("product not found!");
+};
+
+export const addCategory = async (id: number, category_id: number) => {
+  const categoryRepository = AppDataSource.getRepository(Category);
+
+  const category = await categoryRepository.findOneBy({id:category_id});
+  const product = await productRepository.findOneBy({id});
+  if(!product) return BadRequestError("product not found");
+  if(!category) return BadRequestError("category not found");
+  return await productRepository.update({id}, { category });
 }
 
+export const update = async (
+  id: number,
+  product: ProductInterface
+) => {
+  const _product = await productRepository.findOneBy({id});
+  if(!_product) return BadRequestError("product not found!");
+  return await productRepository.update({id}, {...product});
+};
