@@ -10,5 +10,8 @@ export const ProductRoutes = (app: Express) => {
     router.get("/", product.getAll);
     router.post("/", [upload.single('image'), validation.validateImageExtension], product.create);
     router.get("/:id", product.getOneById);
+    router.post("/category/:id", product.addCategory);
+    router.put("/:id", product.update);
+
     app.use("/api/product", router);
 }

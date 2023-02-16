@@ -35,10 +35,9 @@ export const create = async ({
   address,
   phone,
 }: UserInterface): Promise<ErrorInterface | UserReturnInterface> => {
+  if (!email) return BadRequestError("email cannot empty!");
+  if (!password) return BadRequestError("password cannot empty!");
 
-  if(!email) return BadRequestError("email cannot empty!");
-  if(!password) return BadRequestError("password cannot empty!");
-  
   const emailExists = await userRepository.findOneBy({ email: email });
   if (emailExists) return BadRequestError("email already exists!");
 
@@ -55,7 +54,7 @@ export const create = async ({
     firstName,
     lastName,
     address,
-    phone
+    phone,
   });
   return await userRepository.save(newUser);
 };
@@ -71,8 +70,6 @@ export const updateOne = async (
   id: number,
   user: UserInterface
 ): Promise<ErrorInterface | UpdateResult> => {
-
-
   const findUser = await userRepository.findOneBy({ id });
   if (!findUser) return BadRequestError("user not found!");
 
@@ -87,17 +84,16 @@ export const updateOne = async (
     if (phoneExists) return BadRequestError("phone number already exists!");
   }
 
-  if(password){
+  if (password) {
     user.password = bcryptjs.hashSync(password, 8);
   }
 
-  console.log(user);
-  
-  // return BadRequestError("test")
   return await userRepository.update({ id }, user);
 };
 
-export const deleteOne = async (id: number): Promise<ErrorInterface | DeleteResult> => {
+export const deleteOne = async (
+  id: number
+): Promise<ErrorInterface | DeleteResult> => {
   const findUser = await userRepository.findOneBy({ id });
   if (!findUser) return BadRequestError("user not found!");
 
@@ -106,7 +102,7 @@ export const deleteOne = async (id: number): Promise<ErrorInterface | DeleteResu
 
 export const getAll = async (): Promise<Array<UserReturnInterface>> => {
   return await userRepository.find();
-}
+};
 
 export const findOneByEmail = async (
   email: string
