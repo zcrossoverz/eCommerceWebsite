@@ -4,7 +4,7 @@ import { ProductRoutes } from "./product.route";
 import { AuthRoutes } from "./auth.route";
 import { ProductOptionRoutes } from "./productOption.route";
 import { specificationRoutes } from "./specification.route";
-import { categoryRoutes } from "./category.route";
+import { brandRoutes } from "./brand.route";
 
 
 export const Routes = [
@@ -14,5 +14,5 @@ export const Routes = [
     AuthRoutes,
     ProductOptionRoutes,
     specificationRoutes,
-    categoryRoutes
+    brandRoutes
 ];

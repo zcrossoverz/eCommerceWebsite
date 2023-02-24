@@ -1,5 +1,5 @@
 import { AppDataSource } from "../database";
-import { Category } from "../entities/category.entity";
+import { Brand } from "../entities/brand.entity";
 import { Image, TypeImage } from "../entities/image.entity";
 import { Product } from "../entities/product.entity";
 import { ProductOption } from "../entities/productOption.entity";
@@ -76,7 +76,7 @@ export const getOneById = async (id: number) => {
       id,
     },
     relations: {
-      category: true,
+      brand: true,
       specifications: true,
       images: true,
       productOptions: true,
@@ -85,14 +85,14 @@ export const getOneById = async (id: number) => {
   return (await product) ? product : BadRequestError("product not found!");
 };
 
-export const addCategory = async (id: number, category_id: number) => {
-  const categoryRepository = AppDataSource.getRepository(Category);
+export const addBrand = async (id: number, brand_id: number) => {
+  const categoryRepository = AppDataSource.getRepository(Brand);
 
-  const category = await categoryRepository.findOneBy({id:category_id});
+  const brand = await categoryRepository.findOneBy({id:brand_id});
   const product = await productRepository.findOneBy({id});
   if(!product) return BadRequestError("product not found");
-  if(!category) return BadRequestError("category not found");
-  return await productRepository.update({id}, { category });
+  if(!brand) return BadRequestError("brand not found");
+  return await productRepository.update({id}, { brand });
 }
 
 export const update = async (

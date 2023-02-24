@@ -22,8 +22,8 @@ export const getOneById = async (req: Request, res: Response) => {
 
 export const addCategory = async (req: Request, res: Response) => {
     const { id } = req.params;
-    const { category_id } = req.body;
-    return res.json(await productServices.addCategory(Number(id), category_id));
+    const { brand_id } = req.body;
+    return res.json(await productServices.addBrand(Number(id), brand_id));
 }
 
 export const update = async (req: Request, res: Response) => {
