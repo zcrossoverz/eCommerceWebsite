@@ -15,9 +15,6 @@ export class ProductOption {
     @Column()
     rom!: string;
 
-    @Column()
-    price!: number;
-
     @ManyToOne(
         () => Product,
         product => product.productOptions

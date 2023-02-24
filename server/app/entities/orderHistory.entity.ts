@@ -8,6 +8,8 @@ export class OrderHistory {
     @CreateDateColumn()
     done_at!: Date;
 
-    @Column()
-    amount!: number;
+    @Column({
+        type:"bigint"
+    })
+    amount!: string;
 }
