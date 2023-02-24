@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, ManyToOne, JoinColumn, OneToMany } from "typeorm";
-import { Category } from "./category.entity";
+import { Brand } from "./brand.entity";
 import { Specification } from "./specification.entity";
 import { Image } from "./image.entity";
 import { ProductOption } from "./productOption.entity";
@@ -27,13 +27,13 @@ export class Product {
     updateAt!: Date;
 
     @ManyToOne(
-        () => Category,
-        category => category.products
+        () => Brand,
+        brand => brand.products
     )
     @JoinColumn({
-        name:"category_id"
+        name:"brand_id"
     })
-    category!: Category;
+    brand!: Brand;
 
     @OneToMany(
         () => Specification,

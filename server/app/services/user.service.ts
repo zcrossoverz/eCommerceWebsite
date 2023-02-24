@@ -25,7 +25,7 @@ interface UserReturnInterface extends UserInterface {
   id: number;
 }
 
-const userRepository = AppDataSource.getRepository(User);
+export const userRepository = AppDataSource.getRepository(User);
 
 export const create = async ({
   email,
