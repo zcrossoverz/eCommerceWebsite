@@ -3,7 +3,7 @@ import { Coupon } from "./coupon.entity";
 import { User } from "./user.entity";
 import { OrderItem } from "./orderItem.entity";
 
-export enum StatusOrder {
+export enum EnumStatusOrder {
     PENDING = "pending", // has been placed but hasn't yet been confirm or process - da ghi nhan don dat hang nhung chua duoc xu ly
     PROCESSING = "processing", // in the process of being fulfilled and the necessary steps are being taken to get it shipped - dang xu ly
     SHIPPED = "shipped", // on the way to the customer - dang giao hang
@@ -19,10 +19,10 @@ export class Order {
 
     @Column({
         type: "enum",
-        enum: StatusOrder,
-        default: StatusOrder.PENDING
+        enum: EnumStatusOrder,
+        default: EnumStatusOrder.PENDING
     })
-    status!: StatusOrder
+    status!: EnumStatusOrder
 
     @CreateDateColumn()
     createAt!: Date;

@@ -1,6 +1,6 @@
 import { AppDataSource } from "../database";
 import { Brand } from "../entities/brand.entity";
-import { Image, TypeImage } from "../entities/image.entity";
+import { Image, EnumTypeImage } from "../entities/image.entity";
 import { Product } from "../entities/product.entity";
 import { ProductOption } from "../entities/productOption.entity";
 import { BadRequestError } from "../utils/error";
@@ -33,21 +33,19 @@ export const create = async (
     const newProduct = await productRepository.save(productObj);
 
     const productOptionRepository = AppDataSource.getRepository(ProductOption);
-    const { color, ram, rom, price } = options;
+    const { color, ram, rom } = options;
     const opt =
-      color && ram && rom && price
+      color && ram && rom 
         ? productOptionRepository.create({
             color,
             ram,
             rom,
-            price,
             product: newProduct,
           })
         : productOptionRepository.create({
             color: "black",
             ram: "8GB",
             rom: "128GB",
-            price: 1000000,
             product: newProduct,
           });
 
@@ -57,7 +55,7 @@ export const create = async (
     const tempImage = imageRepo.create({
       image_url: image_path,
       product: newProduct,
-      type: TypeImage.thumbnail,
+      type: EnumTypeImage.thumbnail,
     });
     const newImage = await imageRepo.save(tempImage);
     return {
