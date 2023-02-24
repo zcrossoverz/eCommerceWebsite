@@ -33,21 +33,19 @@ export const create = async (
     const newProduct = await productRepository.save(productObj);
 
     const productOptionRepository = AppDataSource.getRepository(ProductOption);
-    const { color, ram, rom, price } = options;
+    const { color, ram, rom } = options;
     const opt =
-      color && ram && rom && price
+      color && ram && rom 
         ? productOptionRepository.create({
             color,
             ram,
             rom,
-            price,
             product: newProduct,
           })
         : productOptionRepository.create({
             color: "black",
             ram: "8GB",
             rom: "128GB",
-            price: 1000000,
             product: newProduct,
           });
 
