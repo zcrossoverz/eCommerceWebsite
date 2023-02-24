@@ -4,6 +4,7 @@ export enum TypeCoupon {
     "ship", // coupon about shipping, 100 - free ship, 50 - 50% off ship cost
     "percent", // percent of total order, 20 - reduce order total by 20% 
     "amount", // fix amount discount off by total order amount, 10000 - reduce order total by 10000 vnd
+    "brand", //  applicable to a specific brand of products
 }
 
 @Entity("coupons")
