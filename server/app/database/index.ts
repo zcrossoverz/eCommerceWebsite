@@ -9,6 +9,7 @@ import { Coupon } from "../entities/coupon.entity";
 import { Specification } from "../entities/specification.entity";
 import { ProductOption } from "../entities/productOption.entity";
 import { OrderItem } from "../entities/orderItem.entity";
+import { Timeline } from "../entities/timeline.entity";
 
 
 
@@ -21,7 +22,7 @@ export const AppDataSource = new DataSource({
     database: process.env.DB_DATABASE,
     synchronize: true,
     logging: ["error","warn"],
-    entities: [User, Order, Brand, Product, Image, Coupon, Specification, ProductOption, OrderItem],
+    entities: [User, Order, Brand, Product, Image, Coupon, Specification, ProductOption, OrderItem, Timeline],
     migrations: [],
     subscribers: [],
     charset: "utf8_unicode_ci"
