@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
-export enum TypeCouponCondition {
+export enum EnumTypeCouponCondition {
     ONE_PRODUCT, // Coupon is only applicable to a specific product.
     MINIMUM_PURCHASE, // Coupon is applicable only if the total purchase amount is above a certain threshold.
     BRAND, // Coupon is applicable to a specific brand of products.
@@ -14,9 +14,9 @@ export class CouponCondition {
 
     @Column({
         type: "enum",
-        enum: TypeCouponCondition
+        enum: EnumTypeCouponCondition
     })
-    type!: TypeCouponCondition;
+    type!: EnumTypeCouponCondition;
 
     @Column()
     condition!: string;

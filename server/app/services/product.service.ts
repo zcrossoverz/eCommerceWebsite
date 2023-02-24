@@ -1,6 +1,6 @@
 import { AppDataSource } from "../database";
 import { Brand } from "../entities/brand.entity";
-import { Image, TypeImage } from "../entities/image.entity";
+import { Image, EnumTypeImage } from "../entities/image.entity";
 import { Product } from "../entities/product.entity";
 import { ProductOption } from "../entities/productOption.entity";
 import { BadRequestError } from "../utils/error";
@@ -57,7 +57,7 @@ export const create = async (
     const tempImage = imageRepo.create({
       image_url: image_path,
       product: newProduct,
-      type: TypeImage.thumbnail,
+      type: EnumTypeImage.thumbnail,
     });
     const newImage = await imageRepo.save(tempImage);
     return {

@@ -10,6 +10,8 @@ import { Specification } from "../entities/specification.entity";
 import { ProductOption } from "../entities/productOption.entity";
 import { OrderItem } from "../entities/orderItem.entity";
 import { Timeline } from "../entities/timeline.entity";
+import { CouponCondition } from "../entities/couponCondition.entity";
+import { Payment } from "../entities/payment.entity";
 
 
 
@@ -22,7 +24,7 @@ export const AppDataSource = new DataSource({
     database: process.env.DB_DATABASE,
     synchronize: true,
     logging: ["error","warn"],
-    entities: [User, Order, Brand, Product, Image, Coupon, Specification, ProductOption, OrderItem, Timeline],
+    entities: [User, Order, Brand, Product, Image, Coupon, Specification, ProductOption, OrderItem, Timeline, CouponCondition, Payment],
     migrations: [],
     subscribers: [],
     charset: "utf8_unicode_ci"
