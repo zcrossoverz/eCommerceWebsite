@@ -4,7 +4,7 @@ import upload from "../middlewares/upload";
 import * as validation from "../middlewares/validation";
 
 export const ProductRoutes = (app: Express) => {
-    let router = express.Router();
+    const router = express.Router();
 
 
     router.get("/", product.getAll);

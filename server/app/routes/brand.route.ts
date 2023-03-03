@@ -2,7 +2,7 @@ import * as brand from "../controllers/brand.controller";
 import express, { Express } from "express";
 
 export const brandRoutes = (app: Express) => {
-    let router = express.Router();
+    const router = express.Router();
 
     router.get("/", brand.getAll);
     router.post("/", brand.create);

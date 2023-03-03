@@ -1,9 +1,9 @@
-const order = require("../controllers/order.controller");
+import * as order from "../controllers/order.controller";
 import express, { Express } from "express";
 
 export const OrderRoutes = (app: Express) => {
     
-    let router = express.Router();
+    const router = express.Router();
 
     router.get("/", order.getAll);
 

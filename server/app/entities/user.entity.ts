@@ -1,59 +1,76 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, OneToMany } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  OneToMany,
+} from "typeorm";
 import { Order } from "./order.entity";
+import { Address } from "./address.entity";
 
-enum UserRole {
-    ADMIN = 'admin',
-    MEMBER = 'member'
-};
+export enum UserRole {
+  ADMIN = "admin",
+  MEMBER = "member",
+}
 
 @Entity("users")
 export class User {
-    @PrimaryGeneratedColumn()
-    id!: number;
-    
-    @Column({
-        "unique": true
-    })
-    email!: string;
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-    @Column()
-    password!: string;
+  @Column({
+    unique: true,
+  })
+  email!: string;
 
-    @Column()
-    firstName!: string;
+  @Column()
+  password!: string;
 
-    @Column()
-    lastName!: string;
+  @Column()
+  firstName!: string;
 
-    @Column()
-    address!: string;
+  @Column()
+  lastName!: string;
 
-    @Column({
-        type: "varchar",
-        length: 10,
-        unique: true,
-        nullable: true
-    })
-    phone!: string;
+  @Column({
+    type: "varchar",
+    length: 10,
+    unique: true,
+    nullable: true,
+  })
+  phone!: string;
 
-    @Column({
-        type: "enum",
-        enum: UserRole,
-        default: UserRole.MEMBER
-    })
-    role!: UserRole;
+  @Column({
+    type: "enum",
+    enum: UserRole,
+    default: UserRole.MEMBER,
+  })
+  role!: UserRole;
 
-    @CreateDateColumn()
-    createAt!: Date;
+  @CreateDateColumn()
+  createAt!: Date;
 
-    @Column()
-    isActive: boolean = true;
+  @Column({
+    type: "boolean",
+    default: true
+  })
+  isActive!: boolean;
 
+  @OneToMany(() => Order, (order) => order.user)
+  orders!: Order[];
 
-    @OneToMany(
-        () => Order,
-        order => order.user
-    )
-    orders!: Order[]
+  @Column({
+    nullable: true,
+  })
+  default_address!: number;
+
+  @OneToMany(() => Address, (address) => address.user)
+  address!: Address[];
+
+  @Column({
+    type: "int",
+    default: 0
+  })
+  unread_message!: number;
 
 }
