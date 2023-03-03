@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 export const checkPhoneNumber = (number: string): boolean => {
     return /^0[0-9]{9}$/g.test(number);
 }

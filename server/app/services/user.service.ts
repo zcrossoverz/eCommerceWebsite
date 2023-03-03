@@ -3,6 +3,7 @@ import { AppDataSource } from "../database";
 import { User } from "../entities/user.entity";
 import { BadRequestError, ErrorInterface } from "../utils/error";
 import bcryptjs from "bcryptjs";
+import { Address } from "../entities/address.entity";
 
 enum UserRole {
   ADMIN = "admin",
@@ -25,6 +26,8 @@ interface UserReturnInterface extends UserInterface {
 }
 
 export const userRepository = AppDataSource.getRepository(User);
+const addressRepository = AppDataSource.getRepository(Address);
+
 
 export const create = async ({
   email,
@@ -59,7 +62,14 @@ export const create = async ({
 export const getOne = async (
   id: number
 ): Promise<ErrorInterface | UserReturnInterface> => {
-  const result = await userRepository.findOneBy({ id });
+  const result = await userRepository.findOne({
+    where: {
+      id
+    },
+    relations: {
+      address: true
+    }
+  });
   return result ? result : BadRequestError("user not found!");
 };
 
@@ -107,3 +117,51 @@ export const findOneByEmail = async (
   const result = await userRepository.findOneBy({ email });
   return result ? result : BadRequestError("user not found!");
 };
+
+export const addAddress = async (id: number, addr: string) => {
+  const user = await userRepository.findOne({
+    where: {
+      id
+    },
+    relations: {
+      address: true
+    }
+  });
+  if(!addr) return BadRequestError("address empty");
+  if(!user) return BadRequestError("user not found!");
+  const new_addr = addressRepository.create({
+    address: addr,
+    user: user
+  });
+  const rs = await addressRepository.save(new_addr);
+  const { default_address } = user;
+  if(!default_address) await userRepository.update({id}, { default_address:rs.id });
+  const { id: id_addr, address } = rs;
+  return {
+    id: id_addr, address
+  };
+};
+
+export const setDefaultAddress = async (id_user: number, id_addr: number) => {
+  const user = await userRepository.findOne({
+    where: {
+      id: id_user
+    },
+    relations: {
+      address: true
+    }
+  });
+  if(!user) return BadRequestError("user not found!");
+  if(user.address.find(({ id }) => id === id_addr)) {
+    await userRepository.update({ id: id_user }, { default_address: id_addr });
+    return { msg: "success" };
+  }
+  return BadRequestError("id address not found");
+};
+
+export const updateAddress = async (id: number, addr: string) => {
+  const address = addressRepository.findOneBy({id});
+  if(!address) return BadRequestError("address not found");
+  if(!addr) return BadRequestError("address empty");
+  return await addressRepository.update({id}, { address: addr })
+}

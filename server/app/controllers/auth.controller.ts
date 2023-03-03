@@ -7,7 +7,6 @@ import * as userServices from "../services/user.service";
 import bcrypt from "bcryptjs";
 
 
-
 passport.use(new Strategy({ 
     secretOrKey: process.env.JWT_SECRET_KEY,
     jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
@@ -44,6 +43,6 @@ export const login = async (req: Request, res: Response) => {
     return res.json(BadRequestError("email or password cannot be empty!")); 
 }
 
-export const testLogin = async (req: Request, res: Response) => {
+export const testLogin = (req: Request, res: Response) => {
     return res.json({"login success":"ok"});
 }

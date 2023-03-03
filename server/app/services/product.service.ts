@@ -9,7 +9,7 @@ import { ProductOptionInterface } from "./productOption.service";
 interface ProductInterface {
   name: string;
   description: string;
-};
+}
 
 
 export const productRepository = AppDataSource.getRepository(Product);
