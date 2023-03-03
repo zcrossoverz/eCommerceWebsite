@@ -14,7 +14,6 @@ interface UserInterface {
   password: string;
   firstName: string;
   lastName: string;
-  address: string;
   phone: string;
 }
 
@@ -32,7 +31,6 @@ export const create = async ({
   password,
   firstName,
   lastName,
-  address,
   phone,
 }: UserInterface): Promise<ErrorInterface | UserReturnInterface> => {
   if (!email) return BadRequestError("email cannot empty!");
@@ -53,7 +51,6 @@ export const create = async ({
     password: passwordHash,
     firstName,
     lastName,
-    address,
     phone,
   });
   return await userRepository.save(newUser);

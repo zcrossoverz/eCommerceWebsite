@@ -10,13 +10,12 @@ export const getAll = async (req: Request, res: Response) => {
 
 
 export const createNew = async (req: Request, res: Response) => {
-  const { email, password, firstName, lastName, address, phone } = req.body;
+  const { email, password, firstName, lastName, phone } = req.body;
   const result = await userServices.create({
     email,
     password,
     firstName,
     lastName,
-    address,
     phone,
   });
   return res.json(result);
@@ -29,9 +28,9 @@ export const getOne = async (req: Request, res: Response) => {
 }
 
 export const updateOne = async (req: Request, res: Response) => {
-    const { email, password, firstName, lastName, address, phone } = req.body;
+    const { email, password, firstName, lastName, phone } = req.body;
     const { id } = req.params;
-    const result = await userServices.updateOne(Number(id), {email, password, firstName, lastName, address, phone});
+    const result = await userServices.updateOne(Number(id), {email, password, firstName, lastName, phone});
     return res.json(result);
 }
 

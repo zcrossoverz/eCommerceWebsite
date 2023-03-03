@@ -25,9 +25,6 @@ export class User {
     @Column()
     lastName!: string;
 
-    @Column()
-    address!: string;
-
     @Column({
         type: "varchar",
         length: 10,
@@ -54,6 +51,11 @@ export class User {
         () => Order,
         order => order.user
     )
-    orders!: Order[]
+    orders!: Order[];
+
+    @Column({
+        nullable: true
+    })
+    default_address!: number;
 
 }

@@ -19,6 +19,8 @@ import { Price } from "../entities/price.entity";
 import { PriceHistory } from "../entities/priceHistoty.entity";
 import { EntryForm } from "../entities/entryForm.entity";
 import { InventoryTransaction } from "../entities/inventoryTransaction.entity";
+import { Address } from "../entities/address.entity";
+import { Notification } from "../entities/notification.entity";
 
 export const AppDataSource = new DataSource({
   type: "mysql",
@@ -48,7 +50,9 @@ export const AppDataSource = new DataSource({
     Price,
     PriceHistory,
     EntryForm,
-    InventoryTransaction
+    InventoryTransaction,
+    Address,
+    Notification
   ],
   migrations: [],
   subscribers: [],
