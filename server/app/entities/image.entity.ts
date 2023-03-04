@@ -34,7 +34,8 @@ export class Image {
         () => Product,
         product => product.images,
         {
-            nullable: true
+            nullable: true,
+            onDelete: "CASCADE"
         }
     )
     @JoinColumn({

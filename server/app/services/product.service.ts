@@ -4,6 +4,7 @@ import { Image, EnumTypeImage } from "../entities/image.entity";
 import { Price } from "../entities/price.entity";
 import { Product } from "../entities/product.entity";
 import { ProductOption } from "../entities/productOption.entity";
+import { Warehouse } from "../entities/warehouse.entity";
 import { BadRequestError } from "../utils/error";
 import { ProductOptionInterface } from "./productOption.service";
 
@@ -11,7 +12,6 @@ interface ProductInterface {
   name: string;
   description: string;
 }
-
 
 export const productRepository = AppDataSource.getRepository(Product);
 
@@ -28,10 +28,9 @@ export const create = async (
 ) => {
   const { name: name, description: description } = product;
   const brandRepo = AppDataSource.getRepository(Brand);
-  const brand = await brandRepo.findOneBy({id: brand_id});
-  if(!brand) return BadRequestError("brand not found");
+  const brand = await brandRepo.findOneBy({ id: brand_id });
+  if (!brand) return BadRequestError("brand not found");
   if (name) {
-    
     const productExists = await productRepository.findOneBy({ name });
     if (productExists) return BadRequestError("product name already exists");
     const productObj = productRepository.create({ name, description, brand });
@@ -39,28 +38,39 @@ export const create = async (
 
     const productOptionRepository = AppDataSource.getRepository(ProductOption);
     const { color, ram, rom, price } = options;
+
+    // price
     const priceRepo = AppDataSource.getRepository(Price);
-    const tempPrice = price ? priceRepo.create({
-      price: String(price)
-    }) : priceRepo.create({
-      price: "1000000"
-    });
+    const tempPrice = price
+      ? priceRepo.create({
+          price: String(price),
+        })
+      : priceRepo.create({
+          price: "1000000",
+        });
     const newPrice = await priceRepo.save(tempPrice);
+
+    // init warehouse stock
+    const warehouseRepo = AppDataSource.getRepository(Warehouse);
+    const newWarehouse = await warehouseRepo.save(warehouseRepo.create({ quantity: 0 }));
+
     const opt =
-      color && ram && rom 
+      color && ram && rom
         ? productOptionRepository.create({
             color,
             ram,
             rom,
             product: newProduct,
-            price: newPrice
+            price: newPrice,
+            warehouse: newWarehouse
           })
         : productOptionRepository.create({
             color: "black",
             ram: "8GB",
             rom: "128GB",
             product: newProduct,
-            price: newPrice
+            price: newPrice,
+            warehouse: newWarehouse
           });
 
     const newOtp = await productOptionRepository.save(opt);
@@ -72,8 +82,6 @@ export const create = async (
       type: EnumTypeImage.thumbnail,
     });
     const newImage = await imageRepo.save(tempImage);
-
-
 
     return {
       new_product: newProduct,
@@ -95,28 +103,30 @@ export const getOneById = async (id: number) => {
       specifications: true,
       images: true,
       productOptions: {
-        price: true
+        price: true,
+        warehouse: true
       },
     },
   });
   return product ? product : BadRequestError("product not found!");
 };
 
-export const addBrand = async (id: number, brand_id: number) => {
-  const categoryRepository = AppDataSource.getRepository(Brand);
+// export const addBrand = async (id: number, brand_id: number) => {
+//   const categoryRepository = AppDataSource.getRepository(Brand);
 
-  const brand = await categoryRepository.findOneBy({id:brand_id});
-  const product = await productRepository.findOneBy({id});
-  if(!product) return BadRequestError("product not found");
-  if(!brand) return BadRequestError("brand not found");
-  return await productRepository.update({id}, { brand });
-}
+//   const brand = await categoryRepository.findOneBy({id:brand_id});
+//   const product = await productRepository.findOneBy({id});
+//   if(!product) return BadRequestError("product not found");
+//   if(!brand) return BadRequestError("brand not found");
+//   return await productRepository.update({id}, { brand });
+// };
 
-export const update = async (
-  id: number,
-  product: ProductInterface
-) => {
-  const _product = await productRepository.findOneBy({id});
-  if(!_product) return BadRequestError("product not found!");
-  return await productRepository.update({id}, {...product});
+export const update = async (id: number, product: ProductInterface) => {
+  const _product = await productRepository.findOneBy({ id });
+  if (!_product) return BadRequestError("product not found!");
+  return await productRepository.update({ id }, { ...product });
 };
+
+export const deleteOne = async (id: number) => {
+  return await productRepository.delete({ id });
+}

@@ -20,14 +20,19 @@ export const getOneById = async (req: Request, res: Response) => {
     return res.json(await productServices.getOneById(Number(id)));
 }
 
-export const addCategory = async (req: Request, res: Response) => {
-    const { id } = req.params;
-    const { brand_id } = req.body;
-    return res.json(await productServices.addBrand(Number(id), brand_id));
-}
+// export const addCategory = async (req: Request, res: Response) => {
+//     const { id } = req.params;
+//     const { brand_id } = req.body;
+//     return res.json(await productServices.addBrand(Number(id), brand_id));
+// }
 
 export const update = async (req: Request, res: Response) => {
     const { id } = req.params;
     const { name, description } = req.body;
     return res.json(await productServices.update(Number(id), { name, description }));
+}
+
+export const deleteOne = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    return res.json(await productServices.deleteOne(Number(id)));
 }
