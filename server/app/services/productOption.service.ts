@@ -1,6 +1,7 @@
 import { AppDataSource } from "../database";
 import { Price } from "../entities/price.entity";
 import { ProductOption } from "../entities/productOption.entity";
+import { Warehouse } from "../entities/warehouse.entity";
 import { BadRequestError } from "../utils/error";
 import { productRepository } from "./product.service";
 
@@ -26,17 +27,23 @@ export const create = async (
     product_options.price
   ) {
     const { color, ram, rom, price } = product_options;
+
+    // price
     const priceRepo = AppDataSource.getRepository(Price);
     const tempPrice = priceRepo.create({
       price: String(price),
     });
     const new_price = await priceRepo.save(tempPrice);
+
+    const warehouseRepo = AppDataSource.getRepository(Warehouse);
+
     const new_options = productOptionRepository.create({
       color,
       ram,
       rom,
       price: new_price,
       product,
+      warehouse: await warehouseRepo.save(warehouseRepo.create({ quantity: 0 }))
     });
     return await productOptionRepository.save(new_options);
   }
@@ -74,3 +81,4 @@ export const updateOne = async (id: number, data: ProductOptionInterface) => {
       }
     : { price_update };
 };
+

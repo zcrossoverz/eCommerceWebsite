@@ -4,6 +4,7 @@ import { Image, EnumTypeImage } from "../entities/image.entity";
 import { Price } from "../entities/price.entity";
 import { Product } from "../entities/product.entity";
 import { ProductOption } from "../entities/productOption.entity";
+import { Warehouse } from "../entities/warehouse.entity";
 import { BadRequestError } from "../utils/error";
 import { ProductOptionInterface } from "./productOption.service";
 
@@ -37,6 +38,8 @@ export const create = async (
 
     const productOptionRepository = AppDataSource.getRepository(ProductOption);
     const { color, ram, rom, price } = options;
+
+    // price
     const priceRepo = AppDataSource.getRepository(Price);
     const tempPrice = price
       ? priceRepo.create({
@@ -46,6 +49,11 @@ export const create = async (
           price: "1000000",
         });
     const newPrice = await priceRepo.save(tempPrice);
+
+    // init warehouse stock
+    const warehouseRepo = AppDataSource.getRepository(Warehouse);
+    const newWarehouse = await warehouseRepo.save(warehouseRepo.create({ quantity: 0 }));
+
     const opt =
       color && ram && rom
         ? productOptionRepository.create({
@@ -54,6 +62,7 @@ export const create = async (
             rom,
             product: newProduct,
             price: newPrice,
+            warehouse: newWarehouse
           })
         : productOptionRepository.create({
             color: "black",
@@ -61,6 +70,7 @@ export const create = async (
             rom: "128GB",
             product: newProduct,
             price: newPrice,
+            warehouse: newWarehouse
           });
 
     const newOtp = await productOptionRepository.save(opt);
@@ -94,6 +104,7 @@ export const getOneById = async (id: number) => {
       images: true,
       productOptions: {
         price: true,
+        warehouse: true
       },
     },
   });
