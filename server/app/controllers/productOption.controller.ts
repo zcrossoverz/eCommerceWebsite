@@ -17,3 +17,9 @@ export const updateOne = async (req: Request, res: Response) => {
     if(!color && !ram && !rom && !price) return res.json(BadRequestError("data empty"));
     return res.json(await productOptionServices.updateOne(Number(req.params.id), { color, ram, rom, price }));
 }
+
+export const updateStock = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { quantity } = req.body;
+    return res.json(await productOptionServices.updateStock(Number(id), quantity));
+}

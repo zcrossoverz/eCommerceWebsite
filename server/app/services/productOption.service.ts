@@ -82,3 +82,16 @@ export const updateOne = async (id: number, data: ProductOptionInterface) => {
     : { price_update };
 };
 
+export const updateStock = async (id: number, quantity: number) => {
+  const option = await productOptionRepository.findOne({
+    where: {
+      id,
+    },
+    relations: {
+      warehouse: true,
+    },
+  });
+  if (!option) return BadRequestError("option not found");
+  const warehouseRepo = AppDataSource.getRepository(Warehouse);
+  return await warehouseRepo.update({ id: option.warehouse.id}, { quantity });
+}
