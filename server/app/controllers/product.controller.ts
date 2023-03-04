@@ -8,11 +8,11 @@ export const getAll = async (req: Request, res: Response) => {
 }
 
 export const create = async (req: Request, res: Response) => {
-    const { name, description, ram, rom, color, price } = req.body;
+    const { name, description, ram, rom, color, price, brand_id } = req.body;
     const file = req.file;
     if (!file) return res.json({msg: "image for product is required!"});
     const { path } = file;
-    return res.json(await productServices.create({ name, description }, { ram, rom, color, price }, path));
+    return res.json(await productServices.create({ name, description }, { ram, rom, color, price }, path, brand_id));
 }
 
 export const getOneById = async (req: Request, res: Response) => {

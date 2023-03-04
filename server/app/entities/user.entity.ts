@@ -61,6 +61,14 @@ export class User {
 
   @Column({
     nullable: true,
+    transformer: {
+      to(value: number) {
+        return value ? value : null;
+      },
+      from(value: null | number) {
+        return value;
+      }
+    },
   })
   default_address!: number;
 

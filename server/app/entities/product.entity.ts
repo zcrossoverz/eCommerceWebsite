@@ -3,7 +3,6 @@ import { Brand } from "./brand.entity";
 import { Specification } from "./specification.entity";
 import { Image } from "./image.entity";
 import { ProductOption } from "./productOption.entity";
-import { OrderItem } from "./orderItem.entity";
 
 @Entity("products")
 export class Product {
@@ -53,12 +52,5 @@ export class Product {
         productOption => productOption.product
     )
     productOptions!: ProductOption[];
-
-
-    @OneToMany(
-        () => OrderItem,
-        orderItem => orderItem.product
-    )
-    orderItems!: OrderItem[];
 
 }

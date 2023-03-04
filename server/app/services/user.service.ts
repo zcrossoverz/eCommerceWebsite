@@ -159,9 +159,47 @@ export const setDefaultAddress = async (id_user: number, id_addr: number) => {
   return BadRequestError("id address not found");
 };
 
-export const updateAddress = async (id: number, addr: string) => {
-  const address = addressRepository.findOneBy({id});
+export const updateAddress = async (id_user: number, id_addr: number, addr: string) => {
+  const address = await addressRepository.findOne({
+    where: {
+      id: id_addr
+    },
+    relations: {
+      user: true
+    }
+  });
   if(!address) return BadRequestError("address not found");
+  if(address.user.id !== id_user) return BadRequestError("you dont have this address id");
   if(!addr) return BadRequestError("address empty");
-  return await addressRepository.update({id}, { address: addr })
+  return await addressRepository.update({id: id_addr}, { address: addr })
+};
+
+export const deleteAddress = async (id_user:number, id_addr: number) => {
+  const address = await addressRepository.findOneBy({id: id_addr});
+  const user = await userRepository.findOne({
+    where: { 
+      id: id_user
+    },
+    relations: {
+      address: true
+    }
+  });
+  if(!address) return BadRequestError("address not found");
+  if(!user) return BadRequestError("user not found");
+  let deleted = false;
+  let index = 0;
+  for(const {id} of user.address) {
+    if(id === id_addr) {
+      if(user.default_address === id){
+        user.address.splice(index, 1);
+        if(user.address.length) await userRepository.update({ id: id_user }, { default_address: user.address.at(0)?.id });
+        else await userRepository.update({ id: id_user }, { default_address: 0 })
+      }
+      await addressRepository.delete({id});
+      deleted = true;
+    }
+    index++;
+  }
+  if(deleted) return { msg: "success" };
+  else return BadRequestError("you dont have this address id");
 }

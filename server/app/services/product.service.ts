@@ -1,6 +1,7 @@
 import { AppDataSource } from "../database";
 import { Brand } from "../entities/brand.entity";
 import { Image, EnumTypeImage } from "../entities/image.entity";
+import { Price } from "../entities/price.entity";
 import { Product } from "../entities/product.entity";
 import { ProductOption } from "../entities/productOption.entity";
 import { BadRequestError } from "../utils/error";
@@ -22,18 +23,29 @@ export const getAll = async () => {
 export const create = async (
   product: ProductInterface,
   options: ProductOptionInterface,
-  image_path: string
+  image_path: string,
+  brand_id: number
 ) => {
   const { name: name, description: description } = product;
-
+  const brandRepo = AppDataSource.getRepository(Brand);
+  const brand = await brandRepo.findOneBy({id: brand_id});
+  if(!brand) return BadRequestError("brand not found");
   if (name) {
+    
     const productExists = await productRepository.findOneBy({ name });
     if (productExists) return BadRequestError("product name already exists");
-    const productObj = productRepository.create({ name, description });
+    const productObj = productRepository.create({ name, description, brand });
     const newProduct = await productRepository.save(productObj);
 
     const productOptionRepository = AppDataSource.getRepository(ProductOption);
-    const { color, ram, rom } = options;
+    const { color, ram, rom, price } = options;
+    const priceRepo = AppDataSource.getRepository(Price);
+    const tempPrice = price ? priceRepo.create({
+      price: String(price)
+    }) : priceRepo.create({
+      price: "1000000"
+    });
+    const newPrice = await priceRepo.save(tempPrice);
     const opt =
       color && ram && rom 
         ? productOptionRepository.create({
@@ -41,12 +53,14 @@ export const create = async (
             ram,
             rom,
             product: newProduct,
+            price: newPrice
           })
         : productOptionRepository.create({
             color: "black",
             ram: "8GB",
             rom: "128GB",
             product: newProduct,
+            price: newPrice
           });
 
     const newOtp = await productOptionRepository.save(opt);
@@ -58,6 +72,9 @@ export const create = async (
       type: EnumTypeImage.thumbnail,
     });
     const newImage = await imageRepo.save(tempImage);
+
+
+
     return {
       new_product: newProduct,
       new_options: newOtp,
@@ -69,7 +86,7 @@ export const create = async (
 };
 
 export const getOneById = async (id: number) => {
-  const product = productRepository.findOne({
+  const product = await productRepository.findOne({
     where: {
       id,
     },
@@ -77,10 +94,12 @@ export const getOneById = async (id: number) => {
       brand: true,
       specifications: true,
       images: true,
-      productOptions: true,
+      productOptions: {
+        price: true
+      },
     },
   });
-  return (await product) ? product : BadRequestError("product not found!");
+  return product ? product : BadRequestError("product not found!");
 };
 
 export const addBrand = async (id: number, brand_id: number) => {

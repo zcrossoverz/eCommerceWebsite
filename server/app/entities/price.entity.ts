@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { PriceHistory } from "./priceHistoty.entity";
 
 @Entity("prices")
 export class Price {
@@ -10,4 +11,7 @@ export class Price {
     })
     price!: string;
     
+    @OneToMany(() => PriceHistory, (priceHistory) => priceHistory.price)
+    priceHistories!: PriceHistory[];
+
 }

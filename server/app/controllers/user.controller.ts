@@ -55,7 +55,12 @@ export const setDefaultAddress = async (req: Request, res: Response) => {
 };
 
 export const updateAddress = async (req: Request, res: Response) => {
-  const { id_address } = req.params;
+  const { id_address, id_user } = req.params;
   const { address } = req.body;
-  return res.json(await userServices.updateAddress(Number(id_address), address)); 
+  return res.json(await userServices.updateAddress(Number(id_user), Number(id_address), address)); 
+};
+
+export const deleteAddress = async (req: Request, res: Response) => {
+  const { id_address, id_user } = req.params;
+  return res.json(await userServices.deleteAddress(Number(id_user), Number(id_address)));
 }
