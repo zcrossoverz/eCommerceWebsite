@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Price } from "./price.entity";
 
 @Entity("price_history")
 export class PriceHistory {
@@ -17,4 +18,10 @@ export class PriceHistory {
 
     @CreateDateColumn()
     update_at!: Date;
+
+    @ManyToOne(() => Price, (price) => price.priceHistories)
+    @JoinColumn({
+        name: "price_id"
+    })
+    price!: Price;
 }

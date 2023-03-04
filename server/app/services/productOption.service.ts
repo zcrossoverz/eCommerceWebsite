@@ -21,11 +21,13 @@ export const create = async (
   if (
     product_options.color &&
     product_options.ram &&
-    product_options.rom &&
-    product_options.price
+    product_options.rom
   ) {
+    const { color, ram, rom } = product_options;
     const new_options = productOptionRepository.create({
-      ...product_options,
+      color,
+      ram,
+      rom,
       product,
     });
     return await productOptionRepository.save(new_options);
@@ -42,6 +44,7 @@ export const deleteOne = async (id: number) => {
 
 export const updateOne = async (id: number, data: ProductOptionInterface) => {
   const option = await productOptionRepository.findOneBy({ id });
+  const { ram, rom, color } = data;
   if (!option) return BadRequestError("option not found");
-  return await productOptionRepository.update({ id }, { ...data });
+  return await productOptionRepository.update({ id }, { ram, rom, color });
 };
