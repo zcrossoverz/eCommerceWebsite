@@ -18,14 +18,17 @@ export class ProductOption {
 
     @ManyToOne(
         () => Product,
-        product => product.productOptions
+        product => product.productOptions,
+        {
+            onDelete: "CASCADE"
+        }
     )
     @JoinColumn({
         name: "product_id"
     })
     product!: Product;
 
-    @OneToOne(() => Price)
+    @OneToOne(() => Price, { onDelete: "CASCADE" })
     @JoinColumn({ name: "price_id" })
     price!: Price;
 
