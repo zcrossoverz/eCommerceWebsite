@@ -7,6 +7,8 @@ export const InventoryRoutes = (app: Express) => {
 
     router.post("/inbound/:product_option_id", inventory.increaseStock);
     router.post("/outbound/:product_option_id", inventory.decreaseStock);
+    router.post("/create_inbound_note", inventory.createInboundNote);
+    router.get("/inbound_note/:id", inventory.getInboundNote);
 
     app.use("/api/inventory", router);
 }

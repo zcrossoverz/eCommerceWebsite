@@ -94,4 +94,6 @@ export const updateStock = async (id: number, quantity: number) => {
   if (!option) return BadRequestError("option not found");
   const warehouseRepo = AppDataSource.getRepository(Warehouse);
   return await warehouseRepo.update({ id: option.warehouse.id}, { quantity });
-}
+};
+
+

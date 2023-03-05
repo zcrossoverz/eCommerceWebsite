@@ -12,3 +12,13 @@ export const decreaseStock = async (req: Request, res: Response) => {
     const { quantity } = req.body;
     return res.json(await inventoryServices.decreaseStock(Number(product_option_id), quantity));
 };
+
+export const createInboundNote = async (req: Request, res: Response) => {
+    const { data } = req.body;
+    return res.json(await inventoryServices.createWarehouseInboundNote(data));
+};
+
+export const getInboundNote = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    return res.json(await inventoryServices.getInboundNote(Number(id)));
+}
