@@ -32,7 +32,10 @@ export class OrderItem {
 
     @ManyToOne(
         () => InventoryInboundNote,
-        inventory => inventory.orderItems
+        inventory => inventory.orderItems,
+        {
+            nullable: true
+        }
     )
     @JoinColumn({
         name: "inventory_inbound_note_id"
