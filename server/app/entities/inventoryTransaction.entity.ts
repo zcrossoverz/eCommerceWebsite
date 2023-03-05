@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { ProductOption } from "./productOption.entity";
 
 export enum EnumInventoryTransactionType {
     IN, // add to warehouse
@@ -26,5 +27,14 @@ export class InventoryTransaction {
         type: "bigint"
     })
     amount!: string;
+
+    @ManyToOne(
+        () => ProductOption,
+        product_option => product_option.inventory_transactions
+    )
+    @JoinColumn({
+        name: "product_option_id"
+    })
+    product_option!: ProductOption;
 
 }
