@@ -1,5 +1,7 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Order } from "./order.entity";
+import { InventoryInboundNote } from "./inventoryInboundNote.entity";
+import { ProductOption } from "./productOption.entity";
 
 @Entity("order_items")
 export class OrderItem {
@@ -9,14 +11,35 @@ export class OrderItem {
     @Column()
     quantity!: number;
 
+    @OneToOne(() => ProductOption)
+    @JoinColumn({
+        name: "product_option_id"
+    })
+    product_option!: ProductOption;
+
 
     @ManyToOne(
         () => Order,
-        order => order.orderItems
+        order => order.orderItems,
+        {
+            nullable: true
+        }
     )
     @JoinColumn({
         name: "order_id"
     })
     order!: Order;
+
+    @ManyToOne(
+        () => InventoryInboundNote,
+        inventory => inventory.orderItems,
+        {
+            nullable: true
+        }
+    )
+    @JoinColumn({
+        name: "inventory_inbound_note_id"
+    })
+    inventoryInboundNote!: InventoryInboundNote;
 
 }

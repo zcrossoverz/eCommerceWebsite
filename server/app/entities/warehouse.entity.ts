@@ -7,4 +7,5 @@ export class Warehouse {
 
     @Column()
     quantity!: number;
+
 }

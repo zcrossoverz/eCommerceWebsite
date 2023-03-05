@@ -1,7 +1,8 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Product } from "./product.entity";
 import { Price } from "./price.entity";
 import { Warehouse } from "./warehouse.entity";
+import { InventoryTransaction } from "./inventoryTransaction.entity";
 
 @Entity("product_options")
 export class ProductOption {
@@ -36,5 +37,11 @@ export class ProductOption {
     @OneToOne(() => Warehouse, { onDelete: "CASCADE" })
     @JoinColumn({ name: "warehouse_id" })
     warehouse!: Warehouse;
+
+    @OneToMany(
+        () => InventoryTransaction,
+        inventorytrans => inventorytrans.product_option
+    )
+    inventory_transactions!: InventoryTransaction[];
 
 }
