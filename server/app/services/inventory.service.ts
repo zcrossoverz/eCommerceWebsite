@@ -147,3 +147,39 @@ export const getInboundNote = async (id: number) => {
           })
         } : BadRequestError("inventory inbound note not found");
 };
+
+export const processInboundNote = async (id: number, accept: boolean) => {
+    const inventoryNoteRepo = AppDataSource.getRepository(InventoryInboundNote);
+    const note = await inventoryNoteRepo.findOne({
+        where: {
+            id
+        },
+        relations: {
+            orderItems: {
+              product_option: {
+                product: true,
+              },
+            },
+        },
+    });
+    if(!note) return BadRequestError("inventory inbound note not found");
+    if(EnumInventoryInboundStatus[note.status] === "PENDING"){
+        if(accept){
+            await inventoryNoteRepo.update({ id }, { status: EnumInventoryInboundStatus.COMPLETED });
+            note.orderItems.forEach(async e => {
+                await increaseStock(e.product_option.id, e.quantity);
+            });
+            return {
+                msg: "success"
+            };
+        }else{
+            await inventoryNoteRepo.update({ id }, { status: EnumInventoryInboundStatus.CANCELLED });
+            return {
+                msg: "rejected"
+            }
+        }
+    }
+    return {
+        msg: "item has been processed"
+    };
+}
