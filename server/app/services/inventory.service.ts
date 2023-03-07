@@ -105,7 +105,7 @@ export const createWarehouseInboundNote = async (data: dataInboundNote[]) => {
   data.forEach(async (e) => {
     const product = await productRepo.findOneBy({ id: e.product_option_id });
     if (product) {
-      await orderItemRepo.save(
+      await orderItemRepo.insert(
         orderItemRepo.create({
           quantity: e.quantity,
           product_option: product,
@@ -182,4 +182,40 @@ export const processInboundNote = async (id: number, accept: boolean) => {
     return {
         msg: "item has been processed"
     };
+};
+
+export const deleteInboundNote = async (id: number) => {
+  const inventoryNoteRepo = AppDataSource.getRepository(InventoryInboundNote);
+  return await inventoryNoteRepo.delete({id});
+};
+
+export const getAllInboundNote = async () => {
+  const inventoryNoteRepo = AppDataSource.getRepository(InventoryInboundNote);
+  const rs = await inventoryNoteRepo.find({
+    relations: {
+      orderItems: {
+        product_option: {
+          product: true
+        }
+      }
+    }
+  });
+
+  return rs ? rs.map(e => {
+    return {
+      id: e.id,
+      status: EnumInventoryInboundStatus[e.status],
+      create_at: e.create_at,
+      items: e.orderItems.map((el) => {
+        return {
+          name: el.product_option.product.name,
+          product_option_id: el.id,
+          quantity: el.quantity,
+          ram: el.product_option.ram,
+          rom: el.product_option.rom,
+          color: el.product_option.rom,
+        };
+      })
+      }
+    }) : BadRequestError("inbound note empty");
 }
