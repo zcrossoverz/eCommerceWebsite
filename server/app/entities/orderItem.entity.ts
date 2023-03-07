@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Order } from "./order.entity";
 import { InventoryInboundNote } from "./inventoryInboundNote.entity";
 import { ProductOption } from "./productOption.entity";
@@ -11,7 +11,7 @@ export class OrderItem {
     @Column()
     quantity!: number;
 
-    @OneToOne(() => ProductOption)
+    @ManyToOne(() => ProductOption)
     @JoinColumn({
         name: "product_option_id"
     })

@@ -105,7 +105,7 @@ export const createWarehouseInboundNote = async (data: dataInboundNote[]) => {
   data.forEach(async (e) => {
     const product = await productRepo.findOneBy({ id: e.product_option_id });
     if (product) {
-      await orderItemRepo.save(
+      await orderItemRepo.insert(
         orderItemRepo.create({
           quantity: e.quantity,
           product_option: product,
