@@ -10,6 +10,8 @@ export const InventoryRoutes = (app: Express) => {
     router.post("/create_inbound_note", inventory.createInboundNote);
     router.get("/inbound_note/:id", inventory.getInboundNote);
     router.post("/inbound_note/:id", inventory.processInboundNote);
+    router.delete("/inbound_note/:id", inventory.processInboundNote);
+    router.get("/inbound_note", inventory.getAllInboundNote);
 
     app.use("/api/inventory", router);
 }
