@@ -29,7 +29,7 @@ export const deleteOne = async (id: number) => {
   const result = await brandRepository.delete({ id });
   return result.affected
     ? { msg: "delete success" }
-    : BadRequestError("brand not found");
+    : { msg: "failed" };
 };
 
 export const getAll = async () => {

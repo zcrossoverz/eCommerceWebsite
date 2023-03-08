@@ -174,5 +174,5 @@ export const update = async (id: number, product: ProductInterface) => {
 };
 
 export const deleteOne = async (id: number) => {
-  return await productRepository.delete({ id });
+  return (await productRepository.delete({ id })).affected ? { msg: "success" } : { msg: "failed" };
 }
