@@ -186,7 +186,7 @@ export const processInboundNote = async (id: number, accept: boolean) => {
 
 export const deleteInboundNote = async (id: number) => {
   const inventoryNoteRepo = AppDataSource.getRepository(InventoryInboundNote);
-  return await inventoryNoteRepo.delete({id});
+  return (await inventoryNoteRepo.delete({id})).affected ? { msg: "success" } : { msg: "failed" };
 };
 
 export const getAllInboundNote = async () => {

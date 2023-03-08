@@ -30,7 +30,10 @@ export class InventoryTransaction {
 
     @ManyToOne(
         () => ProductOption,
-        product_option => product_option.inventory_transactions
+        product_option => product_option.inventory_transactions,
+        {
+            onDelete: "CASCADE"
+        }
     )
     @JoinColumn({
         name: "product_option_id"
