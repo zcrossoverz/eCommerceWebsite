@@ -16,8 +16,30 @@ interface ProductInterface {
 export const productRepository = AppDataSource.getRepository(Product);
 
 export const getAll = async () => {
-  const result = await productRepository.find();
-  return result.length ? result : BadRequestError("product not found!");
+  const result = await productRepository.find({
+    relations: {
+      images: true,
+      productOptions: {
+        price: true
+      },
+      brand: true
+    }
+  });
+  return result.length ? result.map(e => {
+    return {
+      id: e.id,
+      name: e.description,
+      description: e.description,
+      images: e.images,
+      brand: e.brand.name,
+      product_options: e.productOptions.map(el => {
+        return {
+          product_option_id: el.id,
+          price: el.price.price
+        }
+      })
+    }
+  }) : BadRequestError("product not found!");
 };
 
 export const create = async (
@@ -108,7 +130,31 @@ export const getOneById = async (id: number) => {
       },
     },
   });
-  return product ? product : BadRequestError("product not found!");
+  return product ? {
+    id: product.id,
+    name: product.name,
+    description: product.description,
+    createAt: product.createAt,
+    updateAt: product.updateAt,
+    brand: product.brand.name,
+    brand_description: product.brand.description,
+    specs: product.specifications.map(e => { 
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { id, ...rest } = e;
+      return { ...rest };
+    }),
+    images: product.images,
+    product_options: product.productOptions.map(e => {
+      return {
+        product_option_id: e.id,
+        color: e.color,
+        ram: e.ram,
+        rom: e.rom,
+        price: e.price.price,
+        quantity: e.warehouse.quantity
+      }
+    })
+  } : BadRequestError("product not found!");
 };
 
 // export const addBrand = async (id: number, brand_id: number) => {
