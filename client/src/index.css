@@ -1,3 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-poppins;
+  }
+}
+@layer components {
+  .nav-item {
+    @apply block cursor-pointer rounded border-0 py-2 pl-3 pr-4 text-lg text-gray-700 hover:bg-gray-100 hover:bg-transparent hover:text-blue-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:bg-transparent dark:hover:text-white md:p-0;
+  }
+}
