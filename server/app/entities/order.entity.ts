@@ -2,6 +2,8 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateCol
 import { Coupon } from "./coupon.entity";
 import { User } from "./user.entity";
 import { OrderItem } from "./orderItem.entity";
+import { Payment } from "./payment.entity";
+import { Timeline } from "./timeline.entity";
 
 export enum EnumStatusOrder {
     PENDING = "pending", // has been placed but hasn't yet been confirm or process - da ghi nhan don dat hang nhung chua duoc xu ly
@@ -30,7 +32,8 @@ export class Order {
     @UpdateDateColumn()
     updateAt!: Date;
 
-
+    @Column()
+    address!: string;
 
     @OneToOne(() => Coupon, { nullable:true })
     @JoinColumn({
@@ -53,5 +56,27 @@ export class Order {
         orderItem => orderItem.order
     )
     orderItems!: OrderItem[];
+
+    @OneToOne(() => Payment,
+    {
+        onDelete: "CASCADE"
+    })
+    payment!: Payment;
+
+    @OneToMany(
+        () => Coupon, 
+        coupon => coupon.orders, 
+        { nullable: true }
+    )
+    @JoinColumn({
+        name: "coupon_id"
+    })
+    coupon!: Coupon;
+
+    @OneToMany(
+        () => Timeline,
+        timeline => timeline
+    )
+    timeline!: Timeline[];
 
 }

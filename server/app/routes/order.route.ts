@@ -5,7 +5,7 @@ export const OrderRoutes = (app: Express) => {
     
     const router = express.Router();
 
-    router.get("/", order.getAll);
+    router.post("/create_order", order.createOrder);
 
     app.use("/api/order", router);
 }
