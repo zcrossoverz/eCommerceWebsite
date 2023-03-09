@@ -189,19 +189,29 @@ export const deleteInboundNote = async (id: number) => {
   return (await inventoryNoteRepo.delete({id})).affected ? { msg: "success" } : { msg: "failed" };
 };
 
-export const getAllInboundNote = async () => {
+export const getAllInboundNote = async (limit: number, page: number) => {
   const inventoryNoteRepo = AppDataSource.getRepository(InventoryInboundNote);
-  const rs = await inventoryNoteRepo.find({
+  const offset = (page-1)*limit;
+  const [rs, count] = await inventoryNoteRepo.findAndCount({
     relations: {
       orderItems: {
         product_option: {
           product: true
         }
       }
-    }
+    },
+    take: limit,
+    skip: offset
   });
-
-  return rs ? rs.map(e => {
+  const last_page = Math.ceil(count/limit);
+  const prev_page = page - 1 < 1 ? null : page - 1;
+  const next_page = page + 1 > last_page ? null : page + 1;
+  return count ? {
+    current_page: page,
+    prev_page, next_page, last_page,
+    data_per_page: limit,
+    total: count,
+    data: rs.map(e => {
     return {
       id: e.id,
       status: EnumInventoryInboundStatus[e.status],
@@ -217,5 +227,5 @@ export const getAllInboundNote = async () => {
         };
       })
       }
-    }) : BadRequestError("inbound note empty");
+    })} : BadRequestError("inbound note empty");
 }

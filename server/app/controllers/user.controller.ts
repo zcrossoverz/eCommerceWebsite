@@ -4,7 +4,8 @@ import * as userServices from "../services/user.service";
 
 
 export const getAll = async (req: Request, res: Response) => {
-    const result = await userServices.getAll();
+  const { limit = 10, page = 1 } = req.query;
+    const result = await userServices.getAll(Number(limit), Number(page));
     return res.json(result);
 }
 

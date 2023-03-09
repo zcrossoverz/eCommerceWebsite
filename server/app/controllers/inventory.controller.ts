@@ -35,5 +35,6 @@ export const deleteInboundNote = async (req: Request, res: Response) => {
 };
 
 export const getAllInboundNote = async (req: Request, res: Response) => {
-    return res.json(await inventoryServices.getAllInboundNote());
+    const { limit = 10, page = 1 } = req.query;
+    return res.json(await inventoryServices.getAllInboundNote(Number(limit), Number(page)));
 };

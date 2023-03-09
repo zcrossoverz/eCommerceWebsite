@@ -15,31 +15,43 @@ interface ProductInterface {
 
 export const productRepository = AppDataSource.getRepository(Product);
 
-export const getAll = async () => {
-  const result = await productRepository.find({
+export const getAll = async (limit: number, page: number) => {
+  const offset = (page-1)*limit;
+  const [result, count] = await productRepository.findAndCount({
     relations: {
       images: true,
       productOptions: {
         price: true
       },
       brand: true
-    }
+    },
+    take: limit,
+    skip: offset
   });
-  return result.length ? result.map(e => {
-    return {
-      id: e.id,
-      name: e.description,
-      description: e.description,
-      images: e.images,
-      brand: e.brand.name,
-      product_options: e.productOptions.map(el => {
-        return {
-          product_option_id: el.id,
-          price: el.price.price
-        }
-      })
-    }
-  }) : BadRequestError("product not found!");
+  const last_page = Math.ceil(count/limit);
+  const prev_page = page - 1 < 1 ? null : page - 1;
+  const next_page = page + 1 > last_page ? null : page + 1;
+  return result.length ? {
+    current_page: page,
+    prev_page, next_page, last_page,
+    data_per_page: limit,
+    total: count,
+    data: result.map(e => {
+      return {
+        id: e.id,
+        name: e.description,
+        description: e.description,
+        images: e.images,
+        brand: e.brand.name,
+        product_options: e.productOptions.map(el => {
+          return {
+            product_option_id: el.id,
+            price: el.price.price
+          }
+        })
+      }
+    })
+  } : BadRequestError("product not found!");
 };
 
 export const create = async (

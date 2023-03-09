@@ -6,9 +6,10 @@ dotenv.config();
 import { AppDataSource } from "./app/database";
 import { Routes } from "./app/routes";
 import passport from "passport";
+import bodyParser from "body-parser";
 
 AppDataSource.initialize()
-  .then(async () => {
+  .then(() => {
       
     console.log("database connected!!");
 
@@ -18,6 +19,7 @@ AppDataSource.initialize()
     // setup middleware
     app.use(cors());
     app.use(express.json());
+    app.use(bodyParser.urlencoded({ extended:true }));
     app.use(passport.initialize());
 
     // setup route
