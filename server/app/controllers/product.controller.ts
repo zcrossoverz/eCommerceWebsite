@@ -4,7 +4,8 @@ import * as productServices from "../services/product.service";
 
 
 export const getAll = async (req: Request, res: Response) => {
-    return res.json(await productServices.getAll());   
+    const { limit = 10, page = 1 } = req.query;
+    return res.json(await productServices.getAll(Number(limit), Number(page)));   
 }
 
 export const create = async (req: Request, res: Response) => {
