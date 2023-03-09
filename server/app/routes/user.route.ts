@@ -8,7 +8,7 @@ export const UserRoutes = (app: Express) => {
 
     router.get(/^\/get_all(\?)?(((limit=[0-9])|(page=[0-9]))?(\%26)?){2}$/, user.getAll);
     router.post("/", [validation.validateEmail, validation.validatePhoneNumber], user.createNew);
-    router.get("/:id(/^([0-9]){1,}$/)", user.getOne);
+    router.get("/:id(\\d+)", user.getOne);
     router.put("/:id", [validation.validateEmail, validation.validatePhoneNumber], user.updateOne); 
     router.post("/:id/add_address", user.addAddress);
     router.patch("/:id/set_default_address", user.setDefaultAddress);

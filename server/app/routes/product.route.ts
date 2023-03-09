@@ -15,7 +15,7 @@ export const ProductRoutes = (app: Express) => {
      get_all?page=2 => page = 2, limit = 10
     */
     router.post("/", [upload.single('image'), validation.validateImageExtension], product.create);
-    router.get("/:id(/^([0-9]){1,}$/)", product.getOneById);
+    router.get("/:id(\\d+)", product.getOneById);
     router.put("/:id", product.update);
     router.delete("/:id", product.deleteOne);
 

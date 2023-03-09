@@ -16,4 +16,11 @@ export class Payment {
         default: EnumPaymentMethod.CASH_ON_DELIVERY
     })
     method!: EnumPaymentMethod;
+
+    @Column({
+        type: "boolean",
+        default: false
+    })
+    is_paid!: boolean;
+    
 }

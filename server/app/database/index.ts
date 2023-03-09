@@ -31,6 +31,7 @@ export const AppDataSource = new DataSource({
   database: process.env.DB_DATABASE,
   synchronize: true,
   logging: ["error", "warn"],
+  timezone: "+7",
   entities: [
     User,
     Order,
