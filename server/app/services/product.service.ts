@@ -34,8 +34,8 @@ export const getAll = async (limit: number, page: number) => {
   return result.length ? {
     current_page: page,
     prev_page, next_page, last_page,
-    product_per_page: limit,
-    total_product: count,
+    data_per_page: limit,
+    total: count,
     data: result.map(e => {
       return {
         id: e.id,
