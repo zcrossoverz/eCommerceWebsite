@@ -1,6 +1,6 @@
 import { AppDataSource } from "../database";
-import { Order } from "../entities/order.entity";
-import { OrderItem } from "../entities/orderItem.entity";
+// import { Order } from "../entities/order.entity";
+// import { OrderItem } from "../entities/orderItem.entity";
 import { ProductOption } from "../entities/productOption.entity";
 import { User } from "../entities/user.entity";
 import { BadRequestError } from "../utils/error";
@@ -17,9 +17,9 @@ interface item_order {
 
 export const createOrder = async (user_id: number, products: data_order[], address: string | null) => {
     const userRepo = AppDataSource.getRepository(User);
-    const orderRepo = AppDataSource.getRepository(Order);
+    // const orderRepo = AppDataSource.getRepository(Order);
     const productOptRepo = AppDataSource.getRepository(ProductOption);
-    const orderItemRepo = AppDataSource.getRepository(OrderItem);
+    // const orderItemRepo = AppDataSource.getRepository(OrderItem);
     if(!user_id || !products)  return BadRequestError("missing information");
     const user = await userRepo.findOne({
         where: {
