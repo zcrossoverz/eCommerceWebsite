@@ -24,7 +24,8 @@ export class OrderItem {
         () => Order,
         order => order.orderItems,
         {
-            nullable: true
+            nullable: true,
+            onDelete: "CASCADE"
         }
     )
     @JoinColumn({
@@ -36,7 +37,8 @@ export class OrderItem {
         () => InventoryInboundNote,
         inventory => inventory.orderItems,
         {
-            nullable: true
+            nullable: true,
+            onDelete: "CASCADE"
         }
     )
     @JoinColumn({

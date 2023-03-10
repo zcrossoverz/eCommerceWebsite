@@ -250,3 +250,8 @@ export const getAllOrder = async (limit: number, page: number) => {
       }
     : BadRequestError("order empty");
 };
+
+export const deleteOrder = async (order_id: number) => {
+    const OrderRepo = AppDataSource.getRepository(Order);
+    return (await OrderRepo.delete({ id: order_id })).affected ? { msg: "success" } : { msg: "failed" };
+}
