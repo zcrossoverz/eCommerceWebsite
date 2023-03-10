@@ -1,6 +1,7 @@
 import { type RegisterOptions } from 'react-hook-form';
+import * as yup from 'yup';
 type Rules = {
-  [key in 'email' | 'password' | 'phone' | 'firstname' | 'lastname']?: RegisterOptions;
+  [key in 'email' | 'password' | 'phone' | 'firstname' | 'lastname' | 'confirmpassword']?: RegisterOptions;
 };
 export const rules: Rules = {
   email: {
@@ -23,16 +24,17 @@ export const rules: Rules = {
       message: 'Password là bắt buộc',
     },
   },
-  phone: {
-    pattern: {
-      value: /^0[0-9]{9}$/g,
-      message: 'Số điện thoại không hợp lệ',
+  confirmpassword: {
+    minLength: {
+      value: 6,
+      message: 'Password ít nhất 6 ký tự',
     },
     required: {
       value: true,
-      message: 'Số điện thoại là bắt buộc',
+      message: 'Password là bắt buộc',
     },
   },
+
   firstname: {
     minLength: {
       value: 2,
@@ -62,3 +64,32 @@ export const rules: Rules = {
     },
   },
 };
+export const schema = yup.object({
+  email: yup.string().email('Email không hợp lệ!').required('Email bắt buộc nhập'),
+  password: yup
+    .string()
+    .required('password bắt buộc nhập')
+    .min(6, 'password có it nhất 6 ký tự')
+    .max(18, 'password có tối đa 18 ký tự'),
+
+  confirmPassword: yup
+    .string()
+    .required('bắt buộc nhập lại password')
+    .min(6, 'password có it nhất 6 ký tự')
+    .max(18, 'password có tối đa 18 ký tự')
+    .oneOf([yup.ref('password')], 'password không khớp'),
+  firstName: yup
+    .string()
+    .required('bắt buộc nhập first name')
+    .min(2, 'Có ít nhất 2 ký tự')
+    .max(20, 'có niều nhất 20 ký tự'),
+  lastName: yup
+    .string()
+    .required('bắt buộc nhập last name')
+    .min(2, 'Có ít nhất 2 ký tự')
+    .max(20, 'có niều nhất 20 ký tự'),
+});
+export const loginSchema = schema.pick(['email', 'password']);
+
+export type LoginSchema = yup.InferType<typeof loginSchema>;
+export type Schema = yup.InferType<typeof schema>;

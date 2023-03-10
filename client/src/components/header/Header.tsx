@@ -1,15 +1,32 @@
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { BsCart, BsSearch } from 'react-icons/bs';
 import classNames from 'classnames';
 import { FiSettings } from 'react-icons/fi';
 import { BiHelpCircle, BiLogIn, BiShoppingBag } from 'react-icons/bi';
 import { Link } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
+import { AppContext } from 'src/contexts/app.context';
+import { clearAccessToken, getAccessToken } from 'src/utils/auth';
+import jwtDecode from 'jwt-decode';
+import { UserInfo } from 'src/types/user.type';
+import { pick } from 'lodash';
 function Header() {
+  const { isAuth, setIsAuth } = useContext(AppContext);
   const [showMenuUser, setShowMenuUser] = useState<boolean>(false);
+  const [userInfo, setUserInfo] = useState<UserInfo>();
+  useEffect(() => {
+    const token = getAccessToken();
+    if (token) {
+      const user = pick(jwtDecode(token), ['firstName', 'lastName', 'role']);
+      setUserInfo(user as UserInfo);
+    } else {
+      setUserInfo(undefined);
+    }
+  }, [isAuth]);
   return (
     <header className='relative top-0 left-0 right-0 z-10 bg-white dark:bg-gray-900'>
       <nav className='border-gray-200 px-2 py-2.5 sm:px-4'>
-        <div className='container mx-auto flex items-center justify-between'>
+        <div className='mx-auto flex max-w-7xl items-center justify-between'>
           <a href='https' className='flex items-center'>
             <img src='https://flowbite.com/docs/images/logo.svg' className='mr-1 h-9' alt='Flowbite Logo' />
             <span className='hidden self-center whitespace-nowrap font-semibold dark:text-white md:block md:text-xl'>
@@ -50,50 +67,72 @@ function Header() {
                 />
               </button>
               {/* menu user */}
-              <div
-                className={classNames('absolute top-14 right-0 w-[300px] rounded-lg bg-slate-100 px-4 py-1 ', {
-                  block: showMenuUser,
-                  hidden: !showMenuUser,
-                })}
-              >
-                <div className='flex items-center border-b py-2'>
-                  <div>
-                    <img
-                      className='mr-2 h-8 w-8 rounded-[50%] object-cover md:mr-4'
-                      src='https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YXZhdGFyfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=600&q=60'
-                      alt=''
-                    />
-                  </div>
-                  <span className='text-base'>Your Name</span>
-                </div>
-                <ul className='flex flex-col pb-2'>
-                  <li className='nav-item mt-4'>
-                    <Link to='/user' className='flex items-center'>
-                      <FiSettings className='mr-4 text-lg' />
-                      <span>My Account</span>
-                    </Link>
-                  </li>
-                  <li className='nav-item mt-2'>
-                    <Link to='/user' className='flex items-center'>
-                      <BiShoppingBag className='mr-4 text-xl' />
-                      <span>My Order</span>
-                    </Link>
-                  </li>
-                  <li className='nav-item mt-2'>
-                    <Link to='/user' className='flex items-center'>
-                      <BiHelpCircle className='mr-4 text-xl' />
-                      <span>Help</span>
-                    </Link>
-                  </li>
+              <AnimatePresence>
+                {showMenuUser && (
+                  <motion.div
+                    className={classNames('absolute top-14 right-0 w-[300px] rounded-lg bg-slate-100 px-4 py-1 ')}
+                    initial={{ opacity: 0, transform: 'scale(0)' }}
+                    animate={{ opacity: 1, transform: 'scale(1)' }}
+                    exit={{ opacity: 0, transform: 'scale(0)' }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {isAuth && userInfo && (
+                      <div className='flex items-center border-b py-2'>
+                        <div>
+                          <img
+                            className='mr-2 h-8 w-8 rounded-[50%] object-cover md:mr-4'
+                            src='https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YXZhdGFyfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=600&q=60'
+                            alt=''
+                          />
+                        </div>
+                        <span className='text-base'>{`${userInfo.firstName} ${userInfo.lastName}`}</span>
+                      </div>
+                    )}
+                    <ul className='flex flex-col pb-2'>
+                      <li className='nav-item mt-4'>
+                        <Link to='/profile' className='flex items-center'>
+                          <FiSettings className='mr-4 text-lg' />
+                          <span>My Account</span>
+                        </Link>
+                      </li>
+                      <li className='nav-item mt-2'>
+                        <Link to='/user' className='flex items-center'>
+                          <BiShoppingBag className='mr-4 text-xl' />
+                          <span>My Order</span>
+                        </Link>
+                      </li>
+                      <li className='nav-item mt-2'>
+                        <Link to='/user' className='flex items-center'>
+                          <BiHelpCircle className='mr-4 text-xl' />
+                          <span>Help</span>
+                        </Link>
+                      </li>
 
-                  <li className='nav-item mt-2'>
-                    <Link to='/login' className='flex items-center'>
-                      <BiLogIn className='mr-4 text-xl' />
-                      <span>Login</span>
-                    </Link>
-                  </li>
-                </ul>
-              </div>
+                      <li className='nav-item mt-2'>
+                        {isAuth && (
+                          // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
+                          <span
+                            onClick={() => {
+                              setIsAuth(false);
+                              clearAccessToken();
+                            }}
+                            className='flex items-center'
+                          >
+                            <BiLogIn className='mr-4 text-xl' />
+                            <span>Logout</span>
+                          </span>
+                        )}
+                        {!isAuth && (
+                          <Link to='/login' className='flex items-center'>
+                            <BiLogIn className='mr-4 text-xl' />
+                            <span>Login</span>
+                          </Link>
+                        )}
+                      </li>
+                    </ul>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
 

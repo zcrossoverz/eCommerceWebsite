@@ -1,16 +1,46 @@
-import { useState } from 'react';
-import { AiOutlineMail, AiOutlineGoogle, AiOutlineLock, AiFillEyeInvisible } from 'react-icons/ai';
+import { useForm } from 'react-hook-form';
+import { useContext, useState } from 'react';
+import { AiOutlineMail, AiOutlineGoogle, AiOutlineLock, AiFillEyeInvisible, AiFillEye } from 'react-icons/ai';
 import { FaFacebookF, FaLinkedinIn } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
-
+import { Link, useNavigate } from 'react-router-dom';
+import { LoginSchema, loginSchema } from 'src/utils/rulesValidateForm';
+import classNames from 'classnames';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useMutation } from '@tanstack/react-query';
+import { loginAccount } from 'src/apis/auth.api';
+import { toast } from 'react-toastify';
+import { AppContext } from 'src/contexts/app.context';
+import { useDispatch } from 'react-redux';
+type FormDataLogin = LoginSchema;
 function Login() {
-  // const [email, setEmail] = useState('');
-  // const [password, setPassword] = useState('');
-  const [isSignIn, setisSignIn] = useState(false);
-  // const handleSubmit = (e:) => {
-  //   e.preventDefault();
-  //   console.log(email, password);
-  // };
+  const dispath = useDispatch();
+  const { setIsAuth } = useContext(AppContext);
+  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormDataLogin>({
+    resolver: yupResolver(loginSchema),
+  });
+  const loginMutation = useMutation({
+    mutationFn: (body: FormDataLogin) => loginAccount(body),
+  });
+  const onSubmit = handleSubmit((data) => {
+    loginMutation.mutate(data, {
+      onSuccess: (data) => {
+        if (data.data.token && data.data.message) {
+          setIsAuth(true);
+          navigate('/');
+        } else {
+          // show err với toast
+          toast.error(data.data.error);
+          // setError('email',{message:data.data.error,type:'Server'})
+        }
+      },
+    });
+  });
+  const [showPass, setShowPass] = useState<boolean>(false);
   return (
     <div className='flex w-full flex-col items-center justify-center bg-gradient-to-r from-red-200 via-red-300 to-yellow-200 px-6 py-4 text-center text-white md:py-10 md:px-20'>
       <div className='grid w-full grid-cols-1 grid-rows-3 rounded-2xl border-t border-l border-[rgba(255,255,255,.3)] bg-white bg-opacity-10 shadow-form backdrop-blur-[10px] md:grid-cols-3 md:grid-rows-1 lg:w-2/3 '>
@@ -34,30 +64,91 @@ function Login() {
               </a>
             </div>
             <p className='text- my-3 '>Hoặc đăng nhập bằng email</p>
-            <div className='flex flex-col items-center'>
-              <div className='mb-4 flex w-60 items-center rounded-md border-2 p-2'>
-                <AiOutlineMail />
-                <input type='email' className='ml-2 flex-1 bg-transparent outline-none' placeholder='email' />
+            <form onSubmit={onSubmit} className='flex flex-col items-center' noValidate>
+              <div
+                className={classNames('relative mb-6 flex w-60 flex-row-reverse items-center rounded-md border-2 p-2', {
+                  'border-red-500': errors.email?.message,
+                })}
+              >
+                <input
+                  type='email'
+                  {...register('email')}
+                  className={classNames('peer/email ml-2 w-full flex-1 bg-transparent outline-none', {
+                    'text-red-700 placeholder-red-500': errors.email?.message,
+                  })}
+                  placeholder='email'
+                />
+                <AiOutlineMail
+                  className={classNames('text-xl', {
+                    'text-red-500': errors.email?.message,
+                    'peer-focus/email:text-form': !errors.email?.message,
+                  })}
+                />
+                <div className='absolute -bottom-5 -left-0 -mt-4 text-left text-xs text-err'>
+                  {errors.email && errors.email.message && <span>{errors.email.message}</span>}
+                </div>
               </div>
-              <div className='relative mb-2 flex w-60 items-center rounded-md border-2 p-2'>
-                <AiOutlineLock />
-                <input type='password' placeholder='password' className='ml-2 bg-transparent outline-none' />
-                <AiFillEyeInvisible className='absolute right-2 text-gray-400 ' />
+              {/* password */}
+              <div
+                className={classNames('relative mb-6 flex w-60 flex-row-reverse items-center rounded-md border-2 p-2', {
+                  'border-red-500': errors.password?.message,
+                })}
+              >
+                <div>
+                  <AiFillEyeInvisible
+                    onClick={() => setShowPass(!showPass)}
+                    className={classNames({
+                      'inline-block': !showPass,
+                      hidden: showPass,
+                    })}
+                  />
+                  <AiFillEye
+                    onClick={() => setShowPass(!showPass)}
+                    className={classNames({
+                      'inline-block': showPass,
+                      hidden: !showPass,
+                    })}
+                  />
+                </div>
+                <input
+                  type={showPass ? 'text' : 'password'}
+                  {...register('password')}
+                  placeholder='password'
+                  className={classNames('peer/password ml-2 w-full flex-1 bg-transparent outline-none', {
+                    'text-red-700 placeholder-red-500': errors.password?.message,
+                  })}
+                />
+                <AiOutlineLock
+                  className={classNames('text-xl', {
+                    'text-red-500': errors.password?.message,
+                    'peer-focus/password:text-form': !errors.password?.message,
+                  })}
+                />
+                <div className='absolute -bottom-5 -left-0 -mt-4 text-left text-xs text-err'>
+                  {errors.password && errors.password.message && <span>{errors.password.message}</span>}
+                </div>
               </div>
+
               <div className='mb-4 w-60 text-right'>
                 <a href='a' className='inline-block text-gray-500 hover:text-form'>
                   Quên mật khẩu?
                 </a>
               </div>
               <div>
-                <a
-                  href='#a'
-                  className='inline-block rounded-full border-2 border-white px-12 py-2 duration-300 hover:bg-form hover:text-white'
+                <button
+                  type='submit'
+                  className={classNames(
+                    'inline-block rounded-full border-2 border-white px-12 py-2 duration-300 hover:bg-form hover:text-white',
+                    {
+                      'cursor-not-allowed': loginMutation.isLoading,
+                    }
+                  )}
+                  disabled={loginMutation.isLoading}
                 >
                   Đăng nhập
-                </a>
+                </button>
               </div>
-            </div>
+            </form>
           </div>
         </div>
         {/* signup section */}
