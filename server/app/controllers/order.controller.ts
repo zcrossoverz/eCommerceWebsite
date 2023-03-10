@@ -20,3 +20,9 @@ export const deleteOrder = async (req: Request, res: Response) => {
     const { order_id } = req.params;
     return res.json(await orderServices.deleteOrder(Number(order_id)));
 }
+
+export const updateStatusOrder = async (req: Request, res: Response) => {
+    const { order_id } = req.params;
+    const { status } = req.body
+    return res.json(await orderServices.updateStatusOrder(Number(order_id), status));
+}
