@@ -16,3 +16,7 @@ export const getAllOrder = async (req: Request, res: Response) => {
     return res.json(await orderServices.getAllOrder(Number(limit), Number(page)));
 }
 
+export const deleteOrder = async (req: Request, res: Response) => {
+    const { order_id } = req.params;
+    return res.json(await orderServices.deleteOrder(Number(order_id)));
+}
