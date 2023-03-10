@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { AppDataSource } from "../database";
-import { Order } from "../entities/order.entity";
+import { EnumStatusOrder, Order } from "../entities/order.entity";
 import { OrderItem } from "../entities/orderItem.entity";
 import { EnumPaymentMethod, Payment } from "../entities/payment.entity";
 import { ProductOption } from "../entities/productOption.entity";
@@ -166,7 +166,7 @@ export const getOneOrder = async (order_id: number) => {
   const { id: _, method: method, ...payment } = rs.payment;
   return {
     order_id: rs.id,
-    status: rs.status,
+    status: EnumStatusOrder[rs.status],
     create_at: rs.createAt,
     update_at: rs.updateAt,
     address: rs.address,
@@ -185,6 +185,7 @@ export const getOneOrder = async (order_id: number) => {
     payment: {
       method: EnumPaymentMethod[method],
       ...payment,
+      x: rs.payment,
     },
     timeline: rs.timeline,
   };
@@ -224,7 +225,7 @@ export const getAllOrder = async (limit: number, page: number) => {
           const { id: _, method: method, ...payment } = e.payment;
           return {
             order_id: e.id,
-            status: e.status,
+            status: EnumStatusOrder[e.status],
             create_at: e.createAt,
             update_at: e.updateAt,
             address: e.address,
@@ -252,6 +253,65 @@ export const getAllOrder = async (limit: number, page: number) => {
 };
 
 export const deleteOrder = async (order_id: number) => {
-    const OrderRepo = AppDataSource.getRepository(Order);
-    return (await OrderRepo.delete({ id: order_id })).affected ? { msg: "success" } : { msg: "failed" };
-}
+  const OrderRepo = AppDataSource.getRepository(Order);
+  return (await OrderRepo.delete({ id: order_id })).affected
+    ? { msg: "success" }
+    : { msg: "failed" };
+};
+
+// PENDING  has been placed but hasn't yet been confirm or process - da ghi nhan don dat hang nhung chua duoc xu ly
+// PROCESSING  in the process of being fulfilled and the necessary steps are being taken to get it shipped - dang xu ly
+// SHIPPED  on the way to the customer - dang giao hang
+// COMPLETE  the order has been successfully completed, customer received their product - don hang giao thanh cong, khach hang nhan duoc san pham
+// CANCELLED  cancelled by customer or seller - don hang bi huy
+// RETURNED  customer has returned or exchange - khach hang huy don hoac doi hang
+
+export const updateStatusOrder = async (
+  order_id: number,
+  status: EnumStatusOrder
+) => {
+  const orderRepo = AppDataSource.getRepository(Order);
+  const order = await orderRepo.findOne({
+    where: { id: order_id },
+    relations: {
+      user: true,
+      orderItems: {
+        product_option: {
+          product: true,
+        },
+      },
+      coupon: true,
+      timeline: true,
+      payment: true,
+    },
+  });
+
+  if (!order) return BadRequestError("order not found");
+  if (order.payment.method === EnumPaymentMethod.NOT_SET) {
+    return BadRequestError("please select method payment for order");
+  } else {
+    if (!status) return BadRequestError("status field cannot be empty");
+    if (!(status in EnumStatusOrder)) return BadRequestError("status not valid");
+    switch(String(EnumStatusOrder[status])){
+      case String(EnumStatusOrder.PENDING): {
+        return BadRequestError("Error");
+      }
+      case String(EnumStatusOrder.PROCESSING): {
+        return await orderRepo.update({ id: order.id }, { status: Number(EnumStatusOrder[status]) });
+      }
+      case String(EnumStatusOrder.SHIPPED): {
+        return await orderRepo.update({ id: order.id }, { status: Number(EnumStatusOrder[status]) });
+      }
+      case String(EnumStatusOrder.COMPLETE): {
+        return await orderRepo.update({ id: order.id }, { status: Number(EnumStatusOrder[status]) });
+      }
+      case String(EnumStatusOrder.CANCELLED): {
+        return await orderRepo.update({ id: order.id }, { status: Number(EnumStatusOrder[status]) });
+      }
+      case String(EnumStatusOrder.RETURNED): {
+        return await orderRepo.update({ id: order.id }, { status: Number(EnumStatusOrder[status]) });
+      }
+    }
+    return;
+  }
+};

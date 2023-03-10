@@ -6,12 +6,12 @@ import { Timeline } from "./timeline.entity";
 import { Payment } from "./payment.entity";
 
 export enum EnumStatusOrder {
-    PENDING = "pending", // has been placed but hasn't yet been confirm or process - da ghi nhan don dat hang nhung chua duoc xu ly
-    PROCESSING = "processing", // in the process of being fulfilled and the necessary steps are being taken to get it shipped - dang xu ly
-    SHIPPED = "shipped", // on the way to the customer - dang giao hang
-    COMPLETE = "complete", // the order has been successfully completed, customer received their product - don hang giao thanh cong, khach hang nhan duoc san pham
-    CANCELLED = "cancelled", // cancelled by customer or seller - don hang bi huy
-    RETURNED = "returned", // customer has returned or exchange - khach hang huy don hoac doi hang
+    PENDING, // has been placed but hasn't yet been confirm or process - da ghi nhan don dat hang nhung chua duoc xu ly
+    PROCESSING, // in the process of being fulfilled and the necessary steps are being taken to get it shipped - dang xu ly
+    SHIPPED, // on the way to the customer - dang giao hang
+    COMPLETE, // the order has been successfully completed, customer received their product - don hang giao thanh cong, khach hang nhan duoc san pham
+    CANCELLED, // cancelled by customer or seller - don hang bi huy
+    RETURNED, // customer has returned or exchange - khach hang huy don hoac doi hang
 }
 
 @Entity("orders")
