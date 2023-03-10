@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { BsCart, BsSearch } from 'react-icons/bs';
+import { BsCart, BsSearch, BsTelephoneForward } from 'react-icons/bs';
 import classNames from 'classnames';
 import { FiSettings } from 'react-icons/fi';
 import { BiHelpCircle, BiLogIn, BiShoppingBag } from 'react-icons/bi';
@@ -10,6 +10,7 @@ import { clearAccessToken, getAccessToken } from 'src/utils/auth';
 import jwtDecode from 'jwt-decode';
 import { UserInfo } from 'src/types/user.type';
 import { pick } from 'lodash';
+import path from 'src/constants/path';
 function Header() {
   const { isAuth, setIsAuth } = useContext(AppContext);
   const [showMenuUser, setShowMenuUser] = useState<boolean>(false);
@@ -24,33 +25,40 @@ function Header() {
     }
   }, [isAuth]);
   return (
-    <header className='relative top-0 left-0 right-0 z-10 bg-white dark:bg-gray-900'>
+    <header className='relative top-0 left-0 right-0 z-10 bg-orange-600 text-white shadow-md dark:bg-gray-900'>
       <nav className='border-gray-200 px-2 py-2.5 sm:px-4'>
         <div className='mx-auto flex max-w-7xl items-center justify-between'>
-          <a href='https' className='flex items-center'>
+          <Link to={path.home} className='flex items-center'>
             <img src='https://flowbite.com/docs/images/logo.svg' className='mr-1 h-9' alt='Flowbite Logo' />
             <span className='hidden self-center whitespace-nowrap font-semibold dark:text-white md:block md:text-xl'>
               Fstore
             </span>
-          </a>
+          </Link>
           {/* search input */}
-          <form className='ml-2 flex-shrink'>
+          <form className='ml-2 flex-shrink md:min-w-[30rem]'>
             <div className='relative'>
               <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3'>
                 <BsSearch className='text-lg text-gray-400' />
               </div>
               <input
                 type='search'
-                className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500'
+                className='block max-h-[2.5rem] w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pl-10 text-sm text-gray-900 outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400'
                 placeholder='Search smart phone by brand, name,...'
                 required
               />
             </div>
           </form>
           {/* right navigate */}
-          <div className='flex items-center'>
+          <div className='hidden items-center px-2 md:flex'>
+            <BsTelephoneForward className='mr-2 text-xl' />
+            <div className='flex flex-col items-start'>
+              <span>Hotline hỗ trợ</span>
+              <span className='text-lg font-bold'>0907588963</span>
+            </div>
+          </div>
+          <div className='flex items-center justify-between md:min-w-[8rem]'>
             <button className='ml-1 block h-10 w-10 rounded-[50%] p-2 text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600'>
-              <BsCart className='h-6 w-6' />
+              <BsCart className='h-6 w-6 text-black' />
             </button>
             <div className='relative flex'>
               <button
