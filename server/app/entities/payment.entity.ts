@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, PrimaryGeneratedColumn, OneToOne } from "typeorm";
+import { Order } from "./order.entity";
 
 export enum EnumPaymentMethod {
     CASH_ON_DELIVERY, // Payment made in cash at the time of delivery.
@@ -17,10 +18,19 @@ export class Payment {
     })
     method!: EnumPaymentMethod;
 
+    @Column()
+    amount!: string;
+
     @Column({
         type: "boolean",
         default: false
     })
     is_paid!: boolean;
+
+    @OneToOne(() => Order,
+    {
+        onDelete: "CASCADE"
+    })
+    order!: Order;
     
 }

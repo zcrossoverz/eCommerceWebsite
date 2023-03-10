@@ -2,7 +2,6 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateCol
 import { Coupon } from "./coupon.entity";
 import { User } from "./user.entity";
 import { OrderItem } from "./orderItem.entity";
-import { Payment } from "./payment.entity";
 import { Timeline } from "./timeline.entity";
 
 export enum EnumStatusOrder {
@@ -56,12 +55,6 @@ export class Order {
         orderItem => orderItem.order
     )
     orderItems!: OrderItem[];
-
-    @OneToOne(() => Payment,
-    {
-        onDelete: "CASCADE"
-    })
-    payment!: Payment;
 
     @OneToMany(
         () => Coupon, 
