@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { AppDataSource } from "../database";
 import { Order } from "../entities/order.entity";
 import { OrderItem } from "../entities/orderItem.entity";
-import { Payment } from "../entities/payment.entity";
+import { EnumPaymentMethod, Payment } from "../entities/payment.entity";
 import { ProductOption } from "../entities/productOption.entity";
 import { Timeline } from "../entities/timeline.entity";
 import { User } from "../entities/user.entity";
@@ -104,11 +105,10 @@ export const createOrder = async (user_id: number, products: data_order[], addre
 
     const new_order = await orderRepo.save(orderRepo.create({
         address: address ? address : user.address.find(e => e.id === user.default_address)?.address,
-        user: user
-    }));
-    await paymentRepo.save(paymentRepo.create({
+        user: user,
+        payment: await paymentRepo.save(paymentRepo.create({
         amount: String(items.reduce((acc, current) => acc + current.amount, 0)),
-        order: new_order
+        }))
     }));
     items.map(async e => {
         await orderItemRepo.save(orderItemRepo.create({
@@ -125,4 +125,48 @@ export const createOrder = async (user_id: number, products: data_order[], addre
 
     return new_order;
 
+}
+
+export const getOneOrder = async (order_id: number) => {
+    const orderRepo = AppDataSource.getRepository(Order);
+    // const paymentRepo = AppDataSource.getRepository(Payment);
+    const rs = await orderRepo.findOne({
+        where: { id: order_id },
+        relations: {
+            user: true,
+            orderItems: {
+                product_option: {
+                    product: true
+                }
+            },
+            coupon: true,
+            timeline: true,
+            payment: true
+        }
+    });
+    if(!rs) return BadRequestError("order not found");
+    const { id: _, method: method, ...payment } = rs.payment;
+    return {
+        order_id: rs.id,
+        status: rs.status,
+        create_at: rs.createAt,
+        update_at: rs.updateAt,
+        address: rs.address,
+        user: rs.user,
+        order_items: rs.orderItems.map(e => {
+            return {
+                product_name: e.product_option.product.name,
+                product_option_id: e.product_option.id,
+                ram: e.product_option.ram,
+                rom: e.product_option.rom,
+                color: e.product_option.color,
+                price: e.product_option.price,
+                quantity: e.quantity
+            }
+        }),
+        payment: {
+            method: EnumPaymentMethod[method], ...payment
+        },
+        timeline: rs.timeline
+    }
 }

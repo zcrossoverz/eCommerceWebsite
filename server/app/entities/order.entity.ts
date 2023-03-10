@@ -1,8 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToOne, JoinColumn, ManyToOne, OneToMany } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, JoinColumn, ManyToOne, OneToMany, OneToOne } from "typeorm";
 import { Coupon } from "./coupon.entity";
 import { User } from "./user.entity";
 import { OrderItem } from "./orderItem.entity";
 import { Timeline } from "./timeline.entity";
+import { Payment } from "./payment.entity";
 
 export enum EnumStatusOrder {
     PENDING = "pending", // has been placed but hasn't yet been confirm or process - da ghi nhan don dat hang nhung chua duoc xu ly
@@ -34,12 +35,6 @@ export class Order {
     @Column()
     address!: string;
 
-    @OneToOne(() => Coupon, { nullable:true })
-    @JoinColumn({
-        name: "coupon_id"
-    })
-    coupon_id!: Coupon;
-
 
     @ManyToOne(
         () => User,
@@ -56,7 +51,7 @@ export class Order {
     )
     orderItems!: OrderItem[];
 
-    @OneToMany(
+    @ManyToOne(
         () => Coupon, 
         coupon => coupon.orders, 
         { nullable: true }
@@ -68,8 +63,16 @@ export class Order {
 
     @OneToMany(
         () => Timeline,
-        timeline => timeline
+        timeline => timeline.order
     )
     timeline!: Timeline[];
+
+    @OneToOne(() => Payment, {
+        onDelete: "CASCADE"
+    })
+    @JoinColumn({
+        name: "payment_id"
+    })
+    payment!: Payment;
 
 }

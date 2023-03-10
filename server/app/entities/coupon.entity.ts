@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Order } from "./order.entity";
 
 export enum EnumTypeCoupon {
@@ -39,7 +39,7 @@ export class Coupon {
     @Column()
     number!: number;
 
-    @ManyToOne(
+    @OneToMany(
         () => Order,
         order => order.coupon
     )

@@ -6,3 +6,8 @@ export const createOrder = async (req: Request, res: Response) => {
     return res.json(await orderServices.createOrder(Number(user_id), items, address));
 }
 
+export const getOneOrder = async (req: Request, res: Response) => {
+    const { order_id } = req.params;
+    return res.json(await orderServices.getOneOrder(Number(order_id)));
+}
+

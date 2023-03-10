@@ -1,9 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn, OneToOne } from "typeorm";
-import { Order } from "./order.entity";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 export enum EnumPaymentMethod {
     CASH_ON_DELIVERY, // Payment made in cash at the time of delivery.
     MOMO, // Purchase via MOMO payment gateway.
+    NOT_SET
 }
 
 @Entity("payments")
@@ -14,7 +14,7 @@ export class Payment {
     @Column({
         type: "enum",
         enum: EnumPaymentMethod,
-        default: EnumPaymentMethod.CASH_ON_DELIVERY
+        default: EnumPaymentMethod.NOT_SET
     })
     method!: EnumPaymentMethod;
 
@@ -26,11 +26,5 @@ export class Payment {
         default: false
     })
     is_paid!: boolean;
-
-    @OneToOne(() => Order,
-    {
-        onDelete: "CASCADE"
-    })
-    order!: Order;
     
 }
