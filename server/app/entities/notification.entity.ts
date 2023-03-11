@@ -28,9 +28,6 @@ export class Notification {
     })
     is_read!: boolean;
 
-    @Column()
-    is_done!: boolean;
-
     @ManyToOne(
         () => User,
         user => user.notifications
