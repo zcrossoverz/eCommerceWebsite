@@ -1,10 +1,11 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import passport from "passport";
 import { Strategy, ExtractJwt } from "passport-jwt";
 import jwt from "jsonwebtoken";
 import { BadRequestError, isError } from "../utils/error";
 import * as userServices from "../services/user.service";
 import bcrypt from "bcryptjs";
+import err from "../middlewares/error";
 
 
 passport.use(new Strategy({ 
@@ -22,12 +23,12 @@ passport.use(new Strategy({
 }));
 
 
-export const login = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response, next: NextFunction) => {
     const { email, password } = req.body;
     if(email && password) {
         const user = await userServices.findOneByEmail(email);
         if(isError(user)){
-            return res.json(BadRequestError("user not found!"));
+            return next(err(BadRequestError("user not found!"), res));
         }
         if(bcrypt.compareSync(password, user.password)) return res.json({
             message:"login success",
@@ -38,9 +39,9 @@ export const login = async (req: Request, res: Response) => {
                 role: user.role
             }, process.env.JWT_SECRET_KEY || "nhan")
         })
-        else return res.json(BadRequestError("password is incorrect!")); 
+        else return next(err(BadRequestError("password is incorrect!"), res)); 
     }
-    return res.json(BadRequestError("email or password cannot be empty!")); 
+    return next(err(BadRequestError("email or password cannot be empty!"), res)); 
 }
 
 export const testLogin = (req: Request, res: Response) => {
