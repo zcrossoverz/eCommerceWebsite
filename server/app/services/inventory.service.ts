@@ -105,7 +105,7 @@ export const createWarehouseInboundNote = async (data: dataInboundNote[]) => {
   data.forEach(async (e) => {
     const product = await productRepo.findOneBy({ id: e.product_option_id });
     if (product) {
-      await orderItemRepo.save(
+      await orderItemRepo.insert(
         orderItemRepo.create({
           quantity: e.quantity,
           product_option: product,
@@ -182,4 +182,50 @@ export const processInboundNote = async (id: number, accept: boolean) => {
     return {
         msg: "item has been processed"
     };
+};
+
+export const deleteInboundNote = async (id: number) => {
+  const inventoryNoteRepo = AppDataSource.getRepository(InventoryInboundNote);
+  return (await inventoryNoteRepo.delete({id})).affected ? { msg: "success" } : { msg: "failed" };
+};
+
+export const getAllInboundNote = async (limit: number, page: number) => {
+  const inventoryNoteRepo = AppDataSource.getRepository(InventoryInboundNote);
+  const offset = (page-1)*limit;
+  const [rs, count] = await inventoryNoteRepo.findAndCount({
+    relations: {
+      orderItems: {
+        product_option: {
+          product: true
+        }
+      }
+    },
+    take: limit,
+    skip: offset
+  });
+  const last_page = Math.ceil(count/limit);
+  const prev_page = page - 1 < 1 ? null : page - 1;
+  const next_page = page + 1 > last_page ? null : page + 1;
+  return count ? {
+    current_page: page,
+    prev_page, next_page, last_page,
+    data_per_page: limit,
+    total: count,
+    data: rs.map(e => {
+    return {
+      id: e.id,
+      status: EnumInventoryInboundStatus[e.status],
+      create_at: e.create_at,
+      items: e.orderItems.map((el) => {
+        return {
+          name: el.product_option.product.name,
+          product_option_id: el.id,
+          quantity: el.quantity,
+          ram: el.product_option.ram,
+          rom: el.product_option.rom,
+          color: el.product_option.rom,
+        };
+      })
+      }
+    })} : BadRequestError("inbound note empty");
 }

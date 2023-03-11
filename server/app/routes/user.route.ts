@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 import * as user from "../controllers/user.controller";
 import express, { Express } from "express";
 import * as validation from "../middlewares/validation";
@@ -5,9 +6,9 @@ import * as validation from "../middlewares/validation";
 export const UserRoutes = (app: Express) => {
     const router = express.Router();
 
-    router.get("/", user.getAll);
+    router.get(/^\/get_all(\?)?(((limit=[0-9])|(page=[0-9]))?(\%26)?){2}$/, user.getAll);
     router.post("/", [validation.validateEmail, validation.validatePhoneNumber], user.createNew);
-    router.get("/:id", user.getOne);
+    router.get("/:id(\\d+)", user.getOne);
     router.put("/:id", [validation.validateEmail, validation.validatePhoneNumber], user.updateOne); 
     router.post("/:id/add_address", user.addAddress);
     router.patch("/:id/set_default_address", user.setDefaultAddress);

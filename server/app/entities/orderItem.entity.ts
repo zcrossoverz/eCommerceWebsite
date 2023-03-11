@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Order } from "./order.entity";
 import { InventoryInboundNote } from "./inventoryInboundNote.entity";
 import { ProductOption } from "./productOption.entity";
@@ -11,7 +11,9 @@ export class OrderItem {
     @Column()
     quantity!: number;
 
-    @OneToOne(() => ProductOption)
+    @ManyToOne(() => ProductOption, {
+        onDelete: "CASCADE"
+    })
     @JoinColumn({
         name: "product_option_id"
     })
@@ -22,7 +24,8 @@ export class OrderItem {
         () => Order,
         order => order.orderItems,
         {
-            nullable: true
+            nullable: true,
+            onDelete: "CASCADE"
         }
     )
     @JoinColumn({
@@ -34,7 +37,8 @@ export class OrderItem {
         () => InventoryInboundNote,
         inventory => inventory.orderItems,
         {
-            nullable: true
+            nullable: true,
+            onDelete: "CASCADE"
         }
     )
     @JoinColumn({

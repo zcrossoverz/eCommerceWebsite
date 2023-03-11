@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Order } from "./order.entity";
 
 @Entity("timelines")
 export class Timeline {
@@ -10,4 +11,14 @@ export class Timeline {
 
     @CreateDateColumn()
     time!: Date;
+
+    @ManyToOne(
+        () => Order,
+        order => order.timeline,
+        { onDelete:"CASCADE" }
+    )
+    @JoinColumn({
+        name: "order_id"
+    })
+    order!: Order;
 }

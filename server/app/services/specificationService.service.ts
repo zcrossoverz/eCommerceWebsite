@@ -30,8 +30,8 @@ export const create = async (
 export const deleteOne = async (id: number) => {
   const result = await specificationRepository.delete({ id });
   return result.affected
-    ? { msg: "delete success" }
-    : BadRequestError("option not found");
+    ? { msg: "success" }
+    : { msg: "failed" };
 };
 
 export const updateOne = async (id: number, data: SpecificationInterface) => {
