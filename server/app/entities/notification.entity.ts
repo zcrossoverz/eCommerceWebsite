@@ -3,10 +3,8 @@ import { User } from "./user.entity";
 
 
 export enum EnumTypeNotify {
-    "new_order",
-    "user_feedback",
-    "refund_request",
-    "order_delivered"
+    NEW_ORDER,
+    USER_FEEDBACK,
 }
 
 
