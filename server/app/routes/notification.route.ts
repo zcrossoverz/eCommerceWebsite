@@ -7,6 +7,8 @@ export const NotifyRoutes = (app: Express) => {
     const router = express.Router();
 
     router.post("/add", notification.addNewNoti);
+    router.get("/get_all/:user_id(\\d+)", notification.getAllNoti);
+    router.get("/get_unread/:user_id(\\d+)", notification.getUnreadNoti);
 
     app.use("/api/notification", router);
 }

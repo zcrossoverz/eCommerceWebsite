@@ -10,8 +10,8 @@ export enum EnumTypeNotify {
 
 @Entity("notifications")
 export class Notification {
-    @PrimaryGeneratedColumn("uuid")
-    id!: string;
+    @PrimaryGeneratedColumn()
+    id!: number;
 
     @Column()
     content!: string;
