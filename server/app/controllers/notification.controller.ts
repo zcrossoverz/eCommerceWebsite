@@ -8,3 +8,15 @@ export const addNewNoti = async (req: Request, res: Response, next: NextFunction
     const rs = await notificationServices.addNewNoti(type, id, Number(user_id));
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
 }
+
+export const getUnreadNoti = async (req: Request, res: Response, next: NextFunction) => {
+    const { user_id } = req.params;
+    const rs = await notificationServices.getNoti(Number(user_id), notificationServices.getType.UNREAD);
+    return isError(rs) ? next(err(rs, res)) : res.json(rs);
+}
+
+export const getAllNoti = async (req: Request, res: Response, next: NextFunction) => {
+    const { user_id } = req.params;
+    const rs = await notificationServices.getNoti(Number(user_id), notificationServices.getType.ALL);
+    return isError(rs) ? next(err(rs, res)) : res.json(rs);
+}

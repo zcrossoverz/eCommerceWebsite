@@ -9,3 +9,10 @@ export const selectMethod = async (req: Request, res: Response, next: NextFuncti
    const rs = await paymentServices.selectMethod(Number(order_id), method);
    return isError(rs) ? next(err(rs, res)) : res.json(rs);
 }
+
+
+export const updateStatusPayment = async (req: Request, res: Response, next: NextFunction) => {
+   const { order_id } = req.params;
+   const rs = await paymentServices.updateStatus(Number(order_id));
+   return isError(rs) ? next(err(rs, res)) : res.json(rs);
+}
