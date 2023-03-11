@@ -1,4 +1,5 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "./user.entity";
 
 
 export enum EnumTypeNotify {
@@ -31,6 +32,15 @@ export class Notification {
 
     @Column()
     is_done!: boolean;
+
+    @ManyToOne(
+        () => User,
+        user => user.notifications
+    )
+    @JoinColumn({
+        name: "user_id"
+    })
+    user!: User;
 
     @CreateDateColumn()
     time!: Date;

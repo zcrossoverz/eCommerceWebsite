@@ -7,6 +7,7 @@ import {
 } from "typeorm";
 import { Order } from "./order.entity";
 import { Address } from "./address.entity";
+import { Notification } from "./notification.entity";
 
 export enum UserRole {
   ADMIN = "admin",
@@ -80,5 +81,11 @@ export class User {
     default: 0
   })
   unread_message!: number;
+
+  @OneToMany(
+    () => Notification,
+    noti => noti.user
+  )
+  notifications!: Notification[];
 
 }

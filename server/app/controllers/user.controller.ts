@@ -1,67 +1,71 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import * as userServices from "../services/user.service";
+import { isError } from "../utils/error";
+import err from "../middlewares/error";
 
 
 
-export const getAll = async (req: Request, res: Response) => {
+export const getAll = async (req: Request, res: Response, next: NextFunction) => {
   const { limit = 10, page = 1 } = req.query;
-    const result = await userServices.getAll(Number(limit), Number(page));
-    return res.json(result);
+    const rs = await userServices.getAll(Number(limit), Number(page));
+    return isError(rs) ? next(err(rs, res)) : rs;
 }
 
 
-export const createNew = async (req: Request, res: Response) => {
+export const createNew = async (req: Request, res: Response, next: NextFunction) => {
   const { email, password, firstName, lastName, phone } = req.body;
-  const result = await userServices.create({
+  const rs = await userServices.create({
     email,
     password,
     firstName,
     lastName,
     phone,
   });
-  return res.json(result);
+  return isError(rs) ? next(err(rs, res)) : rs;
 };
 
-export const getOne = async (req: Request, res: Response) => {
+export const getOne = async (req: Request, res: Response, next: NextFunction) => {
     const user_id = Number(req.params.id);
-    const result = await userServices.getOne(user_id);
-    return res.json(result);
+    const rs = await userServices.getOne(user_id);
+    return isError(rs) ? next(err(rs, res)) : rs;
 };
 
-export const updateOne = async (req: Request, res: Response) => {
+export const updateOne = async (req: Request, res: Response, next: NextFunction) => {
     const { email, password, firstName, lastName, phone } = req.body;
     const { id } = req.params;
-    const result = await userServices.updateOne(Number(id), {email, password, firstName, lastName, phone});
-    return res.json(result);
+    const rs = await userServices.updateOne(Number(id), {email, password, firstName, lastName, phone});
+    return isError(rs) ? next(err(rs, res)) : rs;
 };
 
-export const deleteOne = async (req: Request, res: Response) => {
+export const deleteOne = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    const result = await userServices.deleteOne(Number(id));
-    return res.json(result);
+    const rs = await userServices.deleteOne(Number(id));
+    return isError(rs) ? next(err(rs, res)) : rs;
 };
 
-export const addAddress = async (req: Request, res: Response) => {
+export const addAddress = async (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params;
   const { address } = req.body;
-  const result = await userServices.addAddress(Number(id), address);
-  return res.json(result);
+  const rs = await userServices.addAddress(Number(id), address);
+  return isError(rs) ? next(err(rs, res)) : rs;
 };
 
-export const setDefaultAddress = async (req: Request, res: Response) => {
+export const setDefaultAddress = async (req: Request, res: Response, next: NextFunction) => {
   const { id } = req.params;
   const { id_address } = req.body;
-  const result = await userServices.setDefaultAddress(Number(id), Number(id_address));
-  return res.json(result);
+  const rs = await userServices.setDefaultAddress(Number(id), Number(id_address));
+  return isError(rs) ? next(err(rs, res)) : rs;
 };
 
-export const updateAddress = async (req: Request, res: Response) => {
+export const updateAddress = async (req: Request, res: Response, next: NextFunction) => {
   const { id_address, id_user } = req.params;
   const { address } = req.body;
-  return res.json(await userServices.updateAddress(Number(id_user), Number(id_address), address)); 
+  const rs = await userServices.updateAddress(Number(id_user), Number(id_address), address); 
+  return isError(rs) ? next(err(rs, res)) : rs;
 };
 
-export const deleteAddress = async (req: Request, res: Response) => {
+export const deleteAddress = async (req: Request, res: Response, next: NextFunction) => {
   const { id_address, id_user } = req.params;
-  return res.json(await userServices.deleteAddress(Number(id_user), Number(id_address)));
+  const rs = await userServices.deleteAddress(Number(id_user), Number(id_address));
+  return isError(rs) ? next(err(rs, res)) : rs;
 }

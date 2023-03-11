@@ -14,5 +14,6 @@ export const OrderRoutes = (app: Express) => {
     router.post("/select_payment_method/:order_id", payment.selectMethod);
     router.patch("/update_status_order/:order_id", order.updateStatusOrder);
     router.delete("/:order_id", order.deleteOrder);
+
     app.use("/api/order", router);
 }

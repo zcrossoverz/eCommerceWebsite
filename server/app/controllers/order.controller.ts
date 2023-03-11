@@ -1,28 +1,35 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import * as orderServices from "../services/order.service";
+import { isError } from "../utils/error";
+import err from "../middlewares/error";
 
-export const createOrder = async (req: Request, res: Response) => {
+export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
     const { user_id, items, address = null } = req.body;
-    return res.json(await orderServices.createOrder(Number(user_id), items, address));
+    const rs = await orderServices.createOrder(Number(user_id), items, address);
+    return isError(rs) ? next(err(rs, res)) : rs;
 }
 
-export const getOneOrder = async (req: Request, res: Response) => {
+export const getOneOrder = async (req: Request, res: Response, next: NextFunction) => {
     const { order_id } = req.params;
-    return res.json(await orderServices.getOneOrder(Number(order_id)));
+    const rs = await orderServices.getOneOrder(Number(order_id));
+    return isError(rs) ? next(err(rs, res)) : rs;
 }
 
-export const getAllOrder = async (req: Request, res: Response) => {
+export const getAllOrder = async (req: Request, res: Response, next: NextFunction) => {
     const { limit = 10, page = 1 } = req.query;
-    return res.json(await orderServices.getAllOrder(Number(limit), Number(page)));
+    const rs = await orderServices.getAllOrder(Number(limit), Number(page));
+    return isError(rs) ? next(err(rs, res)) : rs;
 }
 
-export const deleteOrder = async (req: Request, res: Response) => {
+export const deleteOrder = async (req: Request, res: Response, next: NextFunction) => {
     const { order_id } = req.params;
-    return res.json(await orderServices.deleteOrder(Number(order_id)));
+    const rs = await orderServices.deleteOrder(Number(order_id));
+    return isError(rs) ? next(err(rs, res)) : rs;
 }
 
-export const updateStatusOrder = async (req: Request, res: Response) => {
+export const updateStatusOrder = async (req: Request, res: Response, next: NextFunction) => {
     const { order_id } = req.params;
-    const { status } = req.body
-    return res.json(await orderServices.updateStatusOrder(Number(order_id), status));
+    const { status } = req.body;
+    const rs = await orderServices.updateStatusOrder(Number(order_id), status);
+    return isError(rs) ? next(err(rs, res)) : rs;
 }

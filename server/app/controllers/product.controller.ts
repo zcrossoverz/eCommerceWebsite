@@ -1,39 +1,40 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import * as productServices from "../services/product.service";
+import err from "../middlewares/error";
+import { BadRequestError, isError } from "../utils/error";
 
 
 
-export const getAll = async (req: Request, res: Response) => {
+export const getAll = async (req: Request, res: Response, next: NextFunction) => {
     const { limit = 10, page = 1 } = req.query;
-    return res.json(await productServices.getAll(Number(limit), Number(page)));   
+    const rs = await productServices.getAll(Number(limit), Number(page));   
+    return isError(rs) ? next(err(rs, res)) : rs;
 }
 
-export const create = async (req: Request, res: Response) => {
+export const create = async (req: Request, res: Response, next: NextFunction) => {
     const { name, description, ram, rom, color, price, brand_id } = req.body;
     const file = req.file;
-    if (!file) return res.json({msg: "image for product is required!"});
+    if (!file) return next(err(BadRequestError("image for product is required!")));
     const { path } = file;
-    return res.json(await productServices.create({ name, description }, { ram, rom, color, price }, path, brand_id));
+    const rs = await productServices.create({ name, description }, { ram, rom, color, price }, path, brand_id);
+    return isError(rs) ? next(err(rs, res)) : rs;
 }
 
-export const getOneById = async (req: Request, res: Response) => {
+export const getOneById = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    return res.json(await productServices.getOneById(Number(id)));
+    const rs = await productServices.getOneById(Number(id));
+    return isError(rs) ? next(err(rs, res)) : rs;
 }
 
-// export const addCategory = async (req: Request, res: Response) => {
-//     const { id } = req.params;
-//     const { brand_id } = req.body;
-//     return res.json(await productServices.addBrand(Number(id), brand_id));
-// }
-
-export const update = async (req: Request, res: Response) => {
+export const update = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
     const { name, description } = req.body;
-    return res.json(await productServices.update(Number(id), { name, description }));
+    const rs = await productServices.update(Number(id), { name, description });
+    return isError(rs) ? next(err(rs, res)) : rs;
 }
 
-export const deleteOne = async (req: Request, res: Response) => {
+export const deleteOne = async (req: Request, res: Response, next: NextFunction) => {
     const { id } = req.params;
-    return res.json(await productServices.deleteOne(Number(id)));
+    const rs = await productServices.deleteOne(Number(id));
+    return isError(rs) ? next(err(rs, res)) : rs;
 }
