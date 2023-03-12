@@ -7,13 +7,12 @@ import { LoginSchema, loginSchema } from 'src/utils/rulesValidateForm';
 import classNames from 'classnames';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation } from '@tanstack/react-query';
-import { loginAccount } from 'src/apis/auth.api';
+import authApi from 'src/apis/auth.api';
 import { toast } from 'react-toastify';
 import { AppContext } from 'src/contexts/app.context';
-import { useDispatch } from 'react-redux';
+import { isAxiosErr } from 'src/utils/error';
 type FormDataLogin = LoginSchema;
 function Login() {
-  const dispath = useDispatch();
   const { setIsAuth } = useContext(AppContext);
   const navigate = useNavigate();
   const {
@@ -24,7 +23,7 @@ function Login() {
     resolver: yupResolver(loginSchema),
   });
   const loginMutation = useMutation({
-    mutationFn: (body: FormDataLogin) => loginAccount(body),
+    mutationFn: (body: FormDataLogin) => authApi.loginAccount(body),
   });
   const onSubmit = handleSubmit((data) => {
     loginMutation.mutate(data, {
@@ -32,10 +31,11 @@ function Login() {
         if (data.data.token && data.data.message) {
           setIsAuth(true);
           navigate('/');
-        } else {
-          // show err với toast
-          toast.error(data.data.error);
-          // setError('email',{message:data.data.error,type:'Server'})
+        }
+      },
+      onError: (err) => {
+        if (isAxiosErr<{ error: string }>(err)) {
+          toast.error(err.response?.data.error);
         }
       },
     });
