@@ -16,7 +16,7 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
     const file = req.file;
     if (!file) return next(err(BadRequestError("image for product is required!"), res));
     const { path } = file;
-    const rs = await productServices.create({ name, description }, { ram, rom, color, price }, path, brand_id);
+    const rs = await productServices.create({ name, description }, { ram, rom, color, price }, path.replace(`public\\`,''), brand_id);
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
 }
 
