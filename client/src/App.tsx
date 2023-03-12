@@ -14,6 +14,8 @@ import path from './constants/path';
 import Banner from './components/banner';
 import AdminDashboard from './pages/admindashboard';
 import AdminRoute from './routes/adminroute';
+import ProductDetails from './components/productdetails';
+import ProductDetailsLayout from './layouts/productdetails';
 function App() {
   return (
     <div>
@@ -61,6 +63,14 @@ function App() {
         <Route path='' element={<AdminRoute />}>
           <Route path={path.admin} element={<AdminDashboard />} />
         </Route>
+        <Route
+          path={path.productDetails}
+          element={
+            <ProductDetailsLayout>
+              <ProductDetails />
+            </ProductDetailsLayout>
+          }
+        ></Route>
       </Routes>
       <ToastContainer></ToastContainer>
     </div>

@@ -18,6 +18,7 @@ import useClickOutSide from 'src/hooks/useClickOutSide';
 import { GrUserAdmin } from 'react-icons/gr';
 import { useDispatch } from 'react-redux';
 import { setUserInfor } from 'src/slices/user.slice';
+import logo from 'src/assets/logo.svg';
 
 function Header() {
   const { isAuth, setIsAuth } = useContext(AppContext);
@@ -42,7 +43,7 @@ function Header() {
       <nav className='border-gray-200 px-2 py-2.5 sm:px-4'>
         <div className='mx-auto flex max-w-7xl items-center justify-between'>
           <Link to={path.home} className='flex items-center md:min-w-[2rem] md:p-2'>
-            <img src='src/assets/logo.svg' className='mr-1 h-9' alt='Flowbite Logo' />
+            <img src={logo} className='mr-1 h-9' alt='Flowbite Logo' />
           </Link>
           {/* search input */}
           <form className='ml-2 flex-shrink md:min-w-[30rem]'>

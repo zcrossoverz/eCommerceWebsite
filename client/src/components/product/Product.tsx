@@ -7,11 +7,11 @@ interface Props {
 }
 function Product({ product }: Props) {
   return (
-    <Link to='/'>
+    <Link to={`/product/${product.id}`}>
       <div className='overflow-hidden rounded-lg bg-white p-2 shadow-sm transition-transform duration-300 hover:scale-105 hover:shadow-md'>
         <div className='relative w-full pt-[100%]'>
           <img
-            className='absolute top-0 left-0 h-full w-full object-cover'
+            className='absolute top-0 left-0 h-full w-full object-contain'
             src={'http://localhost:3000/' + product.images[0].image_url}
             alt=''
           />

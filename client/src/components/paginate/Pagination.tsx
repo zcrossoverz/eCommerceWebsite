@@ -63,10 +63,13 @@ function Pagination({ pageSize, queryConfig }: Props) {
               }).toString(),
             }}
             key={index}
-            className={classNames('mx-2 cursor-pointer rounded border bg-white px-3 py-2 shadow-sm', {
-              'border-cyan-500': pageNumber === page,
-              'border-transparent': pageNumber !== page,
-            })}
+            className={classNames(
+              'mx-2 min-w-[2.4rem] cursor-pointer rounded border bg-white px-3 py-2 text-center shadow-sm',
+              {
+                'border-cyan-500': pageNumber === page,
+                'border-transparent': pageNumber !== page,
+              }
+            )}
           >
             {pageNumber}
           </Link>
@@ -104,7 +107,7 @@ function Pagination({ pageSize, queryConfig }: Props) {
               page: (page + 1).toString(),
             }).toString(),
           }}
-          className='mx-2 cursor-pointer rounded border bg-white px-3 py-2  shadow-sm'
+          className='mx-2 cursor-pointer rounded border bg-white px-3 py-2 shadow-sm'
         >
           Next
         </Link>

@@ -4,11 +4,16 @@ import productsApi from 'src/apis/product.api';
 import Pagination from 'src/components/paginate';
 import Product from 'src/components/product';
 import useQueryParams from 'src/hooks/useQueryParams';
+import { ProductListConfig } from 'src/types/product.type';
 import AsignFillter from './asignfilter';
 import SortProduct from './sortlist';
 
 function ProductList() {
-  const queryParams = useQueryParams();
+  const query = useQueryParams();
+  const queryParams: ProductListConfig = {
+    page: query.page ? query.page : '1',
+    limit: query.limit ? query.limit : '10',
+  };
   const { data: products } = useQuery({
     queryKey: ['products', queryParams],
     queryFn: () => productsApi.getProductsList(queryParams),

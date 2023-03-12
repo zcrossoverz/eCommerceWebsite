@@ -32,6 +32,6 @@ export interface ProductsList {
 }
 
 export interface ProductListConfig {
-  limit?: number;
-  page?: number;
+  limit?: string;
+  page?: string;
 }

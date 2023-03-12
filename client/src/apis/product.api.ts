@@ -7,7 +7,7 @@ const productsApi = {
       params,
     });
   },
-  getProductDetail(id: number | string) {
+  getProductDetail(id: string) {
     return http.get<Product>(`${URL}/${id}`);
   },
 };
