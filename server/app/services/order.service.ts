@@ -185,7 +185,6 @@ export const getOneOrder = async (order_id: number) => {
     payment: {
       method: EnumPaymentMethod[method],
       ...payment,
-      x: rs.payment,
     },
     timeline: rs.timeline,
   };

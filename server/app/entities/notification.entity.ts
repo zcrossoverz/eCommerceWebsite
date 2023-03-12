@@ -1,18 +1,17 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { User } from "./user.entity";
 
 
 export enum EnumTypeNotify {
-    "new_order",
-    "user_feedback",
-    "refund_request",
-    "order_delivered"
+    NEW_ORDER,
+    USER_FEEDBACK,
 }
 
 
 @Entity("notifications")
 export class Notification {
-    @PrimaryGeneratedColumn("uuid")
-    id!: string;
+    @PrimaryGeneratedColumn()
+    id!: number;
 
     @Column()
     content!: string;
@@ -29,8 +28,14 @@ export class Notification {
     })
     is_read!: boolean;
 
-    @Column()
-    is_done!: boolean;
+    @ManyToOne(
+        () => User,
+        user => user.notifications
+    )
+    @JoinColumn({
+        name: "user_id"
+    })
+    user!: User;
 
     @CreateDateColumn()
     time!: Date;
