@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
 import { BsCart, BsSearch, BsTelephoneForward } from 'react-icons/bs';
+import { GoDiffRenamed } from 'react-icons/go';
 import classNames from 'classnames';
 import { FiSettings } from 'react-icons/fi';
 import { BiHelpCircle, BiLogIn, BiShoppingBag } from 'react-icons/bi';
@@ -11,28 +12,37 @@ import jwtDecode from 'jwt-decode';
 import { UserInfo } from 'src/types/user.type';
 import { pick } from 'lodash';
 import path from 'src/constants/path';
+import { RiUserSettingsLine } from 'react-icons/ri';
+import TempletePopover from '../popover/TempletePopover';
+import useClickOutSide from 'src/hooks/useClickOutSide';
+import { GrUserAdmin } from 'react-icons/gr';
+import { useDispatch } from 'react-redux';
+import { setUserInfor } from 'src/slices/user.slice';
+
 function Header() {
   const { isAuth, setIsAuth } = useContext(AppContext);
   const [showMenuUser, setShowMenuUser] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useState<UserInfo>();
+  const dispath = useDispatch();
   useEffect(() => {
     const token = getAccessToken();
     if (token) {
       const user = pick(jwtDecode(token), ['firstName', 'lastName', 'role']);
       setUserInfo(user as UserInfo);
+      dispath(setUserInfor(user as UserInfo));
     } else {
       setUserInfo(undefined);
     }
-  }, [isAuth]);
+  }, [isAuth, dispath]);
+  const { nodeRef } = useClickOutSide(() => {
+    setShowMenuUser(false);
+  });
   return (
     <header className='relative top-0 left-0 right-0 z-10 bg-orange-600 text-white shadow-md dark:bg-gray-900'>
       <nav className='border-gray-200 px-2 py-2.5 sm:px-4'>
         <div className='mx-auto flex max-w-7xl items-center justify-between'>
-          <Link to={path.home} className='flex items-center'>
-            <img src='https://flowbite.com/docs/images/logo.svg' className='mr-1 h-9' alt='Flowbite Logo' />
-            <span className='hidden self-center whitespace-nowrap font-semibold dark:text-white md:block md:text-xl'>
-              Fstore
-            </span>
+          <Link to={path.home} className='flex items-center md:min-w-[2rem] md:p-2'>
+            <img src='src/assets/logo.svg' className='mr-1 h-9' alt='Flowbite Logo' />
           </Link>
           {/* search input */}
           <form className='ml-2 flex-shrink md:min-w-[30rem]'>
@@ -57,46 +67,43 @@ function Header() {
             </div>
           </div>
           <div className='flex items-center justify-between md:min-w-[8rem]'>
-            <button className='ml-1 block h-10 w-10 rounded-[50%] p-2 text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600'>
-              <BsCart className='h-6 w-6 text-black' />
-            </button>
-            <div className='relative flex'>
+            <TempletePopover />
+            <div className='relative flex' ref={nodeRef}>
               <button
                 onClick={() => {
                   setShowMenuUser(!showMenuUser);
                 }}
                 type='button'
-                className='ml-1 flex h-10 w-10 items-center rounded-[50%] p-1 text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600'
+                className='group ml-1 flex h-10 w-10 items-center justify-center rounded-[50%] duration-300 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600'
               >
-                <img
-                  className='h-full w-full rounded-[50%] object-cover'
-                  src='https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YXZhdGFyfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=600&q=60'
-                  alt=''
-                />
+                <RiUserSettingsLine className='text-3xl text-white group-hover:text-orange-600 group-focus:text-orange-600' />
               </button>
               {/* menu user */}
               <AnimatePresence>
                 {showMenuUser && (
                   <motion.div
-                    className={classNames('absolute top-14 right-0 w-[300px] rounded-lg bg-slate-100 px-4 py-1 ')}
+                    className={classNames('absolute top-14 right-0 w-[300px] rounded-lg bg-slate-300 px-4 py-1 ')}
                     initial={{ opacity: 0, transform: 'scale(0)' }}
                     animate={{ opacity: 1, transform: 'scale(1)' }}
                     exit={{ opacity: 0, transform: 'scale(0)' }}
                     transition={{ duration: 0.2 }}
                   >
+                    {/* triangle up */}
+                    <div className='absolute -top-[12px] right-2 h-0 w-0 border-l-[10px] border-b-[15px] border-r-[10px] border-l-transparent border-b-slate-300 border-r-transparent'></div>
+
                     {isAuth && userInfo && (
                       <div className='flex items-center border-b py-2'>
-                        <div>
-                          <img
-                            className='mr-2 h-8 w-8 rounded-[50%] object-cover md:mr-4'
-                            src='https://images.unsplash.com/photo-1599566150163-29194dcaad36?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8NHx8YXZhdGFyfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=600&q=60'
-                            alt=''
-                          />
-                        </div>
-                        <span className='text-base'>{`${userInfo.firstName} ${userInfo.lastName}`}</span>
+                        <GoDiffRenamed className='mr-4 text-lg text-black' />
+                        <span className='text-lg font-semibold text-gray-700'>{`${userInfo.firstName} ${userInfo.lastName}`}</span>
                       </div>
                     )}
                     <ul className='flex flex-col pb-2'>
+                      <li className='nav-item mt-4'>
+                        <Link to='/admin' className='flex items-center'>
+                          <GrUserAdmin className='mr-4 text-lg' />
+                          <span>Admin Dashboard</span>
+                        </Link>
+                      </li>
                       <li className='nav-item mt-4'>
                         <Link to='/profile' className='flex items-center'>
                           <FiSettings className='mr-4 text-lg' />
@@ -123,6 +130,7 @@ function Header() {
                             onClick={() => {
                               setIsAuth(false);
                               clearAccessToken();
+                              dispath(setUserInfor({ firstName: '', lastName: '', role: '' }));
                             }}
                             className='flex items-center'
                           >

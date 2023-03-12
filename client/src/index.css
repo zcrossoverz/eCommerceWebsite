@@ -12,4 +12,7 @@
   .nav-item {
     @apply block cursor-pointer rounded border-0 py-2 pl-3 pr-4 text-lg text-gray-700 hover:bg-gray-100 hover:bg-transparent hover:text-blue-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:bg-transparent dark:hover:text-white md:p-0;
   }
+  .btn-slide {
+    @apply absolute top-[50%] hidden -translate-x-0 translate-y-[-50%] cursor-pointer rounded-full bg-black/20 p-2 text-2xl text-white group-hover:block;
+  }
 }

@@ -24,15 +24,15 @@ class Http {
           clearAccessToken();
         }
         return res;
-      },
-      function (err: AxiosError) {
-        if (err.response?.status !== 422) {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const data: any = err.response?.data;
-          const message = data.message || err.message;
-          toast.error(message);
-        }
       }
+      // function (err: AxiosError) {
+      //   if (err.response?.status !== 422) {
+      //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      //     const data: any = err.response?.data;
+      //     const message = data.message || err.message;
+      //     toast.error(message);
+      //   }
+      // }
     );
   }
 }

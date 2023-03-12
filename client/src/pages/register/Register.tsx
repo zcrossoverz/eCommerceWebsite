@@ -2,21 +2,26 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { AiOutlineMail, AiOutlineGoogle, AiOutlineLock, AiFillEyeInvisible, AiFillEye } from 'react-icons/ai';
 import { FaFacebookF, FaLinkedinIn } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { schema, Schema } from 'src/utils/rulesValidateForm';
 import classNames from 'classnames';
 import { useMutation } from '@tanstack/react-query';
-import { registerAccount } from 'src/apis/auth.api';
 import { omit } from 'lodash';
+import { toast } from 'react-toastify';
+import path from 'src/constants/path';
+import authApi from 'src/apis/auth.api';
+import { isAxiosErr } from 'src/utils/error';
 type FormDataRegister = Schema;
 function Register() {
+  const navigate = useNavigate();
   const registerAccountMutation = useMutation({
-    mutationFn: (body: Omit<FormDataRegister, 'confirmPassword'>) => registerAccount(body),
+    mutationFn: (body: Omit<FormDataRegister, 'confirmPassword'>) => authApi.registerAccount(body),
   });
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<FormDataRegister>({
     resolver: yupResolver(schema),
@@ -24,8 +29,19 @@ function Register() {
   const onSubmit = handleSubmit((data) => {
     const body = omit(data, ['confirmPassword']);
     registerAccountMutation.mutate(body, {
-      onSuccess: (data) => {
-        console.log(data);
+      onSuccess: () => {
+        toast.success('Tạo tài khoản thành công');
+        reset();
+        navigate(path.login);
+      },
+      onError: (err) => {
+        if (
+          isAxiosErr<{
+            error: string;
+          }>(err)
+        ) {
+          toast.error(err.response?.data.error);
+        }
       },
     });
   });
