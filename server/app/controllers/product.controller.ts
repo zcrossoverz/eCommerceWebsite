@@ -38,3 +38,10 @@ export const deleteOne = async (req: Request, res: Response, next: NextFunction)
     const rs = await productServices.deleteOne(Number(id));
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
 }
+
+export const addImages = async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params;
+    const files = req.files as Express.Multer.File[];
+    const rs = await productServices.addImages(Number(id), files.map(e => e.path.replace('public\\', '')));
+    return isError(rs) ? next(err(rs, res)) : res.json(rs);
+}

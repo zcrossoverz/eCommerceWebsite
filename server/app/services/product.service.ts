@@ -124,7 +124,6 @@ export const create = async (
       new_image: newImage,
     };
   }
-
   return BadRequestError("missing information!");
 };
 
@@ -179,4 +178,19 @@ export const update = async (id: number, product: ProductInterface) => {
 
 export const deleteOne = async (id: number) => {
   return (await productRepository.delete({ id })).affected ? success() : failed();
+};
+
+export const addImages = async (order_id: number, image: string[]) => {
+  const imageRepo = AppDataSource.getRepository(Image);
+  const product = await productRepository.findOneBy({id:order_id});
+  if(!product) return BadRequestError("product not found");
+  if(!image.length) return BadRequestError("image empty");
+  const rs = await Promise.all(image.map(e => {
+    return imageRepo.save(imageRepo.create({
+      type: EnumTypeImage.desc,
+      image_url: e,
+      product: product
+    }));
+  }));
+  return rs;
 }

@@ -9,7 +9,8 @@ const storage = multer.diskStorage({
         next(null, path_upload);
     },
     filename: (req, file, next) => { 
-        next(null, `${time.getDay()}_${time.getHours()}_${time.getMinutes()}-${file.originalname}`);
+        if(file.mimetype == "image/png" || file.mimetype == "image/jpg" || file.mimetype == "image/jpeg") next(null, `${time.getDay()}_${time.getHours()}_${time.getMinutes()}-${file.originalname}`);
+        else next(new Error("file extension is not valid"), "");
     }
 });
 
