@@ -1,6 +1,7 @@
 import { AppDataSource } from "../database";
 import { Specification } from "../entities/specification.entity";
 import { BadRequestError } from "../utils/error";
+import { failed, success } from "../utils/response";
 import { productRepository } from "./product.service";
 
 const specificationRepository = AppDataSource.getRepository(Specification);
@@ -30,12 +31,12 @@ export const create = async (
 export const deleteOne = async (id: number) => {
   const result = await specificationRepository.delete({ id });
   return result.affected
-    ? { msg: "success" }
-    : { msg: "failed" };
+    ? success()
+    : failed();
 };
 
 export const updateOne = async (id: number, data: SpecificationInterface) => {
   const spec = await specificationRepository.findOneBy({ id });
   if (!spec) return BadRequestError("option not found");
-  return await specificationRepository.update({ id }, { ...data });
+  return (await specificationRepository.update({ id }, { ...data })).affected ? success() : failed();
 };

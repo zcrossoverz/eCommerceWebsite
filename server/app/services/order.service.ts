@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { AppDataSource } from "../database";
+import { EnumTypeNotify } from "../entities/notification.entity";
 import { EnumStatusOrder, Order } from "../entities/order.entity";
 import { OrderItem } from "../entities/orderItem.entity";
 import { EnumPaymentMethod, Payment } from "../entities/payment.entity";
@@ -7,7 +8,10 @@ import { ProductOption } from "../entities/productOption.entity";
 import { Timeline } from "../entities/timeline.entity";
 import { User } from "../entities/user.entity";
 import { BadRequestError } from "../utils/error";
-import { decreaseStock } from "./inventory.service";
+import { failed, success } from "../utils/response";
+import { decreaseStock, increaseStock } from "./inventory.service";
+import { addNewNoti } from "./notification.service";
+import { markAsPaid } from "./payment.service";
 
 interface data_order {
   product_option_id: number;
@@ -21,11 +25,11 @@ interface item_order {
 }
 
 enum EnumTimelineStatus {
-  ORDER_INIT = "Thank you for placing your order with us! We have received your order and are preparing to fulfill it.",
-  ORDER_PROCESSING = "Your order is currently being processed. Our team is working diligently to ensure everything is just right.",
-  ORDER_PACKAGED = "Great news! Your order has been packaged and is ready for shipping.",
-  ORDER_SHIPPED = "Your order has been shipped and is on its way to you. We will send you tracking information as soon as it is available.",
-  ORDER_DELIVERED = "Your order has been delivered! We hope you love your purchase and look forward to serving you again in the future.",
+  ORDER_INIT = "Đã đặt hàng",
+  ORDER_PROCESSING = "Đã được tiếp nhận và xử lý",
+  ORDER_SHIPPED = "Đã bàn giao cho đơn vị vận chuyển.",
+  ORDER_DELIVERED = "Giao hàng thành công",
+  ORDER_CANCELLED = "Đơn hàng đã hủy"
 }
 
 export const createOrder = async (
@@ -254,14 +258,22 @@ export const getAllOrder = async (limit: number, page: number) => {
 export const deleteOrder = async (order_id: number) => {
   const OrderRepo = AppDataSource.getRepository(Order);
   return (await OrderRepo.delete({ id: order_id })).affected
-    ? { msg: "success" }
-    : { msg: "failed" };
+    ? success()
+    : failed();
 };
+
+const addTimeline = async (order: Order, message: string) => {
+  const timelineRepo = AppDataSource.getRepository(Timeline);
+  return await timelineRepo.save(timelineRepo.create({
+    content: message,
+    order: order
+  }));
+}
 
 // PENDING  has been placed but hasn't yet been confirm or process - da ghi nhan don dat hang nhung chua duoc xu ly
 // PROCESSING  in the process of being fulfilled and the necessary steps are being taken to get it shipped - dang xu ly
 // SHIPPED  on the way to the customer - dang giao hang
-// COMPLETE  the order has been successfully completed, customer received their product - don hang giao thanh cong, khach hang nhan duoc san pham
+// COMPLETED  the order has been successfully completed, customer received their product - don hang giao thanh cong, khach hang nhan duoc san pham
 // CANCELLED  cancelled by customer or seller - don hang bi huy
 // RETURNED  customer has returned or exchange - khach hang huy don hoac doi hang
 
@@ -296,19 +308,46 @@ export const updateStatusOrder = async (
         return BadRequestError("Error");
       }
       case String(EnumStatusOrder.PROCESSING): {
-        return await orderRepo.update({ id: order.id }, { status: Number(EnumStatusOrder[status]) });
+        if(order.status === EnumStatusOrder.PENDING) {
+          if(order.payment.is_paid || order.payment.method === EnumPaymentMethod.CASH_ON_DELIVERY){
+            await addTimeline(order, EnumTimelineStatus.ORDER_PROCESSING);
+            await addNewNoti(EnumTypeNotify.NEW_ORDER, order.id, order.user.id);
+            return (await orderRepo.update({ id: order.id }, { status: Number(EnumStatusOrder[status])})).affected ? success() : failed();
+          }
+          return BadRequestError("this order has not been paid yet");
+        }
+        return BadRequestError("error when update status");
       }
       case String(EnumStatusOrder.SHIPPED): {
-        return await orderRepo.update({ id: order.id }, { status: Number(EnumStatusOrder[status]) });
+        if(order.status === EnumStatusOrder.PROCESSING){
+          await addTimeline(order, EnumTimelineStatus.ORDER_SHIPPED);
+          await addNewNoti(EnumTypeNotify.SHIPPED, order.id, order.user.id);
+          return (await orderRepo.update({ id: order.id }, { status: Number(EnumStatusOrder[status])})).affected ? success() : failed();
+        }
+        return BadRequestError("error when update status");
       }
-      case String(EnumStatusOrder.COMPLETE): {
-        return await orderRepo.update({ id: order.id }, { status: Number(EnumStatusOrder[status]) });
+      case String(EnumStatusOrder.COMPLETED): {
+        if(order.status === EnumStatusOrder.SHIPPED) {
+          if(order.payment.method === EnumPaymentMethod.CASH_ON_DELIVERY) await markAsPaid(order.payment);
+          await addTimeline(order, EnumTimelineStatus.ORDER_DELIVERED);
+          await addNewNoti(EnumTypeNotify.COMPLETED, order.id, order.user.id);
+          return (await orderRepo.update({ id: order.id }, { status: Number(EnumStatusOrder[status])})).affected ? success() : failed();
+        }
+        return BadRequestError("error when update status");
       }
       case String(EnumStatusOrder.CANCELLED): {
-        return await orderRepo.update({ id: order.id }, { status: Number(EnumStatusOrder[status]) });
+        if(order.status === EnumStatusOrder.PENDING){
+          await addTimeline(order, EnumTimelineStatus.ORDER_CANCELLED);
+          await addNewNoti(EnumTypeNotify.CANCELLED, order.id, order.user.id);
+        order.orderItems.map(async e => {
+          await increaseStock(e.product_option.id, e.quantity);
+        });
+        return (await orderRepo.update({ id: order.id }, { status: Number(EnumStatusOrder[status])})).affected ? success() : failed();
+        }
+        return BadRequestError("error when update status");
       }
       case String(EnumStatusOrder.RETURNED): {
-        return await orderRepo.update({ id: order.id }, { status: Number(EnumStatusOrder[status]) });
+        return (await orderRepo.update({ id: order.id }, { status: Number(EnumStatusOrder[status])})).affected ? success() : failed();
       }
     }
     return;

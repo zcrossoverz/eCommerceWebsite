@@ -10,6 +10,7 @@ export const OrderRoutes = (app: Express) => {
 
     router.post("/create_order", order.createOrder);
     router.get("/get_order/:order_id", order.getOneOrder);
+    router.get("/get_status/:order_id", order.getStatusOrder);
     router.get(/^\/get_all(\?)?(((limit=[0-9])|(page=[0-9]))?(\%26)?){2}$/, order.getAllOrder);
     router.post("/select_payment_method/:order_id", payment.selectMethod);
     router.patch("/update_status_order/:order_id", order.updateStatusOrder);

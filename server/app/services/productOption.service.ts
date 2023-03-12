@@ -3,6 +3,7 @@ import { Price } from "../entities/price.entity";
 import { ProductOption } from "../entities/productOption.entity";
 import { Warehouse } from "../entities/warehouse.entity";
 import { BadRequestError } from "../utils/error";
+import { failed, success } from "../utils/response";
 import { productRepository } from "./product.service";
 
 const productOptionRepository = AppDataSource.getRepository(ProductOption);
@@ -53,8 +54,8 @@ export const create = async (
 export const deleteOne = async (id: number) => {
   const result = await productOptionRepository.delete({ id });
   return result.affected
-    ? { msg: "success" }
-    : { msg: "failed" };
+    ? success()
+    : failed();
 };
 
 export const updateOne = async (id: number, data: ProductOptionInterface) => {
@@ -93,7 +94,7 @@ export const updateStock = async (id: number, quantity: number) => {
   });
   if (!option) return BadRequestError("option not found");
   const warehouseRepo = AppDataSource.getRepository(Warehouse);
-  return await warehouseRepo.update({ id: option.warehouse.id}, { quantity });
+  return (await warehouseRepo.update({ id: option.warehouse.id}, { quantity })).affected ? success() : failed();
 };
 
 

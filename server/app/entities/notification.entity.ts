@@ -3,8 +3,12 @@ import { User } from "./user.entity";
 
 
 export enum EnumTypeNotify {
+    EMPTY,
     NEW_ORDER,
     USER_FEEDBACK,
+    SHIPPED,
+    COMPLETED,
+    CANCELLED
 }
 
 
@@ -30,7 +34,10 @@ export class Notification {
 
     @ManyToOne(
         () => User,
-        user => user.notifications
+        user => user.notifications,
+        {
+            onDelete:"CASCADE"
+        }
     )
     @JoinColumn({
         name: "user_id"
