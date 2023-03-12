@@ -34,4 +34,6 @@ node_modules/
 # .env
 .env
 
+public/uploads/
+
 uploads/

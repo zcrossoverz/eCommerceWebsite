@@ -1,5 +1,5 @@
 import { AppDataSource } from "../database"
-import { Order } from "../entities/order.entity"
+import { EnumStatusOrder, Order } from "../entities/order.entity"
 import { EnumPaymentMethod, Payment } from "../entities/payment.entity";
 import { BadRequestError } from "../utils/error";
 import { failed, success } from "../utils/response";
@@ -18,7 +18,7 @@ export const selectMethod = async (order_id: number, method: EnumPaymentMethod) 
     if(!order) return BadRequestError("order not found");
     const payment = await paymentRepo.findOneBy({ id: order.payment.id });
     if(!payment) return BadRequestError("payment data error");
-    return await paymentRepo.update({ id: order.payment.id }, { method: Number(EnumPaymentMethod[method]) }) ? { msg: "success" } : { msg: "failed" };
+    return await paymentRepo.update({ id: order.payment.id }, { method: Number(EnumPaymentMethod[method]) }) ? success() : failed();
 
 }
 
@@ -32,6 +32,7 @@ export const updateStatus = async (order_id: number) => {
         }
     });
     if(!order) return BadRequestError("order not found");
+    if(order.status !== EnumStatusOrder.PENDING) return BadRequestError("payment error");
     return await markAsPaid(order.payment);
     
 }
