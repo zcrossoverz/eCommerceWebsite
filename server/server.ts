@@ -19,6 +19,7 @@ AppDataSource.initialize()
     // setup middleware
     app.use(cors());
     app.use(express.json());
+    app.use(express.static('public'));
     app.use(bodyParser.urlencoded({ extended:true }));
     app.use(passport.initialize());
 
