@@ -3,6 +3,7 @@ import { Brand } from "./brand.entity";
 import { Specification } from "./specification.entity";
 import { Image } from "./image.entity";
 import { ProductOption } from "./productOption.entity";
+import { Feedback } from "./feedback.entity";
 
 @Entity("products")
 export class Product {
@@ -27,7 +28,10 @@ export class Product {
 
     @ManyToOne(
         () => Brand,
-        brand => brand.products
+        brand => brand.products,
+        {
+            onDelete: "CASCADE"
+        }
     )
     @JoinColumn({
         name:"brand_id"
@@ -52,5 +56,11 @@ export class Product {
         productOption => productOption.product
     )
     productOptions!: ProductOption[];
+
+    @OneToMany(
+        () => Feedback,
+        feedback => feedback.product
+    )
+    feedbacks!: Feedback[];
 
 }

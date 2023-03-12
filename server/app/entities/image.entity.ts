@@ -5,7 +5,8 @@ import { User } from "./user.entity";
 export enum EnumTypeImage {
     avatar = "avatar", // avatar user
     thumbnail = "thumbnail", // thumbnail
-    options = "options" // options of product
+    options = "options", // options of product,
+    desc = "desc"
 }
 
 @Entity("images")

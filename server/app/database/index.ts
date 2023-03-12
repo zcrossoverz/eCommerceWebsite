@@ -14,7 +14,7 @@ import { CouponCondition } from "../entities/couponCondition.entity";
 import { Payment } from "../entities/payment.entity";
 import { Warehouse } from "../entities/warehouse.entity";
 import { OrderHistory } from "../entities/orderHistory.entity";
-import { Review } from "../entities/review.entity";
+import { Feedback } from "../entities/feedback.entity";
 import { Price } from "../entities/price.entity";
 import { PriceHistory } from "../entities/priceHistoty.entity";
 import { InventoryInboundNote } from "../entities/inventoryInboundNote.entity";
@@ -47,7 +47,7 @@ export const AppDataSource = new DataSource({
     Payment,
     Warehouse,
     OrderHistory,
-    Review,
+    Feedback,
     Price,
     PriceHistory,
     InventoryInboundNote,

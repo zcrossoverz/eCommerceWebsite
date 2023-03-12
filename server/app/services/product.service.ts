@@ -24,7 +24,8 @@ export const getAll = async (limit: number, page: number) => {
       productOptions: {
         price: true
       },
-      brand: true
+      brand: true,
+      feedbacks: true
     },
     take: limit,
     skip: offset
@@ -44,6 +45,7 @@ export const getAll = async (limit: number, page: number) => {
         description: e.description,
         images: e.images,
         brand: e.brand.name,
+        rate: e.feedbacks.length ? (e.feedbacks.reduce((acc, cur) => acc + cur.rate, 0)/e.feedbacks.length).toFixed(1) : 0 ,
         product_options: e.productOptions.map(el => {
           return {
             product_option_id: el.id,
@@ -124,7 +126,6 @@ export const create = async (
       new_image: newImage,
     };
   }
-
   return BadRequestError("missing information!");
 };
 
@@ -141,6 +142,7 @@ export const getOneById = async (id: number) => {
         price: true,
         warehouse: true
       },
+      feedbacks: true
     },
   });
   return product ? {
@@ -151,6 +153,12 @@ export const getOneById = async (id: number) => {
     updateAt: product.updateAt,
     brand: product.brand.name,
     brand_description: product.brand.description,
+    rate: product.feedbacks.length ? (product.feedbacks.reduce((acc, cur) => acc + cur.rate, 0)/product.feedbacks.length).toFixed(1) : 0 ,
+    feedback: product.feedbacks.map(e => {
+      return {
+        ...e
+      }
+    }),
     specs: product.specifications.map(e => { 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id, ...rest } = e;
@@ -179,4 +187,19 @@ export const update = async (id: number, product: ProductInterface) => {
 
 export const deleteOne = async (id: number) => {
   return (await productRepository.delete({ id })).affected ? success() : failed();
+};
+
+export const addImages = async (order_id: number, image: string[]) => {
+  const imageRepo = AppDataSource.getRepository(Image);
+  const product = await productRepository.findOneBy({id:order_id});
+  if(!product) return BadRequestError("product not found");
+  if(!image.length) return BadRequestError("image empty");
+  const rs = await Promise.all(image.map(e => {
+    return imageRepo.save(imageRepo.create({
+      type: EnumTypeImage.desc,
+      image_url: e,
+      product: product
+    }));
+  }));
+  return rs;
 }
