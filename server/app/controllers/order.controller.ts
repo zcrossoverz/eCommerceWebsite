@@ -33,3 +33,14 @@ export const updateStatusOrder = async (req: Request, res: Response, next: NextF
     const rs = await orderServices.updateStatusOrder(Number(order_id), status);
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
 }
+
+export const getStatusOrder =async (req: Request, res: Response, next: NextFunction) => {
+    const { order_id } = req.params;
+    const order = await orderServices.getOneOrder(Number(order_id));
+    if(isError(order)) return next(err(order, res));
+    return res.json({
+        status: order.status,
+        payment: order.payment.method,
+        is_paid: order.payment.is_paid,
+    });
+}

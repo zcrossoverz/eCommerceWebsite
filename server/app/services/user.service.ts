@@ -4,6 +4,7 @@ import { User } from "../entities/user.entity";
 import { BadRequestError, ErrorInterface } from "../utils/error";
 import bcryptjs from "bcryptjs";
 import { Address } from "../entities/address.entity";
+import { failed, success } from "../utils/response";
 
 enum UserRole {
   ADMIN = "admin",
@@ -167,8 +168,7 @@ export const setDefaultAddress = async (id_user: number, id_addr: number) => {
   });
   if(!user) return BadRequestError("user not found!");
   if(user.address.find(({ id }) => id === id_addr)) {
-    await userRepository.update({ id: id_user }, { default_address: id_addr });
-    return { msg: "success" };
+    return (await userRepository.update({ id: id_user }, { default_address: id_addr })).affected ? success() : failed();
   }
   return BadRequestError("id address not found");
 };
@@ -185,7 +185,7 @@ export const updateAddress = async (id_user: number, id_addr: number, addr: stri
   if(!address) return BadRequestError("address not found");
   if(address.user.id !== id_user) return BadRequestError("you dont have this address id");
   if(!addr) return BadRequestError("address empty");
-  return await addressRepository.update({id: id_addr}, { address: addr })
+  return (await addressRepository.update({id: id_addr}, { address: addr })).affected ? success() : failed();
 };
 
 export const deleteAddress = async (id_user:number, id_addr: number) => {
@@ -214,6 +214,6 @@ export const deleteAddress = async (id_user:number, id_addr: number) => {
     }
     index++;
   }
-  if(deleted) return { msg: "success" };
+  if(deleted) return success();
   else return BadRequestError("you dont have this address id");
 }

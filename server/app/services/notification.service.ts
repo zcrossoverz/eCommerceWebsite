@@ -13,10 +13,22 @@ const userRepo = AppDataSource.getRepository(User);
 
 const generateContent = async (type: EnumTypeNotify, id: number) => {
     
-    switch (Number(EnumTypeNotify[type])){
+    switch (Number(type)){
         case EnumTypeNotify.NEW_ORDER: {
             const order = await orderRepo.findOneBy({ id });
             return `Cám ơn bạn đã đặt hàng, mã đơn hàng của bạn là #${order?.id}. Chúng tôi sẽ xử lý sớm nhất có thể.`;
+        }
+        case EnumTypeNotify.SHIPPED: {
+            const order = await orderRepo.findOneBy({ id });
+            return `Đơn hàng #${order?.id} của bạn đã được bàn giao cho đơn vị vận chuyển.`;
+        }
+        case EnumTypeNotify.COMPLETED: {
+            const order = await orderRepo.findOneBy({ id });
+            return `Đơn hàng #${order?.id} đã được giao thành công, hãy để lại đánh giá nào.`;
+        }
+        case EnumTypeNotify.CANCELLED: {
+            const order = await orderRepo.findOneBy({ id });
+            return `Chúng tôi đã hủy đơn hàng #${order?.id} của bạn.`;
         }
     }
     return;

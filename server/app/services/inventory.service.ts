@@ -11,6 +11,7 @@ import { OrderItem } from "../entities/orderItem.entity";
 import { ProductOption } from "../entities/productOption.entity";
 import { Warehouse } from "../entities/warehouse.entity";
 import { BadRequestError } from "../utils/error";
+import { success } from "../utils/response";
 
 const warehouseRepo = AppDataSource.getRepository(Warehouse);
 const productOptionRepo = AppDataSource.getRepository(ProductOption);
@@ -169,18 +170,16 @@ export const processInboundNote = async (id: number, accept: boolean) => {
             note.orderItems.forEach(async e => {
                 await increaseStock(e.product_option.id, e.quantity);
             });
-            return {
-                msg: "success"
-            };
+            return success();
         }else{
             await inventoryNoteRepo.update({ id }, { status: EnumInventoryInboundStatus.CANCELLED });
             return {
-                msg: "rejected"
+                message: "rejected"
             }
         }
     }
     return {
-        msg: "item has been processed"
+        message: "item has been processed"
     };
 };
 

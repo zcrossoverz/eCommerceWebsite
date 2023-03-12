@@ -6,6 +6,7 @@ import { Product } from "../entities/product.entity";
 import { ProductOption } from "../entities/productOption.entity";
 import { Warehouse } from "../entities/warehouse.entity";
 import { BadRequestError } from "../utils/error";
+import { failed, success } from "../utils/response";
 import { ProductOptionInterface } from "./productOption.service";
 
 interface ProductInterface {
@@ -169,22 +170,13 @@ export const getOneById = async (id: number) => {
   } : BadRequestError("product not found!");
 };
 
-// export const addBrand = async (id: number, brand_id: number) => {
-//   const categoryRepository = AppDataSource.getRepository(Brand);
-
-//   const brand = await categoryRepository.findOneBy({id:brand_id});
-//   const product = await productRepository.findOneBy({id});
-//   if(!product) return BadRequestError("product not found");
-//   if(!brand) return BadRequestError("brand not found");
-//   return await productRepository.update({id}, { brand });
-// };
 
 export const update = async (id: number, product: ProductInterface) => {
   const _product = await productRepository.findOneBy({ id });
   if (!_product) return BadRequestError("product not found!");
-  return await productRepository.update({ id }, { ...product });
+  return (await productRepository.update({ id }, { ...product })).affected ? success() : failed();
 };
 
 export const deleteOne = async (id: number) => {
-  return (await productRepository.delete({ id })).affected ? { msg: "success" } : { msg: "failed" };
+  return (await productRepository.delete({ id })).affected ? success() : failed();
 }
