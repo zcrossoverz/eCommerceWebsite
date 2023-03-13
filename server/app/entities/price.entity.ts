@@ -9,7 +9,7 @@ export class Price {
     @Column({
         type: "bigint"
     })
-    price!: string;
+    price!: number;
     
     @OneToMany(() => PriceHistory, (priceHistory) => priceHistory.price)
     priceHistories!: PriceHistory[];

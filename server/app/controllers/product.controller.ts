@@ -6,9 +6,21 @@ import { BadRequestError, isError } from "../utils/error";
 
 
 export const getAll = async (req: Request, res: Response, next: NextFunction) => {
-    const { limit = 10, page = 1 } = req.query;
-    const rs = await productServices.getAll(Number(limit), Number(page));   
-    return isError(rs) ? next(err(rs, res)) : res.json(rs);
+    const { limit = 10, page = 1, brand_id, price_min, price_max, rate } = req.query;
+    if(!brand_id && !price_max && !price_min && !rate) {
+        const rs = await productServices.getAll(Number(limit), Number(page));   
+        return isError(rs) ? next(err(rs, res)) : res.json(rs);
+    }else{
+        const rs = await productServices.getAll(Number(limit), Number(page), {
+            brand_id: brand_id ? Number(brand_id) : undefined,
+            price: {
+                min: price_min ? Number(price_min) : undefined,
+                max: price_max ? Number(price_max) : undefined
+            },
+            rate: Number(rate)
+        });   
+        return isError(rs) ? next(err(rs, res)) : res.json(rs);
+    }
 }
 
 export const create = async (req: Request, res: Response, next: NextFunction) => {

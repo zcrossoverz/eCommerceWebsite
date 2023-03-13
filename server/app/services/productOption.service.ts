@@ -32,7 +32,7 @@ export const create = async (
     // price
     const priceRepo = AppDataSource.getRepository(Price);
     const tempPrice = priceRepo.create({
-      price: String(price),
+      price: price,
     });
     const new_price = await priceRepo.save(tempPrice);
 
@@ -72,7 +72,7 @@ export const updateOne = async (id: number, data: ProductOptionInterface) => {
   let price_update = 0;
   if (price) {
     const priceRepo = AppDataSource.getRepository(Price);
-    await priceRepo.update({ id: option.price.id }, { price: String(price) });
+    await priceRepo.update({ id: option.price.id }, { price: (price) });
     price_update = 1;
   }
   return ram || rom || color
