@@ -1,4 +1,4 @@
-import { And, LessThanOrEqual, MoreThanOrEqual } from "typeorm";
+import { And, ILike, LessThanOrEqual, MoreThanOrEqual } from "typeorm";
 import { AppDataSource } from "../database";
 import { Brand } from "../entities/brand.entity";
 import { Image, EnumTypeImage } from "../entities/image.entity";
@@ -29,8 +29,10 @@ interface FilterProduct {
 export const getAll = async (
   limit: number,
   page: number,
-  filter: FilterProduct | null = null
+  filter: FilterProduct | null = null,
+  search: string | undefined = undefined
 ) => {
+  
   const offset = (page - 1) * limit;
   const [result, count] = await productRepository.findAndCount({
     relations: {
@@ -44,6 +46,7 @@ export const getAll = async (
     take: limit,
     skip: offset,
     where: {
+      name: (search !== undefined && search !== "" && search !== null) ? ILike(`%${search}%`) : undefined,
       brand: {
         id: filter?.brand_id ? filter.brand_id : undefined,
       },
@@ -72,6 +75,7 @@ export const getAll = async (
           last_page,
           data_per_page: limit,
           total: count,
+          ...(search !== undefined && search !== "" && search !== null && {search_query:search}),
           rate_filter: filter?.rate,
           data: result
             .filter(
@@ -86,7 +90,7 @@ export const getAll = async (
             .map((e) => {
               return {
                 id: e.id,
-                name: e.description,
+                name: e.name,
                 description: e.description,
                 images: e.images,
                 brand: e.brand.name,
@@ -111,11 +115,12 @@ export const getAll = async (
           next_page,
           last_page,
           data_per_page: limit,
+          ...(search !== undefined && search !== "" && search !== null && {search_query:search}),
           total: count,
           data: result.map((e) => {
             return {
               id: e.id,
-              name: e.description,
+              name: e.name,
               description: e.description,
               images: e.images,
               brand: e.brand.name,
@@ -136,6 +141,7 @@ export const getAll = async (
         }
     : BadRequestError("product not found!");
 };
+
 
 export const create = async (
   product: ProductInterface,
