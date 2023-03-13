@@ -1,26 +1,9 @@
 import { NextFunction, Request, Response } from "express";
-import passport from "passport";
-import { Strategy, ExtractJwt } from "passport-jwt";
 import jwt from "jsonwebtoken";
 import { BadRequestError, isError } from "../utils/error";
 import * as userServices from "../services/user.service";
 import bcrypt from "bcryptjs";
 import err from "../middlewares/error";
-
-
-passport.use(new Strategy({ 
-    secretOrKey: process.env.JWT_SECRET_KEY,
-    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken()
- }, (payload, done) => {
-    const { user_id, firstName, lastName, role } = payload;
-    if(!user_id || !firstName || !lastName || !role){
-        return done("token is not valid!", false);
-    }
-    // console.log(user_id, firstName, lastName, role);
-    return done(null, {
-        user_id, firstName, lastName, role
-    });
-}));
 
 
 export const login = async (req: Request, res: Response, next: NextFunction) => {
