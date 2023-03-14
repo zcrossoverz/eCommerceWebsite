@@ -142,7 +142,6 @@ export const getAll = async (
     : BadRequestError("product not found!");
 };
 
-
 export const create = async (
   product: ProductInterface,
   options: ProductOptionInterface,

@@ -8,6 +8,7 @@ import {
 import { Order } from "./order.entity";
 import { Address } from "./address.entity";
 import { Notification } from "./notification.entity";
+import { Feedback } from "./feedback.entity";
 
 export enum UserRole {
   ADMIN = "admin",
@@ -87,5 +88,11 @@ export class User {
     noti => noti.user
   )
   notifications!: Notification[];
+
+  @OneToMany(
+    () => Feedback,
+    feedback => feedback.user
+  )
+  feedbacks!: Feedback[];
 
 }
