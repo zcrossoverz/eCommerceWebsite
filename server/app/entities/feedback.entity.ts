@@ -14,7 +14,15 @@ export class Feedback {
     rate!: number;
 
     @Column({
-        nullable: true
+        nullable: true,
+        transformer: {
+            to(value: number) {
+              return value ? value : null;
+            },
+            from(value: null | number) {
+              return value;
+            }
+        },
     })
     comment!: string;
 
