@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form';
 import { useContext, useState } from 'react';
 import { AiOutlineMail, AiOutlineGoogle, AiOutlineLock, AiFillEyeInvisible, AiFillEye } from 'react-icons/ai';
 import { FaFacebookF, FaLinkedinIn } from 'react-icons/fa';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { LoginSchema, loginSchema } from 'src/utils/rulesValidateForm';
 import classNames from 'classnames';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -15,6 +15,7 @@ type FormDataLogin = LoginSchema;
 function Login() {
   const { setIsAuth } = useContext(AppContext);
   const navigate = useNavigate();
+  const location = useLocation();
   const {
     register,
     handleSubmit,
@@ -30,7 +31,10 @@ function Login() {
       onSuccess: (data) => {
         if (data.data.token && data.data.message) {
           setIsAuth(true);
-          navigate('/');
+          if (location.state) {
+            console.log(location.state);
+            navigate(location.state.from);
+          } else navigate('/');
         }
       },
       onError: (err) => {

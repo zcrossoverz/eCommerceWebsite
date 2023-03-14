@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { BsCart, BsSearch, BsTelephoneForward } from 'react-icons/bs';
+import { BsSearch, BsTelephoneForward } from 'react-icons/bs';
 import { GoDiffRenamed } from 'react-icons/go';
 import classNames from 'classnames';
 import { FiSettings } from 'react-icons/fi';
@@ -13,7 +13,7 @@ import { UserInfo } from 'src/types/user.type';
 import { pick } from 'lodash';
 import path from 'src/constants/path';
 import { RiUserSettingsLine } from 'react-icons/ri';
-import TempletePopover from '../popover/TempletePopover';
+import Cart from '../popover/CartPopover';
 import useClickOutSide from 'src/hooks/useClickOutSide';
 import { GrUserAdmin } from 'react-icons/gr';
 import { useDispatch } from 'react-redux';
@@ -67,8 +67,10 @@ function Header() {
               <span className='text-lg font-bold'>0907588963</span>
             </div>
           </div>
+          {/* cart */}
           <div className='flex items-center justify-between md:min-w-[8rem]'>
-            <TempletePopover />
+            <Cart />
+            {/* user setting */}
             <div className='relative flex' ref={nodeRef}>
               <button
                 onClick={() => {

@@ -26,7 +26,7 @@ function Product({ product }: Props) {
         </div>
         <div className='flex items-center justify-between'>
           <span className='text-xs text-gray-600'>{product.brand}</span>
-          <Star ratings={4} />
+          <Star ratings={product.rate} />
         </div>
       </div>
     </Link>

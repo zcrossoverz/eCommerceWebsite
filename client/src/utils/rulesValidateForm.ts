@@ -90,6 +90,9 @@ export const schema = yup.object({
     .max(20, 'có niều nhất 20 ký tự'),
 });
 export const loginSchema = schema.pick(['email', 'password']);
-
+export const quantitySchema = yup.object({
+  quantiTy: yup.number().min(0).max(20),
+});
 export type LoginSchema = yup.InferType<typeof loginSchema>;
 export type Schema = yup.InferType<typeof schema>;
+export type QuantitySchema = yup.InferType<typeof quantitySchema>;
