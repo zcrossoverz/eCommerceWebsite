@@ -18,3 +18,15 @@ export const updateFeedback = async (req: Request, res: Response, next: NextFunc
     const rs = await feedbackServices.updateFeedback(Number(feedback_id), { rate, comment });
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
 }
+
+export const deleteFeedback = async (req: Request, res: Response, next: NextFunction) => {
+    const { feedback_id } = req.params;
+    const rs = await feedbackServices.deleteFeedback(Number(feedback_id));
+    return isError(rs) ? next(err(rs, res)) : res.json(rs);
+}
+
+export const getFeedbackByProduct = async (req: Request, res: Response, next: NextFunction) => {
+    const { product_id } = req.params;
+    const rs = await feedbackServices.getFeedbackByProduct(Number(product_id));
+    return isError(rs) ? next(err(rs, res)) : res.json(rs);
+}

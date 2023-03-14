@@ -6,6 +6,8 @@ export const feedbackRoutes = (app: Express) => {
 
     router.post("/create", feedback.createFeedback);
     router.put("/update/:feedback_id", feedback.updateFeedback);
+    router.delete("/:feedback_id", feedback.deleteFeedback);
+    router.get("/get_by_product/:product_id", feedback.getFeedbackByProduct);
 
     app.use("/api/feedback", router);
 }
