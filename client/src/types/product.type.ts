@@ -11,7 +11,7 @@ export interface Product {
     id: string;
     type: string;
     image_url: string;
-  }[];
+  };
   product_options: {
     product_option_id?: number;
     color?: string;
