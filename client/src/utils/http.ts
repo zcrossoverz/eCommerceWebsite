@@ -1,5 +1,4 @@
-import axios, { AxiosError, type AxiosInstance } from 'axios';
-import { toast } from 'react-toastify';
+import axios, { type AxiosInstance } from 'axios';
 import { ResponseApiLogin } from 'src/types/auth.type';
 import { clearAccessToken, getAccessToken, saveAccessToken } from './auth';
 class Http {

@@ -6,6 +6,7 @@ export interface Product {
   updateAt: string;
   brand: string;
   brand_description: string;
+  rate: number;
   specs: never[];
   images: {
     id: string;
