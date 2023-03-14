@@ -1,4 +1,5 @@
 import { AppDataSource } from "../database";
+import { EnumTypeImage, Image } from "../entities/image.entity";
 import { Price } from "../entities/price.entity";
 import { ProductOption } from "../entities/productOption.entity";
 import { Warehouse } from "../entities/warehouse.entity";
@@ -17,7 +18,8 @@ export interface ProductOptionInterface {
 
 export const create = async (
   product_id: number,
-  product_options: ProductOptionInterface
+  product_options: ProductOptionInterface,
+  image_path: string
 ) => {
   const product = await productRepository.findOneBy({ id: product_id });
   if (!product) return BadRequestError("product not found");
@@ -25,7 +27,8 @@ export const create = async (
     product_options.color &&
     product_options.ram &&
     product_options.rom &&
-    product_options.price
+    product_options.price &&
+    image_path
   ) {
     const { color, ram, rom, price } = product_options;
 
@@ -37,6 +40,7 @@ export const create = async (
     const new_price = await priceRepo.save(tempPrice);
 
     const warehouseRepo = AppDataSource.getRepository(Warehouse);
+    const imageRepo = AppDataSource.getRepository(Image);
 
     const new_options = productOptionRepository.create({
       color,
@@ -44,7 +48,8 @@ export const create = async (
       rom,
       price: new_price,
       product,
-      warehouse: await warehouseRepo.save(warehouseRepo.create({ quantity: 0 }))
+      warehouse: await warehouseRepo.save(warehouseRepo.create({ quantity: 0 })),
+      image: await imageRepo.save(imageRepo.create({ type: EnumTypeImage.options, product: product, image_url: image_path }))
     });
     return await productOptionRepository.save(new_options);
   }

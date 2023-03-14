@@ -92,7 +92,7 @@ export const getAll = async (
                 id: e.id,
                 name: e.name,
                 description: e.description,
-                images: e.images,
+                images: e.images.find(e => e.type === EnumTypeImage.thumbnail),
                 brand: e.brand.name,
                 rate: e.feedbacks.length
                   ? (
@@ -122,7 +122,7 @@ export const getAll = async (
               id: e.id,
               name: e.name,
               description: e.description,
-              images: e.images,
+              images: e.images.find(e => e.type === EnumTypeImage.thumbnail),
               brand: e.brand.name,
               rate: e.feedbacks.length
                 ? (
@@ -141,7 +141,6 @@ export const getAll = async (
         }
     : BadRequestError("product not found!");
 };
-
 
 export const create = async (
   product: ProductInterface,
@@ -179,6 +178,18 @@ export const create = async (
       warehouseRepo.create({ quantity: 0 })
     );
 
+    const imageRepo = AppDataSource.getRepository(Image);
+    const tempImage = imageRepo.create({
+      image_url: image_path,
+      product: newProduct,
+      type: EnumTypeImage.thumbnail,
+    });
+    const newImage = await imageRepo.save(tempImage);
+    const image_opt = await imageRepo.save(imageRepo.create({
+      image_url: image_path,
+      product: newProduct,
+      type: EnumTypeImage.options
+    }));
     const opt =
       color && ram && rom
         ? productOptionRepository.create({
@@ -188,6 +199,7 @@ export const create = async (
             product: newProduct,
             price: newPrice,
             warehouse: newWarehouse,
+            image: image_opt
           })
         : productOptionRepository.create({
             color: "black",
@@ -196,17 +208,10 @@ export const create = async (
             product: newProduct,
             price: newPrice,
             warehouse: newWarehouse,
+            image: image_opt
           });
 
     const newOtp = await productOptionRepository.save(opt);
-
-    const imageRepo = AppDataSource.getRepository(Image);
-    const tempImage = imageRepo.create({
-      image_url: image_path,
-      product: newProduct,
-      type: EnumTypeImage.thumbnail,
-    });
-    const newImage = await imageRepo.save(tempImage);
 
     return {
       new_product: newProduct,
@@ -229,6 +234,7 @@ export const getOneById = async (id: number) => {
       productOptions: {
         price: true,
         warehouse: true,
+        image: true
       },
       feedbacks: true,
     },
@@ -258,7 +264,7 @@ export const getOneById = async (id: number) => {
           const { id, ...rest } = e;
           return { ...rest };
         }),
-        images: product.images,
+        images: product.images.filter(e => e.type === EnumTypeImage.desc),
         product_options: product.productOptions.map((e) => {
           return {
             product_option_id: e.id,
@@ -267,6 +273,7 @@ export const getOneById = async (id: number) => {
             rom: e.rom,
             price: e.price.price,
             quantity: e.warehouse.quantity,
+            image: e.image
           };
         }),
       }
@@ -287,12 +294,12 @@ export const deleteOne = async (id: number) => {
     : failed();
 };
 
-export const addImages = async (order_id: number, image: string[]) => {
+export const addImages = async (product_id: number, image: string[]) => {
   const imageRepo = AppDataSource.getRepository(Image);
-  const product = await productRepository.findOneBy({ id: order_id });
+  const product = await productRepository.findOneBy({ id: product_id });
   if (!product) return BadRequestError("product not found");
   if (!image.length) return BadRequestError("image empty");
-  const rs = await Promise.all(
+  return await Promise.all(
     image.map((e) => {
       return imageRepo.save(
         imageRepo.create({
@@ -303,5 +310,4 @@ export const addImages = async (order_id: number, image: string[]) => {
       );
     })
   );
-  return rs;
 };

@@ -1,5 +1,6 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Product } from "./product.entity";
+import { User } from "./user.entity";
 
 @Entity("feedback")
 export class Feedback {
@@ -13,7 +14,15 @@ export class Feedback {
     rate!: number;
 
     @Column({
-        nullable: true
+        nullable: true,
+        transformer: {
+            to(value: number) {
+              return value ? value : null;
+            },
+            from(value: null | number) {
+              return value;
+            }
+        },
     })
     comment!: string;
 
@@ -31,5 +40,17 @@ export class Feedback {
         name:"product_id"
     })
     product!: Product;
+
+    @ManyToOne(
+        () => User,
+        user => user.feedbacks,
+        {
+            onDelete: "CASCADE"
+        }
+    )
+    @JoinColumn({
+        name: "user_id"
+    })
+    user!: User;
     
 }

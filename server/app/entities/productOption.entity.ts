@@ -3,6 +3,7 @@ import { Product } from "./product.entity";
 import { Price } from "./price.entity";
 import { Warehouse } from "./warehouse.entity";
 import { InventoryTransaction } from "./inventoryTransaction.entity";
+import { Image } from "./image.entity";
 
 @Entity("product_options")
 export class ProductOption {
@@ -43,5 +44,9 @@ export class ProductOption {
         inventorytrans => inventorytrans.product_option
     )
     inventory_transactions!: InventoryTransaction[];
+
+    @OneToOne(() => Image, { onDelete: "CASCADE" })
+    @JoinColumn({ name: "image" })
+    image!: Image;
 
 }
