@@ -1,6 +1,5 @@
-import { useState } from 'react';
+import { useState, createContext } from 'react';
 import { getAccessToken } from 'src/utils/auth';
-import { createContext } from 'react';
 
 interface AppContextInterface {
   isAuth: boolean;

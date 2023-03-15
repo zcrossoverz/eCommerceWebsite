@@ -1,3 +1,6 @@
+import { Link } from 'react-router-dom';
+import logo from 'src/assets/logo.svg';
+import path from 'src/constants/path';
 function Footer() {
   return (
     <footer className='bg-white dark:bg-gray-900'>
@@ -98,10 +101,9 @@ function Footer() {
           </ul>
         </div>
         <div>
-          <a href='https://flowbite.com/' className='flex items-center'>
-            <img src='https://flowbite.com/docs/images/logo.svg' className='mr-1 h-6 sm:h-9' alt='Flowbite Logo' />
-            <span className='self-center whitespace-nowrap font-semibold dark:text-white md:text-xl'>Fstore</span>
-          </a>
+          <Link to={path.home} className='flex items-center bg-orange-500 shadow-md'>
+            <img src={logo} alt='Logo' />
+          </Link>
         </div>
       </div>
       <div className='bg-gray-100 px-4 py-6 dark:bg-gray-700 md:flex md:items-center md:justify-between'>
