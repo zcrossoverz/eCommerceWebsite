@@ -5,9 +5,6 @@ import { FaCartPlus, FaFileSignature } from 'react-icons/fa';
 import { PieChart } from './chart/PieChart';
 import { LineChart } from './chart/LineChart';
 
-
-
-
 type card_props = {
   title: string;
   value: string;
@@ -39,7 +36,11 @@ const Card = (props: card_props) => {
   const Icon = icons[index].icon;
 
   return (
-    <div className='mx-4 mb-4 mt-8 rounded-lg bg-red-300 shadow-md'>
+    <div
+      className={`${props.icon === 0 && `lg:-ml-1`} ${
+        props.icon === 3 && `lg:-mr-0`
+      } mx-4 mb-4 mt-8 rounded-lg bg-white shadow-lg`}
+    >
       <div
         className={`mx-4 overflow-hidden rounded-xl bg-gradient-to-tr bg-clip-border ${
           icons[props.icon].class
@@ -66,18 +67,18 @@ function MainDashboard() {
         <Card title='Sales' value='700' percent_compare='+3% than last month' icon={1} />
         <Card title='Total Users' value='56' percent_compare='+3% than last month' icon={3} />
       </div>
-      <div className='grid grid-cols-3 grid-flow-col mt-4 gap-8 p-4 bg-red-300'>
-        <div className='col-span-2 bg-yellow-200 p-8 rounded-xl'><LineChart /></div>
-        <div className='flex bg-blue-200 p-8 rounded-xl'><PieChart /></div>
+      <div className='mt-2 grid grid-flow-col grid-cols-3 gap-8'>
+        <div className='col-span-2 -ml-1 mr-2 rounded-xl rounded-xl bg-white bg-white p-9 p-2 shadow-lg'>
+          <LineChart />
+        </div>
+        <div className='flex rounded-xl rounded-xl bg-white p-8 shadow-lg'>
+          <PieChart />
+        </div>
       </div>
 
-      <div className='grid grid-cols-3 grid-flow-col mt-4 gap-8 p-4 bg-red-300'>
-        <div className='col-span-2 bg-yellow-200 p-8 rounded-xl'>
-
-        </div>
-        <div className='flex bg-blue-200 p-8 rounded-xl'>
-          
-        </div>
+      <div className='mt-4 grid grid-flow-col grid-cols-3 gap-8 bg-white p-4'>
+        <div className='col-span-2 rounded-xl bg-yellow-200 p-8'></div>
+        <div className='flex rounded-xl bg-blue-200 p-8'></div>
       </div>
     </div>
   );
