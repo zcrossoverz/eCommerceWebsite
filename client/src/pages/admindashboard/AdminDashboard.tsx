@@ -1,13 +1,14 @@
 import MainDashboard from 'src/components/maindashboard';
 import SidebarDashboard from 'src/components/sidebardashboard';
 
+
 function AdminDashboard() {
   return (
-    <div className='grid grid-cols-12 '>
-      <div className='col-span-3 bg-amber-500 p-1 md:p-4'>
+    <div className='flex bg-blue-50 min-h-screen p-4 gap-2'>
+      <div className='bg-cyan-900 h-[calc(100vh-32px)] w-72 rounded-xl fixed hidden md:block md:overflow-hidden'>
         <SidebarDashboard />
       </div>
-      <div className='col-span-9 bg-teal-400 p-1 md:p-4'>
+      <div className='bg-blue-200 w-screen md:ml-80'>
         <MainDashboard />
       </div>
     </div>
