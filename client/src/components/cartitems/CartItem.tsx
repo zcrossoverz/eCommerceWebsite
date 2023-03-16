@@ -13,7 +13,7 @@ function CartItem({ cartItem }: Props) {
       className='flex cursor-pointer items-center justify-between px-2 py-4 duration-300 hover:bg-slate-100'
     >
       <div className='max-w-[2rem] flex-shrink-0'>
-        <img className='w-full' src={`${baseURL}/${cartItem.image}`} alt='' />
+        <img className='w-full' src={`${baseURL}/${cartItem.option.image}`} alt='' />
       </div>
       <div className='mx-2 flex-grow line-clamp-1'>{cartItem.name}</div>
       <div>

@@ -1,5 +1,4 @@
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { baseURL } from 'src/constants/constants';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 import { CartItem } from 'src/types/cart';
 import { formatPrice } from 'src/utils/formatPrice';
@@ -44,17 +43,14 @@ function CartUser() {
   }, [cartItemUser]);
 
   useEffect(() => {
-    return () => {
-      if (extendCartItems && extendCartItems.length >= 0) {
-        let updateCart = omit<CartItem[]>(extendCartItems, 'checked');
-        updateCart = Object.values(updateCart);
-        if (updateCart && updateCart.length > 0) {
-          console.log(updateCart);
-          dispath(updateCartList(updateCart as CartItem[]));
-        }
+    if (extendCartItems && extendCartItems.length >= 0) {
+      let updateCart = omit<CartItem[]>(extendCartItems, 'checked');
+      updateCart = Object.values(updateCart);
+      if (updateCart && updateCart.length >= 0) {
+        dispath(updateCartList(updateCart as CartItem[]));
       }
-    };
-  }, [extendCartItems]);
+    }
+  }, [extendCartItems, dispath]);
   const handleChecked = (id: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setExtendCartItem(
       produce((draft) => {
@@ -75,6 +71,10 @@ function CartUser() {
   const increaseQuantity = (item: ExtendCartItem, index: number) => {
     setExtendCartItem(
       produce((draft) => {
+        // handle when have Stock of product
+        // if (draft[index].option.quantity === draft[index].option.stock) {
+        //   return
+        // }else
         draft[index].option.quantity += 1;
       })
     );
@@ -82,7 +82,32 @@ function CartUser() {
   const decreaseQuantity = (item: ExtendCartItem, index: number) => {
     setExtendCartItem(
       produce((draft) => {
-        draft[index].option.quantity -= 1;
+        if (draft[index].option.quantity === 1) {
+          draft.splice(index, 1);
+        } else {
+          draft[index].option.quantity -= 1;
+        }
+      })
+    );
+  };
+  const handleDeleteChecked = () => {
+    if (checkedItems.length > 0) {
+      const idChecked = checkedItems.map((item) => item.id);
+      setExtendCartItem(
+        produce((draft) => {
+          return draft.filter((item) => {
+            if (item.id) {
+              return !idChecked.includes(item.id);
+            }
+          });
+        })
+      );
+    }
+  };
+  const handleDelete = (index: number) => () => {
+    setExtendCartItem(
+      produce((draft) => {
+        draft.splice(index, 1);
       })
     );
   };
@@ -167,7 +192,9 @@ function CartUser() {
                 <span className='col-span-3 text-center'>
                   {formatPrice(Number(item.option.price) * Number(item.option.quantity))}
                 </span>
-                <span className='col-span-3 text-center'>Xóa</span>
+                <button onClick={handleDelete(index)} className='col-span-3 text-center'>
+                  Xóa
+                </button>
               </div>
             </div>
           ))}
@@ -179,7 +206,9 @@ function CartUser() {
           <button onClick={handleCheckedAll} className='mx-3 cursor-pointer text-sm md:text-lg'>
             Chọn tất cả
           </button>
-          <button className='hidden cursor-pointer md:inline-block'>Xóa</button>
+          <button onClick={handleDeleteChecked} className='hidden cursor-pointer md:inline-block'>
+            Xóa
+          </button>
         </div>
         <div className='flex items-center'>
           <div className='flex-grow md:px-2'>

@@ -21,7 +21,7 @@ function ProductList() {
     price_min: query.price_min,
     price_max: query.price_max,
     rate: query.rate ? query.rate : '0',
-    search: query.search,
+    search: query.search || '',
   };
   const navigate = useNavigate();
   const { data: products } = useQuery({

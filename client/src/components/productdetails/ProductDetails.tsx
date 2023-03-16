@@ -95,6 +95,8 @@ function ProductDetails() {
           price: opt.price,
           product_option_id: opt.product_option_id,
           quantity: quantity as number,
+          image: opt.image?.image_url,
+          stock: opt.quantity || 0,
         },
       };
       dispatch(addItemtoCart(cartItem));
