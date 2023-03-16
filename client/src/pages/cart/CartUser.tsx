@@ -7,6 +7,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { produce } from 'immer';
 import { omit } from 'lodash';
 import { updateCart as updateCartList } from 'src/slices/cart.slice';
+import { baseURL } from 'src/constants/constants';
 interface ExtendCartItem extends CartItem {
   checked: boolean;
 }
@@ -119,6 +120,9 @@ function CartUser() {
           <input checked={isCheckedAll} onChange={handleCheckedAll} type='checkbox' />
         </div>
         <h2 className='col-span-6'>Sản phẩm</h2>
+        <button onClick={handleDeleteChecked} className='col-span-5 text-center md:hidden'>
+          Xóa
+        </button>
         <div className='col-span-5 hidden grid-cols-12 lg:grid'>
           <span className='col-span-3 text-center'>Đơn giá</span>
           <span className='col-span-3 text-center'>Số lượng</span>
@@ -138,10 +142,7 @@ function CartUser() {
                 <input checked={item.checked} onChange={handleChecked(index)} type='checkbox' />
               </div>
               <div className='col-span-11 flex items-center md:col-span-6'>
-                <img
-                  src='https://shopee.vn/-M%C3%A3-ELBMO2-gi%E1%BA%A3m-12-%C4%91%C6%A1n-500K-Tai-Nghe-Bluetooth-5.3-Baseus-WM01-TWS-Ch%E1%BB%91ng-%E1%BB%92n-i.131195741.6938221363?xptdk=fac8a761-5165-44a8-8b8a-a0078bdc1bb9'
-                  alt='img product'
-                />
+                <img src={`${baseURL}/${item.option.image}`} className='max-w-[3rem]' alt='img product' />
                 <div className='flex flex-col items-start px-2'>
                   <h2 className='line-clamp-1 '>{item.name}</h2>
                   <span className='text-base text-orange-500 md:hidden'>{formatPrice(Number(item.option.price))}</span>
@@ -168,7 +169,9 @@ function CartUser() {
                 </div>
               </div>
               <div className='col-span-5 hidden grid-cols-12 lg:grid'>
-                <span className='col-span-3 text-center'>{formatPrice(Number(item.option.price))}</span>
+                <span className='col-span-3 flex items-center justify-center'>
+                  {formatPrice(Number(item.option.price))}
+                </span>
                 <div className='col-span-3 flex items-center justify-center'>
                   <button
                     onClick={() => decreaseQuantity(item, index)}
@@ -189,7 +192,7 @@ function CartUser() {
                     +
                   </button>
                 </div>
-                <span className='col-span-3 text-center'>
+                <span className='col-span-3 flex items-center justify-center text-center'>
                   {formatPrice(Number(item.option.price) * Number(item.option.quantity))}
                 </span>
                 <button onClick={handleDelete(index)} className='col-span-3 text-center'>

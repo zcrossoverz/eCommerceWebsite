@@ -40,7 +40,9 @@ function App() {
                 <ProfileUser />
               </Profile>
             }
-          />
+          >
+            <Route path='file' element={<div className='z-10 bg-green-300'></div>} />
+          </Route>
           <Route
             path={path.cart}
             element={

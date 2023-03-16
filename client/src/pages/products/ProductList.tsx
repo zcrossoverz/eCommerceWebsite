@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { createSearchParams, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import brandApi from 'src/apis/brand.api';
 import productsApi from 'src/apis/product.api';
@@ -37,6 +37,7 @@ function ProductList() {
         if (err.response?.data.error === 'product not found!') {
           navigate({
             pathname: path.home,
+            search: createSearchParams({ ...queryParams }).toString(),
           });
           toast.error('Không tìm thấy sản phẩm phù hợp', {
             autoClose: 2000,

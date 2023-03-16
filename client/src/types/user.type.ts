@@ -3,8 +3,8 @@ export type User = {
   password: string;
   firstName: string;
   lastName: string;
-  phone: null;
-  default_address: null;
+  phone: string | null;
+  default_address: string | null;
   id?: number;
   role: string;
   createAt: string;
