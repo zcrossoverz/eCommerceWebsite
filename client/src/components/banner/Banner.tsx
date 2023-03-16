@@ -2,8 +2,11 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BsChevronCompactLeft, BsChevronCompactRight } from 'react-icons/bs';
 import { RxDotFilled } from 'react-icons/rx';
+import banner1 from 'src/assets/img/banner-1.webp';
+import banner2 from 'src/assets/img/banner-2.webp';
+import banner3 from 'src/assets/img/banner-3.webp';
 
-const images = ['src/assets/img/banner-1.webp', 'src/assets/img/banner-2.webp', 'src/assets/img/banner-3.webp'];
+const images = [banner1, banner2, banner3];
 
 const variants = {
   initial: (direction: number) => {

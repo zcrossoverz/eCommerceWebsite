@@ -3,7 +3,7 @@ import logo from 'src/assets/logo.svg';
 import path from 'src/constants/path';
 function Footer() {
   return (
-    <footer className='bg-white dark:bg-gray-900'>
+    <footer className='relative z-10 bg-white dark:bg-gray-900'>
       <div className='mx-auto grid max-w-7xl grid-cols-2 gap-8 px-6 py-8 md:grid-cols-5'>
         <div>
           <h2 className='mb-6 text-sm font-semibold uppercase text-gray-500 dark:text-gray-400'>Company</h2>

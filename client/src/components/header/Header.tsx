@@ -4,7 +4,7 @@ import { GoDiffRenamed } from 'react-icons/go';
 import classNames from 'classnames';
 import { FiSettings } from 'react-icons/fi';
 import { BiHelpCircle, BiLogIn, BiShoppingBag } from 'react-icons/bi';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AppContext } from 'src/contexts/app.context';
 import { clearAccessToken, getAccessToken } from 'src/utils/auth';
@@ -21,23 +21,51 @@ import { setUserInfor } from 'src/slices/user.slice';
 import logo from 'src/assets/logo.svg';
 
 function Header() {
+  const navigate = useNavigate();
   const { isAuth, setIsAuth } = useContext(AppContext);
   const [showMenuUser, setShowMenuUser] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useState<UserInfo>();
+  const [searchProduct, setSearchProduct] = useState<string>('');
   const dispath = useDispatch();
   useEffect(() => {
     const token = getAccessToken();
     if (token) {
-      const user = pick(jwtDecode(token), ['firstName', 'lastName', 'role']);
-      setUserInfo(user as UserInfo);
-      dispath(setUserInfor(user as UserInfo));
+      const user = jwtDecode<{
+        firstName: string;
+        lastName: string;
+        user_id: number;
+        iat: string;
+        role: string;
+      }>(token);
+      const userFinal: UserInfo = {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role,
+        id: user.user_id,
+      };
+      setUserInfo(userFinal);
+      dispath(setUserInfor(userFinal));
     } else {
       setUserInfo(undefined);
     }
   }, [isAuth, dispath]);
+  console.log(userInfo);
+  // useEffect(() => {
+
+  //  },[searchProduct])
   const { nodeRef } = useClickOutSide(() => {
     setShowMenuUser(false);
   });
+  const handleChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchProduct(e.target.value);
+  };
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    navigate({
+      pathname: path.home,
+      search: `?search=${searchProduct}`,
+    });
+  };
   return (
     <header className='relative top-0 left-0 right-0 z-10 bg-orange-600 text-white shadow-md dark:bg-gray-900'>
       <nav className='border-gray-200 px-2 py-2.5 sm:px-4'>
@@ -46,17 +74,22 @@ function Header() {
             <img src={logo} className='mr-1 h-9' alt='Flowbite Logo' />
           </Link>
           {/* search input */}
-          <form className='ml-2 flex-shrink md:min-w-[30rem]'>
+          <form className='ml-2 flex-shrink md:min-w-[30rem]' onSubmit={handleSearch}>
             <div className='relative'>
-              <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3'>
-                <BsSearch className='text-lg text-gray-400' />
-              </div>
               <input
+                value={searchProduct}
+                onChange={handleChangeSearch}
                 type='search'
-                className='block max-h-[2.5rem] w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pl-10 text-sm text-gray-900 outline-none dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400'
-                placeholder='Search smart phone by brand, name,...'
+                className='block max-h-[2.5rem] w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pr-10 text-sm text-gray-900 outline-none placeholder:line-clamp-1 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400'
+                placeholder='Tìm theo tên sản phẩm'
                 required
               />
+              <button
+                type='submit'
+                className='absolute right-2 top-1 bottom-1 rounded-sm bg-orange-500 px-4 py-1 text-center duration-150 hover:bg-orange-600'
+              >
+                <BsSearch className='text-lg text-white' />
+              </button>
             </div>
           </form>
           {/* right navigate */}
@@ -133,7 +166,7 @@ function Header() {
                             onClick={() => {
                               setIsAuth(false);
                               clearAccessToken();
-                              dispath(setUserInfor({ firstName: '', lastName: '', role: '' }));
+                              dispath(setUserInfor({ firstName: '', lastName: '', role: '', id: 0 }));
                             }}
                             className='flex items-center'
                           >
