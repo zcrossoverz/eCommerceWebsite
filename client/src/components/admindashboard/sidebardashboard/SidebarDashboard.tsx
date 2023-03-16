@@ -91,12 +91,6 @@ const ButtonNavDropdown = ({ name, Icon, subnav }: PropsNavButton) => {
 };
 
 function SidebarDashboard() {
-  const product_link = [
-    { title: 'Manage Product', navigateTo: 'product' },
-    { title: 'Manage Brand', navigateTo: 'product' },
-    { title: 'Manage Opt', navigateTo: 'product' },
-  ];
-
   return (
     <div>
       <div className='mx-2 flex items-center py-6'>
@@ -105,7 +99,14 @@ function SidebarDashboard() {
       <hr className='mx-4 border-blue-100/20' />
       <div className='my-4'>
         <ButtonNav name={'Home'} Icon={AiFillHome} navigateTo='home' />
-        <ButtonNavDropdown name={'Products'} Icon={BsFillCartFill} subnav={product_link} />
+        <ButtonNavDropdown
+          name={'Products'}
+          Icon={BsFillCartFill}
+          subnav={[
+            { title: 'Manage Product', navigateTo: 'manage_product' },
+            { title: 'Manage Brand', navigateTo: 'product' },
+          ]}
+        />
         <ButtonNav name={'Orders'} Icon={FaMoneyCheckAlt} navigateTo='order' />
         <ButtonNav name={'Inventory'} Icon={AiFillSetting} navigateTo='inventory' />
         <ButtonNav name={'Reports'} Icon={AiFillSetting} navigateTo='report' />
