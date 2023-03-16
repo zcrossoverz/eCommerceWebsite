@@ -9,6 +9,7 @@ module.exports = {
       colors: {
         form: '#3A98B9',
         err: '#ff3333',
+        sidebar_dashboard: '#2D3B42',
       },
     },
   },
