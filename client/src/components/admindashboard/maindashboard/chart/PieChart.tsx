@@ -3,11 +3,24 @@ import { Pie } from 'react-chartjs-2';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
+const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: 'bottom' as const,
+    },
+    title: {
+      display: true,
+      text: 'Top Brands',
+    },
+  },
+};
+
 export const data = {
-  labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+  labels: ['Huwei', 'Iphone', 'Xiaomi', 'Oppo', 'Samsung', 'Realme'],
   datasets: [
     {
-      label: '# of Votes',
+      label: '% of products',
       data: [12, 19, 3, 5, 2, 3],
       backgroundColor: [
         'rgba(255, 99, 132, 0.2)',
@@ -31,5 +44,5 @@ export const data = {
 };
 
 export function PieChart() {
-  return <Pie data={data} />;
+  return <Pie data={data} options={options} />;
 }

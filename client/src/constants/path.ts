@@ -8,4 +8,6 @@ const path = {
   cart: '/cart',
   product: '/product',
 };
+
+
 export default path;
