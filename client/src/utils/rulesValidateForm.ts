@@ -90,9 +90,12 @@ export const schema = yup.object({
     .max(20, 'có niều nhất 20 ký tự'),
 });
 export const loginSchema = schema.pick(['email', 'password']);
-export const quantitySchema = yup.object({
-  quantiTy: yup.number().min(0).max(20),
+export const filterPriceSchema = yup.object({
+  minPrice: yup.string().min(6, 'Ít nhất 6 chữ số').max(8, 'Nhiều nhất 8 chữ số'),
+  // .lessThan(yup.ref('maxPrice'), 'Giá min không lớn hơn giá max'),
+  maxPrice: yup.string().min(6, 'Ít nhất 6 chữ số').max(8, 'Nhiều nhất 8 chữ số'),
+  // .moreThan(yup.ref('minPrice'), 'Giá max không nhỏ hơn giá min'),
 });
 export type LoginSchema = yup.InferType<typeof loginSchema>;
 export type Schema = yup.InferType<typeof schema>;
-export type QuantitySchema = yup.InferType<typeof quantitySchema>;
+export type FilterPriceSchema = yup.InferType<typeof filterPriceSchema>;

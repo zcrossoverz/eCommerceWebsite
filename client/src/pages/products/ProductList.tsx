@@ -1,34 +1,66 @@
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import brandApi from 'src/apis/brand.api';
 import productsApi from 'src/apis/product.api';
 import Pagination from 'src/components/paginate';
 import Product from 'src/components/product';
+import path from 'src/constants/path';
 import useQueryParams from 'src/hooks/useQueryParams';
 import { ProductListConfig } from 'src/types/product.type';
+import { isAxiosErr } from 'src/utils/error';
 import AsignFillter from './asignfilter';
-import SortProduct from './sortlist';
+// import SortProduct from './sortlist';
 
 function ProductList() {
   const query = useQueryParams();
   const queryParams: ProductListConfig = {
     page: query.page ? query.page : '1',
     limit: query.limit ? query.limit : '10',
+    brand_id: query.brand_id,
+    price_min: query.price_min,
+    price_max: query.price_max,
+    rate: query.rate ? query.rate : '0',
+    search: query.search,
   };
+  const navigate = useNavigate();
   const { data: products } = useQuery({
     queryKey: ['products', queryParams],
     queryFn: () => productsApi.getProductsList(queryParams),
+    keepPreviousData: true,
+    onError: (err) => {
+      if (
+        isAxiosErr<{
+          error: string;
+        }>(err)
+      ) {
+        if (err.response?.data.error === 'product not found!') {
+          navigate({
+            pathname: path.home,
+          });
+          toast.error('Không tìm thấy sản phẩm phù hợp', {
+            autoClose: 2000,
+          });
+        }
+      }
+    },
+    retry: 0,
   });
-
+  const { data: brands } = useQuery({
+    queryKey: ['brand'],
+    queryFn: () => brandApi.getAllBrand(),
+  });
   return (
     <div className='mx-auto max-w-7xl py-4 px-2'>
       <div className='grid grid-cols-12 gap-4'>
         <div className='hidden md:col-span-3 md:block'>
-          <AsignFillter />
+          <AsignFillter brands={brands?.data || []} queryConfig={queryParams} />
         </div>
         <div className='col-span-12 min-h-[41rem] md:col-span-9'>
-          <div>
+          {/* <div>
             <SortProduct />
-          </div>
+          </div> */}
+          {!products?.data && <div>Không tìm thấy sản phẩm</div>}
           <div className='grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'>
             {products &&
               products.data.data &&
