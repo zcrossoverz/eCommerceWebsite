@@ -104,7 +104,8 @@ function SidebarDashboard() {
           Icon={BsFillCartFill}
           subnav={[
             { title: 'Manage Product', navigateTo: 'manage_product' },
-            { title: 'Manage Brand', navigateTo: 'product' },
+            { title: 'Manage Brand', navigateTo: 'manage_brand' },
+            { title: 'Manage Coupon', navigateTo: 'manage_coupon' },
           ]}
         />
         <ButtonNav name={'Orders'} Icon={FaMoneyCheckAlt} navigateTo='order' />

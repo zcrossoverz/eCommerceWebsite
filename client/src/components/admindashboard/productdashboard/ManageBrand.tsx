@@ -1,18 +1,81 @@
 import { useQuery } from '@tanstack/react-query';
 import BreadCrumb from '../breadcrumb';
-import productsApi from 'src/apis/product.api';
 import { useState } from 'react';
+import brandsApi from 'src/apis/brand.api';
+import { useDispatch, useSelector } from 'react-redux';
+import { popup, selectCurrentModal } from 'src/slices/modal.slice';
 
-export default function ManageProduct() {
+const CreateBrand = () => {
+  const dispatch = useDispatch();
+  return (
+    <div className='z-100 fixed inset-0 top-1/2 left-1/2 -translate-x-1/3 -translate-y-3/4'>
+      <div className='relative h-full w-full max-w-2xl md:h-auto'>
+        <div className='relative rounded-lg bg-white shadow-xl'>
+          <div className='flex items-start justify-between rounded-t border-b p-4'>
+            <h3 className='text-xl font-semibold text-gray-900'>Create New Brand</h3>
+            <button
+              className='ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900'
+              onClick={() => dispatch(popup(''))}
+            >
+              <svg
+                aria-hidden='true'
+                className='h-5 w-5'
+                fill='currentColor'
+                viewBox='0 0 20 20'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path d='M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z'></path>
+              </svg>
+              <span className='sr-only'>Close modal</span>
+            </button>
+          </div>
+
+          <div className='space-y-6 p-6'>
+            <p className='text-base leading-relaxed text-gray-500'>
+              <p>Name: </p>
+              <input className='w-full rounded-xl border border-gray-400 px-2 py-2' />
+            </p>
+            <p className='text-base leading-relaxed text-gray-500'>
+              <p>Description:</p>
+              <textarea className='w-full rounded-xl border border-gray-400 px-2 py-6' />
+            </p>
+          </div>
+
+          <div className='flex items-center space-x-2 rounded-b border-t border-gray-200 p-6'>
+            <button className='rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 '>
+              Confirm
+            </button>
+            <button
+              className='rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300'
+              onClick={() => dispatch(popup(''))}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const modals = {
+  create_brand: <CreateBrand />,
+};
+
+export default function ManageBrand() {
   const [params, setParams] = useState({
     limit: '10',
     page: '1',
   });
-  const { data, isLoading } = useQuery(['products', params], () => productsApi.getProductsList(params));
+
+  const currentModal = useSelector(selectCurrentModal);
+  const dispatch = useDispatch();
+
+  const { data, isLoading } = useQuery(['get_all_brands', params], () => brandsApi.getAll());
 
   return (
     <div className='mt-4'>
-      <BreadCrumb path={['Product', 'Manage Product']} />
+      <BreadCrumb path={['Product', 'Manage Brand']} />
       <div className='mt-4 grid grid-cols-6'>
         <div className='col-span-2 mr-4'>
           <input
@@ -36,12 +99,22 @@ export default function ManageProduct() {
           </select>
         </div>
         <div className='col-span-1 col-end-7'>
-          <button className='rounded-xl bg-blue-900 py-3 px-8 text-gray-400 hover:bg-blue-600 hover:text-white hover:shadow-primary hover:shadow-lg'>
+          <button
+            className='rounded-xl bg-blue-900 py-3 px-8 text-gray-400 hover:bg-blue-600 hover:text-white hover:shadow-primary hover:shadow-lg'
+            onClick={() =>
+              dispatch(
+                popup({
+                  name: 'test',
+                })
+              )
+            }
+          >
             CREATE
           </button>
         </div>
       </div>
       <div>
+        {currentModal.open && modals.create_brand}
         <div className='mt-4 flex flex-col'>
           <div className='overflow-x-auto'>
             <div className='inline-block w-full align-middle'>
@@ -66,7 +139,8 @@ export default function ManageProduct() {
                     </svg>
                   </div>
                 )}
-                {data?.data && (
+
+                {data && (
                   <table className='min-w-full divide-y divide-gray-200 bg-white'>
                     <thead className='bg-pink-400/20'>
                       <tr>
@@ -77,7 +151,7 @@ export default function ManageProduct() {
                           Name
                         </th>
                         <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          Brand
+                          Description
                         </th>
                         <th scope='col' className='px-6 py-3 text-right text-xs font-bold uppercase text-gray-500 '>
                           Edit
@@ -88,12 +162,12 @@ export default function ManageProduct() {
                       </tr>
                     </thead>
                     <tbody className='divide-y divide-gray-200'>
-                      {data?.data.data.map((e, i) => {
+                      {data?.data.map((e, i) => {
                         return (
                           <tr key={i.toString()}>
                             <td className='whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800'>{e.id}</td>
                             <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.name}</td>
-                            <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.brand}</td>
+                            <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.description}</td>
                             <td className='whitespace-nowrap px-6 py-4 text-right text-sm font-medium'>
                               <div className='text-green-500 hover:text-green-700'>Edit</div>
                             </td>
