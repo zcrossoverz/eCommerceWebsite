@@ -52,16 +52,16 @@ function ProductDetails() {
     }
   };
   const increaseQuantity = () => {
-    if (quantity <= 20) {
+    if (quantity <= Number(optionSelected?.quantity)) {
       setQuantity((prev) => {
         return Number(prev) + 1;
       });
     }
   };
   useEffect(() => {
-    if (Number(quantity) > 20) {
+    if (Number(quantity) > Number(optionSelected?.quantity)) {
       toast.error('Số lượng vượt quá hàng tồn');
-      setQuantity(20);
+      setQuantity(optionSelected?.quantity || 1);
     }
     if (Number(quantity) === 0) {
       setQuantity(1);
@@ -144,16 +144,16 @@ function ProductDetails() {
                 product.data.product_options.map((op) => {
                   return (
                     // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
-                    <div
+                    <button
                       key={op.product_option_id}
-                      className={classNames(
-                        'cursor-pointer rounded-xl border bg-transparent px-4 py-2 text-center duration-200 hover:bg-orange-100',
-                        {
-                          'boder-2 border-blue-500 shadow-md': Boolean(
-                            optionSelected?.product_option_id === op.product_option_id
-                          ),
-                        }
-                      )}
+                      disabled={Boolean(Number(op.quantity) <= 0)}
+                      className={classNames('rounded-xl border bg-transparent px-4 py-2 text-center duration-200 ', {
+                        'boder-2 border-blue-500 shadow-md': Boolean(
+                          optionSelected?.product_option_id === op.product_option_id
+                        ),
+                        'cursor-not-allowed': Number(op.quantity) <= 0,
+                        'cursor-pointer hover:bg-orange-100': !(Number(op.quantity) <= 0),
+                      })}
                       onClick={() => setOptionSelected(op)}
                     >
                       <div className='flex items-center justify-center'>
@@ -169,7 +169,7 @@ function ProductDetails() {
                           </b>
                         </span>
                       </div>
-                    </div>
+                    </button>
                   );
                 })}
             </div>

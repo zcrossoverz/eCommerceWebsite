@@ -12,15 +12,17 @@ import { RootState } from 'src/store';
 
 function ProfileUser() {
   const { id: userId } = useSelector((state: RootState) => state.userReducer.userInfo);
-
-  const { data } = useQuery({
+  const { data: user, refetch } = useQuery({
     queryKey: ['user', userId],
-    queryFn: () => userApi.getUserByid(userId || 0),
+    queryFn: () => userApi.getUserByid(userId as number),
     enabled: userId !== undefined,
+    staleTime: 15000,
+    onSuccess(data) {
+      console.log(data.data.address.length);
+    },
   });
-  console.log(data);
   return (
-    <div className='mx-auto my-2 grid max-w-7xl grid-cols-12'>
+    <div className='mx-auto my-2 grid max-w-7xl grid-cols-12 lg:min-h-[300px]'>
       <div className='col-span-3 bg-white'>
         <div className='border-b'>
           <div className='flex items-center p-4'>
@@ -43,7 +45,7 @@ function ProfileUser() {
               </svg>
               <span className='sr-only'>Icon description</span>
             </button>
-            <span>Name</span>
+            <span>{`${user?.data.firstName} ${user?.data.lastName}`}</span>
           </div>
         </div>
         <div className='p-4'>
@@ -86,8 +88,8 @@ function ProfileUser() {
       </div>
       <div className='col-span-9 bg-white shadow-md'>
         <Routes>
-          <Route index path='file' element={<File />}></Route>
-          <Route path='adress' element={<Adress />}></Route>
+          <Route index path='file' element={<File refetchAddress={refetch} user={user?.data} />}></Route>
+          <Route path='adress' element={<Adress refetchAddress={refetch} user={user?.data} />}></Route>
           <Route path='password' element={<Password />}></Route>
         </Routes>
       </div>

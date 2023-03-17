@@ -4,5 +4,10 @@ export interface OptionProduct {
   color?: string;
   price?: string;
   product_option_id?: number;
-  quatity?: number;
+  quantity?: number;
+  image?: {
+    id: string;
+    image_url: string;
+    type: string;
+  };
 }

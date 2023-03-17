@@ -74,7 +74,14 @@ const ButtonNavDropdown = ({ name, Icon, active = false, subnav }: PropsNavButto
             {subnav.map((e, i) => {
               return (
                 <Menu.Item key={i.toString()}>
-                  {() => <button onClick={() => dispatch(navigate(e.navigateTo))} className='rounded-md px-4 py-2 block hover:bg-gray-50'>{e.title}</button>}
+                  {() => (
+                    <button
+                      onClick={() => dispatch(navigate(e.navigateTo))}
+                      className='block rounded-md px-4 py-2 hover:bg-gray-50'
+                    >
+                      {e.title}
+                    </button>
+                  )}
                 </Menu.Item>
               );
             })}

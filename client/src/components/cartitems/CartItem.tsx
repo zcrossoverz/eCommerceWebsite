@@ -6,6 +6,7 @@ interface Props {
 import { baseURL } from 'src/constants/constants';
 import { Link } from 'react-router-dom';
 import path from 'src/constants/path';
+import { formatPrice } from 'src/utils/formatPrice';
 function CartItem({ cartItem }: Props) {
   return (
     <Link
@@ -18,7 +19,7 @@ function CartItem({ cartItem }: Props) {
       <div className='mx-2 flex-grow line-clamp-1'>{cartItem.name}</div>
       <div>
         <span>
-          {cartItem.option.price} x {cartItem.option.quantity}
+          {formatPrice(Number(cartItem.option.price))} x {cartItem.option.quantity}
         </span>
       </div>
     </Link>
