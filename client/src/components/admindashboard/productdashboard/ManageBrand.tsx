@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import BreadCrumb from '../breadcrumb';
 import { useState } from 'react';
-import brandsApi from 'src/apis/brand.api';
+import brandApi from 'src/apis/brand.api';
 import { useDispatch, useSelector } from 'react-redux';
 import { popup, selectCurrentModal } from 'src/slices/modal.slice';
 
@@ -71,7 +71,7 @@ export default function ManageBrand() {
   const currentModal = useSelector(selectCurrentModal);
   const dispatch = useDispatch();
 
-  const { data, isLoading } = useQuery(['get_all_brands', params], () => brandsApi.getAll());
+  const { data, isLoading } = useQuery(['get_all_brands', params], () => brandApi.getAllBrand());
 
   return (
     <div className='mt-4'>
