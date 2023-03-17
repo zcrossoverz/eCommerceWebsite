@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import userReducer from './slices/user.slice';
 import cartReducer from './slices/cart.slice';
 import navigationReducer from './slices/navigation.slice';
+import modalReducer from './slices/modal.slice';
 // ...
 
 export const store = configureStore({
@@ -10,6 +11,7 @@ export const store = configureStore({
     userReducer,
     cartReducer,
     navigationReducer,
+    modalReducer,
   },
 });
 
