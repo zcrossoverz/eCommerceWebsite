@@ -16,6 +16,8 @@ import AdminDashboard from './pages/admindashboard';
 import AdminRoute from './routes/adminroute';
 import ProductDetails from './components/productdetails';
 import ProductDetailsLayout from './layouts/productdetails';
+import CartLayout from './layouts/cartlayout';
+import CartUser from './pages/cart';
 function App() {
   return (
     <div>
@@ -37,6 +39,14 @@ function App() {
               <Profile>
                 <ProfileUser />
               </Profile>
+            }
+          />
+          <Route
+            path={path.cart}
+            element={
+              <CartLayout>
+                <CartUser />
+              </CartLayout>
             }
           />
         </Route>
@@ -71,6 +81,15 @@ function App() {
             </ProductDetailsLayout>
           }
         ></Route>
+        <Route
+          path={path.brand}
+          element={
+            <MainLayout>
+              <Banner />
+              <ProductList />
+            </MainLayout>
+          }
+        />
       </Routes>
       <ToastContainer></ToastContainer>
     </div>

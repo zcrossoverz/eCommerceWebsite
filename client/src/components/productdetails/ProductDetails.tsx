@@ -16,6 +16,7 @@ import { CartItem } from 'src/types/cart';
 import { addItemtoCart } from 'src/slices/cart.slice';
 import { RootState } from 'src/store';
 import path from 'src/constants/path';
+import { baseURL } from 'src/constants/constants';
 function ProductDetails() {
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();
@@ -41,6 +42,7 @@ function ProductDetails() {
         toast.error(err.response?.data.error);
       }
     },
+    retry: 0,
   });
   const [optionSelected, setOptionSelected] = useState<OptionProduct>();
   const [quantity, setQuantity] = useState<number | string>('');
@@ -88,7 +90,7 @@ function ProductDetails() {
       const cartItem: CartItem = {
         id: product?.data.id,
         name: product.data.name,
-        image: product.data.images[0].image_url,
+        image: product.data.images.image_url,
         option: {
           price: opt.price,
           product_option_id: opt.product_option_id,
@@ -105,14 +107,29 @@ function ProductDetails() {
         <title> {`${product.name}`}</title>
       </Helmet> */}
       <div className='mx-auto mt-1 grid grid-cols-1 grid-rows-1 bg-white shadow-md md:p-4 lg:w-[80%] lg:grid-cols-[1fr,2fr]'>
-        <Carousel autoPlay emulateTouch={true}>
-          {product?.data.images &&
-            product?.data.images.map((item, i) => (
+        {product?.data.product_options && product.data.product_options.every((e) => e.image !== null) ? (
+          <Carousel autoPlay emulateTouch={true}>
+            {product?.data.product_options.map((item, i) => (
               <div key={i}>
-                <img className='' src={'http://localhost:3000/' + item.image_url} alt={`${i} Slide`} />
+                <img className='' src={`${baseURL}/${item.image?.image_url}`} alt={`${i} Slide`} />
               </div>
             ))}
-        </Carousel>
+          </Carousel>
+        ) : (
+          <Carousel autoPlay emulateTouch={true}>
+            {product?.data.product_options.map((item, i) => {
+              return (
+                <div key={item.product_option_id}>
+                  <img
+                    className=''
+                    src={`${baseURL}/${item.image?.image_url ? item.image.image_url : product.data.images.image_url}`}
+                    alt={`${i} Slide`}
+                  />
+                </div>
+              );
+            })}
+          </Carousel>
+        )}
         <div className='bg-white p-2 md:p-4'>
           <h1 className='text-4xl font-bold'>{product?.data.name}</h1>
           <div className='mb-2 flex items-center'>
@@ -145,8 +162,8 @@ function ProductDetails() {
                       <div className='flex items-center justify-around'>
                         <span className='text-3xl'>{formatPrice(Number(op.price))}</span>
                         <span>
-                          <b className={op.quantity && op.quantity < 1 ? 'text-red-600' : 'text-green-600'}>
-                            {op.quantity && op.quantity < 1 ? 'Hết hàng' : 'Còn hàng'}
+                          <b className={!op.quantity ? 'text-red-600' : 'text-green-600'}>
+                            {!op.quantity ? 'Hết hàng' : 'Còn hàng'}
                           </b>
                         </span>
                       </div>

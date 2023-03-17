@@ -5,10 +5,10 @@ export type User = {
   lastName: string;
   phone: null;
   default_address: null;
-  id: number;
+  id?: number;
   role: string;
   createAt: string;
   isActive: boolean;
   unread_message: number;
 };
-export type UserInfo = Pick<User, 'firstName' | 'lastName' | 'role'>;
+export type UserInfo = Pick<User, 'firstName' | 'lastName' | 'role' | 'id'>;

@@ -20,6 +20,11 @@ export interface Product {
     rom?: string;
     price?: string;
     quantity?: number;
+    image?: {
+      id: string;
+      image_url: string;
+      type: string;
+    };
   }[];
 }
 export interface ProductsList {
@@ -35,4 +40,9 @@ export interface ProductsList {
 export interface ProductListConfig {
   limit?: string;
   page?: string;
+  brand_id?: string;
+  price_min?: string;
+  price_max?: string;
+  rate?: string;
+  search?: string;
 }

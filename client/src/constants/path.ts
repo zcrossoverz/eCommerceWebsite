@@ -7,6 +7,7 @@ const path = {
   productDetails: '/product/:id',
   cart: '/cart',
   product: '/product',
+  brand: '/brand/:id',
 };
 
 

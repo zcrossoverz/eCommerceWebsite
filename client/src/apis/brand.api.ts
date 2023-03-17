@@ -1,3 +1,4 @@
+import { Brand } from 'src/types/brand.type';
 import http from 'src/utils/http';
 const URL = '/brand';
 
@@ -18,4 +19,15 @@ const brandsApi = {
   },
 };
 
-export default brandsApi;
+export brandsApi;
+
+// edit later
+
+const baseURL = '/brand';
+const brandApi = {
+  getAllBrand() {
+    return http.get<Brand[]>(baseURL);
+  },
+};
+export default brandApi;
+
