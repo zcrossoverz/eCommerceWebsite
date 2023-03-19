@@ -17,12 +17,16 @@ import { addItemtoCart } from 'src/slices/cart.slice';
 import { RootState } from 'src/store';
 import path from 'src/constants/path';
 import { baseURL } from 'src/constants/constants';
+import BreadCrumb from '../admindashboard/breadcrumb';
+import HelmetSale from '../Helmet';
+import { nanoid } from '@reduxjs/toolkit';
+import Loading from '../loading';
 function ProductDetails() {
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { data: product } = useQuery({
+  const { data: product, isLoading } = useQuery({
     queryKey: [
       'product',
       {
@@ -105,9 +109,18 @@ function ProductDetails() {
   };
   return (
     <>
-      {/* <Helmet>
-        <title> {`${product.name}`}</title>
-      </Helmet> */}
+      <HelmetSale title={product?.data.name as string}></HelmetSale>
+      <div className='mx-auto max-w-7xl md:px-4'>
+        <div className='hidden md:block'>
+          <BreadCrumb
+            key={nanoid()}
+            path={['Fstore', 'Danh sách sản phẩm', 'chi tiết sản phẩm', product?.data.name as string]}
+          />
+        </div>
+        <div className=' md:hidden'>
+          <BreadCrumb key={nanoid()} path={['Fstore', '...', '...', product?.data.name as string]} />
+        </div>
+      </div>
       <div className='mx-auto mt-1 grid grid-cols-1 grid-rows-1 bg-white shadow-md md:p-4 lg:w-[80%] lg:grid-cols-[1fr,2fr]'>
         {product?.data.product_options && product.data.product_options.every((e) => e.image !== null) ? (
           <Carousel autoPlay emulateTouch={true}>
@@ -132,103 +145,110 @@ function ProductDetails() {
             })}
           </Carousel>
         )}
-        <div className='bg-white p-2 md:p-4'>
-          <h1 className='text-4xl font-bold'>{product?.data.name}</h1>
-          <div className='mb-2 flex items-center'>
-            {/* <Star ratings={product.ratings} /> */}
-            {/* <span className='ml-2 text-base text-gray-500'>({product.numOfReviews} Reviews)</span> */}
+        {isLoading && (
+          <div className='col-span-2 flex min-h-[300px] items-center justify-center'>
+            <Loading />
           </div>
-          <div className='detailsBlock'>
-            <div className='grid min-h-[2rem] w-full grid-cols-1 gap-4 md:grid-cols-2'>
-              {product?.data.product_options &&
-                product.data.product_options.map((op) => {
-                  return (
-                    // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
-                    <button
-                      key={op.product_option_id}
-                      disabled={Boolean(Number(op.quantity) <= 0)}
-                      className={classNames('rounded-xl border bg-transparent px-4 py-2 text-center duration-200 ', {
-                        'boder-2 border-blue-500 shadow-md': Boolean(
-                          optionSelected?.product_option_id === op.product_option_id
-                        ),
-                        'cursor-not-allowed': Number(op.quantity) <= 0,
-                        'cursor-pointer hover:bg-orange-100': !(Number(op.quantity) <= 0),
-                      })}
-                      onClick={() => setOptionSelected(op)}
-                    >
-                      <div className='flex items-center justify-center'>
-                        <span>Ram: {op.ram}</span>
-                        <span className='mx-3'>Rom: {op.rom}</span>
-                        <span>Color: {op.color}</span>
-                      </div>
-                      <div className='flex items-center justify-around'>
-                        <span className='text-3xl'>{formatPrice(Number(op.price))}</span>
-                        <span>
-                          <b className={!op.quantity ? 'text-red-600' : 'text-green-600'}>
-                            {!op.quantity ? 'Hết hàng' : 'Còn hàng'}
-                          </b>
-                        </span>
-                      </div>
-                    </button>
-                  );
-                })}
+        )}
+        {!isLoading && (
+          <div className='bg-white p-2 md:p-4'>
+            <h1 className='text-4xl font-bold'>{product?.data.name}</h1>
+            <div className='mb-2 flex items-center'>
+              {/* <Star ratings={product.ratings} /> */}
+              {/* <span className='ml-2 text-base text-gray-500'>({product.numOfReviews} Reviews)</span> */}
             </div>
+            <div>
+              <div className='grid min-h-[2rem] w-full grid-cols-1 gap-4 md:grid-cols-2'>
+                {product?.data.product_options &&
+                  product.data.product_options.map((op) => {
+                    return (
+                      // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
+                      <button
+                        key={op.product_option_id}
+                        disabled={Boolean(Number(op.quantity) <= 0)}
+                        className={classNames('rounded-xl border bg-transparent px-4 py-2 text-center duration-200 ', {
+                          'boder-2 border-blue-500 shadow-md': Boolean(
+                            optionSelected?.product_option_id === op.product_option_id
+                          ),
+                          'cursor-not-allowed': Number(op.quantity) <= 0,
+                          'cursor-pointer hover:bg-orange-100': !(Number(op.quantity) <= 0),
+                        })}
+                        onClick={() => setOptionSelected(op)}
+                      >
+                        <div className='flex items-center justify-center'>
+                          <span>Ram: {op.ram}</span>
+                          <span className='mx-3'>Rom: {op.rom}</span>
+                          <span>Color: {op.color}</span>
+                        </div>
+                        <div className='flex items-center justify-around'>
+                          <span className='text-3xl'>{formatPrice(Number(op.price))}</span>
+                          <span>
+                            <b className={!op.quantity ? 'text-red-600' : 'text-green-600'}>
+                              {!op.quantity ? 'Hết hàng' : 'Còn hàng'}
+                            </b>
+                          </span>
+                        </div>
+                      </button>
+                    );
+                  })}
+              </div>
 
-            <div className='mt-2 min-h-[5rem] w-full overflow-hidden rounded-md border border-orange-200'>
-              <div className='w-full bg-orange-200 p-2'>Mô tả sản phẩm</div>
-              <p className='p-2 text-base'>{product?.data.description}</p>
+              <div className='mt-2 min-h-[5rem] w-full overflow-hidden rounded-md border border-orange-200'>
+                <div className='w-full bg-orange-200 p-2'>Mô tả sản phẩm</div>
+                <p className='p-2 text-base'>{product?.data.description}</p>
+              </div>
+              <div className='mt-4 mb-2 flex items-center'>
+                <span className='quantity mr-2'>Số lượng</span>
+                <div className='flex items-center'>
+                  {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+                  <span
+                    className='rounded-[4px] bg-green-400 px-2 py-1 duration-200 hover:bg-green-300'
+                    onClick={decreaseQuantity}
+                  >
+                    <HiMinus size={16} />
+                  </span>
+                  <input
+                    type='number'
+                    value={quantity}
+                    onChange={(e) => {
+                      setQuantity(e.target.value);
+                    }}
+                    className='mx-1 max-w-[6rem] rounded-md border-2 border-orange-400 px-2 py-1 focus:outline-none'
+                  />
+                  {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+                  <span
+                    className='rounded-[4px] bg-green-400 px-2 py-1 duration-200 hover:bg-green-300'
+                    onClick={increaseQuantity}
+                  >
+                    <HiPlus size={16} />
+                  </span>
+                </div>{' '}
+              </div>
+              {/* add to cart btn */}
+              <button
+                type='button'
+                onClick={() => handleAddToCart()}
+                className={classNames(
+                  'mr-2 mb-2 flex items-center rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white duration-300 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800',
+                  {
+                    'hover:bg-gradient-to-bl': Boolean(optionSelected),
+                    'cursor-not-allowed': Boolean(!optionSelected),
+                  }
+                )}
+              >
+                <BsCartPlus className='text-xl' />
+                <span className='ml-2 text-lg'>Thêm vào giỏ hàng</span>
+              </button>
             </div>
-            <div className='mt-4 mb-2 flex items-center'>
-              <span className='quantity mr-2'>Số lượng</span>
-              <div className='flex items-center'>
-                {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-                <span
-                  className='rounded-[4px] bg-green-400 px-2 py-1 duration-200 hover:bg-green-300'
-                  onClick={decreaseQuantity}
-                >
-                  <HiMinus size={16} />
-                </span>
-                <input
-                  type='number'
-                  value={quantity}
-                  onChange={(e) => {
-                    setQuantity(e.target.value);
-                  }}
-                  className='mx-1 max-w-[6rem] rounded-md border-2 border-orange-400 px-2 py-1 focus:outline-none'
-                />
-                {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-                <span
-                  className='rounded-[4px] bg-green-400 px-2 py-1 duration-200 hover:bg-green-300'
-                  onClick={increaseQuantity}
-                >
-                  <HiPlus size={16} />
-                </span>
-              </div>{' '}
+            <div className='min-h-[6rem] w-full overflow-hidden rounded-md bg-red-200'>
+              <div className='flex min-h-[3rem] w-full items-center bg-red-600 px-2'>
+                <span className='border-r pr-2 text-xl font-bold uppercase text-yellow-400 md:text-3xl'>SỐ 1</span>
+                <span className='pl-2 text-lg uppercase text-white md:text-2xl'>VỀ BẢO HÀNH VÀ HẬU MÃI</span>
+              </div>
+              <p className='p-2'>Bảo hành 1 ĐỔI 1 trong 6 tháng</p>
             </div>
-            {/* add to cart btn */}
-            <button
-              type='button'
-              onClick={() => handleAddToCart()}
-              className={classNames(
-                'mr-2 mb-2 flex items-center rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white duration-300 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800',
-                {
-                  'hover:bg-gradient-to-bl': Boolean(optionSelected),
-                  'cursor-not-allowed': Boolean(!optionSelected),
-                }
-              )}
-            >
-              <BsCartPlus className='text-xl' />
-              <span className='ml-2 text-lg'>Thêm vào giỏ hàng</span>
-            </button>
           </div>
-          <div className='min-h-[6rem] w-full overflow-hidden rounded-md bg-red-200'>
-            <div className='flex min-h-[3rem] w-full items-center bg-red-600 px-2'>
-              <span className='border-r pr-2 text-xl font-bold uppercase text-yellow-400 md:text-3xl'>SỐ 1</span>
-              <span className='pl-2 text-lg uppercase text-white md:text-2xl'>VỀ BẢO HÀNH VÀ HẬU MÃI</span>
-            </div>
-            <p className='p-2'>Bảo hành 1 ĐỔI 1 trong 6 tháng</p>
-          </div>
-        </div>
+        )}
       </div>
       {/* desc */}
       <div className='mx-auto mt-4 p-4 shadow-md lg:w-[80%]'>

@@ -13,7 +13,6 @@ import { navigate, selectCurrentTab } from 'src/slices/navigation.slice';
 type PropsButton = {
   name: string;
   Icon: IconType;
-  active: boolean;
   navigateTo: keyof dashboardTabInterface;
 };
 
@@ -25,13 +24,13 @@ type Subnav = {
 type PropsNavButton = {
   name: string;
   Icon: IconType;
-  active: boolean;
   subnav: Subnav[];
 };
 
-const ButtonNav = ({ name, Icon, active = false, navigateTo }: PropsButton) => {
+const ButtonNav = ({ name, Icon, navigateTo }: PropsButton) => {
   const dispatch = useDispatch();
-
+  const currentTab = useSelector(selectCurrentTab);
+  const active = dashboard_tab[navigateTo].name === dashboard_tab[currentTab].name;
   return (
     <button
       className={`mx-4 ${!active && 'hover:bg-white/10'} flex w-[calc(100%-2rem)] items-center rounded-md px-4 ${
@@ -45,8 +44,10 @@ const ButtonNav = ({ name, Icon, active = false, navigateTo }: PropsButton) => {
   );
 };
 
-const ButtonNavDropdown = ({ name, Icon, active = false, subnav }: PropsNavButton) => {
+const ButtonNavDropdown = ({ name, Icon, subnav }: PropsNavButton) => {
   const dispatch = useDispatch();
+  const currentTab = useSelector(selectCurrentTab);
+  const active = dashboard_tab[subnav[0].navigateTo].name === dashboard_tab[currentTab].name;
   return (
     <Menu as='div'>
       <Menu.Button
@@ -73,16 +74,13 @@ const ButtonNavDropdown = ({ name, Icon, active = false, subnav }: PropsNavButto
           <div className='m-4 rounded-md bg-white shadow-md'>
             {subnav.map((e, i) => {
               return (
-                <Menu.Item key={i.toString()}>
-                  {() => (
-                    <button
-                      onClick={() => dispatch(navigate(e.navigateTo))}
-                      className='block rounded-md px-4 py-2 hover:bg-gray-50'
-                    >
-                      {e.title}
-                    </button>
-                  )}
-                </Menu.Item>
+                <Menu.Button
+                  className='block w-full px-4 py-2 text-left hover:rounded-md hover:bg-gray-100'
+                  onClick={() => dispatch(navigate(e.navigateTo))}
+                  key={i.toString()}
+                >
+                  {() => <div>{e.title}</div>}
+                </Menu.Button>
               );
             })}
           </div>
@@ -92,17 +90,7 @@ const ButtonNavDropdown = ({ name, Icon, active = false, subnav }: PropsNavButto
   );
 };
 
-type sidebar_props = {
-  active: string;
-};
-function SidebarDashboard({ active }: sidebar_props) {
-  const currentTab = useSelector(selectCurrentTab);
-  const product_link = [
-    { title: 'Manage Product', navigateTo: 'product' },
-    { title: 'Manage Brand', navigateTo: 'product' },
-    { title: 'Manage Opt', navigateTo: 'product' },
-  ];
-
+function SidebarDashboard() {
   return (
     <div>
       <div className='mx-2 flex items-center py-6'>
@@ -110,12 +98,20 @@ function SidebarDashboard({ active }: sidebar_props) {
       </div>
       <hr className='mx-4 border-blue-100/20' />
       <div className='my-4'>
-        <ButtonNav name={'Home'} Icon={AiFillHome} active={true} navigateTo='home' />
-        <ButtonNavDropdown name={'Products'} Icon={BsFillCartFill} active={false} subnav={product_link} />
-        <ButtonNav name={'Orders'} Icon={FaMoneyCheckAlt} active={false} navigateTo='order' />
-        <ButtonNav name={'Inventory'} Icon={AiFillSetting} active={false} navigateTo='inventory' />
-        <ButtonNav name={'Reports'} Icon={AiFillSetting} active={false} navigateTo='report' />
-        <ButtonNav name={'Users'} Icon={AiFillSetting} active={false} navigateTo='user' />
+        <ButtonNav name={'Home'} Icon={AiFillHome} navigateTo='home' />
+        <ButtonNavDropdown
+          name={'Products'}
+          Icon={BsFillCartFill}
+          subnav={[
+            { title: 'Manage Product', navigateTo: 'manage_product' },
+            { title: 'Manage Brand', navigateTo: 'manage_brand' },
+            { title: 'Manage Coupon', navigateTo: 'manage_coupon' },
+          ]}
+        />
+        <ButtonNav name={'Orders'} Icon={FaMoneyCheckAlt} navigateTo='order' />
+        <ButtonNav name={'Inventory'} Icon={AiFillSetting} navigateTo='inventory' />
+        <ButtonNav name={'Reports'} Icon={AiFillSetting} navigateTo='report' />
+        <ButtonNav name={'Users'} Icon={AiFillSetting} navigateTo='user' />
       </div>
     </div>
   );

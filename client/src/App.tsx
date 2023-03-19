@@ -18,6 +18,7 @@ import ProductDetails from './components/productdetails';
 import ProductDetailsLayout from './layouts/productdetails';
 import CartLayout from './layouts/cartlayout';
 import CartUser from './pages/cart';
+import NotFound from './pages/notfoundpage';
 function App() {
   return (
     <div>
@@ -40,9 +41,7 @@ function App() {
                 <ProfileUser />
               </Profile>
             }
-          >
-            <Route path='file' element={<div className='z-10 bg-green-300'></div>} />
-          </Route>
+          ></Route>
           <Route
             path={path.cart}
             element={
@@ -92,6 +91,7 @@ function App() {
             </MainLayout>
           }
         />
+        <Route path='*' element={<NotFound />} />
       </Routes>
       <ToastContainer></ToastContainer>
     </div>

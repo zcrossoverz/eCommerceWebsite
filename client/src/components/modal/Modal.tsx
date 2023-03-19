@@ -97,7 +97,7 @@ function Modal({ setShowModal, infoData, refetchAddress }: Props) {
                 htmlFor='floating_first_name'
                 className='absolute top-3 -z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-medium peer-focus:text-blue-600 dark:text-gray-400 peer-focus:dark:text-blue-500'
               >
-                First name
+                Họ
               </label>
             </div>
             <div className='group relative z-0 mb-6 w-full'>
@@ -112,13 +112,13 @@ function Modal({ setShowModal, infoData, refetchAddress }: Props) {
                 htmlFor='floating_last_name'
                 className='absolute top-3 -z-10 origin-[0] -translate-y-6 scale-75 transform text-sm text-gray-500 duration-300 peer-placeholder-shown:translate-y-0 peer-placeholder-shown:scale-100 peer-focus:left-0 peer-focus:-translate-y-6 peer-focus:scale-75 peer-focus:font-medium peer-focus:text-blue-600 dark:text-gray-400 peer-focus:dark:text-blue-500'
               >
-                Last name
+                Tên
               </label>
             </div>
           </div>
           <div className='mb-6'>
             <label htmlFor='email' className='mb-2 block text-sm font-medium text-gray-900 dark:text-white'>
-              Your phone
+              Số điện thoại
             </label>
             <input
               type='text'

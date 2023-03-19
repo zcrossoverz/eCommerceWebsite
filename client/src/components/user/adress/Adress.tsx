@@ -4,7 +4,7 @@ import {
   type RefetchQueryFilters,
   useMutation,
 } from '@tanstack/react-query';
-import { User, UserInfo } from 'src/types/user.type';
+import { User } from 'src/types/user.type';
 import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useState } from 'react';
 import { type AxiosResponse } from 'axios';
@@ -42,7 +42,7 @@ function Address({ user, refetchAddress }: Props) {
           idUser: user.id,
         },
         {
-          onSuccess: (data) => {
+          onSuccess: () => {
             refetchAddress();
           },
         }
@@ -60,7 +60,7 @@ function Address({ user, refetchAddress }: Props) {
         user?.address.length > 0 &&
         user.address.map((address) => (
           <div key={address.id} className='grid grid-cols-8 border-b p-4'>
-            <div className='col-span-6 flex flex-col items-start py-1'>
+            <div className='col-span-6 mr-2 flex flex-col items-start py-1'>
               <span>{address.address}</span>
               <div className='flex items-center'>
                 <span className='mr-2 rounded border border-blue-400 bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-gray-700 dark:text-blue-400'>
@@ -68,7 +68,7 @@ function Address({ user, refetchAddress }: Props) {
                 </span>
                 {user.default_address === address.id && (
                   <span className='mr-2 rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'>
-                    Yellow
+                    Mặc định
                   </span>
                 )}
               </div>
@@ -77,7 +77,7 @@ function Address({ user, refetchAddress }: Props) {
               <div className='flex items-center justify-center'>
                 <button
                   onClick={() => handleDeleteAddress(address.id)}
-                  className='px-2 py-1 text-sm text-orange-400 duration-300 hover:text-orange-500'
+                  className='py-1 text-sm text-orange-400 duration-300 hover:text-orange-500 md:px-2'
                 >
                   Xóa
                 </button>
@@ -86,7 +86,7 @@ function Address({ user, refetchAddress }: Props) {
                   refetchAddress={refetchAddress}
                   title='Cập nhật'
                   titleBtn='Xác nhận sửa'
-                  classStyle='px-2 py-1 hover:underline text-sm text-blue-400 duration-300 hover:text-blue-500'
+                  classStyle='md:px-2 px-1 whitespace-nowrap py-1 hover:underline text-sm text-blue-400 duration-300 hover:text-blue-500'
                   isUpdate={true}
                   address={address}
                 />
@@ -94,9 +94,9 @@ function Address({ user, refetchAddress }: Props) {
 
               <button
                 onClick={() => handleSetDefaultAdress(address.id)}
-                className='rounded-sm border border-black px-2 py-1 duration-300 hover:bg-orange-200'
+                className='whitespace-nowrap rounded-sm border border-black px-2 py-1 duration-300 hover:bg-orange-200 '
               >
-                Thiết lập mặc định
+                <span className='hidden md:inline-block'>Thiết lập</span> mặc định
               </button>
             </div>
           </div>
@@ -209,7 +209,7 @@ function BtnAddAress({ refetchAddress, user, classStyle, title, isUpdate, addres
                       onChange={(e) => setAddressUser(e.target.value)}
                       rows={4}
                       className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500'
-                      placeholder='Write your thoughts here...'
+                      placeholder='Điền địa chỉ của bạn vào đây'
                     />
                   </div>
 

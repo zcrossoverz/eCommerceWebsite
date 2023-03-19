@@ -8,6 +8,8 @@ import { produce } from 'immer';
 import { omit } from 'lodash';
 import { updateCart as updateCartList } from 'src/slices/cart.slice';
 import { baseURL } from 'src/constants/constants';
+import HelmetSale from 'src/components/Helmet';
+import BreadCrumb from 'src/components/admindashboard/breadcrumb';
 interface ExtendCartItem extends CartItem {
   checked: boolean;
 }
@@ -72,11 +74,9 @@ function CartUser() {
   const increaseQuantity = (item: ExtendCartItem, index: number) => {
     setExtendCartItem(
       produce((draft) => {
-        // handle when have Stock of product
-        // if (draft[index].option.quantity === draft[index].option.stock) {
-        //   return
-        // }else
-        draft[index].option.quantity += 1;
+        if (draft[index].option.quantity === draft[index].option.stock) {
+          return;
+        } else draft[index].option.quantity += 1;
       })
     );
   };
@@ -114,6 +114,10 @@ function CartUser() {
   };
   return (
     <div className='mx-auto max-w-7xl bg-transparent p-4'>
+      <HelmetSale title='Giỏ hàng'></HelmetSale>
+      <div className='mb-2'>
+        <BreadCrumb path={['Fstore', 'Giỏ hàng']} />
+      </div>
       {/* top section cart*/}
       <div className='grid grid-cols-12 gap-2 bg-white px-6 py-4 text-lg font-semibold shadow-sm'>
         <div className='col-span-1'>
