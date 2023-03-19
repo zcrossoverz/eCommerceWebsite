@@ -10,7 +10,6 @@ import { AppContext } from 'src/contexts/app.context';
 import { clearAccessToken, getAccessToken } from 'src/utils/auth';
 import jwtDecode from 'jwt-decode';
 import { UserInfo } from 'src/types/user.type';
-import { pick } from 'lodash';
 import path from 'src/constants/path';
 import { RiUserSettingsLine } from 'react-icons/ri';
 import Cart from '../popover/CartPopover';
@@ -49,10 +48,7 @@ function Header() {
       setUserInfo(undefined);
     }
   }, [isAuth, dispath]);
-  console.log(userInfo);
-  // useEffect(() => {
 
-  //  },[searchProduct])
   const { nodeRef } = useClickOutSide(() => {
     setShowMenuUser(false);
   });

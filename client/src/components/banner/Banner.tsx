@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { BsChevronCompactLeft, BsChevronCompactRight } from 'react-icons/bs';
 import { RxDotFilled } from 'react-icons/rx';
@@ -43,24 +43,39 @@ const variants = {
 function Banner() {
   const [index, setIndex] = useState<number>(0);
   const [direction, setDirection] = useState<number>(0);
+  const ref = useRef<() => void>();
 
-  function nextStep() {
+  const nextStep = () => {
     setDirection(1);
     if (index === images.length - 1) {
       setIndex(0);
       return;
     }
-    setIndex(index + 1);
-  }
+    setIndex((prev) => prev + 1);
+  };
 
-  function prevStep() {
+  const prevStep = () => {
     setDirection(-1);
     if (index === 0) {
       setIndex(images.length - 1);
       return;
     }
     setIndex(index - 1);
-  }
+  };
+  useEffect(() => {
+    ref.current = nextStep;
+  });
+  useEffect(() => {
+    const idInterval = setInterval(() => {
+      if (ref.current) {
+        ref.current();
+      }
+    }, 4000);
+
+    return () => {
+      clearInterval(idInterval);
+    };
+  }, []);
   const goToSlide = (slideIndex: number) => {
     if (index > slideIndex) {
       setDirection(-1);

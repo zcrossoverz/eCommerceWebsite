@@ -7,5 +7,6 @@ export interface CartItem {
     product_option_id: number;
     quantity: number;
     image?: string;
+    stock: number;
   };
 }

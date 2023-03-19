@@ -1,5 +1,4 @@
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
-import { baseURL } from 'src/constants/constants';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 import { CartItem } from 'src/types/cart';
 import { formatPrice } from 'src/utils/formatPrice';
@@ -8,6 +7,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { produce } from 'immer';
 import { omit } from 'lodash';
 import { updateCart as updateCartList } from 'src/slices/cart.slice';
+import { baseURL } from 'src/constants/constants';
+import HelmetSale from 'src/components/Helmet';
+import BreadCrumb from 'src/components/admindashboard/breadcrumb';
 interface ExtendCartItem extends CartItem {
   checked: boolean;
 }
@@ -44,17 +46,14 @@ function CartUser() {
   }, [cartItemUser]);
 
   useEffect(() => {
-    return () => {
-      if (extendCartItems && extendCartItems.length >= 0) {
-        let updateCart = omit<CartItem[]>(extendCartItems, 'checked');
-        updateCart = Object.values(updateCart);
-        if (updateCart && updateCart.length > 0) {
-          console.log(updateCart);
-          dispath(updateCartList(updateCart as CartItem[]));
-        }
+    if (extendCartItems && extendCartItems.length >= 0) {
+      let updateCart = omit<CartItem[]>(extendCartItems, 'checked');
+      updateCart = Object.values(updateCart);
+      if (updateCart && updateCart.length >= 0) {
+        dispath(updateCartList(updateCart as CartItem[]));
       }
-    };
-  }, [extendCartItems]);
+    }
+  }, [extendCartItems, dispath]);
   const handleChecked = (id: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setExtendCartItem(
       produce((draft) => {
@@ -75,25 +74,59 @@ function CartUser() {
   const increaseQuantity = (item: ExtendCartItem, index: number) => {
     setExtendCartItem(
       produce((draft) => {
-        draft[index].option.quantity += 1;
+        if (draft[index].option.quantity === draft[index].option.stock) {
+          return;
+        } else draft[index].option.quantity += 1;
       })
     );
   };
   const decreaseQuantity = (item: ExtendCartItem, index: number) => {
     setExtendCartItem(
       produce((draft) => {
-        draft[index].option.quantity -= 1;
+        if (draft[index].option.quantity === 1) {
+          draft.splice(index, 1);
+        } else {
+          draft[index].option.quantity -= 1;
+        }
+      })
+    );
+  };
+  const handleDeleteChecked = () => {
+    if (checkedItems.length > 0) {
+      const idChecked = checkedItems.map((item) => item.id);
+      setExtendCartItem(
+        produce((draft) => {
+          return draft.filter((item) => {
+            if (item.id) {
+              return !idChecked.includes(item.id);
+            }
+          });
+        })
+      );
+    }
+  };
+  const handleDelete = (index: number) => () => {
+    setExtendCartItem(
+      produce((draft) => {
+        draft.splice(index, 1);
       })
     );
   };
   return (
     <div className='mx-auto max-w-7xl bg-transparent p-4'>
+      <HelmetSale title='Giỏ hàng'></HelmetSale>
+      <div className='mb-2'>
+        <BreadCrumb path={['Fstore', 'Giỏ hàng']} />
+      </div>
       {/* top section cart*/}
       <div className='grid grid-cols-12 gap-2 bg-white px-6 py-4 text-lg font-semibold shadow-sm'>
         <div className='col-span-1'>
           <input checked={isCheckedAll} onChange={handleCheckedAll} type='checkbox' />
         </div>
         <h2 className='col-span-6'>Sản phẩm</h2>
+        <button onClick={handleDeleteChecked} className='col-span-5 text-center md:hidden'>
+          Xóa
+        </button>
         <div className='col-span-5 hidden grid-cols-12 lg:grid'>
           <span className='col-span-3 text-center'>Đơn giá</span>
           <span className='col-span-3 text-center'>Số lượng</span>
@@ -113,10 +146,7 @@ function CartUser() {
                 <input checked={item.checked} onChange={handleChecked(index)} type='checkbox' />
               </div>
               <div className='col-span-11 flex items-center md:col-span-6'>
-                <img
-                  src='https://shopee.vn/-M%C3%A3-ELBMO2-gi%E1%BA%A3m-12-%C4%91%C6%A1n-500K-Tai-Nghe-Bluetooth-5.3-Baseus-WM01-TWS-Ch%E1%BB%91ng-%E1%BB%92n-i.131195741.6938221363?xptdk=fac8a761-5165-44a8-8b8a-a0078bdc1bb9'
-                  alt='img product'
-                />
+                <img src={`${baseURL}/${item.option.image}`} className='max-w-[3rem]' alt='img product' />
                 <div className='flex flex-col items-start px-2'>
                   <h2 className='line-clamp-1 '>{item.name}</h2>
                   <span className='text-base text-orange-500 md:hidden'>{formatPrice(Number(item.option.price))}</span>
@@ -143,7 +173,9 @@ function CartUser() {
                 </div>
               </div>
               <div className='col-span-5 hidden grid-cols-12 lg:grid'>
-                <span className='col-span-3 text-center'>{formatPrice(Number(item.option.price))}</span>
+                <span className='col-span-3 flex items-center justify-center'>
+                  {formatPrice(Number(item.option.price))}
+                </span>
                 <div className='col-span-3 flex items-center justify-center'>
                   <button
                     onClick={() => decreaseQuantity(item, index)}
@@ -164,10 +196,12 @@ function CartUser() {
                     +
                   </button>
                 </div>
-                <span className='col-span-3 text-center'>
+                <span className='col-span-3 flex items-center justify-center text-center'>
                   {formatPrice(Number(item.option.price) * Number(item.option.quantity))}
                 </span>
-                <span className='col-span-3 text-center'>Xóa</span>
+                <button onClick={handleDelete(index)} className='col-span-3 text-center'>
+                  Xóa
+                </button>
               </div>
             </div>
           ))}
@@ -179,7 +213,9 @@ function CartUser() {
           <button onClick={handleCheckedAll} className='mx-3 cursor-pointer text-sm md:text-lg'>
             Chọn tất cả
           </button>
-          <button className='hidden cursor-pointer md:inline-block'>Xóa</button>
+          <button onClick={handleDeleteChecked} className='hidden cursor-pointer md:inline-block'>
+            Xóa
+          </button>
         </div>
         <div className='flex items-center'>
           <div className='flex-grow md:px-2'>
