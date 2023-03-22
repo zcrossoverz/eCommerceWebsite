@@ -217,3 +217,11 @@ export const deleteAddress = async (id_user:number, id_addr: number) => {
   if(deleted) return success();
   else return BadRequestError("you dont have this address id");
 }
+
+export const changePassword = async (id: number, old_password: string, new_password: string) => {
+  const user = await userRepository.findOneBy({id});
+  if(!old_password || !new_password) return BadRequestError("password cannot empty");
+  if(!user) return BadRequestError("error when retrieve user data");
+  if(!bcryptjs.compareSync(old_password, user.password)) return BadRequestError("old password is not correct");
+  return (await userRepository.update({id}, {password: bcryptjs.hashSync(new_password, 8) })).affected ? success() : failed();
+}
