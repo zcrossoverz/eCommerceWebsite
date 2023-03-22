@@ -28,5 +28,13 @@ const userApi = {
       message: string;
     }>(`user/${idUser}/set_default_address`, { id_address: idAddress });
   },
+  changePassword(old_password: string, new_password: string) {
+    return http.patch<{
+      message: string;
+    }>('/user/change_password', {
+      old_password,
+      new_password,
+    });
+  },
 };
 export default userApi;

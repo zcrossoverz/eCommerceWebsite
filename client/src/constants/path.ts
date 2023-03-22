@@ -8,5 +8,6 @@ const path = {
   cart: '/cart',
   product: '/product',
   brand: '/brand/:id',
+  checkout: '/checkout',
 };
 export default path;

@@ -30,7 +30,6 @@ function ProductList() {
   const { data: products, isLoading } = useQuery({
     queryKey: ['products', queryParams],
     queryFn: () => productsApi.getProductsList(queryParams),
-    keepPreviousData: true,
     onError: (err) => {
       if (
         isAxiosErr<{

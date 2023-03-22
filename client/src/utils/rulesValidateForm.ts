@@ -113,6 +113,26 @@ export const updateInfo = yup.object({
     .matches(/(84|0[3|5|7|8|9])+([0-9]{8})\b/g, 'Số điện thoại không hợp lệ')
     .required(),
 });
+export const changePassSchema = yup.object({
+  oldPassword: yup
+    .string()
+    .required('password bắt buộc nhập')
+    .min(6, 'password có it nhất 6 ký tự')
+    .max(18, 'password có tối đa 18 ký tự'),
+  newPassword: yup
+    .string()
+    .required('password bắt buộc nhập')
+    .min(6, 'password có it nhất 6 ký tự')
+    .max(18, 'password có tối đa 18 ký tự'),
+
+  confirmNewPassword: yup
+    .string()
+    .required('bắt buộc nhập lại password')
+    .min(6, 'password có it nhất 6 ký tự')
+    .max(18, 'password có tối đa 18 ký tự')
+    .oneOf([yup.ref('newPassword')], 'password không khớp'),
+});
+export type ChangePass = yup.InferType<typeof changePassSchema>;
 export type LoginSchema = yup.InferType<typeof loginSchema>;
 export type Schema = yup.InferType<typeof schema>;
 export type FilterPriceSchema = yup.InferType<typeof filterPriceSchema>;

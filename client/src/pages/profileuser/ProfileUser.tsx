@@ -63,7 +63,7 @@ function ProfileUser() {
           <BreadCrumb path={['Fstore', 'Tài khoản của bạn']} />
         </div>
       )}
-      <div className='mx-auto my-2 grid max-w-7xl grid-cols-12 overflow-hidden rounded-md lg:min-h-[300px]'>
+      <div className='mx-auto my-2 grid max-w-7xl grid-cols-12 overflow-hidden rounded-md bg-blue-100 lg:min-h-[300px] lg:bg-transparent'>
         <HelmetSale title='Tài khoản của bạn'></HelmetSale>
         <div className='col-span-12 lg:col-span-3'>
           <div className='hidden border-b lg:block'>

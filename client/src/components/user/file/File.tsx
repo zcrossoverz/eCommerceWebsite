@@ -26,7 +26,7 @@ function File({ user, refetchAddress }: Props) {
         <h2 className='text-xl font-semibold'>Hồ sơ của tôi</h2>
         <p className='text-base'>quản lý thông tin hồ sơ của bạn</p>
       </div>
-      <div className='mt-2 flex min-h-[200px] w-full lg:min-h-[400px]'>
+      <div className='mt-2 flex min-h-[200px] w-full lg:min-h-[200px]'>
         <div className='mx-auto grid w-full grid-cols-7 lg:min-w-[700px]'>
           <div className='col-span-3 grid min-h-[8rem] grid-cols-1 p-2 lg:col-span-1'>
             <span className='text-left text-lg text-slate-300 lg:text-right'>Email:</span>
