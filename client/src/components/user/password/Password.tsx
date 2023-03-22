@@ -107,8 +107,8 @@ function Password() {
           <div className='md:w-1/3' />
           <div className='md:w-2/3'>
             <button
-              className='focus:shadow-outline rounded bg-orange-500 py-2 px-4 font-bold text-white shadow hover:bg-orange-400 focus:outline-none'
               type='submit'
+              className='rounded-lg bg-gradient-to-br from-pink-500 to-orange-400 px-4 py-2 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none'
             >
               Đổi mật khẩu
             </button>

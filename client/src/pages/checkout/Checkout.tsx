@@ -52,11 +52,6 @@ function Checkout() {
           id: user.data.default_address,
           content: user.data.address.find((address) => address.id === user.data.default_address)?.address || '',
         });
-      } else {
-        setAddress({
-          ...address,
-          content: user.data.address.find((address) => address.id === isActive)?.address || '',
-        });
       }
     },
   });
