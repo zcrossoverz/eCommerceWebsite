@@ -11,10 +11,13 @@ import authApi from 'src/apis/auth.api';
 import { toast } from 'react-toastify';
 import { AppContext } from 'src/contexts/app.context';
 import { isAxiosErr } from 'src/utils/error';
+import { useDispatch } from 'react-redux';
+import { getCart } from 'src/slices/cart.slice';
 type FormDataLogin = LoginSchema;
 function Login() {
   const { setIsAuth } = useContext(AppContext);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const location = useLocation();
   const {
     register,
@@ -32,9 +35,11 @@ function Login() {
         if (data.data.token && data.data.message) {
           setIsAuth(true);
           if (location.state) {
-            console.log(location.state);
             navigate(location.state.from);
-          } else navigate('/');
+          } else {
+            dispatch(getCart());
+            navigate('/');
+          }
         }
       },
       onError: (err) => {
