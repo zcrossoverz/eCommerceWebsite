@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import * as userServices from "../services/user.service";
-import { isError } from "../utils/error";
+import { BadRequestError, isError } from "../utils/error";
 import err from "../middlewares/error";
 
 
@@ -67,5 +67,12 @@ export const updateAddress = async (req: Request, res: Response, next: NextFunct
 export const deleteAddress = async (req: Request, res: Response, next: NextFunction) => {
   const { id_address, id_user } = req.params;
   const rs = await userServices.deleteAddress(Number(id_user), Number(id_address));
+  return isError(rs) ? next(err(rs, res)) : res.json(rs);
+}
+
+export const changePassword = async (req: Request, res: Response, next: NextFunction) => {
+  const { old_password, new_password } = req.body;
+  if(!req.user) return next(err(BadRequestError("error"), res));
+  const rs = await userServices.changePassword(req.user?.user_id , old_password, new_password);
   return isError(rs) ? next(err(rs, res)) : res.json(rs);
 }

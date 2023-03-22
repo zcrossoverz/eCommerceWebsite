@@ -2,6 +2,7 @@
 import * as product from "../controllers/product.controller";
 import express, { Express } from "express";
 import upload from "../middlewares/upload";
+import * as authMiddleware from "../middlewares/auth";
 import * as validation from "../middlewares/validation";
 
 export const ProductRoutes = (app: Express) => {
@@ -19,11 +20,11 @@ export const ProductRoutes = (app: Express) => {
      price_min={number}&price_max={number}
      rate={number}
     */
-    router.post("/", [upload.single('image'), validation.validateImageExtension], product.create);
-    router.post("/add_images/:id", [upload.array('image', 5), validation.validateImageExtension], product.addImages);
+    router.post("/", [ authMiddleware.verifyToken(), authMiddleware.require_admin(), upload.single('image'), validation.validateImageExtension], product.create);
+    router.post("/add_images/:id", [authMiddleware.verifyToken(), authMiddleware.require_admin(), upload.array('image', 5), validation.validateImageExtension], product.addImages);
     router.get("/:id(\\d+)", product.getOneById);
-    router.put("/:id", product.update);
-    router.delete("/:id", product.deleteOne);
+    router.put("/:id", [authMiddleware.verifyToken(), authMiddleware.require_admin()], product.update);
+    router.delete("/:id", [authMiddleware.verifyToken(), authMiddleware.require_admin()], product.deleteOne);
 
     app.use("/api/product", router);
 }
