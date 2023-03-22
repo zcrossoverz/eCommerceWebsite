@@ -19,5 +19,8 @@ export const OrderRoutes = (app: Express) => {
     router.patch("/update_status_payment/:order_id", [authMiddleware.verifyToken()], payment.updateStatusPayment);
     router.delete("/:order_id", [authMiddleware.verifyToken()], order.deleteOrder);
 
+    // router.get("/paypal", payment.createPaypalOrder);
+    // router.get("/paypal_capture", payment.capturePayment);
+
     app.use("/api/order", router);
 }
