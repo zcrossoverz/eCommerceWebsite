@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import { GrNext, GrPrevious } from 'react-icons/gr';
 import { createSearchParams, Link } from 'react-router-dom';
 import path from 'src/constants/path';
 import { ProductListConfig } from 'src/types/product.type';
@@ -79,7 +80,9 @@ function Pagination({ pageSize, queryConfig }: Props) {
   return (
     <div className='mt-6 flex flex-wrap justify-center'>
       {page === 1 ? (
-        <span className='mx-2 cursor-not-allowed rounded border bg-white/60 px-3 py-2  shadow-sm'>Prev</span>
+        <span className='mx-2 flex cursor-not-allowed items-center justify-center rounded border bg-white/60 px-3 py-2 shadow-sm'>
+          <GrPrevious />
+        </span>
       ) : (
         <Link
           to={{
@@ -89,15 +92,17 @@ function Pagination({ pageSize, queryConfig }: Props) {
               page: (page - 1).toString(),
             }).toString(),
           }}
-          className='mx-2 cursor-pointer rounded border bg-white px-3 py-2 shadow-sm'
+          className='mx-2 flex cursor-pointer items-center justify-center rounded border bg-white px-3 py-2 shadow-sm'
         >
-          Prev
+          <GrPrevious />
         </Link>
       )}
 
       {renderPagination()}
       {page === pageSize ? (
-        <span className='mx-2 cursor-not-allowed rounded border bg-white/60 px-3 py-2 shadow-sm'>Next</span>
+        <span className='mx-2 flex cursor-not-allowed items-center justify-center rounded border bg-white/60 px-3 py-2 shadow-sm'>
+          <GrNext />
+        </span>
       ) : (
         <Link
           to={{
@@ -109,7 +114,7 @@ function Pagination({ pageSize, queryConfig }: Props) {
           }}
           className='mx-2 cursor-pointer rounded border bg-white px-3 py-2 shadow-sm'
         >
-          Next
+          <GrNext />
         </Link>
       )}
     </div>

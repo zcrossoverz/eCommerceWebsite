@@ -55,10 +55,10 @@ function SettingsContent() {
           <span className='text-base text-blue-400'>Chưa có sản phẩm</span>
         </div>
       )}
-      {cartList.length >= 0 && userInfo.role && (
+      {cartList.length > 0 && userInfo.role && (
         <>
           <div className='max-h-[30rem] overflow-auto'>
-            <h1 className='grid grid-cols-1 px-2 text-sm text-gray-400'>Sản phẩm gần đây</h1>
+            <h1 className='px-2 text-sm text-gray-400'>Sản phẩm gần đây</h1>
             {cartList &&
               cartList.length > 0 &&
               cartList.map((cartItem) => {

@@ -16,9 +16,20 @@ export const saveCartItemToLocal = (value: CartItem[]) => {
   localStorage.setItem(key, saveValue);
 };
 export const getCartItemFromLocal = (): CartItem[] => {
-  const result = localStorage.getItem(key);
-  if (result) return JSON.parse(result);
-  else return [];
+  let keyOther = '';
+  const token = localStorage.getItem('token');
+  if (token) {
+    const user = pick<{
+      user_id: string;
+      lastName: string;
+    }>(jwtDecode(token), ['user_id', 'lastName']);
+    keyOther = user.lastName && user.user_id ? user.lastName + user.user_id : 'user';
+  }
+  if (keyOther) {
+    const result = localStorage.getItem(keyOther);
+    if (result) return JSON.parse(result);
+  }
+  return [];
 };
 export const clearCartFromLocal = (key: string) => {
   localStorage.removeItem(key);

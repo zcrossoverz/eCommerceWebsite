@@ -14,6 +14,10 @@ const cartSlice = createSlice({
   name: 'cart',
   initialState: initialCartState,
   reducers: {
+    getCart: (state) => {
+      const getCart = getCartItemFromLocal();
+      state.cartItem = getCart;
+    },
     addItemtoCart: (state, action: PayloadAction<CartItemType>) => {
       const isExist = state.cartItem.findIndex((e) => {
         return e.option.product_option_id === action.payload.option.product_option_id;
@@ -54,6 +58,6 @@ const cartSlice = createSlice({
     },
   },
 });
-export const { addItemtoCart, updateCart } = cartSlice.actions;
+export const { addItemtoCart, updateCart, getCart } = cartSlice.actions;
 
 export default cartSlice.reducer;

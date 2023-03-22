@@ -1,6 +1,6 @@
 const path = {
   home: '/',
-  profile: '/profile',
+  profile: '/profile/*',
   login: '/login',
   register: '/register',
   admin: '/admin',
@@ -8,7 +8,6 @@ const path = {
   cart: '/cart',
   product: '/product',
   brand: '/brand/:id',
+  checkout: '/checkout',
 };
-
-
 export default path;

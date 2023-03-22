@@ -18,6 +18,9 @@ import ProductDetails from './components/productdetails';
 import ProductDetailsLayout from './layouts/productdetails';
 import CartLayout from './layouts/cartlayout';
 import CartUser from './pages/cart';
+import NotFound from './pages/notfoundpage';
+import CheckoutLayout from './layouts/checkoutlayout';
+import Checkout from './pages/checkout';
 function App() {
   return (
     <div>
@@ -34,13 +37,21 @@ function App() {
         />
         <Route path='' element={<ProtectedRoute />}>
           <Route
+            path={path.checkout}
+            element={
+              <CheckoutLayout>
+                <Checkout />
+              </CheckoutLayout>
+            }
+          />
+          <Route
             path={path.profile}
             element={
               <Profile>
                 <ProfileUser />
               </Profile>
             }
-          />
+          ></Route>
           <Route
             path={path.cart}
             element={
@@ -81,6 +92,7 @@ function App() {
             </ProductDetailsLayout>
           }
         ></Route>
+
         <Route
           path={path.brand}
           element={
@@ -90,6 +102,7 @@ function App() {
             </MainLayout>
           }
         />
+        <Route path='*' element={<NotFound />} />
       </Routes>
       <ToastContainer></ToastContainer>
     </div>
