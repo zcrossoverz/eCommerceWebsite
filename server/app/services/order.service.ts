@@ -38,7 +38,7 @@ export interface error_info {
 }
 
 export const instanceOfErrorInfo = (object: any): object is error_info => {
-  return true;
+  return Object.keys(object).includes('error_order');
 }
 
 export const createOrder = async (
