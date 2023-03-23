@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import * as orderServices from "../services/order.service";
+import * as analysServices from "../services/analysis.service";
 import { isError } from "../utils/error";
 import err from "../middlewares/error";
 
@@ -55,6 +56,12 @@ export const updateAddressOrder = async (req: Request, res: Response, next: Next
     const { order_id } = req.params;
     const { address } = req.body;
     const rs = await orderServices.updateAddressOrder(Number(order_id), address);
+    return isError(rs) ? next(err(rs, res)) : res.json(rs);
+    
+}
+
+export const top_10_sale = async (req: Request, res: Response, next: NextFunction) => {
+    const rs = await analysServices.top_10_sale();
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
     
 }
