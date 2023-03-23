@@ -50,3 +50,11 @@ export const getStatusOrder =async (req: Request, res: Response, next: NextFunct
         is_paid: order.payment.is_paid,
     });
 }
+
+export const updateAddressOrder = async (req: Request, res: Response, next: NextFunction) => {
+    const { order_id } = req.params;
+    const { address } = req.body;
+    const rs = await orderServices.updateAddressOrder(Number(order_id), address);
+    return isError(rs) ? next(err(rs, res)) : res.json(rs);
+    
+}
