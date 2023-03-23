@@ -1,4 +1,5 @@
 import * as brandServices from "../services/brand.service";
+import * as analysServices from "../services/analysis.service";
 import { NextFunction, Request, Response } from "express";
 import { BadRequestError, isError } from "../utils/error";
 import err from "../middlewares/error";
@@ -29,6 +30,6 @@ export const getAll = async (req: Request, res: Response, next: NextFunction) =>
 }
 
 export const countProduct = async (req: Request, res: Response, next: NextFunction) => {
-    const rs = await brandServices.countProduct();
+    const rs = await analysServices.countProduct();
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
 }

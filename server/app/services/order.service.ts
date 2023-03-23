@@ -399,3 +399,15 @@ export const updateStatusOrder = async (
   }
   return;
 };
+
+export const updateAddressOrder = async (order_id: number, address: string) => {
+  const orderRepo = AppDataSource.getRepository(Order);
+  const order = await orderRepo.findOneBy({id:order_id});
+
+  if(!address) return BadRequestError("address empty");
+  if(!order) return BadRequestError("order not found");
+  if(order.status === EnumStatusOrder.PENDING || order.status === EnumStatusOrder.PROCESSING) {
+    return (await orderRepo.update({id: order_id}, { address })).affected ? success() : failed();
+  }
+  return BadRequestError("you can change address when the order in state PENDING or PROCESSING");
+}

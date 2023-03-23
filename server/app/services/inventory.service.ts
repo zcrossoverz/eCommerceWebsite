@@ -1,4 +1,3 @@
-import { MoreThan } from "typeorm";
 import { AppDataSource } from "../database";
 import {
   EnumInventoryInboundStatus,
@@ -228,44 +227,4 @@ export const getAllInboundNote = async (limit: number, page: number) => {
       })
       }
     })} : BadRequestError("inbound note empty");
-}
-
-export const analysis = async (limit: number, page: number) => {
-  const offset = (page-1)*limit;
-  const [data, count] = await productOptionRepo.findAndCount({
-    where: {
-      warehouse: {
-        quantity: MoreThan(0)
-      }
-    },
-    relations: {
-      warehouse: true,
-      image: true,
-      product: true
-    },
-    take: limit,
-    skip: offset
-  });
-
-  const last_page = Math.ceil(count/limit);
-  const prev_page = page - 1 < 1 ? null : page - 1;
-  const next_page = page + 1 > last_page ? null : page + 1;
-
-  return count ? {
-    current_page: page,
-    prev_page, next_page, last_page,
-    data_per_page: limit,
-    total: count,
-    data: data.map(e => {
-      return {
-        product_option_id: e.id,
-        quantity: e.warehouse.quantity,
-        images: e.image?.image_url,
-        name: e.product.name,
-        ram: e.ram,
-        rom: e.rom,
-        color: e.color
-      }
-    })
-  } : BadRequestError("warehouse empty");
 }

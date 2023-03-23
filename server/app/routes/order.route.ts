@@ -16,6 +16,7 @@ export const OrderRoutes = (app: Express) => {
     router.get(/^\/get_all(\?)?(((limit=[0-9])|(page=[0-9]))?(\%26)?){2}$/, [authMiddleware.verifyToken()], order.getAllOrder);
     router.post("/select_payment_method/:order_id", [authMiddleware.verifyToken()], payment.selectMethod);
     router.patch("/update_status_order/:order_id", [auth.verifyToken(), auth.require_admin()], order.updateStatusOrder);
+    router.patch("/update_address_order/:order_id", [auth.verifyToken(), auth.require_admin()], order.updateAddressOrder);
     router.patch("/update_status_payment/:order_id", [authMiddleware.verifyToken()], payment.updateStatusPayment);
     router.delete("/:order_id", [authMiddleware.verifyToken()], order.deleteOrder);
 
