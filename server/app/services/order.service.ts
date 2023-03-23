@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { AppDataSource } from "../database";
 import { EnumTypeNotify } from "../entities/notification.entity";
 import { EnumStatusOrder, Order } from "../entities/order.entity";
@@ -111,9 +110,7 @@ export const createOrder = async (
   if (!address && !user.default_address)
     return BadRequestError("please fill address");
   if (err.error)
-    return {
-      errors: err.info,
-    };
+    return BadRequestError(err.info[0].type);
 
   const new_order = await orderRepo.save(
     orderRepo.create({
@@ -257,8 +254,8 @@ export const getAllOrder = async (limit: number, page: number) => {
 
 export const deleteOrder = async (order_id: number) => {
   const OrderRepo = AppDataSource.getRepository(Order);
-  return (await OrderRepo.delete({ id: order_id })).affected
-    ? success()
+  const rs = await OrderRepo.delete({ id: order_id });
+   return rs.affected ? success()
     : failed();
 };
 
@@ -298,9 +295,7 @@ export const updateStatusOrder = async (
   });
 
   if (!order) return BadRequestError("order not found");
-  if (order.payment.method === EnumPaymentMethod.NOT_SET) {
-    return BadRequestError("please select method payment for order");
-  } else {
+  
     if (!status) return BadRequestError("status field cannot be empty");
     if (!(status in EnumStatusOrder)) return BadRequestError("status not valid");
     switch(String(EnumStatusOrder[status])){
@@ -309,6 +304,9 @@ export const updateStatusOrder = async (
       }
       case String(EnumStatusOrder.PROCESSING): {
         if(order.status === EnumStatusOrder.PENDING) {
+          if (order.payment.method === EnumPaymentMethod.NOT_SET) {
+            return BadRequestError("please select method payment for order");
+          }
           if(order.payment.is_paid || order.payment.method === EnumPaymentMethod.CASH_ON_DELIVERY){
             await addTimeline(order, EnumTimelineStatus.ORDER_PROCESSING);
             await addNewNoti(EnumTypeNotify.NEW_ORDER, order.id, order.user.id);
@@ -351,5 +349,4 @@ export const updateStatusOrder = async (
       }
     }
     return;
-  }
 };
