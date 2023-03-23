@@ -115,7 +115,7 @@ export const createOrder = async (
   );
   if (!address && !user.default_address)
     return BadRequestError("please fill address");
-  if (err.error) return err;
+  if (err.error) return err.info[0];
 
   const new_order = await orderRepo.save(
     orderRepo.create({
@@ -161,6 +161,7 @@ export const getOneOrder = async (order_id: number) => {
       orderItems: {
         product_option: {
           product: true,
+          image: true
         },
       },
       coupon: true,
@@ -186,6 +187,7 @@ export const getOneOrder = async (order_id: number) => {
         color: e.product_option.color,
         price: e.product_option.price,
         quantity: e.quantity,
+        image: e.product_option.image.image_url
       };
     }),
     payment: {
