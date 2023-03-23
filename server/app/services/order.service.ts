@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { AppDataSource } from "../database";
 import { EnumTypeNotify } from "../entities/notification.entity";
 import { EnumStatusOrder, Order } from "../entities/order.entity";
@@ -38,8 +39,8 @@ export interface error_info {
 }
 
 export const instanceOfErrorInfo = (object: any): object is error_info => {
-  return Object.keys(object).includes('error_order');
-}
+  return Object.keys(object).includes("error_order");
+};
 
 export const createOrder = async (
   user_id: number,
@@ -69,8 +70,6 @@ export const createOrder = async (
     quantity_not_valid,
   }
 
-  
-
   const err = {
     error: false,
     info: [] as error_info[],
@@ -81,7 +80,7 @@ export const createOrder = async (
     err.info.push({
       type: OrderError[type],
       product_option_id,
-      error_order: true
+      error_order: true,
     });
   };
 
@@ -163,7 +162,7 @@ export const getOneOrder = async (order_id: number) => {
       orderItems: {
         product_option: {
           product: true,
-          image: true
+          image: true,
         },
       },
       coupon: true,
@@ -189,7 +188,7 @@ export const getOneOrder = async (order_id: number) => {
         color: e.product_option.color,
         price: e.product_option.price,
         quantity: e.quantity,
-        image: e.product_option.image.image_url
+        image: e.product_option.image.image_url,
       };
     }),
     payment: {
@@ -205,7 +204,9 @@ export const getAllOrder = async (limit: number, page: number) => {
   const offset = (page - 1) * limit;
   const [rs, count] = await orderRepo.findAndCount({
     relations: {
-      user: true,
+      user: {
+        address: true,
+      },
       orderItems: {
         product_option: {
           product: true,
@@ -402,12 +403,19 @@ export const updateStatusOrder = async (
 
 export const updateAddressOrder = async (order_id: number, address: string) => {
   const orderRepo = AppDataSource.getRepository(Order);
-  const order = await orderRepo.findOneBy({id:order_id});
+  const order = await orderRepo.findOneBy({ id: order_id });
 
-  if(!address) return BadRequestError("address empty");
-  if(!order) return BadRequestError("order not found");
-  if(order.status === EnumStatusOrder.PENDING || order.status === EnumStatusOrder.PROCESSING) {
-    return (await orderRepo.update({id: order_id}, { address })).affected ? success() : failed();
+  if (!address) return BadRequestError("address empty");
+  if (!order) return BadRequestError("order not found");
+  if (
+    order.status === EnumStatusOrder.PENDING ||
+    order.status === EnumStatusOrder.PROCESSING
+  ) {
+    return (await orderRepo.update({ id: order_id }, { address })).affected
+      ? success()
+      : failed();
   }
-  return BadRequestError("you can change address when the order in state PENDING or PROCESSING");
-}
+  return BadRequestError(
+    "you can change address when the order in state PENDING or PROCESSING"
+  );
+};
