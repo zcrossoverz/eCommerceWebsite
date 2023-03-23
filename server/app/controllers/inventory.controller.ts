@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import * as inventoryServices from "../services/inventory.service";
+import * as analysServices from "../services/analysis.service";
 import { isError } from "../utils/error";
 import err from "../middlewares/error";
 
@@ -50,6 +51,6 @@ export const getAllInboundNote = async (req: Request, res: Response, next: NextF
 
 export const analysis = async (req: Request, res: Response, next: NextFunction) => {
     const { limit = 10, page = 1 } = req.query;
-    const rs = await inventoryServices.analysis(Number(limit), Number(page));
+    const rs = await analysServices.productInWarehouse(Number(limit), Number(page));
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
 };

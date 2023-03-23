@@ -16,8 +16,5 @@ export const InventoryRoutes = (app: Express) => {
     router.get(/^\/inbound_note(\?)?(((limit=[0-9])|(page=[0-9]))?(\%26)?){2}$/, [authMiddleware.verifyToken(), authMiddleware.require_admin()], inventory.getAllInboundNote);
 
 
-    router.get("/analysis", [authMiddleware.verifyToken(), authMiddleware.require_admin()], inventory.analysis);
-
-
     app.use("/api/inventory", router);
 }

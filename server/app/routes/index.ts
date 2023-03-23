@@ -8,6 +8,7 @@ import { brandRoutes } from "./brand.route";
 import { InventoryRoutes } from "./inventory.route";
 import { NotifyRoutes } from "./notification.route";
 import { feedbackRoutes } from "./feedback.route";
+import { AnalysisRoutes } from "./analysis.route";
 
 
 export const Routes = [
@@ -20,5 +21,6 @@ export const Routes = [
     brandRoutes,
     InventoryRoutes,
     NotifyRoutes,
-    feedbackRoutes
+    feedbackRoutes,
+    AnalysisRoutes
 ];
