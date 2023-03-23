@@ -33,9 +33,11 @@ function CartPopover() {
           <BsCart className='text-2xl' />
         </button>
         {isShowSettings && (
-          <Popover coords={coords} position='right' className='rounded-2xl bg-white shadow'>
-            <SettingsContentMemo></SettingsContentMemo>
-          </Popover>
+          <AnimatePresence>
+            <Popover coords={coords} position='right' className='rounded-2xl bg-white shadow'>
+              <SettingsContentMemo></SettingsContentMemo>
+            </Popover>
+          </AnimatePresence>
         )}
       </div>
     </div>
@@ -44,6 +46,7 @@ function CartPopover() {
 
 const SettingsContentMemo = memo(SettingsContent);
 import cartEmpty from 'src/assets/img/cartempty.png';
+import { AnimatePresence } from 'framer-motion';
 function SettingsContent() {
   const cartList = useSelector((state: RootState) => state.cartReducer.cartItem);
   const userInfo = useSelector((state: RootState) => state.userReducer.userInfo);

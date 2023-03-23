@@ -1,26 +1,42 @@
 import { Dialog, Transition } from '@headlessui/react';
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import classNames from 'classnames';
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import { BsPaypal } from 'react-icons/bs';
 import { FaWallet } from 'react-icons/fa';
 import { HiLocationMarker } from 'react-icons/hi';
 import { HiOutlineHomeModern } from 'react-icons/hi2';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
+import orderApi from 'src/apis/order.api';
 import userApi from 'src/apis/user.api';
 import CartItem from 'src/components/cartitems';
+import { clearCart } from 'src/slices/cart.slice';
 import { RootState } from 'src/store';
 import { CartItem as CartItemType } from 'src/types/cart';
+import { Order } from 'src/types/order.type';
 import { formatPrice } from 'src/utils/formatPrice';
-
-
+import { throttle } from 'lodash';
 interface LocationState {
   orderItem: CartItemType[];
 }
 function Checkout() {
+  const dispatch = useDispatch();
+  const throttled = useRef(
+    throttle((order: Order) => {
+      takeOrderMutation.mutate(order);
+    }, Infinity)
+  );
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isActive, setIsActive] = useState<number>();
+  const [paymentMethod, setPaymentMethod] = useState<{
+    id: number;
+    method: string;
+  }>({
+    id: 1,
+    method: 'CASH_ON_DELIVERY',
+  });
   const [price, setPrice] = useState<{
     total: number;
     discount: number;
@@ -33,6 +49,7 @@ function Checkout() {
     totalQuantity: 0,
   });
   const [address, setAddress] = useState<{
+    user_id?: number;
     id: number;
     content: string;
   }>({
@@ -43,15 +60,21 @@ function Checkout() {
   const location = useLocation();
   const stateOrderItems = (location.state as LocationState).orderItem;
   const orderItems = useMemo(() => Object.values(stateOrderItems) || [], [stateOrderItems]);
+  const takeOrderMutation = useMutation({
+    mutationFn: (order: Order) => orderApi.createOrder(order),
+    cacheTime: Infinity,
+  });
   const { data: user } = useQuery({
     queryKey: ['user', userId],
     queryFn: () => userApi.getUserByid(userId as number),
     enabled: userId !== undefined,
     refetchOnWindowFocus: false,
+    refetchOnReconnect: true,
     staleTime: 15000,
     onSuccess: (user) => {
       if (user.data.default_address && !isActive) {
         setAddress({
+          user_id: user.data.id,
           id: user.data.default_address,
           content: user.data.address.find((address) => address.id === user.data.default_address)?.address || '',
         });
@@ -83,6 +106,27 @@ function Checkout() {
     }
   }, [orderItems]);
 
+  useEffect(() => {
+    const items = orderItems.map((item) => {
+      return {
+        product_option_id: item.option.product_option_id,
+        quantity: item.option.quantity,
+      };
+    });
+    const order: Order = {
+      user_id: Number(userId),
+      items,
+    };
+    if (order.user_id && order.items.length > 0) {
+      throttled.current(order);
+    }
+    return () => {
+      const arrCart = orderItems.map((item) => {
+        return item.option.product_option_id;
+      });
+      dispatch(clearCart(arrCart));
+    };
+  }, []);
   function closeModal() {
     setIsActive(address.id);
     setIsOpen(false);
@@ -103,6 +147,7 @@ function Checkout() {
       setIsOpen(false);
     }
   };
+
   return (
     <div className='mx-auto my-2 max-w-7xl bg-white p-2 shadow-md'>
       <div className='grid grid-cols-2 lg:grid-cols-3'>
@@ -262,7 +307,7 @@ function Checkout() {
             <div className='max-h-[300px] overflow-auto'>
               {orderItems.length > 0 &&
                 orderItems.map((item) => (
-                  <div key={item.id}>
+                  <div key={item.option.product_option_id}>
                     <CartItem cartItem={item} />
                   </div>
                 ))}
@@ -278,41 +323,34 @@ function Checkout() {
             <div>
               <h3 className='mb-2 bg-slate-300 p-2'>Chọn phương thức thanh toán</h3>
               <div>
-                <div className='flex cursor-pointer items-center rounded-md p-1 duration-200 hover:bg-slate-200'>
+                <button
+                  onClick={() => setPaymentMethod({ method: 'CASH_ON_DELIVERY', id: 1 })}
+                  className={classNames(
+                    'flex w-full cursor-pointer items-center rounded-md p-1 duration-200 hover:bg-slate-200',
+                    {
+                      'font-semibold italic text-orange-500': paymentMethod.id === 1,
+                    }
+                  )}
+                >
                   <span className='flex h-10 w-10 items-center justify-center rounded-md  bg-green-400'>
                     <HiOutlineHomeModern className='text-3xl text-white' />
                   </span>
                   <h4 className='ml-2'>Thanh toán khi nhận hàng</h4>
-                </div>
-                <div className='mt-2'>
-                  <PayPalScriptProvider
-                    options={{
-                      'client-id': 'AQxm6BTwl0EiN9LhMlyXqgxwOYAWt4Uw3wu7LBDTlxI4MgUdqby0f6-awq5CI-s_xgpISXV1vbpD1kHn',
-                    }}
-                  >
-                    <PayPalButtons
-                      createOrder={(data, actions) => {
-                        const price_usd = Number(price.finalPrice) * 0.000043;
-                        return actions.order.create({
-                          purchase_units: [
-                            {
-                              amount: {
-                                value: `${price_usd.toFixed(2)}`,
-                              },
-                            },
-                          ],
-                        });
-                      }}
-                      onApprove={(data, actions) => {
-                        return actions.order
-                          ? actions.order?.capture().then((detail) => {
-                              console.log(detail);
-                            })
-                          : Promise.resolve();
-                      }}
-                    />
-                  </PayPalScriptProvider>
-                </div>
+                </button>
+                <button
+                  onClick={() => setPaymentMethod({ method: 'PAYPAL', id: 2 })}
+                  className={classNames(
+                    'flex w-full cursor-pointer items-center rounded-md p-1 duration-200 hover:bg-slate-200',
+                    {
+                      'font-semibold italic text-orange-500': paymentMethod.id === 2,
+                    }
+                  )}
+                >
+                  <span className='flex h-10 w-10 items-center justify-center rounded-md  bg-blue-400'>
+                    <BsPaypal className='text-3xl text-white' />
+                  </span>
+                  <h4 className='ml-2'>Thanh toán bằng Paypal</h4>
+                </button>
               </div>
             </div>
             <div className='mt-4'>
@@ -325,6 +363,7 @@ function Checkout() {
                 />
                 <button
                   type='button'
+                  // onClick={() => throttled.current()()}
                   className='ml-2 whitespace-nowrap rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700'
                 >
                   Chọn mã
@@ -351,12 +390,42 @@ function Checkout() {
               </div>
             </div>
             <div className='mt-2 flex items-center justify-center'>
-              <button
-                type='button'
-                className='mr-2 mb-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:focus:ring-cyan-800'
-              >
-                Xác nhận thanh toán
-              </button>
+              {paymentMethod?.method === 'CASH_ON_DELIVERY' ? (
+                <button
+                  type='button'
+                  className='mr-2 mb-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:focus:ring-cyan-800'
+                >
+                  Xác nhận thanh toán
+                </button>
+              ) : (
+                <PayPalScriptProvider
+                  options={{
+                    'client-id': 'AQxm6BTwl0EiN9LhMlyXqgxwOYAWt4Uw3wu7LBDTlxI4MgUdqby0f6-awq5CI-s_xgpISXV1vbpD1kHn',
+                  }}
+                >
+                  <PayPalButtons
+                    createOrder={(data, actions) => {
+                      const price_usd = Number(price.finalPrice) * 0.000043;
+                      return actions.order.create({
+                        purchase_units: [
+                          {
+                            amount: {
+                              value: `${price_usd.toFixed(2)}`,
+                            },
+                          },
+                        ],
+                      });
+                    }}
+                    onApprove={(data, actions) => {
+                      return actions.order
+                        ? actions.order?.capture().then((detail) => {
+                            console.log(detail);
+                          })
+                        : Promise.resolve();
+                    }}
+                  />
+                </PayPalScriptProvider>
+              )}
             </div>
           </div>
         </div>
