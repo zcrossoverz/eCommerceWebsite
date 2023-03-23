@@ -9,5 +9,6 @@ const path = {
   product: '/product',
   brand: '/brand/:id',
   checkout: '/checkout',
+  myOrders: '/myOrders',
 };
 export default path;
