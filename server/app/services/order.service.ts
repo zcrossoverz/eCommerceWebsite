@@ -158,7 +158,9 @@ export const getOneOrder = async (order_id: number) => {
   const rs = await orderRepo.findOne({
     where: { id: order_id },
     relations: {
-      user: true,
+      user: {
+        address: true
+      },
       orderItems: {
         product_option: {
           product: true,
@@ -204,9 +206,7 @@ export const getAllOrder = async (limit: number, page: number) => {
   const offset = (page - 1) * limit;
   const [rs, count] = await orderRepo.findAndCount({
     relations: {
-      user: {
-        address: true,
-      },
+      user: true,
       orderItems: {
         product_option: {
           product: true,
