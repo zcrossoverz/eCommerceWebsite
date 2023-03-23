@@ -6,7 +6,10 @@ import err from "../middlewares/error";
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
     const { user_id, items, address = null } = req.body;
     const rs = await orderServices.createOrder(Number(user_id), items, address);
-    if(orderServices.instanceOfErrorInfo(rs)) return res.status(500).json(rs);
+    if(orderServices.instanceOfErrorInfo(rs)) return res.status(500).json({
+        type: rs.type,
+        product_option_id: rs.product_option_id
+    });
     if(isError(rs)) return next(err(rs, res));
     return res.json(rs);
 }

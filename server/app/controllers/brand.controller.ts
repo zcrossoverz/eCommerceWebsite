@@ -27,3 +27,8 @@ export const getAll = async (req: Request, res: Response, next: NextFunction) =>
     const rs = await brandServices.getAll();
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
 }
+
+export const countProduct = async (req: Request, res: Response, next: NextFunction) => {
+    const rs = await brandServices.countProduct();
+    return isError(rs) ? next(err(rs, res)) : res.json(rs);
+}

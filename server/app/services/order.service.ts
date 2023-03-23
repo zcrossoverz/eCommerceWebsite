@@ -34,6 +34,7 @@ enum EnumTimelineStatus {
 export interface error_info {
   type: string;
   product_option_id: number;
+  error_order: boolean;
 }
 
 export const instanceOfErrorInfo = (object: any): object is error_info => {
@@ -80,6 +81,7 @@ export const createOrder = async (
     err.info.push({
       type: OrderError[type],
       product_option_id,
+      error_order: true
     });
   };
 
