@@ -47,3 +47,9 @@ export const getAllInboundNote = async (req: Request, res: Response, next: NextF
     const rs = await inventoryServices.getAllInboundNote(Number(limit), Number(page));
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
 };
+
+export const analysis = async (req: Request, res: Response, next: NextFunction) => {
+    const { limit = 10, page = 1 } = req.query;
+    const rs = await inventoryServices.analysis(Number(limit), Number(page));
+    return isError(rs) ? next(err(rs, res)) : res.json(rs);
+};

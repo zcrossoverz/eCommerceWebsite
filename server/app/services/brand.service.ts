@@ -35,3 +35,17 @@ export const deleteOne = async (id: number) => {
 export const getAll = async () => {
   return await brandRepository.find();
 };
+
+export const countProduct = async () => {
+  const data = await brandRepository.find({
+    relations: {
+      products: true
+    }
+  });
+  return data.map(e => {
+    return {
+      name: e.name,
+      product_number: e.products.length
+    }
+  });
+}
