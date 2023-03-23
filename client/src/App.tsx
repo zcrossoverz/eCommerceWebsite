@@ -21,6 +21,8 @@ import CartUser from './pages/cart';
 import NotFound from './pages/notfoundpage';
 import CheckoutLayout from './layouts/checkoutlayout';
 import Checkout from './pages/checkout';
+import MyOrderLayout from './layouts/myorderlayout/MyOrderLayout';
+import MyOrder from './pages/myorder';
 function App() {
   return (
     <div>
@@ -42,6 +44,14 @@ function App() {
               <CheckoutLayout>
                 <Checkout />
               </CheckoutLayout>
+            }
+          />
+          <Route
+            path={path.myOrders}
+            element={
+              <MyOrderLayout>
+                <MyOrder />
+              </MyOrderLayout>
             }
           />
           <Route

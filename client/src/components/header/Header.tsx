@@ -143,7 +143,7 @@ function Header() {
                         </Link>
                       </li>
                       <li className='nav-item mt-2'>
-                        <Link to='/user' className='flex items-center'>
+                        <Link to={path.myOrders} className='flex items-center'>
                           <BiShoppingBag className='mr-4 text-xl' />
                           <span>My Order</span>
                         </Link>

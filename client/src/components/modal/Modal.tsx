@@ -13,9 +13,6 @@ import { type AxiosResponse } from 'axios';
 import userApi from 'src/apis/user.api';
 import { isAxiosErr } from 'src/utils/error';
 import { toast } from 'react-toastify';
-
-// import { useDispatch } from 'react-redux';
-// import { setUserInfor } from 'src/slices/user.slice';
 interface Props {
   refetchAddress: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
