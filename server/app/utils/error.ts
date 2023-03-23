@@ -13,5 +13,5 @@ export const BadRequestError = (message: string, statusCode = 500): ErrorInterfa
 
 export const isError = (obj: any): obj is ErrorInterface => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-    return true;
+    return Object.keys(obj).includes("error");
 }
