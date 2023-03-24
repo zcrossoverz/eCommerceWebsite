@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Coupon } from "./coupon.entity";
 
 export enum EnumTypeCouponCondition {
     ONE_PRODUCT, // Coupon is only applicable to a specific product.
@@ -20,4 +21,13 @@ export class CouponCondition {
 
     @Column()
     condition!: string;
+
+    @ManyToOne(
+        () => Coupon,
+        coupon => coupon.conditions
+    )
+    @JoinColumn({
+        name: "coupon_id"
+    })
+    coupon!: Coupon;
 }

@@ -262,6 +262,74 @@ export const getAllOrder = async (limit: number, page: number) => {
     : BadRequestError("order empty");
 };
 
+
+export const getAllOrderByUser = async (user_id: number, limit: number, page: number) => {
+  if(!user_id) return BadRequestError("user id empty");
+  const orderRepo = AppDataSource.getRepository(Order);
+  const offset = (page - 1) * limit;
+  const [rs, count] = await orderRepo.findAndCount({
+    where:{
+      user: {
+        id: user_id
+      }
+    },
+    relations: {
+      user: true,
+      orderItems: {
+        product_option: {
+          product: true,
+        },
+      },
+      coupon: true,
+      timeline: true,
+      payment: true,
+    },
+    take: limit,
+    skip: offset,
+  });
+
+  const last_page = Math.ceil(count / limit);
+  const prev_page = page - 1 < 1 ? null : page - 1;
+  const next_page = page + 1 > last_page ? null : page + 1;
+  return count
+    ? {
+        current_page: page,
+        prev_page,
+        next_page,
+        last_page,
+        data_per_page: limit,
+        total: count,
+        data: rs.map((e) => {
+          const { id: _, method: method, ...payment } = e.payment;
+          return {
+            order_id: e.id,
+            status: EnumStatusOrder[e.status],
+            create_at: e.createAt,
+            update_at: e.updateAt,
+            address: e.address,
+            user: e.user,
+            order_items: e.orderItems.map((el) => {
+              return {
+                product_name: el.product_option.product.name,
+                product_option_id: el.product_option.id,
+                ram: el.product_option.ram,
+                rom: el.product_option.rom,
+                color: el.product_option.color,
+                price: el.product_option.price,
+                quantity: el.quantity,
+              };
+            }),
+            payment: {
+              method: EnumPaymentMethod[method],
+              ...payment,
+            },
+            timeline: e.timeline,
+          };
+        }),
+      }
+    : BadRequestError("order empty");
+};
+
 export const deleteOrder = async (order_id: number) => {
   const OrderRepo = AppDataSource.getRepository(Order);
   const rs = await OrderRepo.delete({ id: order_id });

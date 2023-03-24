@@ -27,6 +27,14 @@ export const getAllOrder = async (req: Request, res: Response, next: NextFunctio
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
 }
 
+export const getAllOrderByUser = async (req: Request, res: Response, next: NextFunction) => {
+    const { limit = 10, page = 1, user_id = 0 } = req.query;
+    // console.log(user_id);
+    
+    const rs = await orderServices.getAllOrderByUser(Number(user_id), Number(limit), Number(page));
+    return isError(rs) ? next(err(rs, res)) : res.json(rs);
+}
+
 export const deleteOrder = async (req: Request, res: Response, next: NextFunction) => {
     const { order_id } = req.params;
     const rs = await orderServices.deleteOrder(Number(order_id));
@@ -63,5 +71,4 @@ export const updateAddressOrder = async (req: Request, res: Response, next: Next
 export const top_sale = async (req: Request, res: Response, next: NextFunction) => {
     const rs = await analysServices.top_sale();
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
-    
 }

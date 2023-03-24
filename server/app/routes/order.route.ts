@@ -13,7 +13,8 @@ export const OrderRoutes = (app: Express) => {
     router.post("/create_order", [authMiddleware.verifyToken()],order.createOrder);
     router.get("/get_order/:order_id",[authMiddleware.verifyToken()], order.getOneOrder);
     router.get("/get_status/:order_id", [authMiddleware.verifyToken()], order.getStatusOrder);
-    router.get(/^\/get_all(\?)?(((limit=[0-9])|(page=[0-9]))?(\%26)?){2}$/, [authMiddleware.verifyToken()], order.getAllOrder);
+    router.get(/^\/get_all(\?)?(((limit=[0-9]+)|(page=[0-9]+))?(\%26)?){2}$/, [authMiddleware.verifyToken()], order.getAllOrder);
+    router.get(/^\/get_all_by_user(\?)?(((limit=[0-9]+)|(page=[0-9]+)|(user_id=[0-9]+))?(\%26)?){3}$/, [authMiddleware.verifyToken()], order.getAllOrderByUser);
     router.post("/select_payment_method/:order_id", [authMiddleware.verifyToken()], payment.selectMethod);
     router.patch("/update_status_order/:order_id", [auth.verifyToken(), auth.require_admin()], order.updateStatusOrder);
     router.patch("/update_address_order/:order_id", [auth.verifyToken(), auth.require_admin()], order.updateAddressOrder);
