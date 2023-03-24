@@ -36,10 +36,16 @@ function ProductList() {
           error: string;
         }>(err)
       ) {
-        if (err.response?.data.error === 'product not found!') {
+        if (err.response?.data.error === 'product not found!' && queryParams.page !== '1') {
           navigate({
             pathname: path.home,
             search: createSearchParams({ ...queryParams, page: '1' }).toString(),
+          });
+        }
+        if (err.response?.data.error === 'product not found!' && queryParams.page === '1') {
+          navigate({
+            pathname: path.home,
+            search: createSearchParams({ page: '1' }).toString(),
           });
           toast.error('Không tìm thấy sản phẩm phù hợp', {
             autoClose: 2000,

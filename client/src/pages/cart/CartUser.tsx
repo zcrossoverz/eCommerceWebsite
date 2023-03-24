@@ -2,27 +2,36 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/store';
 import { CartItem } from 'src/types/cart';
 import { formatPrice } from 'src/utils/formatPrice';
-
 import { useEffect, useMemo, useState } from 'react';
 import { produce } from 'immer';
 import { omit } from 'lodash';
-import { updateCart as updateCartList } from 'src/slices/cart.slice';
+import { updateCart as updateCartList, clearCart } from 'src/slices/cart.slice';
 import { baseURL } from 'src/constants/constants';
 import HelmetSale from 'src/components/Helmet';
 import BreadCrumb from 'src/components/admindashboard/breadcrumb';
-import { Link } from 'react-router-dom';
-import path from 'src/constants/path';
+import { useNavigate } from 'react-router-dom';
+// import path from 'src/constants/path';
+import { Order } from 'src/types/order.type';
+import { useMutation } from '@tanstack/react-query';
+import orderApi from 'src/apis/order.api';
 interface ExtendCartItem extends CartItem {
   checked: boolean;
 }
 function CartUser() {
   const [extendCartItems, setExtendCartItem] = useState<ExtendCartItem[]>([]);
+  const navigate = useNavigate();
+  // lấy id và cart của user
   const cartItemUser = useSelector(
     (state: RootState) => state.cartReducer.cartItem,
     () => true
   );
+  const { id: userId } = useSelector(
+    (state: RootState) => state.userReducer.userInfo,
+    () => true
+  );
+  const dispatch = useDispatch();
+  // handle checked
   const isCheckedAll = useMemo(() => extendCartItems.every((purchase) => purchase.checked), [extendCartItems]);
-  const dispath = useDispatch();
   const checkedItems = useMemo(() => {
     const checkedArr: ExtendCartItem[] = [];
     extendCartItems.forEach((item) => {
@@ -32,9 +41,13 @@ function CartUser() {
     });
     return checkedArr;
   }, [extendCartItems]);
+  // tính tổng tiền
   const totalCost = useMemo(() => {
     return checkedItems.reduce((prev, current) => prev + Number(current.option.price) * current.option.quantity, 0);
   }, [checkedItems]);
+  const takeOrderMutation = useMutation({
+    mutationFn: (order: Order) => orderApi.createOrder(order),
+  });
   useEffect(() => {
     setExtendCartItem(
       cartItemUser.map((item) => {
@@ -52,10 +65,10 @@ function CartUser() {
       let updateCart = omit<CartItem[]>(extendCartItems, 'checked');
       updateCart = Object.values(updateCart);
       if (updateCart && updateCart.length >= 0) {
-        dispath(updateCartList(updateCart as CartItem[]));
+        dispatch(updateCartList(updateCart as CartItem[]));
       }
     }
-  }, [extendCartItems, dispath]);
+  }, [extendCartItems, dispatch]);
   const handleChecked = (id: number) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setExtendCartItem(
       produce((draft) => {
@@ -73,6 +86,7 @@ function CartUser() {
       });
     });
   };
+  // handle tăng giảm số lượng
   const increaseQuantity = (item: ExtendCartItem, index: number) => {
     setExtendCartItem(
       produce((draft) => {
@@ -113,6 +127,35 @@ function CartUser() {
         draft.splice(index, 1);
       })
     );
+  };
+  const handleCheckout = () => {
+    if (userId && checkedItems.length > 0) {
+      const order: Order = {
+        user_id: userId,
+        items: checkedItems.map((it) => {
+          return {
+            product_option_id: it.option.product_option_id,
+            quantity: it.option.quantity,
+          };
+        }),
+      };
+      if (order) {
+        takeOrderMutation.mutate(order, {
+          onSuccess: (data) => {
+            const arrCart = checkedItems.map((item) => {
+              return item.option.product_option_id;
+            });
+            dispatch(clearCart(arrCart));
+            navigate('/checkout', {
+              state: {
+                id: data.data.id,
+                userId,
+              },
+            });
+          },
+        });
+      }
+    }
   };
   return (
     <div className='mx-auto max-w-7xl bg-transparent p-4'>
@@ -224,15 +267,11 @@ function CartUser() {
             <span className='hidden md:inline-block'>Tổng thanh toán ({checkedItems.length} sản phẩm):</span>
             <span className='mr-2 text-lg text-orange-500 md:text-2xl'>{formatPrice(totalCost) || formatPrice(0)}</span>
           </div>
-          <button className='min-w-[3rem] flex-shrink-0 rounded border-b-4 border-blue-700 bg-blue-500 py-2 px-1 font-bold text-white hover:border-blue-500 hover:bg-blue-400 md:px-4'>
-            <Link
-              to={checkedItems.length > 0 ? path.checkout : path.cart}
-              state={{
-                orderItem: omit<CartItem[]>(checkedItems, 'checked'),
-              }}
-            >
-              Thanh Toán
-            </Link>
+          <button
+            onClick={() => handleCheckout()}
+            className='min-w-[3rem] flex-shrink-0 rounded border-b-4 border-blue-700 bg-blue-500 py-2 px-1 font-bold text-white hover:border-blue-500 hover:bg-blue-400 md:px-4'
+          >
+            Thanh Toán
           </button>
         </div>
       </div>
