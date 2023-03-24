@@ -71,15 +71,17 @@ export const countProduct = async () => {
   });
 };
 
-export const top_10_sale = async () => {
+export const top_sale = async () => {
   const data = await orderRepo.find({
     relations: {
       orderItems: {
         product_option: {
           product: true,
+          price: true
         },
       },
     },
+    take: 20
   });
 
   interface product {
@@ -87,8 +89,10 @@ export const top_10_sale = async () => {
 
     product_options: {
       product_option_id: number;
-      sale: number;
+      sale_number: number;
+      amount: number;
     }[];
+
   }
 
   const products = [] as product[];
@@ -103,7 +107,8 @@ export const top_10_sale = async () => {
           product_options: [
             {
               product_option_id: item.product_option.id,
-              sale: item.quantity,
+              sale_number: item.quantity,
+              amount: item.quantity*item.product_option.price.price
             },
           ],
         });
@@ -112,10 +117,12 @@ export const top_10_sale = async () => {
         if(!product?.product_options.find(el => el.product_option_id === item.product_option.id)){
             product?.product_options.push({
                 product_option_id: item.product_option.id,
-                sale: item.quantity
+                sale_number: item.quantity,
+                amount: item.quantity*item.product_option.price.price
             });
         }else{
-            product.product_options.filter(({product_option_id}) => product_option_id === item.product_option.id)[0].sale += item.quantity;
+            product.product_options.filter(({product_option_id}) => product_option_id === item.product_option.id)[0].sale_number += item.quantity;
+            product.product_options.filter(({product_option_id}) => product_option_id === item.product_option.id)[0].amount += item.quantity*item.product_option.price.price;
         }
       }
     });

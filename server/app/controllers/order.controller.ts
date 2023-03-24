@@ -60,8 +60,8 @@ export const updateAddressOrder = async (req: Request, res: Response, next: Next
     
 }
 
-export const top_10_sale = async (req: Request, res: Response, next: NextFunction) => {
-    const rs = await analysServices.top_10_sale();
+export const top_sale = async (req: Request, res: Response, next: NextFunction) => {
+    const rs = await analysServices.top_sale();
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
     
 }
