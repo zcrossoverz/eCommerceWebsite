@@ -251,6 +251,7 @@ export const getAllOrder = async (limit: number, page: number) => {
                 color: el.product_option.color,
                 price: el.product_option.price,
                 quantity: el.quantity,
+                prices: el.price
               };
             }),
             payment: {
@@ -319,6 +320,7 @@ export const getAllOrderByUser = async (user_id: number, limit: number, page: nu
                 color: el.product_option.color,
                 price: el.product_option.price,
                 quantity: el.quantity,
+                prices: el.price
               };
             }),
             payment: {
