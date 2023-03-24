@@ -12,16 +12,20 @@ export const create = async (
   const { product_id } = req.params;
   const file = req.file;
   console.log(file);
-  
-  if (!file) return next(err(BadRequestError("image for product is required!"), res));
+
+  if (!file)
+    return next(err(BadRequestError("image for product is required!"), res));
   const { path } = file;
-  const rs = await productOptionServices.create(Number(product_id), {
-    color,
-    ram,
-    rom,
-    price,
- 
-  },    path.replace(`public\\`, ``));
+  const rs = await productOptionServices.create(
+    Number(product_id),
+    {
+      color,
+      ram,
+      rom,
+      price,
+    },
+    path.replace(`public\\`, ``)
+  );
   return isError(rs) ? next(err(rs, res)) : res.json(rs);
 };
 
@@ -59,5 +63,16 @@ export const updateStock = async (
   const { id } = req.params;
   const { quantity } = req.body;
   const rs = await productOptionServices.updateStock(Number(id), quantity);
+  return isError(rs) ? next(err(rs, res)) : res.json(rs);
+};
+
+export const updatePrice = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { id } = req.params;
+  const { new_price } = req.body;
+  const rs = await productOptionServices.updatePrice(Number(id), new_price);
   return isError(rs) ? next(err(rs, res)) : res.json(rs);
 };

@@ -9,12 +9,12 @@ export class PriceHistory {
     @Column({
         type:"bigint"
     })
-    old_price!: string;
+    old_price!: number;
 
     @Column({
         type:"bigint"
     })
-    new_price!: string;
+    new_price!: number;
 
     @CreateDateColumn()
     update_at!: Date;

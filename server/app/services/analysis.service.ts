@@ -4,10 +4,15 @@ import { ProductOption } from "../entities/productOption.entity";
 import { BadRequestError } from "../utils/error";
 import { Brand } from "../entities/brand.entity";
 import { Order } from "../entities/order.entity";
+import { User } from "../entities/user.entity";
+import { productRepository } from "./product.service";
 
 const productOptionRepo = AppDataSource.getRepository(ProductOption);
 const orderRepo = AppDataSource.getRepository(Order);
 const brandRepository = AppDataSource.getRepository(Brand);
+const userRepo = AppDataSource.getRepository(User);
+
+
 export const productInWarehouse = async (limit: number, page: number) => {
   const offset = (page - 1) * limit;
   const [data, count] = await productOptionRepo.findAndCount({
@@ -130,3 +135,18 @@ export const top_sale = async () => {
 
   return products;
 };
+
+
+export const analysOverview = async () => {
+  const countUsers = await userRepo.count();
+  const countOrders = await orderRepo.count();
+  const countProducts = await productRepository.count();
+  const countBrands = await brandRepository.count();
+  return {
+    countUsers,
+    countOrders,
+    countProducts,
+    countBrands
+  }
+}
+
