@@ -150,3 +150,25 @@ export const analysOverview = async () => {
   }
 }
 
+export const analysisPrices = async (product_option_id: number) => {
+  const product_option = await productOptionRepo.findOne({
+    where: {
+      id: product_option_id
+    },
+    relations: {
+      price: {
+        priceHistories: true
+      }
+    },
+    order: {
+      price: {
+        priceHistories: {
+          id: "DESC"
+        }
+      }
+    }
+  });
+  if(!product_option) return BadRequestError("product option not found");
+  return product_option.price.priceHistories;
+
+}

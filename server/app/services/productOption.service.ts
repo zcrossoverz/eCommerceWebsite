@@ -119,7 +119,8 @@ export const updatePrice = async (product_option_id: number, price: number) => {
   if(!productOption) return BadRequestError("product option not found");
   await priceHistoryRepo.save(priceHistoryRepo.create({
     old_price: productOption.price.price,
-    new_price: price
+    new_price: price,
+    price: productOption.price
   }));
 
   return (await priceRepo.update({ id: productOption.price.id }, { price })).affected ? success() : failed();

@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import * as productOptionServices from "../services/productOption.service";
+import * as analysisServices from "../services/analysis.service";
 import { BadRequestError, isError } from "../utils/error";
 import err from "../middlewares/error";
 
@@ -74,5 +75,15 @@ export const updatePrice = async (
   const { id } = req.params;
   const { new_price } = req.body;
   const rs = await productOptionServices.updatePrice(Number(id), new_price);
+  return isError(rs) ? next(err(rs, res)) : res.json(rs);
+};
+
+export const analysisPrices = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { product_option_id } = req.params;
+  const rs = await analysisServices.analysisPrices(Number(product_option_id));
   return isError(rs) ? next(err(rs, res)) : res.json(rs);
 };

@@ -3,6 +3,7 @@ import * as brand from "../controllers/brand.controller";
 import * as inventory from "../controllers/inventory.controller";
 import * as order from "../controllers/order.controller";
 import * as analysis from "../controllers/analysis.controller";
+import * as product_option from "../controllers/productOption.controller";
 import express, { Express } from "express";
 import * as authMiddleware from "../middlewares/auth";
 
@@ -14,6 +15,7 @@ export const AnalysisRoutes = (app: Express) => {
     router.get("/top_sale", [authMiddleware.verifyToken(), authMiddleware.require_admin()], order.top_sale);
 
     router.get("/overview", analysis.analysOverview);
+    router.get("/prices/:product_option_id", product_option.analysisPrices);
 
     app.use("/api/analysis", router);
 }
