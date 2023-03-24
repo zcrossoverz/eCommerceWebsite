@@ -281,6 +281,7 @@ export const getAllOrderByUser = async (user_id: number, limit: number, page: nu
       orderItems: {
         product_option: {
           product: true,
+          image: true
         },
       },
       coupon: true,
@@ -320,7 +321,8 @@ export const getAllOrderByUser = async (user_id: number, limit: number, page: nu
                 color: el.product_option.color,
                 price: el.product_option.price,
                 quantity: el.quantity,
-                prices: el.price
+                prices: el.price,
+                image: el.product_option.image.image_url
               };
             }),
             payment: {
