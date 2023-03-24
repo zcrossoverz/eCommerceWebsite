@@ -1,6 +1,7 @@
 import { AppDataSource } from "../database";
 import { EnumTypeImage, Image } from "../entities/image.entity";
 import { Price } from "../entities/price.entity";
+import { PriceHistory } from "../entities/priceHistoty.entity";
 import { ProductOption } from "../entities/productOption.entity";
 import { Warehouse } from "../entities/warehouse.entity";
 import { BadRequestError } from "../utils/error";
@@ -103,3 +104,24 @@ export const updateStock = async (id: number, quantity: number) => {
 };
 
 
+export const updatePrice = async (product_option_id: number, price: number) => {
+  if(!price) return BadRequestError("new price empty");
+  const priceRepo = AppDataSource.getRepository(Price);
+  const priceHistoryRepo = AppDataSource.getRepository(PriceHistory);
+  const productOption = await productOptionRepository.findOne({
+    where: {
+      id: product_option_id
+    },
+    relations: {
+      price: true
+    }
+  });
+  if(!productOption) return BadRequestError("product option not found");
+  await priceHistoryRepo.save(priceHistoryRepo.create({
+    old_price: productOption.price.price,
+    new_price: price,
+    price: productOption.price
+  }));
+
+  return (await priceRepo.update({ id: productOption.price.id }, { price })).affected ? success() : failed();
+}

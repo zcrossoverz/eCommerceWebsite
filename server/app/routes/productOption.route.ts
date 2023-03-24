@@ -12,6 +12,7 @@ export const ProductOptionRoutes = (app: Express) => {
     router.delete("/:id", [authMiddleware.verifyToken(), authMiddleware.require_admin()], productOption.deleteOne);
     router.put("/:id", [authMiddleware.verifyToken(), authMiddleware.require_admin()], productOption.updateOne);
     router.patch("/:id/update_stock", [authMiddleware.verifyToken(), authMiddleware.require_admin()], productOption.updateStock);
+    router.patch("/:id/update_price", [authMiddleware.verifyToken(), authMiddleware.require_admin()], productOption.updatePrice);
 
     app.use("/api/product_option", router);
 }

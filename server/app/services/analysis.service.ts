@@ -4,10 +4,15 @@ import { ProductOption } from "../entities/productOption.entity";
 import { BadRequestError } from "../utils/error";
 import { Brand } from "../entities/brand.entity";
 import { Order } from "../entities/order.entity";
+import { User } from "../entities/user.entity";
+import { productRepository } from "./product.service";
 
 const productOptionRepo = AppDataSource.getRepository(ProductOption);
 const orderRepo = AppDataSource.getRepository(Order);
 const brandRepository = AppDataSource.getRepository(Brand);
+const userRepo = AppDataSource.getRepository(User);
+
+
 export const productInWarehouse = async (limit: number, page: number) => {
   const offset = (page - 1) * limit;
   const [data, count] = await productOptionRepo.findAndCount({
@@ -71,15 +76,17 @@ export const countProduct = async () => {
   });
 };
 
-export const top_10_sale = async () => {
+export const top_sale = async () => {
   const data = await orderRepo.find({
     relations: {
       orderItems: {
         product_option: {
           product: true,
+          price: true
         },
       },
     },
+    take: 20
   });
 
   interface product {
@@ -87,8 +94,10 @@ export const top_10_sale = async () => {
 
     product_options: {
       product_option_id: number;
-      sale: number;
+      sale_number: number;
+      amount: number;
     }[];
+
   }
 
   const products = [] as product[];
@@ -103,7 +112,8 @@ export const top_10_sale = async () => {
           product_options: [
             {
               product_option_id: item.product_option.id,
-              sale: item.quantity,
+              sale_number: item.quantity,
+              amount: item.quantity*item.product_option.price.price
             },
           ],
         });
@@ -112,10 +122,12 @@ export const top_10_sale = async () => {
         if(!product?.product_options.find(el => el.product_option_id === item.product_option.id)){
             product?.product_options.push({
                 product_option_id: item.product_option.id,
-                sale: item.quantity
+                sale_number: item.quantity,
+                amount: item.quantity*item.product_option.price.price
             });
         }else{
-            product.product_options.filter(({product_option_id}) => product_option_id === item.product_option.id)[0].sale += item.quantity;
+            product.product_options.filter(({product_option_id}) => product_option_id === item.product_option.id)[0].sale_number += item.quantity;
+            product.product_options.filter(({product_option_id}) => product_option_id === item.product_option.id)[0].amount += item.quantity*item.product_option.price.price;
         }
       }
     });
@@ -123,3 +135,40 @@ export const top_10_sale = async () => {
 
   return products;
 };
+
+
+export const analysOverview = async () => {
+  const countUsers = await userRepo.count();
+  const countOrders = await orderRepo.count();
+  const countProducts = await productRepository.count();
+  const countBrands = await brandRepository.count();
+  return {
+    countUsers,
+    countOrders,
+    countProducts,
+    countBrands
+  }
+}
+
+export const analysisPrices = async (product_option_id: number) => {
+  const product_option = await productOptionRepo.findOne({
+    where: {
+      id: product_option_id
+    },
+    relations: {
+      price: {
+        priceHistories: true
+      }
+    },
+    order: {
+      price: {
+        priceHistories: {
+          id: "DESC"
+        }
+      }
+    }
+  });
+  if(!product_option) return BadRequestError("product option not found");
+  return product_option.price.priceHistories;
+
+}
