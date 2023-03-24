@@ -7,27 +7,28 @@ import { BsPaypal } from 'react-icons/bs';
 import { FaWallet } from 'react-icons/fa';
 import { HiLocationMarker } from 'react-icons/hi';
 import { HiOutlineHomeModern } from 'react-icons/hi2';
-import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import orderApi from 'src/apis/order.api';
-import userApi from 'src/apis/user.api';
-import CartItem from 'src/components/cartitems';
-import { clearCart } from 'src/slices/cart.slice';
-import { RootState } from 'src/store';
+import OrderItem from 'src/pages/checkout/orderitem/OrderItems';
+// import CartItem from 'src/components/cartitems';
+// import { clearCart } from 'src/slices/cart.slice';
 import { CartItem as CartItemType } from 'src/types/cart';
-import { Order } from 'src/types/order.type';
+import { User } from 'src/types/user.type';
+// import { Order } from 'src/types/order.type';
 import { formatPrice } from 'src/utils/formatPrice';
-import { throttle } from 'lodash';
+// import { throttle } from 'lodash';
 interface LocationState {
   orderItem: CartItemType[];
+  id: number;
+  userId: number;
 }
 function Checkout() {
-  const dispatch = useDispatch();
-  const throttled = useRef(
-    throttle((order: Order) => {
-      takeOrderMutation.mutate(order);
-    }, Infinity)
-  );
+  // lấy id user từ state url
+  const location = useLocation();
+  const stateOrderItems = useRef(location.state as LocationState);
+  // set user info
+  const [userInfo, setUserInfo] = useState<User>();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isActive, setIsActive] = useState<number>();
   const [paymentMethod, setPaymentMethod] = useState<{
@@ -56,77 +57,65 @@ function Checkout() {
     id: -1,
     content: '',
   });
-  const { id: userId } = useSelector((state: RootState) => state.userReducer.userInfo);
-  const location = useLocation();
-  const stateOrderItems = (location.state as LocationState).orderItem;
-  const orderItems = useMemo(() => Object.values(stateOrderItems) || [], [stateOrderItems]);
-  const takeOrderMutation = useMutation({
-    mutationFn: (order: Order) => orderApi.createOrder(order),
-    cacheTime: Infinity,
-  });
-  const { data: user } = useQuery({
-    queryKey: ['user', userId],
-    queryFn: () => userApi.getUserByid(userId as number),
-    enabled: userId !== undefined,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: true,
-    staleTime: 15000,
-    onSuccess: (user) => {
-      if (user.data.default_address && !isActive) {
+  // const dispatch = useDispatch();
+  // const throttled = useRef(
+  //   throttle((order: Order) => {
+  //     takeOrderMutation.mutate(order);
+  //   }, Infinity)
+  // );
+  const { data: orderItems } = useQuery({
+    queryKey: ['id', stateOrderItems.current.id],
+    queryFn: () => orderApi.getOneOrder(stateOrderItems.current.id),
+    enabled: Boolean(stateOrderItems.current.id),
+    onSuccess: (data) => {
+      setUserInfo(data.data.user);
+      if (data.data.user.address.length) {
         setAddress({
-          user_id: user.data.id,
-          id: user.data.default_address,
-          content: user.data.address.find((address) => address.id === user.data.default_address)?.address || '',
+          ...address,
+          id: data.data.user.address.find((it) => it.id === data.data.user.default_address)?.id || 0,
+          content:
+            data.data.user.address.find((it) => it.id === data.data.user.default_address)?.address ||
+            data.data.user.address[0].address,
         });
       }
     },
   });
+  const selectMethodMutation = useMutation({
+    mutationFn: (body: { id: number; method: string }) => orderApi.setPaymentMethod(body.method, body.id),
+  });
+  const updateOrderMutation = useMutation({
+    mutationFn: (body: { id: number; status: string }) => orderApi.updateStatus(body.status, body.id),
+    onSuccess: () => {
+      toast.success('Thanh toán thành công');
+    },
+  });
+  const updateAddressOrderMutation = useMutation({
+    mutationFn: (body: { id: number; address: string }) => orderApi.updateAddressOrder(body.address, body.id),
+  });
+
   useEffect(() => {
-    if (orderItems.length > 0) {
+    if (orderItems?.data.order_items.length) {
       setPrice((prev) => {
         const totalPrice: {
           quantity: number;
-          cost: number;
-        } = orderItems.reduce(
+        } = orderItems.data.order_items.reduce(
           (pre, next) => {
             return {
-              quantity: pre.quantity + next.option.quantity,
-              cost: pre.cost + next.option.quantity * Number(next.option.price),
+              quantity: pre.quantity + next.quantity,
             };
           },
-          { cost: 0, quantity: 0 }
+          { quantity: 0 }
         );
         return {
           ...prev,
-          total: totalPrice.cost,
-          finalPrice: totalPrice.cost - prev?.discount,
+          total: orderItems.data.payment.amount,
+          finalPrice: orderItems.data.payment.amount - prev?.discount,
           totalQuantity: totalPrice.quantity,
         };
       });
     }
   }, [orderItems]);
 
-  useEffect(() => {
-    const items = orderItems.map((item) => {
-      return {
-        product_option_id: item.option.product_option_id,
-        quantity: item.option.quantity,
-      };
-    });
-    const order: Order = {
-      user_id: Number(userId),
-      items,
-    };
-    if (order.user_id && order.items.length > 0) {
-      throttled.current(order);
-    }
-    return () => {
-      const arrCart = orderItems.map((item) => {
-        return item.option.product_option_id;
-      });
-      dispatch(clearCart(arrCart));
-    };
-  }, []);
   function closeModal() {
     setIsActive(address.id);
     setIsOpen(false);
@@ -134,17 +123,37 @@ function Checkout() {
 
   function openModal() {
     setIsOpen(true);
-    if (user?.data.default_address && !isActive) {
-      setIsActive(user.data.default_address);
+    if (userInfo?.default_address && !isActive) {
+      setIsActive(userInfo.default_address);
     }
   }
   const handleChangeAddress = () => {
-    if (user?.data.address) {
+    if (userInfo?.address) {
       setAddress({
         id: Number(isActive),
-        content: user.data.address.find((address) => address.id === isActive)?.address || '',
+        content: userInfo.address.find((address) => address.id === isActive)?.address || '',
       });
       setIsOpen(false);
+    }
+  };
+  const handleCheckoutOrder = () => {
+    if (address.content && address.id !== orderItems?.data.user.default_address && orderItems?.data.order_id) {
+      console.log('call address');
+      updateAddressOrderMutation.mutate({ id: orderItems.data.order_id, address: address.content });
+    }
+    if (paymentMethod.method && orderItems?.data.order_id) {
+      console.log('call payment method', paymentMethod.method);
+      selectMethodMutation.mutate(
+        { id: orderItems.data.order_id, method: paymentMethod.method },
+        {
+          onSuccess: () => {
+            if (orderItems?.data.order_id) {
+              console.log('call update status');
+              updateOrderMutation.mutate({ id: orderItems.data.order_id, status: 'PROCESSING' });
+            }
+          },
+        }
+      );
     }
   };
 
@@ -156,21 +165,21 @@ function Checkout() {
             <div className='w-full'>
               <h2 className='bg-blue-200 px-2 py-3 text-lg font-semibold text-orange-500'>Thông tin người nhận hàng</h2>
               <div>
-                {user?.data.firstName && user.data.lastName && (
+                {userInfo?.firstName && userInfo.lastName && (
                   <p className='text-slate-500'>
                     <span>Họ và tên: </span>
                     <span className='text-base font-medium italic text-black'>
-                      {user.data.firstName + ' ' + user.data.lastName}
+                      {userInfo.firstName + ' ' + userInfo.lastName}
                     </span>
                   </p>
                 )}
-                {user?.data.phone && (
+                {userInfo?.phone && (
                   <p className='text-slate-500'>
                     <span>Số điện thoại: </span>
-                    <span className='text-base font-medium italic text-black'>{user.data.phone}</span>
+                    <span className='text-base font-medium italic text-black'>{userInfo.phone}</span>
                   </p>
                 )}
-                {!user?.data.phone && (
+                {!userInfo?.phone && (
                   <div className='mt-2 flex flex-wrap'>
                     <span className='mr-2 text-red-500'>Vui lòng thêm số điện thoại</span>
                     <Link to='/profile/file' className='text-blue-500 hover:text-black'>
@@ -181,7 +190,7 @@ function Checkout() {
               </div>
             </div>
             <div className='w-full'>
-              {user?.data.address && user.data.address.length > 0 && user.data.default_address ? (
+              {userInfo?.address && userInfo.address.length > 0 && userInfo.default_address ? (
                 <div className=' mt-4 bg-white'>
                   <div className='flex items-center bg-blue-200 px-2 py-3'>
                     <span>
@@ -192,7 +201,7 @@ function Checkout() {
                   <div className='flex flex-wrap items-center'>
                     <span className='mr-2 text-base'>{address.content}</span>
                     <div className='flex items-center'>
-                      {user.data.default_address === address.id && (
+                      {userInfo.default_address === address.id && (
                         <span className='mr-2 rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'>
                           Mặc định
                         </span>
@@ -235,8 +244,8 @@ function Checkout() {
                                   Địa chỉ của bạn
                                 </Dialog.Title>
                                 <div className='mt-2'>
-                                  {user.data.address.length > 0 &&
-                                    user.data.address.map((address) => (
+                                  {userInfo.address.length > 0 &&
+                                    userInfo.address.map((address) => (
                                       <button
                                         key={address.id}
                                         onClick={() => setIsActive(address.id)}
@@ -248,12 +257,12 @@ function Checkout() {
                                         )}
                                       >
                                         {address.address}
-                                        {user.data.default_address && (
+                                        {userInfo.default_address && (
                                           <span
                                             className={classNames(
                                               'ml-2 rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
                                               {
-                                                hidden: !(user.data.default_address === address.id),
+                                                hidden: !(userInfo.default_address === address.id),
                                               }
                                             )}
                                           >
@@ -304,11 +313,11 @@ function Checkout() {
           </div>
           <div className='col-span-1 mt-2 pr-2 lg:mt-0 lg:px-2'>
             <h2 className='bg-blue-200 px-2 py-3 text-lg font-semibold text-orange-500'>Thông tin sản phẩm đặt hàng</h2>
-            <div className='max-h-[300px] overflow-auto'>
-              {orderItems.length > 0 &&
-                orderItems.map((item) => (
-                  <div key={item.option.product_option_id}>
-                    <CartItem cartItem={item} />
+            <div className='max-h-[300px] overflow-y-auto'>
+              {orderItems?.data.order_items.length &&
+                orderItems.data.order_items.map((item) => (
+                  <div key={item.product_option_id} className='w-full'>
+                    <OrderItem orderItem={item} />
                   </div>
                 ))}
             </div>
@@ -392,6 +401,7 @@ function Checkout() {
             <div className='mt-2 flex items-center justify-center'>
               {paymentMethod?.method === 'CASH_ON_DELIVERY' ? (
                 <button
+                  onClick={handleCheckoutOrder}
                   type='button'
                   className='mr-2 mb-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:focus:ring-cyan-800'
                 >
