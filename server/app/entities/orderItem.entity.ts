@@ -11,6 +11,9 @@ export class OrderItem {
     @Column()
     quantity!: number;
 
+    @Column()
+    price!: number;
+
     @ManyToOne(() => ProductOption, {
         onDelete: "CASCADE"
     })

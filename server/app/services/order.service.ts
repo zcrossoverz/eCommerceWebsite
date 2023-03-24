@@ -139,6 +139,7 @@ export const createOrder = async (
         order: new_order,
         product_option: e.item,
         quantity: e.quantity,
+        price: e.amount/e.quantity
       })
     );
     await decreaseStock(e.item.id, e.quantity);
@@ -191,6 +192,7 @@ export const getOneOrder = async (order_id: number) => {
         price: e.product_option.price,
         quantity: e.quantity,
         image: e.product_option.image.image_url,
+        prices: e.price
       };
     }),
     payment: {
