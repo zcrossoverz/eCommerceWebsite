@@ -9,6 +9,7 @@ import { InventoryRoutes } from "./inventory.route";
 import { NotifyRoutes } from "./notification.route";
 import { feedbackRoutes } from "./feedback.route";
 import { AnalysisRoutes } from "./analysis.route";
+import { CouponRoutes } from "./coupon.route";
 
 
 export const Routes = [
@@ -22,5 +23,6 @@ export const Routes = [
     InventoryRoutes,
     NotifyRoutes,
     feedbackRoutes,
-    AnalysisRoutes
+    AnalysisRoutes,
+    CouponRoutes
 ];
