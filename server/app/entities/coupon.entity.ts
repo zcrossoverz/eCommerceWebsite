@@ -3,10 +3,9 @@ import { Order } from "./order.entity";
 import { CouponCondition } from "./couponCondition.entity";
 
 export enum EnumTypeCoupon {
-    "ship", // coupon about shipping, 100 - free ship, 50 - 50% off ship cost
-    "percent", // percent of total order, 20 - reduce order total by 20% 
-    "amount", // fix amount discount off by total order amount, 10000 - reduce order total by 10000 vnd
-    "brand", //  applicable to a specific brand of products
+    SHIP, // coupon about shipping, 100 - free ship, 50 - 50% off ship cost
+    PERCENT, // percent of total order, 20 - reduce order total by 20% 
+    AMOUNT, // fix amount discount off by total order amount, 10000 - reduce order total by 10000 vnd
 }
 
 @Entity("coupons")
@@ -27,10 +26,10 @@ export class Coupon {
     value!: number;
 
     @Column()
-    startDate!: Date;
+    start_date!: string;
 
     @Column()
-    endDate!: Date;
+    end_date!: string;
 
     @Column({
         default: true
