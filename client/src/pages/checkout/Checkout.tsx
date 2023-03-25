@@ -147,8 +147,11 @@ function Checkout() {
         { id: orderItems.data.order_id, method: paymentMethod.method },
         {
           onSuccess: () => {
-            if (orderItems?.data.order_id) {
-              console.log('call update status');
+            if (!userInfo?.phone) {
+              toast.error('Bạn điền số điện thoại', { autoClose: 1500 });
+              return;
+            }
+            if (orderItems?.data.order_id && userInfo?.phone) {
               updateOrderMutation.mutate({ id: orderItems.data.order_id, status: 'PROCESSING' });
             }
           },
