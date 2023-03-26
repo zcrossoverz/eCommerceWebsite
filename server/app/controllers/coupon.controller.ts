@@ -12,8 +12,14 @@ export const create = async (req: Request, res: Response, next: NextFunction) =>
 }
  
 
-export const checkCoupon = async (req: Request, res: Response, next: NextFunction) => {
-    const { code } = req.body;
-    const rs = await couponServices.checkCoupon(code);
+export const applyCoupon = async (req: Request, res: Response, next: NextFunction) => {
+    const { code, order_id } = req.body;
+    const rs = await couponServices.applyCoupon(code, order_id);
+    return isError(rs) ? next(err(rs, res)) : res.json(rs);
+}
+
+export const clearCoupon = async (req: Request, res: Response, next: NextFunction) => {
+    const { order_id } = req.body;
+    const rs = await couponServices.clearCoupon(order_id);
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
 }

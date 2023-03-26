@@ -57,12 +57,15 @@ export class Order {
     @ManyToOne(
         () => Coupon, 
         coupon => coupon.orders, 
-        { nullable: true }
+        { nullable: true,
+        },
+        
     )
     @JoinColumn({
-        name: "coupon_id"
+        name: "coupon_id",
+        
     })
-    coupon!: Coupon;
+    coupon!: Coupon | null;
 
     @OneToMany(
         () => Timeline,

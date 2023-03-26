@@ -182,6 +182,7 @@ export const getOneOrder = async (order_id: number) => {
     update_at: rs.updateAt,
     address: rs.address,
     user: rs.user,
+    coupon: rs.coupon?.code,
     order_items: rs.orderItems.map((e) => {
       return {
         product_name: e.product_option.product.name,
