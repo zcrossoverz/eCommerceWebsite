@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { FaMoneyCheckAlt } from 'react-icons/fa';
-import { RiMoneyDollarBoxLine } from 'react-icons/ri';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import orderApi from 'src/apis/order.api';
@@ -11,6 +10,11 @@ import { formatPrice } from 'src/utils/formatPrice';
 import { baseURL } from 'src/constants/constants';
 import { useNavigate } from 'react-router-dom';
 import path from 'src/constants/path';
+import { produce } from 'immer';
+import { StatusOrder, timeLine } from 'src/constants/timeline';
+import { nanoid } from '@reduxjs/toolkit';
+import classNames from 'classnames';
+import { lastIndexOf } from 'lodash';
 function MyOrder() {
   const navigate = useNavigate();
   const [orders, setOders] = useState<Pick<ResGetAllOrder, 'total' | 'data'>>();
@@ -18,13 +22,12 @@ function MyOrder() {
     (state: RootState) => state.userReducer.userInfo,
     (prev, next) => prev.id === next.id
   );
-  const [isOpenProcess, setIsOpenProcess] = useState<{
-    id: number;
-    open: boolean;
-  }>({
-    id: -1,
-    open: false,
-  });
+  const [isOpenProcess, setIsOpenProcess] = useState<
+    {
+      id: number;
+      open: boolean;
+    }[]
+  >([]);
   // call api get all order by user
   const { data } = useQuery({
     queryKey: ['ordersOfUser'],
@@ -33,11 +36,13 @@ function MyOrder() {
         user_id: userId || -1,
       }),
     enabled: Boolean(userId),
+    refetchOnWindowFocus: false,
     onSuccess: (data) => {
       setOders({
         total: data.data.total,
         data: data.data.data,
       });
+      setIsOpenProcess(data.data.data.map((it) => ({ id: it.order_id, open: false })));
     },
   });
   const handleCheckout = (id: number) => {
@@ -51,21 +56,28 @@ function MyOrder() {
   return (
     <div className='mx-auto max-w-7xl p-2'>
       {orders?.data.length &&
-        orders.data.map((order) => (
-          <div key={order.order_id} className='mt-2 rounded-sm bg-white p-2'>
+        orders.data.map((order, i) => (
+          <div key={order.order_id} className='my-4 rounded-sm bg-white p-2 shadow-sm'>
             {/* section address timeline */}
-            <div className='mb-2 flex items-center border-b'>
+            <div className='mb-2 flex min-h-[4rem] items-center border-b'>
               <button
                 type='button'
                 onClick={() => {
-                  setIsOpenProcess({ ...isOpenProcess, open: !isOpenProcess.open });
+                  setIsOpenProcess(
+                    produce((draft) => {
+                      draft[i] = {
+                        id: order.order_id,
+                        open: !draft[i].open,
+                      };
+                    })
+                  );
                 }}
-                className='inline-flex justify-center whitespace-nowrap bg-transparent px-4 py-2 text-sm font-medium text-blue-400 shadow-sm duration-200 hover:text-orange-600'
+                className='inline-flex justify-center whitespace-nowrap bg-transparent px-4 py-2 text-sm font-medium text-blue-400 duration-200 hover:text-orange-600'
               >
-                {isOpenProcess.open ? 'Tắt tiến trình' : 'Xem tiến trình'}
+                {isOpenProcess[i] && isOpenProcess[i].open ? 'Tắt tiến trình' : 'Xem tiến trình'}
               </button>
               <AnimatePresence>
-                {isOpenProcess.open ? (
+                {isOpenProcess[i] && isOpenProcess[i].open ? (
                   <motion.ol
                     className='w-full flex-grow items-center sm:flex'
                     initial={{ opacity: 0, transform: 'scale(0)' }}
@@ -73,93 +85,76 @@ function MyOrder() {
                     exit={{ opacity: 0, transform: 'scale(0)' }}
                     transition={{ duration: 0.2 }}
                   >
-                    <li className='relative mb-6 w-1/3 sm:mb-0'>
-                      <div className='flex items-center'>
-                        <div className='hidden h-0.5 w-full bg-gray-200 opacity-0 dark:bg-gray-700 sm:flex' />
-                        <div className='z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-[3px] border-green-400 ring-0 ring-white dark:bg-blue-900 dark:ring-gray-900 sm:ring-8'>
-                          <RiMoneyDollarBoxLine className='text-2xl text-green-500' />
+                    {timeLine.map((tl, i) => (
+                      <li key={nanoid(5)} className='relative mb-6 w-1/5 sm:mb-0'>
+                        <div className='mb-1 flex items-center'>
+                          <div
+                            className={classNames('h-0.5 w-full bg-gray-200 dark:bg-gray-700 sm:flex', {
+                              'opacity-0': Boolean(i === 0),
+                              'bg-green-500':
+                                tl.id <=
+                                StatusOrder[
+                                  order.timeline[(order.timeline.length as number) - 1]
+                                    .content as keyof typeof StatusOrder
+                                ],
+                            })}
+                          />
+                          <div
+                            className={classNames(
+                              'z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-[3px] text-lg ring-0 ring-white dark:bg-blue-900 dark:ring-gray-900 sm:ring-8',
+                              {
+                                'border-green-500 text-green-500':
+                                  tl.id <=
+                                  StatusOrder[
+                                    order.timeline[(order.timeline.length as number) - 1]
+                                      .content as keyof typeof StatusOrder
+                                  ],
+                              }
+                            )}
+                          >
+                            {tl.component}
+                          </div>
+                          <div
+                            className={classNames('h-0.5 w-full bg-gray-200 dark:bg-gray-700 sm:flex', {
+                              'opacity-0': i === timeLine.length - 1,
+                              'bg-green-500':
+                                tl.id <=
+                                StatusOrder[
+                                  order.timeline[(order.timeline.length as number) - 1]
+                                    .content as keyof typeof StatusOrder
+                                ] -
+                                  1,
+                            })}
+                          />
                         </div>
-                        <div className='hidden h-0.5 w-full bg-gray-200 dark:bg-gray-700 sm:flex' />
-                      </div>
-                      <div className=' '>
-                        <h3 className='text-center text-lg font-semibold text-gray-900 dark:text-white'>Đã đặt hàng</h3>
-                      </div>
-                    </li>
-                    <li className='relative mb-6 w-1/3 sm:mb-0'>
-                      <div className='flex items-center'>
-                        <div className='hidden h-0.5 w-full bg-gray-200 dark:bg-gray-700 sm:flex' />
-                        <div className='z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-[3px] border-green-400 ring-0 ring-white dark:bg-blue-900 dark:ring-gray-900 sm:ring-8'>
-                          <RiMoneyDollarBoxLine className='text-2xl text-green-500' />
+                        <div className=' '>
+                          <h3 className='text-center text-sm font-semibold text-gray-900 dark:text-white'>{tl.name}</h3>
                         </div>
-                        <div className='hidden h-0.5 w-full bg-gray-200 dark:bg-gray-700 sm:flex' />
-                      </div>
-                      <div className=' '>
-                        <h3 className='text-center text-lg font-semibold text-gray-900 dark:text-white'>
-                          Đã thanh toán
-                        </h3>
-                      </div>
-                    </li>
-                    <li className='relative mb-6 w-1/3 sm:mb-0'>
-                      <div className='flex items-center'>
-                        <div className='hidden h-0.5 w-full bg-gray-200 dark:bg-gray-700 sm:flex' />
-                        <div className='z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-[3px] border-green-400 ring-0 ring-white dark:bg-blue-900 dark:ring-gray-900 sm:ring-8'>
-                          <RiMoneyDollarBoxLine className='text-2xl text-green-500' />
-                        </div>
-                        <div className='hidden h-0.5 w-full bg-gray-200 dark:bg-gray-700 sm:flex' />
-                      </div>
-                      <div className=' '>
-                        <h3 className='text-center text-lg font-semibold text-gray-900 dark:text-white'>Đang xử lý</h3>
-                      </div>
-                    </li>
-                    <li className='relative mb-6 w-1/3 sm:mb-0'>
-                      <div className='flex items-center'>
-                        <div className='hidden h-0.5 w-full bg-gray-200 dark:bg-gray-700 sm:flex' />
-                        <div className='z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-[3px] border-green-400 ring-0 ring-white dark:bg-blue-900 dark:ring-gray-900 sm:ring-8'>
-                          <RiMoneyDollarBoxLine className='text-2xl text-green-500' />
-                        </div>
-                        <div className='hidden h-0.5 w-full bg-gray-200 dark:bg-gray-700 sm:flex' />
-                      </div>
-                      <div className=' '>
-                        <h3 className='text-center text-lg font-semibold text-gray-900 dark:text-white'>
-                          Đang vận chuyển
-                        </h3>
-                      </div>
-                    </li>
-                    <li className='relative mb-6 w-1/3 sm:mb-0'>
-                      <div className='flex items-center'>
-                        <div className='hidden h-0.5 w-full bg-gray-200 dark:bg-gray-700 sm:flex' />
-                        <div className='z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full border-[3px] border-green-400 ring-0 ring-white dark:bg-blue-900 dark:ring-gray-900 sm:ring-8'>
-                          <RiMoneyDollarBoxLine className='text-2xl text-green-500' />
-                        </div>
-                        <div className='hidden h-0.5 w-full bg-gray-200 opacity-0 dark:bg-gray-700 sm:flex' />
-                      </div>
-                      <div className=' '>
-                        <h3 className='text-center text-lg font-semibold text-gray-900 dark:text-white'>
-                          Đã nhận hàng
-                        </h3>
-                      </div>
-                    </li>
+                      </li>
+                    ))}
                   </motion.ol>
                 ) : (
                   <motion.div
-                    className='ml-2 flex-grow text-center'
+                    className='ml-2 flex-grow text-sm text-slate-500'
                     initial={{ opacity: 0, transform: 'scale(0)' }}
                     animate={{ opacity: 1, transform: 'scale(1)' }}
                     exit={{ opacity: 0, transform: 'scale(0)' }}
                     transition={{ duration: 0.2 }}
                   >
                     <div className='flex flex-wrap items-center'>
-                      <span className=''>
+                      <span className='flex-grow text-center'>
                         <b>Đia chỉ: </b>
                         {order.address}
                       </span>
-                      <span className='mx-2  px-2'>
-                        <b>Số điện thoại:</b> {order.user.phone}
-                      </span>
-                      <span>
-                        <b>Người nhận: </b>
-                        {`${order.user.firstName} ${order.user.lastName}`}
-                      </span>
+                      <div className='flex w-full items-center justify-center'>
+                        <span className='mr-4'>
+                          <b>Số điện thoại:</b> {order.user.phone}
+                        </span>
+                        <span>
+                          <b>Người nhận: </b>
+                          {`${order.user.firstName} ${order.user.lastName}`}
+                        </span>
+                      </div>
                     </div>
                   </motion.div>
                 )}
