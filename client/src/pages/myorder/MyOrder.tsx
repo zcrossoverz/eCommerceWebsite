@@ -14,7 +14,6 @@ import { produce } from 'immer';
 import { StatusOrder, timeLine } from 'src/constants/timeline';
 import { nanoid } from '@reduxjs/toolkit';
 import classNames from 'classnames';
-import { lastIndexOf } from 'lodash';
 function MyOrder() {
   const navigate = useNavigate();
   const [orders, setOders] = useState<Pick<ResGetAllOrder, 'total' | 'data'>>();
@@ -204,7 +203,7 @@ function MyOrder() {
                   <button
                     type='button'
                     onClick={() => handleCheckout(order.order_id)}
-                    className='ml-2 inline-flex justify-center whitespace-nowrap rounded-md border border-blue-500 px-4 py-2 text-sm font-medium text-blue-400 duration-200 duration-200 hover:scale-105 hover:border-orange-500 hover:text-orange-400'
+                    className='ml-2 inline-flex justify-center whitespace-nowrap rounded-md border border-blue-500 px-4 py-2 text-sm font-medium text-blue-400 duration-200 hover:scale-105 hover:border-orange-500 hover:text-orange-400'
                   >
                     Thanh toán
                   </button>
