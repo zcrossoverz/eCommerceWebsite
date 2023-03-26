@@ -1,6 +1,9 @@
 import { AppDataSource } from "../database";
 import { Coupon, EnumTypeCoupon } from "../entities/coupon.entity";
-import { BadRequestError } from "../utils/error";
+import { EnumStatusOrder, Order } from "../entities/order.entity";
+import { Payment } from "../entities/payment.entity";
+import { BadRequestError, isError } from "../utils/error";
+import { failed, success } from "../utils/response";
 // import { CouponCondition } from "../entities/couponCondition.entity";
 
 const generateCode = (length: number) => {
@@ -28,6 +31,8 @@ interface coupon extends exprire {
 }
 
 const couponRepo = AppDataSource.getRepository(Coupon);
+const orderRepo = AppDataSource.getRepository(Order);
+const paymentRepo = AppDataSource.getRepository(Payment);
 // const couponConditionRepo = AppDataSource.getRepository(CouponCondition);
 
 export const createNew = async (
@@ -66,7 +71,7 @@ export const createNew = async (
   return result;
 };
 
-export const checkCoupon = async (code: string) => {
+const checkCoupon = async (code: string) => {
   const coupon = await couponRepo.findOne({
     where: {
       code
@@ -81,7 +86,107 @@ export const checkCoupon = async (code: string) => {
   const now = new Date().getTime();
   if(start_date > now || end_date < now) return BadRequestError("you cannot apply coupon now");
 
-  return {
-    can: true
-  };
+  return coupon;
+}
+
+export const applyCoupon = async (code: string, order_id: number) => {
+  const coupon = await checkCoupon(code);
+  if(isError(coupon)) return coupon;
+  const order = await orderRepo.findOne({
+    where: {
+      id: order_id
+    },
+    relations: {
+      payment: true,
+      coupon: true
+    }
+  });
+  if(!order || !order_id) return BadRequestError("order not found", 404);
+  if(order.status !== EnumStatusOrder.PENDING) return BadRequestError("order alrealdy paid");
+  if(order.coupon) return BadRequestError("order alrealdy apply coupon");
+  const payment = await paymentRepo.findOne({
+    where: {
+      id: order.payment.id
+    }
+  });
+  if(!payment) return BadRequestError("error when retrieve payment");
+  if(payment.is_paid) return BadRequestError("payment already paid");
+  switch(coupon.type){
+    case EnumTypeCoupon.AMOUNT: {
+      const value = (Number(payment.amount)-coupon.value) >= 0 ? (Number(payment.amount)-coupon.value) : 0;
+      const status = (await paymentRepo.update({
+        id: payment.id
+      }, { amount: `${value}` })).affected;
+      if(status) {
+        await orderRepo.update({ id: order_id }, { coupon });
+        await couponRepo.update({ id: coupon.id }, { number: coupon.number-1 });
+      }
+      return status ? success() : failed();
+    }
+    case EnumTypeCoupon.PERCENT: {
+      const value = (Number(payment.amount)-(Number(payment.amount)/100*coupon.value)) >= 0 ? (Number(payment.amount)-(Number(payment.amount)/100*coupon.value)) : 0;
+      const status = (await paymentRepo.update({
+        id: payment.id
+      }, { amount: `${value}` })).affected;
+      if(status) {
+        await orderRepo.update({ id: order_id }, { coupon });
+        await couponRepo.update({ id: coupon.id }, { number: coupon.number-1 });
+      }
+      return status ? success() : failed();
+    }
+    default: return;
+  }
+}
+
+export const clearCoupon = async (order_id: number) => {
+  const order = await orderRepo.findOne({
+    where: {
+      id: order_id
+    },
+    relations: {
+      payment: true,
+      coupon: true
+    }
+  });
+  if(!order || !order_id) return BadRequestError("order not found", 404);
+  if(order.status !== EnumStatusOrder.PENDING) return BadRequestError("order alrealdy paid");
+  if(!order.coupon) return BadRequestError("order not apply coupon yet");
+  const payment = await paymentRepo.findOne({
+    where: {
+      id: order.payment.id
+    }
+  });
+  const coupon = await couponRepo.findOne({
+    where: {
+      id: order.coupon.id
+    }
+  });
+  if(!coupon) return BadRequestError("cannot retrieve coupon");
+  if(!payment) return BadRequestError("error when retrieve payment");
+  if(payment.is_paid) return BadRequestError("payment already paid");
+  switch(coupon.type){
+    case EnumTypeCoupon.AMOUNT: {
+      const value = (Number(payment.amount)+coupon.value);
+      const status = (await paymentRepo.update({
+        id: payment.id
+      }, { amount: `${value}` })).affected;
+      if(status) {
+        await orderRepo.update({ id: order_id }, { coupon: null });
+        await couponRepo.update({ id: coupon.id }, { number: coupon.number+1 });
+      }
+      return status ? success() : failed();
+    }
+    case EnumTypeCoupon.PERCENT: {
+      const value = ((Number(payment.amount)*100/coupon.value));
+      const status = (await paymentRepo.update({
+        id: payment.id
+      }, { amount: `${value}` })).affected;
+      if(status) {
+        await orderRepo.update({ id: order_id }, { coupon: null });
+        await couponRepo.update({ id: coupon.id }, { number: coupon.number+1 });
+      }
+      return status ? success() : failed();
+    }
+    default: return;
+  }
 }
