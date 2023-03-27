@@ -46,6 +46,14 @@ function ProductDetails() {
         toast.error(err.response?.data.error);
       }
     },
+    onSuccess: (data) => {
+      const op = data.data.product_options;
+      for (let i = 0; i < op.length; i++) {
+        if (op[i].quantity) {
+          setOptionSelected(op[i]);
+        }
+      }
+    },
     retry: 0,
   });
   const [optionSelected, setOptionSelected] = useState<OptionProduct>();
@@ -71,6 +79,7 @@ function ProductDetails() {
       setQuantity(1);
     }
   }, [quantity]);
+
   const userInfo = useSelector((state: RootState) => state.userReducer.userInfo);
   const handleAddToCart = () => {
     if (!userInfo.role) {
@@ -152,7 +161,7 @@ function ProductDetails() {
         )}
         {!isLoading && (
           <div className='bg-white p-2 md:p-4'>
-            <h1 className='text-4xl font-bold'>{product?.data.name}</h1>
+            <h1 className='mb-4 text-4xl font-bold'>{product?.data.name}</h1>
             <div className='mb-2 flex items-center'>
               {/* <Star ratings={product.ratings} /> */}
               {/* <span className='ml-2 text-base text-gray-500'>({product.numOfReviews} Reviews)</span> */}
@@ -193,7 +202,7 @@ function ProductDetails() {
                   })}
               </div>
 
-              <div className='mt-2 min-h-[5rem] w-full overflow-hidden rounded-md border border-orange-200'>
+              <div className='my-4 min-h-[5rem] w-full overflow-hidden rounded-md border border-orange-200'>
                 <div className='w-full bg-orange-200 p-2'>Mô tả sản phẩm</div>
                 <p className='p-2 text-base'>{product?.data.description}</p>
               </div>
@@ -229,7 +238,7 @@ function ProductDetails() {
                 type='button'
                 onClick={() => handleAddToCart()}
                 className={classNames(
-                  'mr-2 mb-2 flex items-center rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white duration-300 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800',
+                  'my-4 mr-2 flex items-center rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white duration-300 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800',
                   {
                     'hover:bg-gradient-to-bl': Boolean(optionSelected),
                     'cursor-not-allowed': Boolean(!optionSelected),

@@ -97,7 +97,6 @@ export const filterPriceSchema = yup.object({
   // .moreThan(yup.ref('minPrice'), 'Giá max không nhỏ hơn giá min'),
 });
 export const updateInfo = yup.object({
-  email: yup.string().email('Email không hợp lệ!').required('Email bắt buộc nhập'),
   firstName: yup
     .string()
     .required('bắt buộc nhập first name')
