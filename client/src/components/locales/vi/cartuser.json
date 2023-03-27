@@ -1,0 +1,15 @@
+{
+  "cartuser": {
+    "cart": "Giỏ hàng",
+    "Product": "Sản phẩm",
+    "unit price": "Đơn giá",
+    "quantity": "Số lượng",
+    "into money": "Thành tiền",
+    "operation": "Thao tác",
+    "select all": "Chọn tất cả",
+    "delete": "Xóa",
+    "total payment": "Tổng thanh toán",
+    "product": "sản phẩm",
+    "payment": "Thanh toán"
+  }
+}

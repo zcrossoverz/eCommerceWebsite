@@ -8,11 +8,13 @@ import { Link } from 'react-router-dom';
 import path from 'src/constants/path';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/store';
+import { useTranslation } from 'react-i18next';
 
 // React Portal
 // getBoundingClientRect
 
 function CartPopover() {
+  const { t } = useTranslation('cartpopover');
   const [isShowSettings, setIsShowSettings] = useState<boolean>(false);
   const { nodeRef } = useClickOutSide(() => setIsShowSettings(false));
   const { coords, elmRef, handleGetElementCoords } = useGetElementCoords();
@@ -48,6 +50,7 @@ const SettingsContentMemo = memo(SettingsContent);
 import cartEmpty from 'src/assets/img/cartempty.png';
 import { AnimatePresence } from 'framer-motion';
 function SettingsContent() {
+  const { t } = useTranslation('cartpopover');
   const cartList = useSelector((state: RootState) => state.cartReducer.cartItem);
   const userInfo = useSelector((state: RootState) => state.userReducer.userInfo);
   return (
@@ -55,13 +58,13 @@ function SettingsContent() {
       {(cartList.length === 0 || !userInfo.role) && (
         <div className='flex flex-col items-center justify-center p-2'>
           <img className='block w-[8rem]' src={cartEmpty} alt='' />
-          <span className='text-base text-blue-400'>Chưa có sản phẩm</span>
+          <span className='text-base text-blue-400'>{t('cartpopover.no product')}</span>
         </div>
       )}
       {cartList.length > 0 && userInfo.role && (
         <>
           <div className='max-h-[30rem] overflow-auto'>
-            <h1 className='px-2 text-sm text-gray-400'>Sản phẩm gần đây</h1>
+            <h1 className='px-2 text-sm text-gray-400'>{t('cartpopover.recent products')}</h1>
             {cartList &&
               cartList.length > 0 &&
               cartList.map((cartItem) => {
@@ -73,9 +76,9 @@ function SettingsContent() {
               })}
           </div>
           <div className='relative bottom-0 left-0 right-0 flex h-[4rem] justify-end bg-white p-2 md:items-center md:justify-between'>
-            <span className='hidden px-2 text-sm text-gray-400 md:block'>Mua hàng ngay, chờ chi?</span>
+            <span className='hidden px-2 text-sm text-gray-400 md:block'>{t('cartpopover.buy now')}</span>
             <button className='rounded border border-orange-700 bg-orange-500 py-2 px-4 font-bold text-white opacity-80 duration-200 hover:opacity-100'>
-              <Link to={path.cart}>Xem Giỏ Hàng</Link>
+              <Link to={path.cart}>{t('cartpopover.view cart')}</Link>
             </button>
           </div>
         </>

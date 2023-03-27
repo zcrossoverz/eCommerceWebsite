@@ -1,0 +1,33 @@
+{
+  "addashboard": {
+    "admin dashboard": "Admin Dashboard",
+    "home": "Home",
+    "products": "Products",
+    "manage product": "Manage Product",
+    "manage brand": "Manage Brand",
+    "manage coupon": "Manage Coupon",
+    "orders": "Orders",
+    "inventory": "Inventory",
+    "reports": "Reports",
+    "users": "Users",
+    "total products": "Total Products",
+    "total orders": "Total Orders",
+    "sales": "Sales",
+    "total users": "Total Users",
+    "create new brand": "Create new brand",
+    "close modal": "Close modal",
+    "name": "Name",
+    "description": "Description",
+    "confirm": "Confirm",
+    "cancel": "Cancel",
+    "sort by": "Sort by",
+    "sale": "Sale",
+    "stock": "Stock",
+    "create": "CREATE",
+    "edit": "Edit",
+    "delete": "Delete",
+    "product": "Product",
+    "search": "Search",
+    "brand": "Brand"
+  }
+}

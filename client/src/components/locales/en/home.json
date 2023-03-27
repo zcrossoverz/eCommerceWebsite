@@ -1,0 +1,46 @@
+{
+  "aside filter": {
+    "search filter": "Search Filter",
+    "by price": "By Price",
+    "by manufacturer": "By Manufacturer",
+    "by rating": "By Rating",
+    "to": "To",
+    "from": "From",
+    "filter delete": "Filter Delete",
+    "apply": "Apply",
+    "support hotline": "Support Hotline"
+  },
+  "footer": {
+    "company": "COMPANY",
+    "about": "About",
+    "careers": "Careers",
+    "brand center": "Brand Center", 
+    "blog": "Blog",
+    "help center": "HELP CENTER",
+    "discord server": "Discord Server",
+    "twitter": "Twitter",
+    "facebook": "Facebook",
+    "contact us": "Contact Us",
+    "legal": "LEGAl",
+    "privacy policy": "Privacy Policy",
+    "licensing": "Licensing",
+    "terms": "Terms",
+    "conditions": "Condition",
+    "download": "DOWNLOAD",
+    "ios": "iOS",
+    "android": "Android",
+    "windows": "Windows",
+    "macos": "MacOS"
+
+  },
+  "header": {
+    "admin dashboard": "Admin Dashboard",
+    "my account": "My Account",
+    "my order": "My Order",
+    "help": "Help",
+    "login": "LogIn",
+    "logout": "LogOut",
+    "search by product name": "Search By Product Name"
+  }
+  
+}

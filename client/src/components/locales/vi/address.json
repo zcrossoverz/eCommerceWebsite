@@ -1,0 +1,17 @@
+{
+  "address": {
+    "my address": "Địa chỉ của tôi",
+    "receiving address": "Địa chỉ nhận hàng",
+    "default": "Mặc định",
+    "delete": "Xóa",
+    "update": "Cập nhật",
+    "edit confirmation": "Xác nhận sửa",
+    "default settings": "Thiết lập mặc định",
+    "add address": "Thêm địa chỉ",
+    "enter your address here": "Nhập địa chỉ của bạn ở đây",
+    "back": "Trở về",
+    "more confirmation": "Xác nhận thêm",
+    "update address": "Cập nhật địa chỉ"
+
+  }
+}
