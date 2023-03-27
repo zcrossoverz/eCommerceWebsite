@@ -42,7 +42,7 @@ The backend will be running on `http://localhost:3000`. PORT can be change in .e
 - [CORS](https://github.com/expressjs/cors): Express middleware for handling Cross-Origin Resource Sharing (CORS)
 - [TypeScript](https://www.typescriptlang.org/): Superset of JavaScript that adds optional static typing and other features to the language.
 
-## The fronted for an e-commerce website built with React.js, vite, redux and TypeScript.
+## The frontend for an e-commerce website built with React.js, vite, redux and TypeScript.
 
 ### Installation
 
