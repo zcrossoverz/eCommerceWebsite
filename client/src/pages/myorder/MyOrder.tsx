@@ -28,7 +28,7 @@ function MyOrder() {
     }[]
   >([]);
   // call api get all order by user
-  const { data } = useQuery({
+  useQuery({
     queryKey: ['ordersOfUser'],
     queryFn: () =>
       orderApi.getOrdersOfUser({
@@ -37,9 +37,10 @@ function MyOrder() {
     enabled: Boolean(userId),
     refetchOnWindowFocus: false,
     onSuccess: (data) => {
+      const revertData = data.data.data.reverse();
       setOders({
         total: data.data.total,
-        data: data.data.data,
+        data: revertData,
       });
       setIsOpenProcess(data.data.data.map((it) => ({ id: it.order_id, open: false })));
     },
