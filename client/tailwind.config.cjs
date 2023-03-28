@@ -18,6 +18,10 @@ module.exports = {
       backgroundImage: {
         security: 'linear-gradient(to right, rgb(56, 189, 248), rgb(59, 130, 246))',
       },
+      lineHeight: {
+        'extra-loose': '5',
+        '20': '6rem',
+      },
     },
   },
   plugins: [require('@tailwindcss/line-clamp')],
