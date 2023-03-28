@@ -5,8 +5,8 @@ import err from "../middlewares/error";
 
 export const create = async (req: Request, res: Response, next: NextFunction) => {
     const { product_id } = req.params;
-    const { key, value } = req.body;
-    const rs = await specServices.create(Number(product_id), { key, value });
+    const data: [] = req.body;
+    const rs = await specServices.create(Number(product_id), data);
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
 }
 
