@@ -14,6 +14,7 @@ import { produce } from 'immer';
 import { StatusOrder, timeLine } from 'src/constants/timeline';
 import { nanoid } from '@reduxjs/toolkit';
 import classNames from 'classnames';
+import convertDate from 'src/utils/convertDate';
 function MyOrder() {
   const navigate = useNavigate();
   const [orders, setOders] = useState<Pick<ResGetAllOrder, 'total' | 'data'>>();
@@ -197,6 +198,7 @@ function MyOrder() {
                 </div>
               ))}
             <div className='mr-4 flex items-center justify-between'>
+              <span className='px-2 text-sm text-slate-400'>Ngày đặt hàng: {convertDate(order.create_at)}</span>
               {order.status === 'PENDING' && (
                 <span className='text-sm text-slate-400'>Bạn chưa hoàn thành việc thanh toán, thanh toán ngay!</span>
               )}
