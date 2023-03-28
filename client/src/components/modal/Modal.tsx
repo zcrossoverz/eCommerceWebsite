@@ -30,7 +30,6 @@ function Modal({ setShowModal, infoData, refetchAddress }: Props) {
   } = useForm<UpdateUserInfoSchema>({
     resolver: yupResolver(updateInfo),
     defaultValues: {
-      email: infoData?.email,
       firstName: infoData?.firstName,
       lastName: infoData?.lastName,
       phone: infoData?.phone || '',
@@ -68,20 +67,6 @@ function Modal({ setShowModal, infoData, refetchAddress }: Props) {
     <div className='fixed inset-0 z-50 bg-black/[.3]'>
       <div className='absolute top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] rounded-md bg-white'>
         <form className='p-4' noValidate onSubmit={onSubmit}>
-          <div className='mb-6'>
-            <label htmlFor='email' className='mb-2 block text-sm font-medium text-gray-900 dark:text-white'>
-              Your email
-            </label>
-            <input
-              type='email'
-              {...register('email')}
-              className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500'
-              placeholder='name@flowbite.com'
-              required
-            />
-            {errors.email?.message && <p className='text-red-500'>{errors.email.message}</p>}
-          </div>
-
           <div className='grid md:grid-cols-2 md:gap-6'>
             <div className='group relative z-0 mb-6 w-full'>
               <input

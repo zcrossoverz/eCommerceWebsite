@@ -271,7 +271,7 @@ function CartUser() {
             onClick={() => handleCheckout()}
             className='min-w-[3rem] flex-shrink-0 rounded border-b-4 border-blue-700 bg-blue-500 py-2 px-1 font-bold text-white hover:border-blue-500 hover:bg-blue-400 md:px-4'
           >
-            Thanh Toán
+            Tạo đơn hàng
           </button>
         </div>
       </div>

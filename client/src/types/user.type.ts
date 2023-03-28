@@ -16,4 +16,4 @@ export type User = {
   }[];
 };
 export type UserInfo = Pick<User, 'firstName' | 'lastName' | 'role' | 'id'>;
-export type UserInfoWhenUpdate = Pick<User, 'firstName' | 'lastName' | 'email' | 'phone'>;
+export type UserInfoWhenUpdate = Pick<User, 'firstName' | 'lastName' | 'phone'>;
