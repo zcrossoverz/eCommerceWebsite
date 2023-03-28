@@ -203,7 +203,8 @@ export const getAllInboundNote = async (limit: number, page: number) => {
     relations: {
       orderItems: {
         product_option: {
-          product: true
+          product: true,
+          price: true
         }
       }
     },

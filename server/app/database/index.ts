@@ -10,7 +10,7 @@ import { Specification } from "../entities/specification.entity";
 import { ProductOption } from "../entities/productOption.entity";
 import { OrderItem } from "../entities/orderItem.entity";
 import { Timeline } from "../entities/timeline.entity";
-// import { CouponCondition } from "../entities/couponCondition.entity";
+import { CouponCondition } from "../entities/couponCondition.entity";
 import { Payment } from "../entities/payment.entity";
 import { Warehouse } from "../entities/warehouse.entity";
 import { OrderHistory } from "../entities/orderHistory.entity";
@@ -29,7 +29,7 @@ export const AppDataSource = new DataSource({
   username: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  synchronize: true,
+  synchronize: false,
   logging: ["error", "warn"],
   timezone: "+7",
   entities: [
@@ -43,7 +43,7 @@ export const AppDataSource = new DataSource({
     ProductOption,
     OrderItem,
     Timeline,
-    // CouponCondition,
+    CouponCondition,
     Payment,
     Warehouse,
     OrderHistory,
