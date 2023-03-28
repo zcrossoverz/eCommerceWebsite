@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Order } from "./order.entity";
-import { CouponCondition } from "./couponCondition.entity";
+// import { CouponCondition } from "./couponCondition.entity";
 
 export enum EnumTypeCoupon {
     SHIP, // coupon about shipping, 100 - free ship, 50 - 50% off ship cost
@@ -45,9 +45,9 @@ export class Coupon {
     )
     orders!: Order[];
 
-    @OneToMany(
-        () => CouponCondition,
-        couponCondition => couponCondition.coupon
-    )
-    conditions!: CouponCondition[];
+    // @OneToMany(
+    //     () => CouponCondition,
+    //     couponCondition => couponCondition.coupon
+    // )
+    // conditions!: CouponCondition[];
 }
