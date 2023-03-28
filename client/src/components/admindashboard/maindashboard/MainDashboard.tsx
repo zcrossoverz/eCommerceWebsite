@@ -1,14 +1,16 @@
-import { AiOutlineDollarCircle } from 'react-icons/ai';
+import { AiFillBank } from 'react-icons/ai';
 import { BsPeopleFill } from 'react-icons/bs';
 import { FaCartPlus, FaFileSignature } from 'react-icons/fa';
 
 import { PieChart } from './chart/PieChart';
 import { LineChart } from './chart/LineChart';
+import { useQuery } from '@tanstack/react-query';
+import analysisApi from 'src/apis/analysis.api';
 
 type card_props = {
   title: string;
   value: string;
-  percent_compare: string;
+  // percent_compare: string;
   icon: number;
 };
 
@@ -20,7 +22,7 @@ const Card = (props: card_props) => {
     },
     {
       class: 'from-green-600 to-green-400',
-      icon: AiOutlineDollarCircle,
+      icon: AiFillBank,
     },
     {
       class: 'from-pink-600 to-pink-400',
@@ -50,22 +52,23 @@ const Card = (props: card_props) => {
       </div>
       <div className='p-4 text-right text-gray-800'>
         <div className='mb-2 font-semibold'>{props.title}</div>
-        <div className='text-lg font-bold'>{props.value}</div>
-        <hr className='mt-4 mb-2 bg-gray-400' />
-        <div className='text-left'>{props.percent_compare}</div>
+        <div className='text-4xl font-semibold leading-relaxed'>{props.value}</div>
+        {/* <hr className='mt-4 mb-2 bg-gray-400' /> */}
+        {/* <div className='text-left'>{props.percent_compare}</div> */}
       </div>
     </div>
   );
 };
 
 function MainDashboard() {
+  const { data } = useQuery(['analysis_overview'], () => analysisApi.analysOverview());
   return (
     <div>
       <div className='grid md:grid-cols-2 lg:grid-cols-4'>
-        <Card title='Total Products' value='50000' percent_compare='+3% than last month' icon={0} />
-        <Card title='Total Orders' value='600' percent_compare='+3% than last month' icon={2} />
-        <Card title='Sales' value='700' percent_compare='+3% than last month' icon={1} />
-        <Card title='Total Users' value='56' percent_compare='+3% than last month' icon={3} />
+        <Card title='Total Products' value={data?.data.countProducts} icon={0} />
+        <Card title='Total Orders' value={data?.data.countOrders} icon={2} />
+        <Card title='Total Brands' value={data?.data.countBrands} icon={1} />
+        <Card title='Total Users' value={data?.data.countBrands} icon={3} />
       </div>
       <div className='mt-2 grid grid-flow-col grid-cols-3 gap-8'>
         <div className='col-span-2 -ml-1 mr-2 rounded-xl rounded-xl bg-white bg-white p-9 p-2 shadow-lg'>
