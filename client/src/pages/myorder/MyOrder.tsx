@@ -15,6 +15,8 @@ import { StatusOrder, timeLine } from 'src/constants/timeline';
 import { nanoid } from '@reduxjs/toolkit';
 import classNames from 'classnames';
 import convertDate from 'src/utils/convertDate';
+import { isAxiosErr } from 'src/utils/error';
+import { toast } from 'react-toastify';
 function MyOrder() {
   const navigate = useNavigate();
   const [orders, setOders] = useState<Pick<ResGetAllOrder, 'total' | 'data'>>();
@@ -44,6 +46,12 @@ function MyOrder() {
         data: revertData,
       });
       setIsOpenProcess(data.data.data.map((it) => ({ id: it.order_id, open: false })));
+    },
+    onError: (err) => {
+      if (isAxiosErr<{ message: string }>(err)) {
+        toast.error(err.response?.data.message, { autoClose: 2000 });
+        return;
+      }
     },
   });
   const handleCheckout = (id: number) => {

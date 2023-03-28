@@ -14,6 +14,7 @@ import path from 'src/constants/path';
 import OrderItem from 'src/pages/checkout/orderitem/OrderItems';
 import { CartItem as CartItemType } from 'src/types/cart';
 import { User } from 'src/types/user.type';
+import { isAxiosErr } from 'src/utils/error';
 import { formatPrice } from 'src/utils/formatPrice';
 interface LocationState {
   orderItem: CartItemType[];
@@ -75,15 +76,39 @@ function Checkout() {
   });
   const selectMethodMutation = useMutation({
     mutationFn: (body: { id: number; method: string }) => orderApi.setPaymentMethod(body.method, body.id),
+    onError: (err) => {
+      if (isAxiosErr<{ message: string }>(err)) {
+        toast.error(err.response?.data.message, { autoClose: 2000 });
+        return;
+      }
+    },
   });
   const updateOrderMutation = useMutation({
     mutationFn: (body: { id: number; status: string }) => orderApi.updateStatus(body.status, body.id),
+    onError: (err) => {
+      if (isAxiosErr<{ message: string }>(err)) {
+        toast.error(err.response?.data.message, { autoClose: 2000 });
+        return;
+      }
+    },
   });
   const updateAddressOrderMutation = useMutation({
     mutationFn: (body: { id: number; address: string }) => orderApi.updateAddressOrder(body.address, body.id),
+    onError: (err) => {
+      if (isAxiosErr<{ message: string }>(err)) {
+        toast.error(err.response?.data.message, { autoClose: 2000 });
+        return;
+      }
+    },
   });
   const updateStatusPaymentMutation = useMutation({
     mutationFn: (id: number) => orderApi.updateStatusPayment(id),
+    onError: (err) => {
+      if (isAxiosErr<{ message: string }>(err)) {
+        toast.error(err.response?.data.message, { autoClose: 2000 });
+        return;
+      }
+    },
   });
 
   useEffect(() => {
