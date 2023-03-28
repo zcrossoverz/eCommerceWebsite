@@ -79,6 +79,7 @@ function Checkout() {
         });
       }
     },
+    refetchOnWindowFocus: false,
   });
   const selectMethodMutation = useMutation({
     mutationFn: (body: { id: number; method: string }) => orderApi.setPaymentMethod(body.method, body.id),
@@ -311,6 +312,14 @@ function Checkout() {
                     Thêm địa chỉ
                   </Link>
                 </div>
+              )}
+              {orderItems?.data.status === 'PENDING' && (
+                <button
+                  type='button'
+                  className=' mt-4 mb-2 rounded-lg border border-orange-500 px-3 py-2.5 text-center text-sm font-medium text-slate-400 duration-150 hover:bg-gradient-to-bl hover:text-slate-700 focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:focus:ring-cyan-800'
+                >
+                  Hủy đơn hàng
+                </button>
               )}
             </div>
           </div>
