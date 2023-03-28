@@ -6,9 +6,13 @@ const timeout = (ms: number) => {
 
 const baseURL = '/analysis';
 const analysisApi = {
-  async analysBrand() {
-    await timeout(300);
+  analysBrand() {
     return http.get(`${baseURL}/brand`);
   },
+  analysOverview() {
+    return http.get(`${baseURL}/overview`);
+  }
 };
+
+
 export default analysisApi;

@@ -20,7 +20,6 @@ const options = {
 
 export function PieChart() {
   const { data } = useQuery(['analys_brand'], () => analysisApi.analysBrand());
-  console.log(data);
 
   const data_chart = {
     labels: [] as string[],
