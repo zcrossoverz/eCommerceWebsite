@@ -2,28 +2,26 @@ import { Dialog, Transition } from '@headlessui/react';
 import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import classNames from 'classnames';
-import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { BsPaypal } from 'react-icons/bs';
 import { FaWallet } from 'react-icons/fa';
 import { HiLocationMarker } from 'react-icons/hi';
 import { HiOutlineHomeModern } from 'react-icons/hi2';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import orderApi from 'src/apis/order.api';
+import path from 'src/constants/path';
 import OrderItem from 'src/pages/checkout/orderitem/OrderItems';
-// import CartItem from 'src/components/cartitems';
-// import { clearCart } from 'src/slices/cart.slice';
 import { CartItem as CartItemType } from 'src/types/cart';
 import { User } from 'src/types/user.type';
-// import { Order } from 'src/types/order.type';
 import { formatPrice } from 'src/utils/formatPrice';
-// import { throttle } from 'lodash';
 interface LocationState {
   orderItem: CartItemType[];
   id: number;
   userId: number;
 }
 function Checkout() {
+  const navigate = useNavigate();
   // lấy id user từ state url
   const location = useLocation();
   const stateOrderItems = useRef(location.state as LocationState);
@@ -86,9 +84,6 @@ function Checkout() {
   });
   const updateOrderMutation = useMutation({
     mutationFn: (body: { id: number; status: string }) => orderApi.updateStatus(body.status, body.id),
-    onSuccess: () => {
-      toast.success('Thanh toán thành công');
-    },
   });
   const updateAddressOrderMutation = useMutation({
     mutationFn: (body: { id: number; address: string }) => orderApi.updateAddressOrder(body.address, body.id),
@@ -137,6 +132,14 @@ function Checkout() {
       setIsOpen(false);
     }
   };
+  const handleCancelOrder = () => {
+    if (orderItems?.data && orderItems.data.order_id) {
+      updateOrderMutation.mutate({ id: orderItems.data.order_id, status: 'CANCELLED' });
+      navigate('/');
+    } else {
+      return;
+    }
+  };
   const handleCheckoutOrder = () => {
     if (address.content && address.id !== orderItems?.data.user.default_address && orderItems?.data.order_id) {
       console.log('call address');
@@ -153,7 +156,15 @@ function Checkout() {
               return;
             }
             if (orderItems?.data.order_id && userInfo?.phone) {
-              updateOrderMutation.mutate({ id: orderItems.data.order_id, status: 'PROCESSING' });
+              updateOrderMutation.mutate(
+                { id: orderItems.data.order_id, status: 'PROCESSING' },
+                {
+                  onSuccess: () => {
+                    toast.success('Thanh toán thành công');
+                    navigate(path.myOrders);
+                  },
+                }
+              );
             }
           },
         }
@@ -316,6 +327,7 @@ function Checkout() {
               {orderItems?.data.status === 'PENDING' && (
                 <button
                   type='button'
+                  onClick={handleCancelOrder}
                   className=' mt-4 mb-2 rounded-lg border border-orange-500 px-3 py-2.5 text-center text-sm font-medium text-slate-400 duration-150 hover:bg-gradient-to-bl hover:text-slate-700 focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:focus:ring-cyan-800'
                 >
                   Hủy đơn hàng

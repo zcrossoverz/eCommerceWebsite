@@ -56,7 +56,12 @@ function MyOrder() {
     <div className='mx-auto max-w-7xl p-2'>
       {orders?.data.length &&
         orders.data.map((order, i) => (
-          <div key={order.order_id} className='my-4 rounded-sm bg-white p-2 shadow-sm'>
+          <div
+            key={order.order_id}
+            className={classNames('my-4 rounded-sm bg-white p-2 shadow-sm', {
+              hidden: order.status === 'CANCELLED',
+            })}
+          >
             {/* section address timeline */}
             <div className='mb-2 flex min-h-[4rem] items-center border-b'>
               <button
