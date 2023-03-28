@@ -22,12 +22,12 @@ export class CouponCondition {
     @Column()
     condition!: string;
 
-    // @ManyToOne(
-    //     () => Coupon,
-    //     coupon => coupon.conditions
-    // )
-    // @JoinColumn({
-    //     name: "coupon_id"
-    // })
-    // coupon!: Coupon;
+    @ManyToOne(
+        () => Coupon,
+        coupon => coupon.conditions
+    )
+    @JoinColumn({
+        name: "coupon_id"
+    })
+    coupon!: Coupon;
 }
