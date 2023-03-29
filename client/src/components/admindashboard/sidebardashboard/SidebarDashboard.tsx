@@ -1,5 +1,5 @@
 import { Menu, Transition } from '@headlessui/react';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import { AiFillHome, AiFillSetting } from 'react-icons/ai';
 import { BsFillCartFill } from 'react-icons/bs';
 import { FaMoneyCheckAlt } from 'react-icons/fa';
@@ -44,12 +44,14 @@ const ButtonNav = ({ name, Icon, link, active }: PropsButton) => {
 
 const ButtonNavDropdown = ({ name, Icon, subnav, active }: PropsNavButton) => {
   const navigate = useNavigate();
+  const [menuOpen, setMenuOpen] = useState(false);
   return (
     <Menu as='div'>
       <Menu.Button
         className={`mx-4 ${!active && 'hover:bg-white/10'} flex w-[calc(100%-2rem)] items-center rounded-md px-4 ${
           active && 'bg-blue-600'
         }`}
+        onClick={() => setMenuOpen(!menuOpen)}
       >
         <Icon className='text-white' />
         <div className='py-4 px-4 text-left text-white'>{name}</div>
@@ -57,15 +59,8 @@ const ButtonNavDropdown = ({ name, Icon, subnav, active }: PropsNavButton) => {
           <HiChevronDown />
         </div>
       </Menu.Button>
-      <Transition
-        as={Fragment}
-        enter='transition ease-out duration-100'
-        enterFrom='transform opacity-0 scale-95'
-        enterTo='transform opacity-100 scale-100'
-        leave='transition ease-in duration-75'
-        leaveFrom='transform opacity-100 scale-100'
-        leaveTo='transform opacity-0 scale-95'
-      >
+
+      {menuOpen && (
         <Menu.Items className='relative -mt-2'>
           <div className='m-4 rounded-md bg-white shadow-md'>
             {subnav.map((e, i) => {
@@ -81,7 +76,7 @@ const ButtonNavDropdown = ({ name, Icon, subnav, active }: PropsNavButton) => {
             })}
           </div>
         </Menu.Items>
-      </Transition>
+      )}
     </Menu>
   );
 };
