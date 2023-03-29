@@ -51,6 +51,7 @@ function ProductDetails() {
       for (let i = 0; i < op.length; i++) {
         if (op[i].quantity) {
           setOptionSelected({ ...op[i], index: i });
+          break;
         }
       }
     },
@@ -78,6 +79,7 @@ function ProductDetails() {
     if (Number(quantity) === 0) {
       setQuantity(1);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quantity]);
 
   const userInfo = useSelector((state: RootState) => state.userReducer.userInfo);
@@ -131,60 +133,64 @@ function ProductDetails() {
         </div>
       </div>
       <div className='mx-auto mt-1 grid grid-cols-1 grid-rows-1 bg-white shadow-md md:p-4 lg:w-[80%] lg:grid-cols-[1fr,2fr]'>
-        <div>
-          {product?.data.product_options && product.data.product_options.every((e) => e.image !== null) ? (
-            <Carousel selectedItem={optionSelected?.index} showThumbs={false} autoPlay emulateTouch={true}>
-              {product?.data.product_options.map((item, i) => (
-                <div key={i}>
-                  <img className='' src={`${baseURL}/${item.image?.image_url}`} alt={`${i} Slide`} />
-                </div>
-              ))}
-            </Carousel>
-          ) : (
-            <Carousel showThumbs={false} infiniteLoop={true} autoPlay={true} emulateTouch={true}>
-              {product?.data.product_options.map((item, i) => {
-                return (
-                  <div key={item.product_option_id}>
-                    <img
-                      className=''
-                      src={`${baseURL}/${item.image?.image_url ? item.image.image_url : product.data.images.image_url}`}
-                      alt={`${i} Slide`}
-                    />
-                  </div>
-                );
-              })}
-            </Carousel>
-          )}
+        {!isLoading && (
           <div>
-            <h1>Cấu hình chi tiết</h1>
-            <ul>
-              <li className='flex items-center'>
-                <span className='w-1/3'>a</span>
-                <span className='w-2/3'>bc</span>
-              </li>
-              <li className='flex items-center'>
-                <span className='w-1/3'>a</span>
-                <span className='w-2/3'>bc</span>
-              </li>
-              <li className='flex items-center'>
-                <span className='w-1/3'>a</span>
-                <span className='w-2/3'>bc</span>
-              </li>
-              <li className='flex items-center'>
-                <span className='w-1/3'>a</span>
-                <span className='w-2/3'>bc</span>
-              </li>
-              <li className='flex items-center'>
-                <span className='w-1/3'>a</span>
-                <span className='w-2/3'>bc</span>
-              </li>
-              <li className='flex items-center'>
-                <span className='w-1/3'>a</span>
-                <span className='w-2/3'>bc</span>
-              </li>
-            </ul>
+            {product?.data.product_options && product.data.product_options.every((e) => e.image !== null) ? (
+              <Carousel selectedItem={optionSelected?.index} showThumbs={false} emulateTouch={true}>
+                {product?.data.product_options.map((item, i) => (
+                  <div key={i}>
+                    <img className='object-contain' src={`${baseURL}/${item.image?.image_url}`} alt={`${i} Slide`} />
+                  </div>
+                ))}
+              </Carousel>
+            ) : (
+              <Carousel showThumbs={false} infiniteLoop={true} emulateTouch={true}>
+                {product?.data.product_options.map((item, i) => {
+                  return (
+                    <div key={item.product_option_id}>
+                      <img
+                        className=''
+                        src={`${baseURL}/${
+                          item.image?.image_url ? item.image.image_url : product.data.images.image_url
+                        }`}
+                        alt={`${i} Slide`}
+                      />
+                    </div>
+                  );
+                })}
+              </Carousel>
+            )}
+            <div>
+              <h1>Cấu hình chi tiết</h1>
+              <ul>
+                <li className='flex items-center'>
+                  <span className='w-1/3'>a</span>
+                  <span className='w-2/3'>bc</span>
+                </li>
+                <li className='flex items-center'>
+                  <span className='w-1/3'>a</span>
+                  <span className='w-2/3'>bc</span>
+                </li>
+                <li className='flex items-center'>
+                  <span className='w-1/3'>a</span>
+                  <span className='w-2/3'>bc</span>
+                </li>
+                <li className='flex items-center'>
+                  <span className='w-1/3'>a</span>
+                  <span className='w-2/3'>bc</span>
+                </li>
+                <li className='flex items-center'>
+                  <span className='w-1/3'>a</span>
+                  <span className='w-2/3'>bc</span>
+                </li>
+                <li className='flex items-center'>
+                  <span className='w-1/3'>a</span>
+                  <span className='w-2/3'>bc</span>
+                </li>
+              </ul>
+            </div>
           </div>
-        </div>
+        )}
         {isLoading && (
           <div className='col-span-2 flex min-h-[300px] items-center justify-center'>
             <Loading />
@@ -305,10 +311,12 @@ function ProductDetails() {
         )}
       </div>
       {/* desc */}
-      <div className='mx-auto mt-4 p-4 shadow-md lg:w-[80%]'>
-        <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>Chi tiết cấu hình của sản phẩm</h3>
-        <p className='mx-auto w-[96%] break-words px-4 py-2'>{product?.data.specs}</p>
-      </div>
+      {!isLoading && (
+        <div className='mx-auto mt-4 p-4 shadow-md lg:w-[80%]'>
+          <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>Chi tiết cấu hình của sản phẩm</h3>
+          <p className='mx-auto w-[96%] break-words px-4 py-2'>{product?.data.specs}</p>
+        </div>
+      )}
       {/* Reviews */}
       <div className='mx-auto mt-4 p-4 shadow-md lg:w-[80%]'>
         <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>Đánh giá sản phẩm</h3>
