@@ -161,22 +161,19 @@ function AsignFilter({ queryConfig, brands }: Props) {
             })}
         </div>
       </div>
-      <button
-        type='button'
-        className='mr-2 mb-2 w-full rounded-lg border border-blue-700 px-5 py-2.5 text-center text-sm font-medium text-blue-700 duration-300 hover:bg-blue-800 hover:text-white focus:outline-none dark:border-blue-500 dark:text-blue-500 dark:hover:bg-blue-500 dark:hover:text-white'
+
+      <Link
+        className='mr-2 mt-4 block w-full rounded-lg border border-blue-700 px-5 py-2.5 text-center text-sm font-medium text-blue-700 duration-300 hover:bg-blue-800 hover:text-white focus:outline-none dark:border-blue-500 dark:text-blue-500 dark:hover:bg-blue-500 dark:hover:text-white'
+        to={{
+          pathname: path.home,
+          search: createSearchParams({
+            page: queryConfig.page as string,
+            limit: queryConfig.limit as string,
+          }).toString(),
+        }}
       >
-        <Link
-          to={{
-            pathname: path.home,
-            search: createSearchParams({
-              page: queryConfig.page as string,
-              limit: queryConfig.limit as string,
-            }).toString(),
-          }}
-        >
-          Xóa Bô Lọc
-        </Link>
-      </button>
+        Xóa Bô Lọc
+      </Link>
     </div>
   );
 }
