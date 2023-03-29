@@ -10,4 +10,5 @@ export interface OptionProduct {
     image_url: string;
     type: string;
   };
+  index?: number;
 }

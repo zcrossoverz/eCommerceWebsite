@@ -50,7 +50,7 @@ function ProductDetails() {
       const op = data.data.product_options;
       for (let i = 0; i < op.length; i++) {
         if (op[i].quantity) {
-          setOptionSelected(op[i]);
+          setOptionSelected({ ...op[i], index: i });
         }
       }
     },
@@ -131,29 +131,60 @@ function ProductDetails() {
         </div>
       </div>
       <div className='mx-auto mt-1 grid grid-cols-1 grid-rows-1 bg-white shadow-md md:p-4 lg:w-[80%] lg:grid-cols-[1fr,2fr]'>
-        {product?.data.product_options && product.data.product_options.every((e) => e.image !== null) ? (
-          <Carousel autoPlay emulateTouch={true}>
-            {product?.data.product_options.map((item, i) => (
-              <div key={i}>
-                <img className='' src={`${baseURL}/${item.image?.image_url}`} alt={`${i} Slide`} />
-              </div>
-            ))}
-          </Carousel>
-        ) : (
-          <Carousel autoPlay emulateTouch={true}>
-            {product?.data.product_options.map((item, i) => {
-              return (
-                <div key={item.product_option_id}>
-                  <img
-                    className=''
-                    src={`${baseURL}/${item.image?.image_url ? item.image.image_url : product.data.images.image_url}`}
-                    alt={`${i} Slide`}
-                  />
+        <div>
+          {product?.data.product_options && product.data.product_options.every((e) => e.image !== null) ? (
+            <Carousel selectedItem={optionSelected?.index} showThumbs={false} autoPlay emulateTouch={true}>
+              {product?.data.product_options.map((item, i) => (
+                <div key={i}>
+                  <img className='' src={`${baseURL}/${item.image?.image_url}`} alt={`${i} Slide`} />
                 </div>
-              );
-            })}
-          </Carousel>
-        )}
+              ))}
+            </Carousel>
+          ) : (
+            <Carousel showThumbs={false} infiniteLoop={true} autoPlay={true} emulateTouch={true}>
+              {product?.data.product_options.map((item, i) => {
+                return (
+                  <div key={item.product_option_id}>
+                    <img
+                      className=''
+                      src={`${baseURL}/${item.image?.image_url ? item.image.image_url : product.data.images.image_url}`}
+                      alt={`${i} Slide`}
+                    />
+                  </div>
+                );
+              })}
+            </Carousel>
+          )}
+          <div>
+            <h1>Cấu hình chi tiết</h1>
+            <ul>
+              <li className='flex items-center'>
+                <span className='w-1/3'>a</span>
+                <span className='w-2/3'>bc</span>
+              </li>
+              <li className='flex items-center'>
+                <span className='w-1/3'>a</span>
+                <span className='w-2/3'>bc</span>
+              </li>
+              <li className='flex items-center'>
+                <span className='w-1/3'>a</span>
+                <span className='w-2/3'>bc</span>
+              </li>
+              <li className='flex items-center'>
+                <span className='w-1/3'>a</span>
+                <span className='w-2/3'>bc</span>
+              </li>
+              <li className='flex items-center'>
+                <span className='w-1/3'>a</span>
+                <span className='w-2/3'>bc</span>
+              </li>
+              <li className='flex items-center'>
+                <span className='w-1/3'>a</span>
+                <span className='w-2/3'>bc</span>
+              </li>
+            </ul>
+          </div>
+        </div>
         {isLoading && (
           <div className='col-span-2 flex min-h-[300px] items-center justify-center'>
             <Loading />
@@ -169,7 +200,7 @@ function ProductDetails() {
             <div>
               <div className='grid min-h-[2rem] w-full grid-cols-1 gap-4 md:grid-cols-2'>
                 {product?.data.product_options &&
-                  product.data.product_options.map((op) => {
+                  product.data.product_options.map((op, index) => {
                     return (
                       // eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions
                       <button
@@ -182,7 +213,7 @@ function ProductDetails() {
                           'cursor-not-allowed': Number(op.quantity) <= 0,
                           'cursor-pointer hover:bg-orange-100': !(Number(op.quantity) <= 0),
                         })}
-                        onClick={() => setOptionSelected(op)}
+                        onClick={() => setOptionSelected({ ...op, index })}
                       >
                         <div className='flex items-center justify-center'>
                           <span>Ram: {op.ram}</span>
@@ -200,11 +231,6 @@ function ProductDetails() {
                       </button>
                     );
                   })}
-              </div>
-
-              <div className='my-4 min-h-[5rem] w-full overflow-hidden rounded-md border border-orange-200'>
-                <div className='w-full bg-orange-200 p-2'>Mô tả sản phẩm</div>
-                <p className='p-2 text-base'>{product?.data.description}</p>
               </div>
               <div className='mt-4 mb-2 flex items-center'>
                 <span className='quantity mr-2'>Số lượng</span>
@@ -231,7 +257,7 @@ function ProductDetails() {
                   >
                     <HiPlus size={16} />
                   </span>
-                </div>{' '}
+                </div>
               </div>
               {/* add to cart btn */}
               <button
@@ -256,13 +282,32 @@ function ProductDetails() {
               </div>
               <p className='p-2'>Bảo hành 1 ĐỔI 1 trong 6 tháng</p>
             </div>
+            <div className='my-4 min-h-[5rem] w-full overflow-hidden rounded-md border border-orange-200'>
+              <div className='w-full bg-orange-200 p-2'>Mô tả sản phẩm</div>
+              <div className='relative'>
+                <p className='px-2 text-base line-clamp-4'>
+                  {product?.data.description} asd dasd asdasd adsasd asdasd ada asda dsa sd ada dsasd adsa sda sda ssd
+                  asd asdas das dasd asd asd asd as das da sd asd asss da sda sd as d asdasd as dasd asda sd asda sd as
+                  das das d asd asd asd asd asd s asda asd asd asda sda sdas dasd asd asd asd asd asd as das das da sd
+                  asd asd
+                </p>
+                <button
+                  type='button'
+                  className={classNames(
+                    'w-full rounded-lg px-5 py-1 text-center text-sm font-semibold text-blue-400 duration-300 focus:outline-none'
+                  )}
+                >
+                  <span className='ml-2 text-lg'>Xem thêm</span>
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>
       {/* desc */}
       <div className='mx-auto mt-4 p-4 shadow-md lg:w-[80%]'>
-        <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>Mô tả sản phẩm</h3>
-        <p className='mx-auto w-[96%] break-words px-4 py-2'>{product?.data.description}</p>
+        <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>Chi tiết cấu hình của sản phẩm</h3>
+        <p className='mx-auto w-[96%] break-words px-4 py-2'>{product?.data.specs}</p>
       </div>
       {/* Reviews */}
       <div className='mx-auto mt-4 p-4 shadow-md lg:w-[80%]'>
