@@ -254,7 +254,7 @@ function ProductDetails() {
                 type='button'
                 onClick={() => handleAddToCart()}
                 className={classNames(
-                  'my-4 mr-2 flex items-center rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white duration-300 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800',
+                  'my-4 mr-2 flex items-center rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white duration-300 focus:outline-none focus:ring-cyan-300',
                   {
                     'hover:bg-gradient-to-bl': Boolean(optionSelected),
                     'cursor-not-allowed': Boolean(!optionSelected),

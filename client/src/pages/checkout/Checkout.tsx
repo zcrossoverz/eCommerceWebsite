@@ -173,7 +173,7 @@ function Checkout() {
         {
           onSuccess: () => {
             if (!userInfo?.phone) {
-              toast.error('Bạn điền số điện thoại', { autoClose: 1500 });
+              toast.error('Bạn chưa điền số điện thoại', { autoClose: 1500 });
               return;
             } else {
               if (status && status === 'COMPLETED') {
@@ -254,7 +254,7 @@ function Checkout() {
                     <span className='mr-2 text-base'>{address.content}</span>
                     <div className='flex items-center'>
                       {userInfo.default_address === address.id && (
-                        <span className='mr-2 rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'>
+                        <span className='mr-2 rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800'>
                           Mặc định
                         </span>
                       )}
@@ -312,7 +312,7 @@ function Checkout() {
                                         {userInfo.default_address && (
                                           <span
                                             className={classNames(
-                                              'ml-2 rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+                                              'ml-2 rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 ',
                                               {
                                                 hidden: !(userInfo.default_address === address.id),
                                               }
@@ -365,7 +365,7 @@ function Checkout() {
                 <button
                   type='button'
                   onClick={handleCancelOrder}
-                  className=' mt-4 mb-2 rounded-lg border border-orange-500 px-3 py-2.5 text-center text-sm font-medium text-slate-400 duration-150 hover:bg-gradient-to-bl hover:text-slate-700 focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:focus:ring-cyan-800'
+                  className=' mt-4 mb-2 rounded-lg border border-orange-500 px-3 py-2.5 text-center text-sm font-medium text-slate-400 duration-150 hover:bg-gradient-to-bl hover:text-slate-700 focus:outline-none focus:ring-4 focus:ring-cyan-300 '
                 >
                   Hủy đơn hàng
                 </button>
@@ -430,12 +430,12 @@ function Checkout() {
                   <input
                     type='text'
                     id='small-input'
-                    className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 sm:text-xs'
+                    className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-xs'
                   />
                   <button
                     type='button'
                     // onClick={() => throttled.current()()}
-                    className='ml-2 whitespace-nowrap rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:hover:border-gray-600 dark:hover:bg-gray-700'
+                    className='ml-2 whitespace-nowrap rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none'
                   >
                     Chọn mã
                   </button>
@@ -465,7 +465,7 @@ function Checkout() {
                   <button
                     onClick={() => handleCheckoutOrder()}
                     type='button'
-                    className='mr-2 mb-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-cyan-300 dark:focus:ring-cyan-800'
+                    className='mr-2 mb-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-cyan-300 '
                   >
                     Xác nhận thanh toán
                   </button>
