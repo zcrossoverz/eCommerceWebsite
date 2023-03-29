@@ -14,6 +14,8 @@ import { useNavigate } from 'react-router-dom';
 import { Order } from 'src/types/order.type';
 import { useMutation } from '@tanstack/react-query';
 import orderApi from 'src/apis/order.api';
+import { isAxiosErr } from 'src/utils/error';
+import { toast } from 'react-toastify';
 interface ExtendCartItem extends CartItem {
   checked: boolean;
 }
@@ -129,6 +131,7 @@ function CartUser() {
     );
   };
   const handleCheckout = () => {
+    if (checkedItems.length <= 0) toast.error('Vui lòng chọn sản phẩm cần mua', { autoClose: 2000 });
     if (userId && checkedItems.length > 0) {
       const order: Order = {
         user_id: userId,
@@ -152,6 +155,11 @@ function CartUser() {
                 userId,
               },
             });
+          },
+          onError: (err) => {
+            if (isAxiosErr<{ error: string }>(err)) {
+              toast.error(err.response?.data.error, { autoClose: 2000 });
+            }
           },
         });
       }

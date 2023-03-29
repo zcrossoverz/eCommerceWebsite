@@ -103,7 +103,7 @@ function MyOrder() {
                       <li key={nanoid(5)} className='relative mb-6 w-1/5 sm:mb-0'>
                         <div className='mb-1 flex items-center'>
                           <div
-                            className={classNames('h-0.5 w-full bg-gray-200 dark:bg-gray-700 sm:flex', {
+                            className={classNames('h-0.5 w-full bg-gray-200 sm:flex', {
                               'opacity-0': Boolean(i === 0),
                               'bg-green-500':
                                 tl.id <=
@@ -115,7 +115,7 @@ function MyOrder() {
                           />
                           <div
                             className={classNames(
-                              'z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-[3px] text-lg ring-0 ring-white dark:bg-blue-900 dark:ring-gray-900 sm:ring-8',
+                              'z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-[3px] text-lg ring-0 ring-white sm:ring-8',
                               {
                                 'border-green-500 text-green-500':
                                   tl.id <=
@@ -129,7 +129,7 @@ function MyOrder() {
                             {tl.component}
                           </div>
                           <div
-                            className={classNames('h-0.5 w-full bg-gray-200 dark:bg-gray-700 sm:flex', {
+                            className={classNames('h-0.5 w-full bg-gray-200 sm:flex', {
                               'opacity-0': i === timeLine.length - 1,
                               'bg-green-500':
                                 tl.id <=
@@ -142,7 +142,7 @@ function MyOrder() {
                           />
                         </div>
                         <div className=' '>
-                          <h3 className='text-center text-sm font-semibold text-gray-900 dark:text-white'>{tl.name}</h3>
+                          <h3 className='text-center text-sm font-semibold text-gray-900'>{tl.name}</h3>
                         </div>
                       </li>
                     ))}

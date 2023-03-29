@@ -51,11 +51,13 @@ function ProductDetails() {
       for (let i = 0; i < op.length; i++) {
         if (op[i].quantity) {
           setOptionSelected({ ...op[i], index: i });
+          break;
         }
       }
     },
     retry: 0,
   });
+  const [loadMore, setLoadmore] = useState<boolean>(false);
   const [optionSelected, setOptionSelected] = useState<OptionProduct>();
   const [quantity, setQuantity] = useState<number | string>('');
   const decreaseQuantity = () => {
@@ -78,6 +80,7 @@ function ProductDetails() {
     if (Number(quantity) === 0) {
       setQuantity(1);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quantity]);
 
   const userInfo = useSelector((state: RootState) => state.userReducer.userInfo);
@@ -131,60 +134,47 @@ function ProductDetails() {
         </div>
       </div>
       <div className='mx-auto mt-1 grid grid-cols-1 grid-rows-1 bg-white shadow-md md:p-4 lg:w-[80%] lg:grid-cols-[1fr,2fr]'>
-        <div>
-          {product?.data.product_options && product.data.product_options.every((e) => e.image !== null) ? (
-            <Carousel selectedItem={optionSelected?.index} showThumbs={false} autoPlay emulateTouch={true}>
-              {product?.data.product_options.map((item, i) => (
-                <div key={i}>
-                  <img className='' src={`${baseURL}/${item.image?.image_url}`} alt={`${i} Slide`} />
-                </div>
-              ))}
-            </Carousel>
-          ) : (
-            <Carousel showThumbs={false} infiniteLoop={true} autoPlay={true} emulateTouch={true}>
-              {product?.data.product_options.map((item, i) => {
-                return (
-                  <div key={item.product_option_id}>
-                    <img
-                      className=''
-                      src={`${baseURL}/${item.image?.image_url ? item.image.image_url : product.data.images.image_url}`}
-                      alt={`${i} Slide`}
-                    />
-                  </div>
-                );
-              })}
-            </Carousel>
-          )}
+        {!isLoading && (
           <div>
-            <h1>Cấu hình chi tiết</h1>
-            <ul>
-              <li className='flex items-center'>
-                <span className='w-1/3'>a</span>
-                <span className='w-2/3'>bc</span>
-              </li>
-              <li className='flex items-center'>
-                <span className='w-1/3'>a</span>
-                <span className='w-2/3'>bc</span>
-              </li>
-              <li className='flex items-center'>
-                <span className='w-1/3'>a</span>
-                <span className='w-2/3'>bc</span>
-              </li>
-              <li className='flex items-center'>
-                <span className='w-1/3'>a</span>
-                <span className='w-2/3'>bc</span>
-              </li>
-              <li className='flex items-center'>
-                <span className='w-1/3'>a</span>
-                <span className='w-2/3'>bc</span>
-              </li>
-              <li className='flex items-center'>
-                <span className='w-1/3'>a</span>
-                <span className='w-2/3'>bc</span>
-              </li>
-            </ul>
+            {product?.data.product_options && product.data.product_options.every((e) => e.image !== null) ? (
+              <Carousel selectedItem={optionSelected?.index} showThumbs={false} emulateTouch={true}>
+                {product?.data.product_options.map((item, i) => (
+                  <div key={i}>
+                    <img className='object-contain' src={`${baseURL}/${item.image?.image_url}`} alt={`${i} Slide`} />
+                  </div>
+                ))}
+              </Carousel>
+            ) : (
+              <Carousel showThumbs={false} infiniteLoop={true} emulateTouch={true}>
+                {product?.data.product_options.map((item, i) => {
+                  return (
+                    <div key={item.product_option_id}>
+                      <img
+                        className=''
+                        src={`${baseURL}/${
+                          item.image?.image_url ? item.image.image_url : product.data.images.image_url
+                        }`}
+                        alt={`${i} Slide`}
+                      />
+                    </div>
+                  );
+                })}
+              </Carousel>
+            )}
+            <div>
+              <h1 className='my-2 px-2 text-base font-medium text-black'>Cấu hình chi tiết</h1>
+              <ul>
+                {product?.data &&
+                  product.data.specs.map((spec) => (
+                    <li key={nanoid(6)} className='flex items-center px-2 py-1 text-xs odd:bg-slate-100'>
+                      <span className='w-1/3 font-semibold'>{spec.key}:</span>
+                      <span className='w-2/3 text-slate-400'>{spec.value}:</span>
+                    </li>
+                  ))}
+              </ul>
+            </div>
           </div>
-        </div>
+        )}
         {isLoading && (
           <div className='col-span-2 flex min-h-[300px] items-center justify-center'>
             <Loading />
@@ -264,7 +254,7 @@ function ProductDetails() {
                 type='button'
                 onClick={() => handleAddToCart()}
                 className={classNames(
-                  'my-4 mr-2 flex items-center rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white duration-300 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800',
+                  'my-4 mr-2 flex items-center rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white duration-300 focus:outline-none focus:ring-cyan-300',
                   {
                     'hover:bg-gradient-to-bl': Boolean(optionSelected),
                     'cursor-not-allowed': Boolean(!optionSelected),
@@ -285,19 +275,21 @@ function ProductDetails() {
             <div className='my-4 min-h-[5rem] w-full overflow-hidden rounded-md border border-orange-200'>
               <div className='w-full bg-orange-200 p-2'>Mô tả sản phẩm</div>
               <div className='relative'>
-                <p className='px-2 text-base line-clamp-4'>
-                  {product?.data.description} asd dasd asdasd adsasd asdasd ada asda dsa sd ada dsasd adsa sda sda ssd
-                  asd asdas das dasd asd asd asd as das da sd asd asss da sda sd as d asdasd as dasd asda sd asda sd as
-                  das das d asd asd asd asd asd s asda asd asd asda sda sdas dasd asd asd asd asd asd as das das da sd
-                  asd asd
+                <p
+                  className={classNames('whitespace-pre-line px-2 text-justify text-base', {
+                    'line-clamp-4': !loadMore,
+                  })}
+                >
+                  {product?.data.description}
                 </p>
                 <button
                   type='button'
+                  onClick={() => setLoadmore(!loadMore)}
                   className={classNames(
                     'w-full rounded-lg px-5 py-1 text-center text-sm font-semibold text-blue-400 duration-300 focus:outline-none'
                   )}
                 >
-                  <span className='ml-2 text-lg'>Xem thêm</span>
+                  <span className='ml-2 text-lg'>{loadMore ? 'Thu gọn' : 'Xem thêm'}</span>
                 </button>
               </div>
             </div>
@@ -305,10 +297,12 @@ function ProductDetails() {
         )}
       </div>
       {/* desc */}
-      <div className='mx-auto mt-4 p-4 shadow-md lg:w-[80%]'>
-        <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>Chi tiết cấu hình của sản phẩm</h3>
-        <p className='mx-auto w-[96%] break-words px-4 py-2'>{product?.data.specs}</p>
-      </div>
+      {!isLoading && (
+        <div className='mx-auto mt-4 p-4 shadow-md lg:w-[80%]'>
+          <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>Chi tiết cấu hình của sản phẩm</h3>
+          <p className='mx-auto w-[96%] break-words px-4 py-2'></p>
+        </div>
+      )}
       {/* Reviews */}
       <div className='mx-auto mt-4 p-4 shadow-md lg:w-[80%]'>
         <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>Đánh giá sản phẩm</h3>

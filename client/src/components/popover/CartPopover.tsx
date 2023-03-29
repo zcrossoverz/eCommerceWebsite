@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo, useMemo, useState } from 'react';
 import Popover from './Popover';
 import useClickOutSide from 'src/hooks/useClickOutSide';
 import useGetElementCoords from 'src/hooks/useGetElementCoords';
@@ -13,6 +13,7 @@ import { RootState } from 'src/store';
 // getBoundingClientRect
 
 function CartPopover() {
+  const cartList = useSelector((state: RootState) => state.cartReducer.cartItem);
   const [isShowSettings, setIsShowSettings] = useState<boolean>(false);
   const { nodeRef } = useClickOutSide(() => setIsShowSettings(false));
   const { coords, elmRef, handleGetElementCoords } = useGetElementCoords();
@@ -20,16 +21,23 @@ function CartPopover() {
     setIsShowSettings((s) => !s);
     handleGetElementCoords(e);
   };
+  const totalCartItems = useMemo(() => {
+    const total = cartList.reduce((prev, current) => prev + current.option.quantity, 0);
+    return total;
+  }, [cartList]);
   return (
     <div className='flex items-center justify-center'>
       <div className='relative' ref={nodeRef}>
         {/* eslint-disable-next-line jsx-a11y/no-redundant-roles*/}
         <button
-          className='hover:text-orange-6 00 flex h-10 w-10 cursor-pointer items-center justify-center rounded-[50%] duration-300 hover:bg-gray-100 hover:text-orange-600'
+          className='hover:text-orange-6 00 flex h-10 w-10 cursor-pointer items-center justify-center rounded-[50%] duration-300'
           onClick={handleToggleSettings}
           ref={elmRef}
           role='button'
         >
+          <p className='absolute top-0 -right-1 flex items-center justify-center rounded-md bg-white px-2 text-xs text-orange-600'>
+            {totalCartItems}
+          </p>
           <BsCart className='text-2xl' />
         </button>
         {isShowSettings && (

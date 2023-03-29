@@ -89,7 +89,7 @@ function Header() {
             duration: 0.3,
           },
         }}
-        className={classNames('top-0 left-0 right-0 z-10 bg-orange-600 text-white shadow-md dark:bg-gray-900', {
+        className={classNames('top-0 left-0 right-0 z-10 bg-orange-600 text-white shadow-md', {
           fixed: scrolled,
           relative: !scrolled,
         })}
@@ -106,7 +106,7 @@ function Header() {
                   value={searchProduct}
                   onChange={handleChangeSearch}
                   type='search'
-                  className='block max-h-[2.5rem] w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pr-10 text-sm text-gray-900 outline-none placeholder:line-clamp-1 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400'
+                  className='block max-h-[2.5rem] w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pr-10 text-sm text-gray-900 outline-none placeholder:line-clamp-1'
                   placeholder='Tìm theo tên sản phẩm'
                   required
                 />
@@ -136,9 +136,9 @@ function Header() {
                     setShowMenuUser(!showMenuUser);
                   }}
                   type='button'
-                  className='group ml-1 flex h-10 w-10 items-center justify-center rounded-[50%] duration-300 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600'
+                  className='group ml-1 flex h-10 w-10 items-center justify-center rounded-[50%] duration-300 focus:outline-none'
                 >
-                  <RiUserSettingsLine className='text-3xl text-white group-hover:text-orange-600 group-focus:text-orange-600' />
+                  <RiUserSettingsLine className='text-3xl text-white' />
                 </button>
                 {/* menu user */}
 
@@ -214,30 +214,6 @@ function Header() {
                 )}
               </div>
             </div>
-
-            {/* show menu btn */}
-            {/* <button
-            type='button'
-            onClick={() => setShowMenu(!showMenu)}
-            className='ml-1 inline-flex items-center rounded-lg p-2 text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600 lg:hidden'
-          >
-            <FiMenu className='text-xl' />
-          </button> */}
-            {/* menu item */}
-            {/* <div className={`${showMenu ? 'absolute inset-x-0 top-14 block' : 'hidden'} z-10 w-full md:w-auto lg:block`}>
-            <ul className='mt-4 flex flex-col rounded-lg border border-gray-100 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800 md:mt-0 md:flex-row md:space-x-8 md:border-0 md:bg-white md:text-sm md:font-medium md:dark:bg-gray-900'>
-              <li className='nav-item'>
-                <span>Home</span>
-              </li>
-
-              <li className='nav-item'>
-                <Link to='/login' className='flex items-center'>
-                  <BiLogIn className='mr-1 text-xl' />
-                  <span>Login</span>
-                </Link>
-              </li>
-            </ul>
-          </div> */}
           </div>
         </nav>
       </motion.header>
