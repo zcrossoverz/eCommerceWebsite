@@ -1,5 +1,5 @@
-import { Menu, Transition } from '@headlessui/react';
-import { Fragment, useState } from 'react';
+import { Menu } from '@headlessui/react';
+import { useState } from 'react';
 import { AiFillHome, AiFillSetting } from 'react-icons/ai';
 import { BsFillCartFill } from 'react-icons/bs';
 import { FaMoneyCheckAlt } from 'react-icons/fa';
@@ -7,6 +7,7 @@ import { HiChevronDown } from 'react-icons/hi';
 // eslint-disable-next-line import/named
 import { IconType } from 'react-icons/lib';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { popup } from 'src/slices/modal.slice';
 
 type PropsButton = {
   name: string;
@@ -45,6 +46,7 @@ const ButtonNav = ({ name, Icon, link, active }: PropsButton) => {
 const ButtonNavDropdown = ({ name, Icon, subnav, active }: PropsNavButton) => {
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <Menu as='div'>
       <Menu.Button
@@ -67,7 +69,10 @@ const ButtonNavDropdown = ({ name, Icon, subnav, active }: PropsNavButton) => {
               return (
                 <Menu.Button
                   className='block w-full px-4 py-2 text-left hover:rounded-md hover:bg-gray-100'
-                  onClick={() => navigate(`/admin${e.link}`)}
+                  onClick={() => {
+                    navigate(`/admin${e.link}`);
+                    setMenuOpen(!menuOpen);
+                  }}
                   key={i.toString()}
                 >
                   {() => <div>{e.title}</div>}
