@@ -2,7 +2,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import classNames from 'classnames';
 import { useForm } from 'react-hook-form';
 import { GrFilter } from 'react-icons/gr';
-import { MdStar, MdStarBorder } from 'react-icons/md';
 import { createSearchParams, Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Star from 'src/components/star';
