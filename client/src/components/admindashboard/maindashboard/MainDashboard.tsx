@@ -79,9 +79,19 @@ function MainDashboard() {
         </div>
       </div>
 
-      <div className='mt-4 grid grid-flow-col grid-cols-3 gap-8 bg-white p-4'>
-        <div className='col-span-2 rounded-xl bg-yellow-200 p-8'></div>
-        <div className='flex rounded-xl bg-blue-200 p-8'></div>
+      <div className='mt-4 -ml-1 grid grid-flow-col grid-cols-4 gap-8'>
+        <div className='col-span-2 rounded-xl bg-white p-8 shadow-lg'>
+          <div className=' -mt-6 -ml-4'>
+            <div className='text-xl font-semibold leading-loose'>Top Sales</div>
+          </div>
+          <hr className='-ml-6 bg-gray-300' />
+        </div>
+        <div className='col-span-2 rounded-xl bg-white p-8 shadow-lg'>
+          <div className=' -mt-6 -ml-4'>
+            <div className='text-xl font-semibold leading-loose'>Recent activity</div>
+          </div>
+          <hr className='-ml-6 bg-gray-300' />
+        </div>
       </div>
     </div>
   );
