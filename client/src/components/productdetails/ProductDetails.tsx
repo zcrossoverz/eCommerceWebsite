@@ -57,6 +57,7 @@ function ProductDetails() {
     },
     retry: 0,
   });
+  const [loadMore, setLoadmore] = useState<boolean>(false);
   const [optionSelected, setOptionSelected] = useState<OptionProduct>();
   const [quantity, setQuantity] = useState<number | string>('');
   const decreaseQuantity = () => {
@@ -291,19 +292,21 @@ function ProductDetails() {
             <div className='my-4 min-h-[5rem] w-full overflow-hidden rounded-md border border-orange-200'>
               <div className='w-full bg-orange-200 p-2'>Mô tả sản phẩm</div>
               <div className='relative'>
-                <p className='px-2 text-base line-clamp-4'>
-                  {product?.data.description} asd dasd asdasd adsasd asdasd ada asda dsa sd ada dsasd adsa sda sda ssd
-                  asd asdas das dasd asd asd asd as das da sd asd asss da sda sd as d asdasd as dasd asda sd asda sd as
-                  das das d asd asd asd asd asd s asda asd asd asda sda sdas dasd asd asd asd asd asd as das das da sd
-                  asd asd
+                <p
+                  className={classNames('whitespace-pre-line px-2 text-justify text-base', {
+                    'line-clamp-4': !loadMore,
+                  })}
+                >
+                  {product?.data.description}
                 </p>
                 <button
                   type='button'
+                  onClick={() => setLoadmore(!loadMore)}
                   className={classNames(
                     'w-full rounded-lg px-5 py-1 text-center text-sm font-semibold text-blue-400 duration-300 focus:outline-none'
                   )}
                 >
-                  <span className='ml-2 text-lg'>Xem thêm</span>
+                  <span className='ml-2 text-lg'>{loadMore ? 'Thu gọn' : 'Xem thêm'}</span>
                 </button>
               </div>
             </div>
