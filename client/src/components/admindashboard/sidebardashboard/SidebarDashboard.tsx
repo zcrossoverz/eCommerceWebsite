@@ -6,37 +6,35 @@ import { FaMoneyCheckAlt } from 'react-icons/fa';
 import { HiChevronDown } from 'react-icons/hi';
 // eslint-disable-next-line import/named
 import { IconType } from 'react-icons/lib';
-import { useDispatch, useSelector } from 'react-redux';
-import { dashboardTabInterface, dashboard_tab } from 'src/constants/adminTab';
-import { navigate, selectCurrentTab } from 'src/slices/navigation.slice';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 type PropsButton = {
   name: string;
   Icon: IconType;
-  navigateTo: keyof dashboardTabInterface;
+  link: string;
+  active: boolean;
 };
 
 type Subnav = {
   title: string;
-  navigateTo: keyof dashboardTabInterface;
+  link: string;
 };
 
 type PropsNavButton = {
   name: string;
   Icon: IconType;
   subnav: Subnav[];
+  active: boolean;
 };
 
-const ButtonNav = ({ name, Icon, navigateTo }: PropsButton) => {
-  const dispatch = useDispatch();
-  const currentTab = useSelector(selectCurrentTab);
-  const active = dashboard_tab[navigateTo].name === dashboard_tab[currentTab].name;
+const ButtonNav = ({ name, Icon, link, active }: PropsButton) => {
+  const navigate = useNavigate();
   return (
     <button
       className={`mx-4 ${!active && 'hover:bg-white/10'} flex w-[calc(100%-2rem)] items-center rounded-md px-4 ${
         active && 'bg-blue-600'
       }`}
-      onClick={() => dispatch(navigate(navigateTo))}
+      onClick={() => navigate(`/admin${link}`)}
     >
       <Icon className='text-white' />
       <div className='py-4 px-4 text-left text-white'>{name}</div>
@@ -44,10 +42,8 @@ const ButtonNav = ({ name, Icon, navigateTo }: PropsButton) => {
   );
 };
 
-const ButtonNavDropdown = ({ name, Icon, subnav }: PropsNavButton) => {
-  const dispatch = useDispatch();
-  const currentTab = useSelector(selectCurrentTab);
-  const active = dashboard_tab[subnav[0].navigateTo].name === dashboard_tab[currentTab].name;
+const ButtonNavDropdown = ({ name, Icon, subnav, active }: PropsNavButton) => {
+  const navigate = useNavigate();
   return (
     <Menu as='div'>
       <Menu.Button
@@ -76,7 +72,7 @@ const ButtonNavDropdown = ({ name, Icon, subnav }: PropsNavButton) => {
               return (
                 <Menu.Button
                   className='block w-full px-4 py-2 text-left hover:rounded-md hover:bg-gray-100'
-                  onClick={() => dispatch(navigate(e.navigateTo))}
+                  onClick={() => navigate(`/admin${e.link}`)}
                   key={i.toString()}
                 >
                   {() => <div>{e.title}</div>}
@@ -91,6 +87,7 @@ const ButtonNavDropdown = ({ name, Icon, subnav }: PropsNavButton) => {
 };
 
 function SidebarDashboard() {
+  const location = useLocation().pathname.replace('/admin', '');
   return (
     <div>
       <div className='mx-2 flex items-center py-6'>
@@ -98,20 +95,21 @@ function SidebarDashboard() {
       </div>
       <hr className='mx-4 border-blue-100/20' />
       <div className='my-4'>
-        <ButtonNav name={'Home'} Icon={AiFillHome} navigateTo='home' />
+        <ButtonNav name={'Home'} Icon={AiFillHome} link='/' active={location === '/'} />
         <ButtonNavDropdown
           name={'Products'}
           Icon={BsFillCartFill}
           subnav={[
-            { title: 'Manage Product', navigateTo: 'manage_product' },
-            { title: 'Manage Brand', navigateTo: 'manage_brand' },
-            { title: 'Manage Coupon', navigateTo: 'manage_coupon' },
+            { title: 'Manage Product', link: '/product' },
+            { title: 'Manage Brand', link: '/brand' },
+            { title: 'Manage Coupon', link: '/coupon' },
           ]}
+          active={location === '/product' || location === '/brand' || location === '/coupon'}
         />
-        <ButtonNav name={'Orders'} Icon={FaMoneyCheckAlt} navigateTo='order' />
-        <ButtonNav name={'Inventory'} Icon={AiFillSetting} navigateTo='inventory' />
-        <ButtonNav name={'Reports'} Icon={AiFillSetting} navigateTo='report' />
-        <ButtonNav name={'Users'} Icon={AiFillSetting} navigateTo='user' />
+        <ButtonNav name={'Orders'} Icon={FaMoneyCheckAlt} link='/order' active={location === '/order'} />
+        <ButtonNav name={'Inventory'} Icon={AiFillSetting} link='/inventory' active={location === '/inventory'} />
+        <ButtonNav name={'Reports'} Icon={AiFillSetting} link='/report' active={location === '/report'} />
+        <ButtonNav name={'Users'} Icon={AiFillSetting} link='/user' active={location === '/user'} />
       </div>
     </div>
   );
