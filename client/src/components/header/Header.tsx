@@ -144,14 +144,14 @@ function Header() {
 
                 {showMenuUser && (
                   <motion.div
-                    className={classNames('absolute top-14 right-0 w-[300px] rounded-lg bg-slate-300 px-4 py-1 ')}
+                    className={classNames('absolute top-14 right-0 w-[300px] rounded-lg bg-white px-4 py-1 shadow-md ')}
                     initial={{ opacity: 0, transform: 'scale(0)' }}
                     animate={{ opacity: 1, transform: 'scale(1)' }}
                     exit={{ opacity: 0, transform: 'scale(0)' }}
                     transition={{ duration: 0.2 }}
                   >
                     {/* triangle up */}
-                    <div className='absolute -top-[12px] right-2 h-0 w-0 border-l-[10px] border-b-[15px] border-r-[10px] border-l-transparent border-b-slate-300 border-r-transparent'></div>
+                    <div className='absolute -top-[12px] right-2 h-0 w-0 border-l-[10px] border-b-[15px] border-r-[10px] border-l-transparent border-b-white border-r-transparent'></div>
 
                     {isAuth && userInfo && (
                       <div className='flex items-center border-b py-2'>
