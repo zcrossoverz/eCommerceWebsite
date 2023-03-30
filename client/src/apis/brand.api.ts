@@ -7,9 +7,9 @@ const timeout = (ms: number) => {
 
 const baseURL = '/brand';
 const brandApi = {
-  async getAllBrand() {
+  async getAllBrand(search: string) {
     await timeout(300);
-    return http.get<Brand[]>(baseURL);
+    return http.get<Brand[]>(`${baseURL}/?search=${search}`);
   },
   async createBrand(name: string, description: string) {
     return http.post(baseURL, { name, description });

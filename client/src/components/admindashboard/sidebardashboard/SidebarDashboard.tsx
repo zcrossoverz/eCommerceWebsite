@@ -7,7 +7,6 @@ import { HiChevronDown } from 'react-icons/hi';
 // eslint-disable-next-line import/named
 import { IconType } from 'react-icons/lib';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { popup } from 'src/slices/modal.slice';
 
 type PropsButton = {
   name: string;
