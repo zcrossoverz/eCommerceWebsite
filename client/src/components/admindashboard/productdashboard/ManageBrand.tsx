@@ -103,12 +103,13 @@ export default function ManageBrand() {
   const [params, setParams] = useState({
     limit: '10',
     page: '1',
+    search: '',
   });
 
   const currentModal = useSelector(selectCurrentModal);
   const dispatch = useDispatch();
 
-  const { data, isLoading, refetch } = useQuery(['get_all_brands', params], () => brandApi.getAllBrand());
+  const { data, isLoading, refetch } = useQuery(['get_all_brands', params], () => brandApi.getAllBrand(params.search));
 
   return (
     <div className='mt-4'>
@@ -120,6 +121,12 @@ export default function ManageBrand() {
             id='inline-full-name'
             type='text'
             placeholder='search'
+            onChange={(e) =>
+              setParams({
+                ...params,
+                search: e.target.value,
+              })
+            }
           />
         </div>
         <div className='col-span-1'>
@@ -189,7 +196,7 @@ export default function ManageBrand() {
                   </div>
                 )}
 
-                {data && (
+                {data?.data && data.data.length > 0 && (
                   <table className='min-w-full divide-y divide-gray-200 bg-white'>
                     <thead className='bg-pink-400/20'>
                       <tr>
