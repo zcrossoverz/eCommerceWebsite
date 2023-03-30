@@ -11,8 +11,10 @@ const analysisApi = {
   },
   analysOverview() {
     return http.get(`${baseURL}/overview`);
-  }
+  },
+  topSales() {
+    return http.get(`${baseURL}/top_sale`);
+  },
 };
-
 
 export default analysisApi;

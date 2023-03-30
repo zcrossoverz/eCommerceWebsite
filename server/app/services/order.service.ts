@@ -139,7 +139,7 @@ export const createOrder = async (
         order: new_order,
         product_option: e.item,
         quantity: e.quantity,
-        price: e.amount/e.quantity
+        price: e.amount / e.quantity,
       })
     );
     await decreaseStock(e.item.id, e.quantity);
@@ -160,7 +160,7 @@ export const getOneOrder = async (order_id: number) => {
     where: { id: order_id },
     relations: {
       user: {
-        address: true
+        address: true,
       },
       orderItems: {
         product_option: {
@@ -193,14 +193,14 @@ export const getOneOrder = async (order_id: number) => {
         price: e.product_option.price,
         quantity: e.quantity,
         image: e.product_option.image.image_url,
-        prices: e.price
+        prices: e.price,
       };
     }),
     payment: {
       method: EnumPaymentMethod[method],
       ...payment,
     },
-    timeline: rs.timeline,
+    timeline: rs.timeline.sort((a, b) => a.id - b.id),
   };
 };
 
@@ -252,37 +252,40 @@ export const getAllOrder = async (limit: number, page: number) => {
                 color: el.product_option.color,
                 price: el.product_option.price,
                 quantity: el.quantity,
-                prices: el.price
+                prices: el.price,
               };
             }),
             payment: {
               method: EnumPaymentMethod[method],
               ...payment,
             },
-            timeline: e.timeline,
+            timeline: e.timeline.sort((a, b) => a.id - b.id),
           };
         }),
       }
     : BadRequestError("order empty");
 };
 
-
-export const getAllOrderByUser = async (user_id: number, limit: number, page: number) => {
-  if(!user_id) return BadRequestError("user id empty");
+export const getAllOrderByUser = async (
+  user_id: number,
+  limit: number,
+  page: number
+) => {
+  if (!user_id) return BadRequestError("user id empty");
   const orderRepo = AppDataSource.getRepository(Order);
   const offset = (page - 1) * limit;
   const [rs, count] = await orderRepo.findAndCount({
-    where:{
+    where: {
       user: {
-        id: user_id
-      }
+        id: user_id,
+      },
     },
     relations: {
       user: true,
       orderItems: {
         product_option: {
           product: true,
-          image: true
+          image: true,
         },
       },
       coupon: true,
@@ -323,14 +326,14 @@ export const getAllOrderByUser = async (user_id: number, limit: number, page: nu
                 price: el.product_option.price,
                 quantity: el.quantity,
                 prices: el.price,
-                image: el.product_option.image.image_url
+                image: el.product_option.image.image_url,
               };
             }),
             payment: {
               method: EnumPaymentMethod[method],
               ...payment,
             },
-            timeline: e.timeline,
+            timeline: e.timeline.sort((a, b) => a.id - b.id),
           };
         }),
       }
