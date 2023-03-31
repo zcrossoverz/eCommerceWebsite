@@ -1,0 +1,12 @@
+{
+  "register": {
+    "sign up account": "Đăng ký tài khoản",
+    "sign up email": "Hoặc đăng ký bằng email",
+    "password": "mật khẩu",
+    "first name": "tên",
+    "last name": "họ",
+    "sign in to continue": "Đăng nhập để tiếp tục với chúng tôi!",
+    "account successfully created": "Tạo tài khoản thành công",
+    "confirm password": "Xác nhận mật khẩu"
+  }
+}

@@ -18,14 +18,23 @@ import { GrUserAdmin } from 'react-icons/gr';
 import { useDispatch } from 'react-redux';
 import { setUserInfor } from 'src/slices/user.slice';
 import logo from 'src/assets/logo.svg';
+import Language from '../language/Language';
+import { GrLanguage } from 'react-icons/gr';
+import { useTranslation } from 'react-i18next';
+import { locales } from 'src/i18n/i18n';
+import { MdLanguage } from 'react-icons/md';
 
 function Header() {
+  const { t } = useTranslation();
+  const { i18n } = useTranslation();
+  const currentLanguage = locales[i18n.language as keyof typeof locales];
   const navigate = useNavigate();
   const { isAuth, setIsAuth } = useContext(AppContext);
   const [showMenuUser, setShowMenuUser] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useState<UserInfo>();
   const [searchProduct, setSearchProduct] = useState<string>('');
   const [scrolled, setScrolled] = useState<boolean>(false);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -77,6 +86,10 @@ function Header() {
       search: `?search=${searchProduct}`,
     });
   };
+  const changeLanguage = (lng: 'vi' | 'en') => {
+    i18n.changeLanguage(lng);
+  };
+
   return (
     <AnimatePresence>
       <motion.header
@@ -171,20 +184,26 @@ function Header() {
                       <li className='nav-item mt-4'>
                         <Link to='/profile' className='flex items-center'>
                           <FiSettings className='mr-4 text-lg' />
-                          <span>My Account</span>
+                          <span>{t('header.my account')}</span>
                         </Link>
                       </li>
                       <li className='nav-item mt-2'>
                         <Link to={path.myOrders} className='flex items-center'>
                           <BiShoppingBag className='mr-4 text-xl' />
-                          <span>My Order</span>
+                          <span>{t('header.my order')}</span>
                         </Link>
                       </li>
                       <li className='nav-item mt-2'>
                         <Link to='/user' className='flex items-center'>
                           <BiHelpCircle className='mr-4 text-xl' />
-                          <span>Help</span>
+                          <span>{t('header.help')}</span>
                         </Link>
+                      </li>
+                      <li className='nav-item mt-2 block '>
+                        <div className='flex items-center'>
+                          <MdLanguage className='mr-4 text-xl text-gray-700' />
+                          <Language />
+                        </div>
                       </li>
 
                       <li className='nav-item mt-2'>
@@ -199,13 +218,13 @@ function Header() {
                             className='flex items-center'
                           >
                             <BiLogIn className='mr-4 text-xl' />
-                            <span>Logout</span>
+                            <span>{t('header.logout')}</span>
                           </span>
                         )}
                         {!isAuth && (
                           <Link to='/login' className='flex items-center'>
                             <BiLogIn className='mr-4 text-xl' />
-                            <span>Login</span>
+                            <span>{t('header.login')}</span>
                           </Link>
                         )}
                       </li>

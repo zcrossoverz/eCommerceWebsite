@@ -1,0 +1,20 @@
+{
+  "productdetail": {
+    "quantity exceeds stock": "Số lượng vượt quá hàng tồn trong kho",
+    "please login": "Vui lòng đăng nhập",
+    "select product": "Vui lòng chọn sản phẩm bạn muốn mua",
+    "list of products": "Danh sách sản phẩm",
+    "product details": "Chi tiết sản phẩm",
+    "out of stock": "Hết hàng",
+    "stocking": "Còn hàng",
+    "product description": "Mô tả sản phẩm",
+    "quantity": "số lượng",
+    "add to card": "Thêm vào giỏ hàng",
+    "no1": "Số 1",
+    "about warranty and sale": "VỀ BẢO HÀNH VÀ HẬU MÃI",
+    "warranty": "Bảo hành 1 đổi 1 trong 6 tháng",
+    "product reviews": "Đánh giá sản phẩm",
+    "mobile phone": "Điện thoại di động",
+    "color": "Màu sắc"
+  }
+}

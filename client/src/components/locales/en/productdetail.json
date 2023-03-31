@@ -1,0 +1,20 @@
+{
+  "productdetail": {
+    "quantity exceeds stock": "Quantity exceeds stock",
+    "please login": "Please login",
+    "select product": "Please select the product you want to buy",
+    "list of products": "List of products",
+    "product details": "Product details",
+    "out of stock": "Out of stock",
+    "stocking": "Stocking",
+    "product description": "Product Description",
+    "quantity": "Quantity",
+    "add to card": "Add to cart",
+    "no1": "No.1",
+    "about warranty and sale": "ABOUT WARRANTY AND SALE",
+    "warranty": "Warranty 1 for 1 exchange in 6 months",
+    "product reviews": "Product Reviews",
+    "mobile phone": "Mobile Phone",
+    "color": "Color"
+  }
+}

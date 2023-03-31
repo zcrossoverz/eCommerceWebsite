@@ -1,0 +1,15 @@
+{
+  "cartuser": {
+    "cart": "Cart",
+    "Product": "Product",
+    "unit price": "Unit price",
+    "quantity": "Quantity",
+    "into money": "Into money",
+    "operation": "Operation",
+    "select all": "Select all",
+    "delete": "Delete",
+    "total payment": "Total payment",
+    "product": "product",
+    "payment": "Payment"
+  }
+}
