@@ -57,7 +57,7 @@ function Register() {
             <span className='text-sm text-orange-500'>Fstore</span>
           </div>
           <div className='py-10'>
-            <h2 className='mb-2 text-3xl font-bold text-form'>Đăng ký tài khoản</h2>
+            <h2 className='mb-2 text-3xl font-bold text-form'>{t('register.')}</h2>
             <div className='border-primary mb-2 inline-block w-10 border-2 border-orange-400'></div>
             <div className='mb-2 flex items-center justify-center'>
               <span className='group/fb mx-1 rounded-full border-2 border-blue-500 p-3 duration-300 hover:bg-form hover:text-white'>

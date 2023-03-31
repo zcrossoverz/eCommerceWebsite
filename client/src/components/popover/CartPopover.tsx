@@ -14,11 +14,7 @@ import { useTranslation } from 'react-i18next';
 // getBoundingClientRect
 
 function CartPopover() {
-<<<<<<< HEAD
-  const { t } = useTranslation('cartpopover');
-=======
   const cartList = useSelector((state: RootState) => state.cartReducer.cartItem);
->>>>>>> f4258170ab83ebeed78136b17b68aceeb70e4745
   const [isShowSettings, setIsShowSettings] = useState<boolean>(false);
   const { nodeRef } = useClickOutSide(() => setIsShowSettings(false));
   const { coords, elmRef, handleGetElementCoords } = useGetElementCoords();
