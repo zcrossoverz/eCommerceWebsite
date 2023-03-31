@@ -19,15 +19,11 @@ import { useDispatch } from 'react-redux';
 import { setUserInfor } from 'src/slices/user.slice';
 import logo from 'src/assets/logo.svg';
 import Language from '../language/Language';
-import { GrLanguage } from 'react-icons/gr';
 import { useTranslation } from 'react-i18next';
-import { locales } from 'src/i18n/i18n';
 import { MdLanguage } from 'react-icons/md';
 
 function Header() {
   const { t } = useTranslation();
-  const { i18n } = useTranslation();
-  const currentLanguage = locales[i18n.language as keyof typeof locales];
   const navigate = useNavigate();
   const { isAuth, setIsAuth } = useContext(AppContext);
   const [showMenuUser, setShowMenuUser] = useState<boolean>(false);
@@ -86,9 +82,6 @@ function Header() {
       search: `?search=${searchProduct}`,
     });
   };
-  const changeLanguage = (lng: 'vi' | 'en') => {
-    i18n.changeLanguage(lng);
-  };
 
   return (
     <AnimatePresence>
@@ -109,9 +102,16 @@ function Header() {
       >
         <nav className='border-gray-200 px-2 py-2.5 sm:px-4'>
           <div className='mx-auto flex max-w-7xl items-center justify-between'>
-            <Link to={path.home} className='flex items-center md:min-w-[2rem] md:p-2'>
-              <img src={logo} className='mr-1 h-9' alt='Flowbite Logo' />
+            <Link to={path.home} className='mx-0 flex flex-shrink-0 items-center md:min-w-[2rem] md:p-2'>
+              <img src={logo} className='mr-1 h-6 md:h-9' alt='fstore Logo' />
             </Link>
+            <div className='hidden items-center px-2 lg:flex'>
+              <BsTelephoneForward className='mr-2 text-lg' />
+              <div className='flex flex-col items-start'>
+                <span className='text-sm'>Hotline hỗ trợ</span>
+                <span className='text-sm font-bold'>0907588963</span>
+              </div>
+            </div>
             {/* search input */}
             <form className='ml-2 flex-shrink md:min-w-[30rem]' onSubmit={handleSearch}>
               <div className='relative'>
@@ -132,15 +132,13 @@ function Header() {
               </div>
             </form>
             {/* right navigate */}
-            <div className='hidden items-center px-2 md:flex'>
-              <BsTelephoneForward className='mr-2 text-xl' />
-              <div className='flex flex-col items-start'>
-                <span>Hotline hỗ trợ</span>
-                <span className='text-lg font-bold'>0907588963</span>
-              </div>
+
+            <div className='hidden items-center lg:flex '>
+              <MdLanguage className='mr-1 mt-0.5 text-lg text-gray-700 lg:text-white' />
+              <Language />
             </div>
             {/* cart */}
-            <div className='flex items-center justify-between md:min-w-[8rem]'>
+            <div className='flex items-center justify-between lg:min-w-[8rem]'>
               <Cart />
               {/* user setting */}
               <div className='relative flex' ref={nodeRef}>
@@ -151,7 +149,7 @@ function Header() {
                   type='button'
                   className='group ml-1 flex h-10 w-10 items-center justify-center rounded-[50%] duration-300 focus:outline-none'
                 >
-                  <RiUserSettingsLine className='text-3xl text-white' />
+                  <RiUserSettingsLine className='mt-0.5 text-2xl text-white' />
                 </button>
                 {/* menu user */}
 
@@ -199,7 +197,7 @@ function Header() {
                           <span>{t('header.help')}</span>
                         </Link>
                       </li>
-                      <li className='nav-item mt-2 block '>
+                      <li className='nav-item mt-2 block lg:hidden'>
                         <div className='flex items-center'>
                           <MdLanguage className='mr-4 text-xl text-gray-700' />
                           <Language />

@@ -2,7 +2,6 @@ import { memo, useMemo, useState } from 'react';
 import Popover from './Popover';
 import useClickOutSide from 'src/hooks/useClickOutSide';
 import useGetElementCoords from 'src/hooks/useGetElementCoords';
-import { BsCart } from 'react-icons/bs';
 import CartItem from '../cartitems';
 import { Link } from 'react-router-dom';
 import path from 'src/constants/path';
@@ -37,15 +36,15 @@ function CartPopover() {
           role='button'
         >
           {totalCartItems !== 0 && (
-            <p className='absolute top-0 -right-1 flex items-center justify-center rounded-md bg-white px-2 text-xs text-orange-600'>
+            <span className='absolute top-0 -right-1 flex items-center justify-center rounded-md bg-white px-2 text-xs text-orange-600'>
               {totalCartItems}
-            </p>
+            </span>
           )}
-          <BsCart className='text-2xl' />
+          <AiOutlineShoppingCart className='text-2xl' />
         </button>
         {isShowSettings && (
           <AnimatePresence>
-            <Popover coords={coords} position='right' className='rounded-2xl bg-white shadow'>
+            <Popover coords={coords} position='right' className='rounded-xl bg-white shadow'>
               <SettingsContentMemo></SettingsContentMemo>
             </Popover>
           </AnimatePresence>
@@ -58,6 +57,7 @@ function CartPopover() {
 const SettingsContentMemo = memo(SettingsContent);
 import cartEmpty from 'src/assets/img/cartempty.png';
 import { AnimatePresence } from 'framer-motion';
+import { AiOutlineShoppingCart } from 'react-icons/ai';
 function SettingsContent() {
   const { t } = useTranslation('cartpopover');
   const cartList = useSelector((state: RootState) => state.cartReducer.cartItem);
