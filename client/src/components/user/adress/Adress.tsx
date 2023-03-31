@@ -66,21 +66,12 @@ function Address({ user, refetchAddress }: Props) {
             <div className='col-span-6 mr-2 flex flex-col items-start py-1'>
               <span>{address.address}</span>
               <div className='flex items-center'>
-<<<<<<< HEAD
-                <span className='mr-2 rounded border border-blue-400 bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-gray-700 dark:text-blue-400'>
-                  {t('address.receiving address')}
-                </span>
-                {user.default_address === address.id && (
-                  <span className='mr-2 rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'>
-                    {t('address.default')}
-=======
                 <span className='mr-2 rounded border border-blue-400 bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800'>
                   Địa chỉ nhận
                 </span>
                 {user.default_address === address.id && (
                   <span className='mr-2 rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800'>
                     Mặc định
->>>>>>> f4258170ab83ebeed78136b17b68aceeb70e4745
                   </span>
                 )}
               </div>
@@ -222,13 +213,8 @@ function BtnAddAress({ refetchAddress, user, classStyle, title, isUpdate, addres
                       value={addressUser}
                       onChange={(e) => setAddressUser(e.target.value)}
                       rows={4}
-<<<<<<< HEAD
-                      className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500'
-                      placeholder={t('address.enter your address here') || 'Nhập địa chỉ của bạn ở đây'}
-=======
                       className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500'
                       placeholder='Điền địa chỉ của bạn vào đây'
->>>>>>> f4258170ab83ebeed78136b17b68aceeb70e4745
                     />
                   </div>
 

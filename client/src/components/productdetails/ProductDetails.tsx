@@ -169,18 +169,20 @@ function ProductDetails() {
                 })}
               </Carousel>
             )}
-            <div>
-              <h1 className='my-2 px-2 text-base font-medium text-black'>Cấu hình chi tiết</h1>
-              <ul>
-                {product?.data &&
-                  product.data.specs.map((spec) => (
-                    <li key={nanoid(6)} className='flex items-center px-2 py-1 text-xs odd:bg-slate-100'>
-                      <span className='w-1/3 font-semibold'>{spec.key}:</span>
-                      <span className='w-2/3 text-slate-400'>{spec.value}:</span>
-                    </li>
-                  ))}
-              </ul>
-            </div>
+            {product?.data.specs.length !== 0 && (
+              <div>
+                <h1 className='my-2 px-2 text-base font-semibold text-black'>Cấu hình chi tiết</h1>
+                <ul>
+                  {product?.data &&
+                    product.data.specs.map((spec) => (
+                      <li key={nanoid(6)} className='flex items-center px-2 py-1 text-xs odd:bg-slate-100'>
+                        <span className='w-1/3 font-semibold'>{spec.key}:</span>
+                        <span className='w-2/3 text-slate-400'>{spec.value}:</span>
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            )}
           </div>
         )}
         {isLoading && (
@@ -232,14 +234,6 @@ function ProductDetails() {
                     );
                   })}
               </div>
-<<<<<<< HEAD
-
-              <div className='my-4 min-h-[5rem] w-full overflow-hidden rounded-md border border-orange-200'>
-                <div className='w-full bg-orange-200 p-2'>{t('productdetail.product description')}</div>
-                <p className='p-2 text-base'>{product?.data.description}</p>
-              </div>
-=======
->>>>>>> f4258170ab83ebeed78136b17b68aceeb70e4745
               <div className='mt-4 mb-2 flex items-center'>
                 <span className='quantity mr-2'>{t('productdetail.quantity')}</span>
                 <div className='flex items-center'>
@@ -319,19 +313,12 @@ function ProductDetails() {
         )}
       </div>
       {/* desc */}
-<<<<<<< HEAD
-      {/* <div className='mx-auto mt-4 p-4 shadow-md lg:w-[80%]'>
-        <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>{t('productdetail.product description')}</h3>
-        <p className='mx-auto w-[96%] break-words px-4 py-2'>{t('productdetail.mobile phone')}</p>
-      </div> */}
-=======
       {!isLoading && (
         <div className='mx-auto mt-4 p-4 shadow-md lg:w-[80%]'>
           <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>Chi tiết cấu hình của sản phẩm</h3>
           <p className='mx-auto w-[96%] break-words px-4 py-2'></p>
         </div>
       )}
->>>>>>> f4258170ab83ebeed78136b17b68aceeb70e4745
       {/* Reviews */}
       <div className='mx-auto mt-4 p-4 shadow-md lg:w-[80%]'>
         <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>{t('productdetail.product reviews')}</h3>

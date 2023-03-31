@@ -73,7 +73,7 @@ function MyOrder() {
             })}
           >
             {/* section address timeline */}
-            <div className='mb-2 flex min-h-[4rem] items-center border-b'>
+            <div className='min-h[2rem] mb-2 flex items-center justify-end border-b lg:min-h-[4rem] lg:justify-center'>
               <button
                 type='button'
                 onClick={() => {
@@ -86,14 +86,14 @@ function MyOrder() {
                     })
                   );
                 }}
-                className='inline-flex justify-center whitespace-nowrap bg-transparent px-4 py-2 text-sm font-medium text-blue-400 duration-200 hover:text-orange-600'
+                className='hidden justify-center whitespace-nowrap bg-transparent px-4 py-2 text-sm font-medium text-blue-400 duration-200 hover:text-orange-600 lg:inline-flex'
               >
                 {isOpenProcess[i] && isOpenProcess[i].open ? 'Tắt tiến trình' : 'Xem tiến trình'}
               </button>
               <AnimatePresence>
                 {isOpenProcess[i] && isOpenProcess[i].open ? (
                   <motion.ol
-                    className='w-full flex-grow items-center sm:flex'
+                    className='hidden w-full flex-grow items-center lg:flex'
                     initial={{ opacity: 0, transform: 'scale(0)' }}
                     animate={{ opacity: 1, transform: 'scale(1)' }}
                     exit={{ opacity: 0, transform: 'scale(0)' }}
@@ -106,11 +106,7 @@ function MyOrder() {
                             className={classNames('h-0.5 w-full bg-gray-200 sm:flex', {
                               'opacity-0': Boolean(i === 0),
                               'bg-green-500':
-                                tl.id <=
-                                StatusOrder[
-                                  order.timeline[(order.timeline.length as number) - 1]
-                                    .content as keyof typeof StatusOrder
-                                ],
+                                tl.id <= StatusOrder[order.timeline[0].content as keyof typeof StatusOrder],
                             })}
                           />
                           <div
@@ -118,11 +114,7 @@ function MyOrder() {
                               'z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-[3px] text-lg ring-0 ring-white sm:ring-8',
                               {
                                 'border-green-500 text-green-500':
-                                  tl.id <=
-                                  StatusOrder[
-                                    order.timeline[(order.timeline.length as number) - 1]
-                                      .content as keyof typeof StatusOrder
-                                  ],
+                                  tl.id <= StatusOrder[order.timeline[0].content as keyof typeof StatusOrder],
                               }
                             )}
                           >
@@ -132,24 +124,21 @@ function MyOrder() {
                             className={classNames('h-0.5 w-full bg-gray-200 sm:flex', {
                               'opacity-0': i === timeLine.length - 1,
                               'bg-green-500':
-                                tl.id <=
-                                StatusOrder[
-                                  order.timeline[(order.timeline.length as number) - 1]
-                                    .content as keyof typeof StatusOrder
-                                ] -
-                                  1,
+                                tl.id <= StatusOrder[order.timeline[0].content as keyof typeof StatusOrder] - 1,
                             })}
                           />
                         </div>
                         <div className=' '>
-                          <h3 className='text-center text-sm font-semibold text-gray-900'>{tl.name}</h3>
+                          <h3 className='whitespace-nowrap text-center text-xs font-semibold text-gray-900 md:text-sm'>
+                            {tl.name}
+                          </h3>
                         </div>
                       </li>
                     ))}
                   </motion.ol>
                 ) : (
                   <motion.div
-                    className='ml-2 flex-grow text-sm text-slate-500'
+                    className='ml-2 hidden flex-grow text-sm text-slate-500 lg:block'
                     initial={{ opacity: 0, transform: 'scale(0)' }}
                     animate={{ opacity: 1, transform: 'scale(1)' }}
                     exit={{ opacity: 0, transform: 'scale(0)' }}
@@ -173,9 +162,13 @@ function MyOrder() {
                   </motion.div>
                 )}
               </AnimatePresence>
-              <div className='border-l px-2'>
-                <span className='whitespace-nowrap text-base font-semibold text-orange-500'>
-                  {order.timeline[order.timeline.length - 1].content}
+              <div className='flex flex-col items-end px-1 lg:border-l lg:px-2'>
+                <span className='flex-grow text-xs lg:hidden lg:text-base'>
+                  <b>Đia chỉ: </b>
+                  {order.address}
+                </span>
+                <span className='whitespace-nowrap text-sm font-semibold text-orange-500 lg:text-base'>
+                  {order.timeline[0].content}
                 </span>
               </div>
             </div>
@@ -184,42 +177,61 @@ function MyOrder() {
               order.order_items.map((orderItem) => (
                 <div key={orderItem.product_option_id} className='mb-2 flex items-center justify-between'>
                   <div className='flex items-center'>
-                    <img src={`${baseURL}/${orderItem.image}`} alt='' className='mr-2 h-[5rem] w-[5rem] object-cover' />
+                    <img
+                      src={`${baseURL}/${orderItem.image}`}
+                      alt=''
+                      className='mr-2 h-[3rem] w-[3rem] object-cover lg:h-[5rem] lg:w-[5rem]'
+                    />
                     <div>
-                      <h2 className='text-lg'>{orderItem.product_name}</h2>
+                      <h2 className='text-lg line-clamp-1 lg:line-clamp-none'>{orderItem.product_name}</h2>
                       <div className='flex flex-col items-start text-sm text-slate-400'>
                         <div className='flex items-center'>
-                          <span className='pr-2'>Phân loại hàng: </span>
+                          <span className='hidden pr-2 lg:inline-block'>Phân loại hàng: </span>
                           <div className='uppercase'>
-                            <span className='border border-slate-300 px-1'>ram: {orderItem.ram}</span>
-                            <span className='border border-slate-300 px-1'>rom: {orderItem.rom}</span>
-                            <span className='border border-slate-300 px-1'>màu: {orderItem.color}</span>
+                            <span className='border border-slate-300 px-1 text-xs md:text-sm'>
+                              ram: {orderItem.ram}
+                            </span>
+                            <span className='hidden border border-slate-300 px-1 md:inline-block'>
+                              rom: {orderItem.rom}
+                            </span>
+                            <span className='border border-slate-300 px-1 text-xs md:text-sm'>
+                              màu: {orderItem.color}
+                            </span>
                           </div>
                         </div>
-                        <p>Số lượng: {orderItem.quantity}</p>
+                        <p className='text-xs md:text-sm'>Số lượng: {orderItem.quantity}</p>
                       </div>
                     </div>
                   </div>
                   <div className='flex items-center'>
-                    <span className='text-lg font-medium text-black'>{formatPrice(orderItem.prices)}</span>
+                    <span className='text-sm font-medium text-black md:text-lg'>{formatPrice(orderItem.prices)}</span>
                   </div>
                 </div>
               ))}
             <div className='mr-4 flex items-center justify-between'>
-              <span className='px-2 text-sm text-slate-400'>Ngày đặt hàng: {convertDate(order.create_at)}</span>
-              {order.status === 'PENDING' && (
-                <span className='text-sm text-slate-400'>Bạn chưa hoàn thành việc thanh toán, thanh toán ngay!</span>
-              )}
-              <div className='flex flex-grow items-center justify-end'>
-                <FaMoneyCheckAlt className='mr-1 text-2xl text-orange-400' />
-                <span className='text-base font-semibold text-black'>
-                  Thành tiền: <i className='text-xl text-orange-500'>{formatPrice(order.payment.amount)}</i>
+              <div className='flex flex-col items-start'>
+                <span className='px-2 text-sm text-slate-400'>
+                  <i className='hidden font-semibold md:inline-block'>Ngày đặt hàng:</i> {convertDate(order.create_at)}
                 </span>
+                {order.status === 'PENDING' && (
+                  <span className='hidden px-2 text-sm text-slate-400 md:inline-block'>
+                    Bạn chưa hoàn thành việc thanh toán, thanh toán ngay!
+                  </span>
+                )}
+              </div>
+              <div className='flex flex-grow flex-col items-end'>
+                <div className='flex items-center'>
+                  <FaMoneyCheckAlt className='mr-1 hidden text-2xl text-orange-400 lg:inline-block' />
+                  <span className='text-base font-semibold text-black'>
+                    <b className='mr-2 hidden font-semibold lg:inline-block'>Thành tiền:</b>
+                    <i className='text-base text-orange-500 md:text-xl'>{formatPrice(order.payment.amount)}</i>
+                  </span>
+                </div>
                 {order.status === 'PENDING' && (
                   <button
                     type='button'
                     onClick={() => handleCheckout(order.order_id)}
-                    className='ml-2 inline-flex justify-center whitespace-nowrap rounded-md border border-blue-500 px-4 py-2 text-sm font-medium text-blue-400 duration-200 hover:scale-105 hover:border-orange-500 hover:text-orange-400'
+                    className='ml-2 mt-2 inline-flex justify-center whitespace-nowrap rounded-md border border-blue-500 px-2 py-1 text-sm font-medium text-blue-400 duration-200 hover:scale-105 hover:border-orange-500 hover:text-orange-400 md:py-2 md:px-4'
                   >
                     Thanh toán
                   </button>
