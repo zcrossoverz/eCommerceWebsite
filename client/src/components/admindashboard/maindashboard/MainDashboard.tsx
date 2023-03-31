@@ -1,11 +1,14 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 import { AiFillBank } from 'react-icons/ai';
 import { BsPeopleFill } from 'react-icons/bs';
 import { FaCartPlus, FaFileSignature } from 'react-icons/fa';
 
 import { PieChart } from './chart/PieChart';
 import { LineChart } from './chart/LineChart';
-import { useQuery } from '@tanstack/react-query';
+import { useQueries, useQuery } from '@tanstack/react-query';
 import analysisApi from 'src/apis/analysis.api';
+import productsApi from 'src/apis/product.api';
+import { useState } from 'react';
 
 type card_props = {
   title: string;
@@ -62,7 +65,24 @@ const Card = (props: card_props) => {
 
 function MainDashboard() {
   const overview = useQuery(['analysis_overview'], () => analysisApi.analysOverview());
-  const top_sale = useQuery(['top_sales'], () => analysisApi.topSales());
+  const data_product_sale = useQuery(['top_sales'], () => analysisApi.topSales());
+
+
+  // const product_sale = useQueries({
+  //   queries: data_product_sale.map(
+  //     (e: {
+  //       product_id: number;
+  //       product_options: { product_option_id: number; sale_number: number; amount: number }[];
+  //     }) => {
+  //       return {
+  //         queryKey: ['get_product', e.product_id],
+  //         queryFn: () => productsApi.getProductDetail(`${e.product_id}`),
+  //       };
+  //     }
+  //   ),
+  // });
+
+  // console.log(product_sale);
 
   return (
     <div>
@@ -88,8 +108,8 @@ function MainDashboard() {
           </div>
           <hr className='-ml-6 bg-gray-300' />
           <div>
-            {top_sale.data?.data.map((e: any, i: string) => (
-              <div key={i.toString()}>{e.product_id}</div>
+            {data_product_sale.data?.data.map((e: any, i: string) => (
+              <div key={i.toString()}>{e.name}</div>
             ))}
           </div>
         </div>
