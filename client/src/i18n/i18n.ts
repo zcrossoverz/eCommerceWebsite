@@ -24,6 +24,8 @@ import ADDASHBOARD_EN from 'src/components/locales/en/addashboard.json';
 import ADDASHBOARD_VN from 'src/components/locales/vi/addashboard.json';
 import LOGIN_EN from 'src/components/locales/en/login.json';
 import LOGIN_VN from 'src/components/locales/vi/login.json';
+import REGISTER_EN from 'src/components/locales/en/register.json';
+import REGISTER_VN from 'src/components/locales/vi/register.json';
 
 export const locales = {
   en: 'English',
@@ -44,6 +46,7 @@ const resources = {
     productdetail: PRODUCTDETAIL_EN,
     addashboard: ADDASHBOARD_EN,
     login: LOGIN_EN,
+    register: REGISTER_EN,
   },
   vi: {
     home: HOME_VN,
@@ -58,6 +61,7 @@ const resources = {
     productdetail: PRODUCTDETAIL_VN,
     addashboard: ADDASHBOARD_VN,
     login: LOGIN_VN,
+    register: REGISTER_VN,
   },
 };
 
@@ -76,6 +80,7 @@ i18n.use(initReactI18next).init({
     'productdetail',
     'addashboard',
     'login',
+    'register',
   ],
   lng: 'vi',
   fallbackLng: 'vi',

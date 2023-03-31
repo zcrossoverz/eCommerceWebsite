@@ -9,6 +9,8 @@ import { Dialog, Transition } from '@headlessui/react';
 import { Fragment, useState } from 'react';
 import { type AxiosResponse } from 'axios';
 import userApi from 'src/apis/user.api';
+import { useTranslation } from 'react-i18next';
+
 interface Props {
   user?: User;
   refetchAddress: <TPageData>(
@@ -16,6 +18,7 @@ interface Props {
   ) => Promise<QueryObserverResult<AxiosResponse<User, any>, unknown>>;
 }
 function Address({ user, refetchAddress }: Props) {
+  const { t } = useTranslation('address');
   const deleteAddressMutation = useMutation({
     mutationFn: (body: { idUser: number; idAddress: number }) => userApi.deleteAddress(body.idUser, body.idAddress),
   });
@@ -52,7 +55,7 @@ function Address({ user, refetchAddress }: Props) {
   return (
     <div className='h-full w-full bg-white'>
       <div className='flex items-center justify-between border-b p-4'>
-        <h2 className='text-xl font-semibold'>Địa chỉ của tôi</h2>
+        <h2 className='text-xl font-semibold'>{t('address.my address')}</h2>
 
         <BtnAddAress user={user} refetchAddress={refetchAddress} />
       </div>
@@ -64,11 +67,11 @@ function Address({ user, refetchAddress }: Props) {
               <span>{address.address}</span>
               <div className='flex items-center'>
                 <span className='mr-2 rounded border border-blue-400 bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800 dark:bg-gray-700 dark:text-blue-400'>
-                  Địa chỉ nhận
+                  {t('address.receiving address')}
                 </span>
                 {user.default_address === address.id && (
                   <span className='mr-2 rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300'>
-                    Mặc định
+                    {t('address.default')}
                   </span>
                 )}
               </div>
@@ -79,13 +82,13 @@ function Address({ user, refetchAddress }: Props) {
                   onClick={() => handleDeleteAddress(address.id)}
                   className='py-1 text-sm text-orange-400 duration-300 hover:text-orange-500 md:px-2'
                 >
-                  Xóa
+                  {t('address.delete')}
                 </button>
                 <BtnAddAress
                   user={user}
                   refetchAddress={refetchAddress}
-                  title='Cập nhật'
-                  titleBtn='Xác nhận sửa'
+                  title={t('address.update') || 'Cập nhật'}
+                  titleBtn={t('address.edit confirmation') || 'Xác nhận sửa'}
                   classStyle='md:px-2 px-1 whitespace-nowrap py-1 hover:underline text-sm text-blue-400 duration-300 hover:text-blue-500'
                   isUpdate={true}
                   address={address}
@@ -96,7 +99,7 @@ function Address({ user, refetchAddress }: Props) {
                 onClick={() => handleSetDefaultAdress(address.id)}
                 className='whitespace-nowrap rounded-sm border border-black px-2 py-1 duration-300 hover:bg-orange-200 '
               >
-                <span className='hidden md:inline-block'>Thiết lập</span> mặc định
+                <span className='hidden md:inline-block'>{t('address.default settings')}</span>
               </button>
             </div>
           </div>
@@ -115,6 +118,7 @@ interface BtnAddAressProps extends Props {
   };
 }
 function BtnAddAress({ refetchAddress, user, classStyle, title, isUpdate, address, titleBtn }: BtnAddAressProps) {
+  const { t } = useTranslation('address');
   const addAdressMutation = useMutation({
     mutationFn: (body: { id: number; adress: string }) => userApi.addAddress(body.id, body.adress),
   });
@@ -171,7 +175,8 @@ function BtnAddAress({ refetchAddress, user, classStyle, title, isUpdate, addres
             : 'rounded-sm bg-gradient-to-br from-pink-500 to-orange-400 px-2 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none'
         }
       >
-        {title ? title : '+ thêm địa chỉ'}
+        {title ? title : t('address.add address')}
+        {/* {t('address.add address')} */}
       </button>
 
       <Transition appear show={isOpen} as={Fragment}>
@@ -201,7 +206,7 @@ function BtnAddAress({ refetchAddress, user, classStyle, title, isUpdate, addres
               >
                 <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all'>
                   <Dialog.Title as='h3' className='text-lg font-semibold leading-6 text-orange-400'>
-                    {isUpdate ? 'Cập nhật địa chỉ' : 'Thêm địa chỉ'}
+                    {isUpdate ? t('address.update address') : t('address.add address')}
                   </Dialog.Title>
                   <div className='mt-2'>
                     <textarea
@@ -209,7 +214,7 @@ function BtnAddAress({ refetchAddress, user, classStyle, title, isUpdate, addres
                       onChange={(e) => setAddressUser(e.target.value)}
                       rows={4}
                       className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500'
-                      placeholder='Điền địa chỉ của bạn vào đây'
+                      placeholder={t('address.enter your address here') || 'Nhập địa chỉ của bạn ở đây'}
                     />
                   </div>
 
@@ -219,14 +224,14 @@ function BtnAddAress({ refetchAddress, user, classStyle, title, isUpdate, addres
                       className='mr-4 inline-flex justify-center rounded-md border border-transparent bg-orange-100 px-4 py-2 text-sm font-medium text-black duration-200 hover:bg-orange-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2'
                       onClick={closeModal}
                     >
-                      Trở về
+                      {t('address.back')}
                     </button>
                     <button
                       type='button'
                       className='inline-flex justify-center rounded-md border border-transparent bg-orange-400 px-4 py-2 text-sm font-medium text-white duration-200 hover:bg-orange-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2'
                       onClick={handleAddAddress}
                     >
-                      {titleBtn ? titleBtn : 'Xác nhận thêm'}
+                      {titleBtn ? titleBtn : t('address.more confirmation')}
                     </button>
                   </div>
                 </Dialog.Panel>

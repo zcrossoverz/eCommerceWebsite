@@ -1,0 +1,11 @@
+{
+  "register": {
+    "sign up account": "Sign up for account",
+    "sign up email": "Or sign up by email",
+    "password": "password",
+    "first name": "first name",
+    "last name": "last name",
+    "sign in to continue": "Sign in to continue with us!",
+    "account successfully created": "Account successfully created"
+  }
+}

@@ -1,101 +1,111 @@
 import { Link } from 'react-router-dom';
 import logo from 'src/assets/logo.svg';
 import path from 'src/constants/path';
+import { useTranslation } from 'react-i18next';
+
 function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer className='relative z-10 bg-white dark:bg-gray-900'>
       <div className='mx-auto grid max-w-7xl grid-cols-2 gap-8 px-6 py-8 md:grid-cols-5'>
         <div>
-          <h2 className='mb-6 text-sm font-semibold uppercase text-gray-500 dark:text-gray-400'>Company</h2>
+          <h2 className='mb-6 text-sm font-semibold uppercase text-gray-500 dark:text-gray-400'>
+            {t('footer.company')}
+          </h2>
           <ul className='text-gray-500 dark:text-gray-400'>
             <li className='mb-4'>
               <a href='#ads' className=' hover:underline'>
-                About
+                {t('footer.about')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Careers
+                {t('footer.careers')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Brand Center
+                {t('footer.brand center')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Blog
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h2 className='mb-6 text-sm font-semibold uppercase text-gray-500 dark:text-gray-400'>Help center</h2>
-          <ul className='text-gray-500 dark:text-gray-400'>
-            <li className='mb-4'>
-              <a href='#ads' className='hover:underline'>
-                Discord Server
-              </a>
-            </li>
-            <li className='mb-4'>
-              <a href='#ads' className='hover:underline'>
-                Twitter
-              </a>
-            </li>
-            <li className='mb-4'>
-              <a href='#ads' className='hover:underline'>
-                Facebook
-              </a>
-            </li>
-            <li className='mb-4'>
-              <a href='#ads' className='hover:underline'>
-                Contact Us
+                {t('footer.blog')}
               </a>
             </li>
           </ul>
         </div>
         <div>
-          <h2 className='mb-6 text-sm font-semibold uppercase text-gray-500 dark:text-gray-400'>Legal</h2>
+          <h2 className='mb-6 text-sm font-semibold uppercase text-gray-500 dark:text-gray-400'>
+            {t('footer.help center')}
+          </h2>
           <ul className='text-gray-500 dark:text-gray-400'>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Privacy Policy
+                {t('footer.discord server')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Licensing
+                {t('footer.twitter')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Terms &amp; Conditions
+                {t('footer.facebook')}
+              </a>
+            </li>
+            <li className='mb-4'>
+              <a href='#ads' className='hover:underline'>
+                {t('footer.contact us')}
               </a>
             </li>
           </ul>
         </div>
         <div>
-          <h2 className='mb-6 text-sm font-semibold uppercase text-gray-500 dark:text-gray-400'>Download</h2>
+          <h2 className='mb-6 text-sm font-semibold uppercase text-gray-500 dark:text-gray-400'>{t('footer.legal')}</h2>
           <ul className='text-gray-500 dark:text-gray-400'>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                iOS
+                {t('footer.privacy policy')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Android
+                {t('footer.licensing')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Windows
+                {t('footer.terms')} &amp; {t('footer.conditions')}
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h2 className='mb-6 text-sm font-semibold uppercase text-gray-500 dark:text-gray-400'>
+            {t('footer.download')}
+          </h2>
+          <ul className='text-gray-500 dark:text-gray-400'>
+            <li className='mb-4'>
+              <a href='#ads' className='hover:underline'>
+                {t('footer.ios')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                MacOS
+                {t('footer.android')}
+              </a>
+            </li>
+            <li className='mb-4'>
+              <a href='#ads' className='hover:underline'>
+                {t('footer.windows')}
+              </a>
+            </li>
+            <li className='mb-4'>
+              <a href='#ads' className='hover:underline'>
+                {t('footer.macos')}
               </a>
             </li>
           </ul>

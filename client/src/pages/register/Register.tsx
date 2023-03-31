@@ -12,8 +12,10 @@ import { toast } from 'react-toastify';
 import path from 'src/constants/path';
 import authApi from 'src/apis/auth.api';
 import { isAxiosErr } from 'src/utils/error';
+import { useTranslation } from 'react-i18next';
 type FormDataRegister = Schema;
 function Register() {
+  const { t } = useTranslation(['register', 'login']);
   const navigate = useNavigate();
   const registerAccountMutation = useMutation({
     mutationFn: (body: Omit<FormDataRegister, 'confirmPassword'>) => authApi.registerAccount(body),
@@ -30,7 +32,7 @@ function Register() {
     const body = omit(data, ['confirmPassword']);
     registerAccountMutation.mutate(body, {
       onSuccess: () => {
-        toast.success('Tạo tài khoản thành công');
+        toast.success(t('register.account successfully created'));
         reset();
         navigate(path.login);
       },
@@ -55,7 +57,7 @@ function Register() {
             <span className='text-sm text-form'>Fstore</span>
           </div>
           <div className='py-10'>
-            <h2 className='mb-2 text-3xl font-bold text-form'>Đăng ký tài khoản</h2>
+            <h2 className='mb-2 text-3xl font-bold text-form'>{t('register.sign up account')}</h2>
             <div className='border-primary mb-2 inline-block w-10 border-2'></div>
             <div className='mb-2 flex items-center justify-center'>
               <a href='#a' className='mx-1 rounded-full border-2 p-3 duration-300 hover:bg-form hover:text-white'>
@@ -68,7 +70,7 @@ function Register() {
                 <AiOutlineGoogle className='text-xl' />
               </a>
             </div>
-            <p className='text- my-3 '>Hoặc đăng ký bằng email</p>
+            <p className='text- my-3 '>{t('register.sign up email')}</p>
             <form className='flex flex-col items-center' noValidate onSubmit={onSubmit}>
               <div
                 className={classNames('relative mb-6 flex w-60 flex-row-reverse items-center rounded-md border-2 p-2', {

@@ -21,7 +21,9 @@ import BreadCrumb from '../admindashboard/breadcrumb';
 import HelmetSale from '../Helmet';
 import { nanoid } from '@reduxjs/toolkit';
 import Loading from '../loading';
+import { useTranslation } from 'react-i18next';
 function ProductDetails() {
+  const { t } = useTranslation('productdetail');
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -72,7 +74,7 @@ function ProductDetails() {
   };
   useEffect(() => {
     if (Number(quantity) > Number(optionSelected?.quantity)) {
-      toast.error('Số lượng vượt quá hàng tồn');
+      toast.error(t('productdetail.quantity exceeds stock'));
       setQuantity(optionSelected?.quantity || 1);
     }
     if (Number(quantity) === 0) {
@@ -83,7 +85,7 @@ function ProductDetails() {
   const userInfo = useSelector((state: RootState) => state.userReducer.userInfo);
   const handleAddToCart = () => {
     if (!userInfo.role) {
-      toast.warning('Vui lòng đăng nhập');
+      toast.warning(t('productdetail.please login'));
       navigate(path.login, {
         replace: true,
         state: {
@@ -93,7 +95,7 @@ function ProductDetails() {
       return;
     }
     if (!optionSelected) {
-      toast.error('Vui lòng chọn sản phẩm bạn muốn mua!');
+      toast.error(t('productdetail.select product'));
       return;
     }
     const opt = product?.data.product_options.find((e) => {
@@ -123,9 +125,15 @@ function ProductDetails() {
         <div className='hidden md:block'>
           <BreadCrumb
             key={nanoid()}
-            path={['Fstore', 'Danh sách sản phẩm', 'chi tiết sản phẩm', product?.data.name as string]}
+            path={[
+              'Fstore',
+              t('productdetail.list of products'),
+              t('productdetail.product details'),
+              product?.data.name as string,
+            ]}
           />
         </div>
+
         <div className=' md:hidden'>
           <BreadCrumb key={nanoid()} path={['Fstore', '...', '...', product?.data.name as string]} />
         </div>
@@ -187,13 +195,15 @@ function ProductDetails() {
                         <div className='flex items-center justify-center'>
                           <span>Ram: {op.ram}</span>
                           <span className='mx-3'>Rom: {op.rom}</span>
-                          <span>Color: {op.color}</span>
+                          <span>
+                            {t('productdetail.color')}: {op.color}
+                          </span>
                         </div>
                         <div className='flex items-center justify-around'>
                           <span className='text-3xl'>{formatPrice(Number(op.price))}</span>
                           <span>
                             <b className={!op.quantity ? 'text-red-600' : 'text-green-600'}>
-                              {!op.quantity ? 'Hết hàng' : 'Còn hàng'}
+                              {!op.quantity ? t('productdetail.out of stock') : t('productdetail.stocking')}
                             </b>
                           </span>
                         </div>
@@ -203,11 +213,11 @@ function ProductDetails() {
               </div>
 
               <div className='my-4 min-h-[5rem] w-full overflow-hidden rounded-md border border-orange-200'>
-                <div className='w-full bg-orange-200 p-2'>Mô tả sản phẩm</div>
+                <div className='w-full bg-orange-200 p-2'>{t('productdetail.product description')}</div>
                 <p className='p-2 text-base'>{product?.data.description}</p>
               </div>
               <div className='mt-4 mb-2 flex items-center'>
-                <span className='quantity mr-2'>Số lượng</span>
+                <span className='quantity mr-2'>{t('productdetail.quantity')}</span>
                 <div className='flex items-center'>
                   {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
                   <span
@@ -246,27 +256,31 @@ function ProductDetails() {
                 )}
               >
                 <BsCartPlus className='text-xl' />
-                <span className='ml-2 text-lg'>Thêm vào giỏ hàng</span>
+                <span className='ml-2 text-lg'>{t('productdetail.add to card')}</span>
               </button>
             </div>
             <div className='min-h-[6rem] w-full overflow-hidden rounded-md bg-red-200'>
               <div className='flex min-h-[3rem] w-full items-center bg-red-600 px-2'>
-                <span className='border-r pr-2 text-xl font-bold uppercase text-yellow-400 md:text-3xl'>SỐ 1</span>
-                <span className='pl-2 text-lg uppercase text-white md:text-2xl'>VỀ BẢO HÀNH VÀ HẬU MÃI</span>
+                <span className='border-r pr-2 text-xl font-bold uppercase text-yellow-400 md:text-3xl'>
+                  {t('productdetail.no1')}
+                </span>
+                <span className='pl-2 text-lg uppercase text-white md:text-2xl'>
+                  {t('productdetail.about warranty and sale')}
+                </span>
               </div>
-              <p className='p-2'>Bảo hành 1 ĐỔI 1 trong 6 tháng</p>
+              <p className='p-2'>{t('productdetail.warranty')}</p>
             </div>
           </div>
         )}
       </div>
       {/* desc */}
-      <div className='mx-auto mt-4 p-4 shadow-md lg:w-[80%]'>
-        <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>Mô tả sản phẩm</h3>
-        <p className='mx-auto w-[96%] break-words px-4 py-2'>{product?.data.description}</p>
-      </div>
+      {/* <div className='mx-auto mt-4 p-4 shadow-md lg:w-[80%]'>
+        <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>{t('productdetail.product description')}</h3>
+        <p className='mx-auto w-[96%] break-words px-4 py-2'>{t('productdetail.mobile phone')}</p>
+      </div> */}
       {/* Reviews */}
       <div className='mx-auto mt-4 p-4 shadow-md lg:w-[80%]'>
-        <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>Đánh giá sản phẩm</h3>
+        <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>{t('productdetail.product reviews')}</h3>
       </div>
     </>
   );
