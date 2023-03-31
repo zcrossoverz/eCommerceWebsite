@@ -1,6 +1,7 @@
 import { yupResolver } from '@hookform/resolvers/yup';
 import classNames from 'classnames';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { GrFilter } from 'react-icons/gr';
 import { createSearchParams, Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -9,6 +10,7 @@ import path from 'src/constants/path';
 import { Brand } from 'src/types/brand.type';
 import { ProductListConfig } from 'src/types/product.type';
 import { type FilterPriceSchema, filterPriceSchema } from 'src/utils/rulesValidateForm';
+
 interface Props {
   queryConfig: {
     [key in keyof ProductListConfig]: string;
@@ -17,6 +19,7 @@ interface Props {
 }
 
 function AsignFilter({ queryConfig, brands }: Props) {
+  const { t } = useTranslation('asignfilter');
   const navigate = useNavigate();
   const { register, handleSubmit, reset } = useForm<FilterPriceSchema>({
     resolver: yupResolver(filterPriceSchema),
@@ -43,10 +46,10 @@ function AsignFilter({ queryConfig, brands }: Props) {
     <div className='p-4'>
       <div className='flex items-center border-b border-b-green-600'>
         <GrFilter />
-        <span className='ml-2 font-bold'>Bộ Lọc Tìm kiếm</span>
+        <span className='ml-2 font-bold'>{t('asignfilter.search filters')}</span>
       </div>
       <div className='mt-2'>
-        <p className='text-base text-black'>Theo nhà sản xuất</p>
+        <p className='text-base text-black'>{t('asignfilter.producer')}</p>
         <ul>
           {brands.length >= 0 &&
             brands.map((brand) => (
@@ -69,19 +72,19 @@ function AsignFilter({ queryConfig, brands }: Props) {
         </ul>
       </div>
       <div className='mt-2'>
-        <p className='text-base text-black'>Theo giá</p>
+        <p className='text-base text-black'>{t('asignfilter.price')}</p>
         <form className='mt-2 flex flex-col' noValidate onSubmit={onSubmit}>
           <div className='flex items-center justify-around'>
             <input
               type='text'
-              placeholder='₫ TỪ'
+              placeholder={t('asignfilter.from') || 'from'}
               {...register('minPrice')}
               className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-xs'
             />
             <span className='mx-1 h-0.5 w-[20%] bg-slate-600'></span>
             <input
               type='text'
-              placeholder='₫ ĐẾN'
+              placeholder={t('asignfilter.to') || 'to'}
               {...register('maxPrice')}
               className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-xs'
             />
@@ -90,12 +93,12 @@ function AsignFilter({ queryConfig, brands }: Props) {
             type='submit'
             className='mr-2 mb-2 mt-4 w-full rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 '
           >
-            ÁP DỤNG
+            {t('asignfilter.apply')}
           </button>
         </form>
       </div>
       <div className='mt-2'>
-        <p className='text-base text-black'>Theo đánh giá</p>
+        <p className='text-base text-black'>{t('asignfilter.rating')}</p>
         <div>
           {Array(5)
             .fill(0)
@@ -171,7 +174,7 @@ function AsignFilter({ queryConfig, brands }: Props) {
           }).toString(),
         }}
       >
-        Xóa Bô Lọc
+        {t('asignfilter.clear filters')}
       </Link>
     </div>
   );

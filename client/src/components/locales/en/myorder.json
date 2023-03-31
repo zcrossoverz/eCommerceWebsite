@@ -15,6 +15,7 @@
     "payment": "Payment",
     "unfinished": "You have not completed the payment, pay now!",
     "classification": "Product classification",
-    "color": "COLOR"
+    "color": "COLOR",
+    "ordered date": "Ordered date"
   }
 }

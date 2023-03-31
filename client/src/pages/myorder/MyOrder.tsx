@@ -17,8 +17,10 @@ import classNames from 'classnames';
 import convertDate from 'src/utils/convertDate';
 import { isAxiosErr } from 'src/utils/error';
 import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
 import BreadCrumb from 'src/components/admindashboard/breadcrumb';
 function MyOrder() {
+  const { t } = useTranslation('myorder');
   const navigate = useNavigate();
   const [orders, setOders] = useState<Pick<ResGetAllOrder, 'total' | 'data'>>();
   const { id: userId } = useSelector(
@@ -92,7 +94,7 @@ function MyOrder() {
                 }}
                 className='hidden justify-center whitespace-nowrap bg-transparent px-4 py-2 text-sm font-medium text-blue-400 duration-200 hover:text-orange-600 lg:inline-flex'
               >
-                {isOpenProcess[i] && isOpenProcess[i].open ? 'Tắt tiến trình' : 'Xem tiến trình'}
+                {isOpenProcess[i] && isOpenProcess[i].open ? t('myorder.shutdown process') : t('myorder.see progress')}
               </button>
               <AnimatePresence>
                 {isOpenProcess[i] && isOpenProcess[i].open ? (
@@ -150,15 +152,15 @@ function MyOrder() {
                   >
                     <div className='flex flex-wrap items-center'>
                       <span className='flex-grow text-center'>
-                        <b>Đia chỉ: </b>
+                        <b>{t('myorder.address')}: </b>
                         {order.address}
                       </span>
                       <div className='flex w-full items-center justify-center'>
                         <span className='mr-4'>
-                          <b>Số điện thoại:</b> {order.user.phone}
+                          <b>{t('myorder.phone number')}:</b> {order.user.phone}
                         </span>
                         <span>
-                          <b>Người nhận: </b>
+                          <b>{t('myorder.receiver')}: </b>
                           {`${order.user.firstName} ${order.user.lastName}`}
                         </span>
                       </div>
@@ -168,7 +170,7 @@ function MyOrder() {
               </AnimatePresence>
               <div className='flex flex-col items-end px-1 lg:border-l lg:px-2'>
                 <span className='flex-grow text-xs lg:hidden lg:text-base'>
-                  <b>Đia chỉ: </b>
+                  <b>{t('myorder.address')}: </b>
                   {order.address}
                 </span>
                 <span className='whitespace-nowrap text-sm font-semibold text-orange-500 lg:text-base'>
@@ -190,7 +192,7 @@ function MyOrder() {
                       <h2 className='text-lg line-clamp-1 lg:line-clamp-none'>{orderItem.product_name}</h2>
                       <div className='flex flex-col items-start text-sm text-slate-400'>
                         <div className='flex items-center'>
-                          <span className='hidden pr-2 lg:inline-block'>Phân loại hàng: </span>
+                          <span className='hidden pr-2 lg:inline-block'>{t('myorder.classification')}: </span>
                           <div className='uppercase'>
                             <span className='border border-slate-300 px-1 text-xs md:text-sm'>
                               ram: {orderItem.ram}
@@ -199,11 +201,13 @@ function MyOrder() {
                               rom: {orderItem.rom}
                             </span>
                             <span className='border border-slate-300 px-1 text-xs md:text-sm'>
-                              màu: {orderItem.color}
+                              {t('myorder.color')}: {orderItem.color}
                             </span>
                           </div>
                         </div>
-                        <p className='text-xs md:text-sm'>Số lượng: {orderItem.quantity}</p>
+                        <p className='text-xs md:text-sm'>
+                          {t('myorder.quantity')}: {orderItem.quantity}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -215,19 +219,18 @@ function MyOrder() {
             <div className='mr-4 flex items-center justify-between'>
               <div className='flex flex-col items-start'>
                 <span className='px-2 text-sm text-slate-400'>
-                  <i className='hidden font-semibold md:inline-block'>Ngày đặt hàng:</i> {convertDate(order.create_at)}
+                  <i className='hidden font-semibold md:inline-block'>{t('myorder.ordered date')}:</i>{' '}
+                  {convertDate(order.create_at)}
                 </span>
                 {order.status === 'PENDING' && (
-                  <span className='hidden px-2 text-sm text-slate-400 md:inline-block'>
-                    Bạn chưa hoàn thành việc thanh toán, thanh toán ngay!
-                  </span>
+                  <span className='hidden px-2 text-sm text-slate-400 md:inline-block'>{t('myorder.unfinished')}</span>
                 )}
               </div>
               <div className='flex flex-grow flex-col items-end'>
                 <div className='flex items-center'>
                   <FaMoneyCheckAlt className='mr-1 hidden text-2xl text-orange-400 lg:inline-block' />
                   <span className='text-base font-semibold text-black'>
-                    <b className='mr-2 hidden font-semibold lg:inline-block'>Thành tiền:</b>
+                    <b className='mr-2 hidden font-semibold lg:inline-block'>{t('myorder.into money')}:</b>
                     <i className='text-base text-orange-500 md:text-xl'>{formatPrice(order.payment.amount)}</i>
                   </span>
                 </div>
@@ -237,7 +240,7 @@ function MyOrder() {
                     onClick={() => handleCheckout(order.order_id)}
                     className='ml-2 mt-2 inline-flex justify-center whitespace-nowrap rounded-md border border-blue-500 px-2 py-1 text-sm font-medium text-blue-400 duration-200 hover:scale-105 hover:border-orange-500 hover:text-orange-400 md:py-2 md:px-4'
                   >
-                    Thanh toán
+                    {t('myorder.payment')}
                   </button>
                 )}
               </div>
