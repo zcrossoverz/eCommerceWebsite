@@ -4,15 +4,32 @@ import { useState } from 'react';
 import brandApi from 'src/apis/brand.api';
 import { useDispatch, useSelector } from 'react-redux';
 import { popup, selectCurrentModal } from 'src/slices/modal.slice';
+import { toast } from 'react-toastify';
 
-const CreateBrand = () => {
+const BrandModal = ({
+  refetch,
+  nameDefault,
+  descriptionDefault,
+  type,
+  id,
+}: {
+  refetch: any;
+  nameDefault: string;
+  descriptionDefault: string;
+  type: string;
+  id?: number;
+}) => {
   const dispatch = useDispatch();
+  const [name, setName] = useState(nameDefault);
+  const [description, setDescription] = useState(descriptionDefault);
   return (
     <div className='z-100 fixed inset-0 top-1/2 left-1/2 -translate-x-1/3 -translate-y-3/4'>
       <div className='relative h-full w-full max-w-2xl md:h-auto'>
         <div className='relative rounded-lg bg-white shadow-xl'>
           <div className='flex items-start justify-between rounded-t border-b p-4'>
-            <h3 className='text-xl font-semibold text-gray-900'>Create New Brand</h3>
+            <h3 className='text-xl font-semibold text-gray-900'>
+              {type === 'create' ? 'Create New Brand' : 'Edit Brand'}
+            </h3>
             <button
               className='ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900'
               onClick={() => dispatch(popup(''))}
@@ -33,16 +50,40 @@ const CreateBrand = () => {
           <div className='space-y-6 p-6'>
             <p className='text-base leading-relaxed text-gray-500'>
               <p>Name: </p>
-              <input className='w-full rounded-xl border border-gray-400 px-2 py-2' />
+              <input
+                className='w-full rounded-xl border border-gray-400 px-2 py-2'
+                defaultValue={name}
+                onChange={(e) => setName(e.target.value)}
+              />
             </p>
             <p className='text-base leading-relaxed text-gray-500'>
               <p>Description:</p>
-              <textarea className='w-full rounded-xl border border-gray-400 px-2 py-6' />
+              <textarea
+                className='w-full rounded-xl border border-gray-400 px-2 py-6'
+                defaultValue={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
             </p>
           </div>
 
           <div className='flex items-center space-x-2 rounded-b border-t border-gray-200 p-6'>
-            <button className='rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 '>
+            <button
+              className='rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 '
+              onClick={async () => {
+                if (type === 'create') {
+                  const rs = await brandApi.createBrand(name, description);
+                  if (rs.status === 200) toast.success('create brand success!');
+                  else toast.error('create brand failed!');
+                }
+                if (type === 'edit') {
+                  const rs = await brandApi.update(Number(id), name, description);
+                  if (rs.status === 200) toast.success('edit brand success!');
+                  else toast.error('create brand failed!');
+                }
+                refetch();
+                dispatch(popup(''));
+              }}
+            >
               Confirm
             </button>
             <button
@@ -58,20 +99,17 @@ const CreateBrand = () => {
   );
 };
 
-const modals = {
-  create_brand: <CreateBrand />,
-};
-
 export default function ManageBrand() {
   const [params, setParams] = useState({
     limit: '10',
     page: '1',
+    search: '',
   });
 
   const currentModal = useSelector(selectCurrentModal);
   const dispatch = useDispatch();
 
-  const { data, isLoading } = useQuery(['get_all_brands', params], () => brandApi.getAllBrand());
+  const { data, isLoading, refetch } = useQuery(['get_all_brands', params], () => brandApi.getAllBrand(params.search));
 
   return (
     <div className='mt-4'>
@@ -83,10 +121,16 @@ export default function ManageBrand() {
             id='inline-full-name'
             type='text'
             placeholder='search'
+            onChange={(e) =>
+              setParams({
+                ...params,
+                search: e.target.value,
+              })
+            }
           />
         </div>
         <div className='col-span-1'>
-          <select className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-500 focus:shadow-lg focus:shadow-blue-300 focus:ring-blue-500'>
+          <select className='block hidden w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-500 focus:shadow-lg focus:shadow-blue-300 focus:ring-blue-500'>
             <option className='mt-1' selected>
               Sort by
             </option>
@@ -104,7 +148,7 @@ export default function ManageBrand() {
             onClick={() =>
               dispatch(
                 popup({
-                  name: 'test',
+                  name: 'create',
                 })
               )
             }
@@ -114,7 +158,19 @@ export default function ManageBrand() {
         </div>
       </div>
       <div>
-        {currentModal.open && modals.create_brand}
+        {currentModal.open &&
+          ((currentModal.name === 'create' && (
+            <BrandModal refetch={() => refetch()} nameDefault='' descriptionDefault='' type='create' />
+          )) ||
+            (currentModal.name === 'edit' && (
+              <BrandModal
+                refetch={() => refetch()}
+                nameDefault={currentModal.nameDefault}
+                descriptionDefault={currentModal.descriptionDefault}
+                type='edit'
+                id={currentModal.id}
+              />
+            )))}
         <div className='mt-4 flex flex-col'>
           <div className='overflow-x-auto'>
             <div className='inline-block w-full align-middle'>
@@ -140,7 +196,7 @@ export default function ManageBrand() {
                   </div>
                 )}
 
-                {data && (
+                {data?.data && data.data.length > 0 && (
                   <table className='min-w-full divide-y divide-gray-200 bg-white'>
                     <thead className='bg-pink-400/20'>
                       <tr>
@@ -169,10 +225,33 @@ export default function ManageBrand() {
                             <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.name}</td>
                             <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.description}</td>
                             <td className='whitespace-nowrap px-6 py-4 text-right text-sm font-medium'>
-                              <div className='text-green-500 hover:text-green-700'>Edit</div>
+                              <button
+                                className='text-green-500 hover:text-green-700'
+                                onClick={() => {
+                                  dispatch(
+                                    popup({
+                                      name: 'edit',
+                                      nameDefault: e.name,
+                                      descriptionDefault: e.description,
+                                      id: e.id,
+                                    })
+                                  );
+                                }}
+                              >
+                                Edit
+                              </button>
                             </td>
                             <td className='whitespace-nowrap px-6 py-4 text-right text-sm font-medium'>
-                              <div className='text-red-500 hover:text-red-700'>Delete</div>
+                              <button
+                                className='text-red-500 hover:text-red-700'
+                                onClick={async () => {
+                                  await brandApi.delete(e.id);
+                                  toast.success('delete success!');
+                                  refetch();
+                                }}
+                              >
+                                Delete
+                              </button>
                             </td>
                           </tr>
                         );

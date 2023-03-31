@@ -9,20 +9,19 @@ import ReportDashboard from 'src/components/admindashboard/reportdashboard';
 import UserDashboard from 'src/components/admindashboard/userdashboard';
 
 export interface dashboardTabInterface {
-  [name: string]: {
-    name: string;
-    component: JSX.Element;
-  };
+  name: string;
+  component: JSX.Element;
+  link: string;
 }
 
-export const dashboard_tab: dashboardTabInterface = {
-  home: { name: 'home_dashboard', component: <MainDashboard /> },
-  product: { name: 'product_dashboard', component: <ProductDashboard /> },
-  manage_product: { name: 'product_dashboard', component: <ManageProduct /> },
-  manage_brand: { name: 'product_dashboard', component: <ManageBrand /> },
-  manage_coupon: { name: 'product_dashboard', component: <ManageCoupon /> },
-  order: { name: 'order_dashboard', component: <OrderDashboard /> },
-  inventory: { name: 'inventory_dashboard', component: <InventoryDashboard /> },
-  report: { name: 'report_dashboard', component: <ReportDashboard /> },
-  user: { name: 'user_dashboard', component: <UserDashboard /> },
-};
+export const dashboard_tab: dashboardTabInterface[] = [
+  { name: 'home', component: <MainDashboard />, link: '/' },
+  { name: 'products', component: <ManageProduct />, link: '/product' },
+  { name: 'product', component: <ProductDashboard />, link: '/product' },
+  { name: 'brand', component: <ManageBrand />, link: '/brand' },
+  { name: 'coupon', component: <ManageCoupon />, link: '/coupon' },
+  { name: 'order', component: <OrderDashboard />, link: '/order' },
+  { name: 'inventory', component: <InventoryDashboard />, link: '/inventory' },
+  { name: 'report', component: <ReportDashboard />, link: '/report' },
+  { name: 'user', component: <UserDashboard />, link: '/user' },
+];

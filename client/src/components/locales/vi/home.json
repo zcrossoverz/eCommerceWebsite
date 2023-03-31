@@ -1,0 +1,44 @@
+{
+  "aside filter": {
+    "search filter": "Bộ loc tìm kiếm",
+    "by price": "Theo Giá",
+    "by manufacturer": "Theo Nhà Sản Xuất",
+    "by rating": "Theo Đánh Giá",
+    "to": "Đến",
+    "from": "Từ",
+    "filter delete": "Xóa Bộ Lọc",
+    "apply": "Áp Dụng",
+    "support hotline": "Đường dây nóng hỗ trợ"
+  },
+  "footer": {
+    "company": "CÔNG TY",
+    "about": "Về Chúng Tôi",
+    "careers": "Sự Phát Triển",
+    "brand center": "Trung Tâm Thương Hiệu",
+    "blog": "Bài Viết",
+    "help center": "TRUNG TÂM HỖ TRỢ",
+    "discord server": "Máy Chủ",
+    "twitter": "Twitter",
+    "facebook": "Facebook",
+    "contact us": "Liên Hệ Chúng Tôi",
+    "legal": "PHÁP LÝ",
+    "privacy policy": "Chính sách bảo mật",
+    "licensing": "Giấy Phép",
+    "terms": "Điều Khoản",
+    "conditions": "Điều Kiện",
+    "download": "TẢI XUỐNG",
+    "ios": "iOS",
+    "android": "Android",
+    "windows": "Windows",
+    "macos": "MacOS"
+  },
+  "header": {
+    "admin dashboard": "Quản Trị Viên",
+    "my account": "Tài Khoản Của Tôi",
+    "my order": "Đơn Hàng Của Tôi",
+    "help": "Hỗ Trợ",
+    "login": "Đăng Nhập",
+    "logout": "Đăng Xuất",
+    "search by product name": "Tìm Kiếm Theo Tên Sản Phẩm"
+  }
+}

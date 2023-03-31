@@ -1,0 +1,20 @@
+{
+  "myorder": {
+    "shutdown process": "Shutdown process",
+    "see progress": "See progress",
+    "ordered": "Ordered",
+    "paid": "Paid",
+    "processing": "Processing",
+    "in transit": "In transit",
+    "received": "Received",
+    "address": "Address",
+    "phone number": "Phone number",
+    "receiver": "Receiver",
+    "quantity": "Quantity",
+    "into money": "Into money",
+    "payment": "Payment",
+    "unfinished": "You have not completed the payment, pay now!",
+    "classification": "Product classification",
+    "color": "COLOR"
+  }
+}

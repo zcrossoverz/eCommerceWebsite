@@ -1,0 +1,33 @@
+{
+  "addashboard": {
+    "admin dashboard": "Bảng Quản Trị Viên",
+    "home": "Trang chủ",
+    "products": "Sản phẩm",
+    "manage product": "Quản lý sản phẩm",
+    "manage brand": "Quản lý thương hiệu",
+    "manage coupon": "Quản lý mã giảm giá",
+    "orders": "Đơn hàng",
+    "inventory": "Kho",
+    "reports": "Báo cáo",
+    "users": "Người dùng",
+    "total products": "Tổng sản phẩm",
+    "total orders": "Tổng đơn hàng",
+    "sales": "Doanh thu",
+    "total users": "Tổng người dùng",
+    "create new brand": "Tạo thương hiệu mới",
+    "close modal": "Đóng phương thức",
+    "name": "Tên",
+    "description": "Mô tả",
+    "confirm": "Xác nhận",
+    "cancel": "Hủy",
+    "sort by": "Sắp xếp theo",
+    "sale": "Sale",
+    "stock": "Stock",
+    "create": "TẠO",
+    "edit": "Chỉnh sửa",
+    "delete": "Xóa",
+    "product": "Sản phẩm",
+    "search": "Tìm kiếm",
+    "brand": "Thương hiệu"
+  }
+}

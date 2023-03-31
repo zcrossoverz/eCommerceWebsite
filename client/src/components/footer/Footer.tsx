@@ -1,7 +1,11 @@
 import { Link } from 'react-router-dom';
 import logo from 'src/assets/logo.svg';
 import path from 'src/constants/path';
+import { useTranslation } from 'react-i18next';
+
 function Footer() {
+  const { t } = useTranslation();
+
   return (
     <footer className='relative z-10 bg-white'>
       <div className='mx-auto grid max-w-7xl grid-cols-2 gap-8 px-6 py-8 md:grid-cols-5'>
@@ -10,22 +14,22 @@ function Footer() {
           <ul className='text-gray-500'>
             <li className='mb-4'>
               <a href='#ads' className=' hover:underline'>
-                About
+                {t('footer.about')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Careers
+                {t('footer.careers')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Brand Center
+                {t('footer.brand center')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Blog
+                {t('footer.blog')}
               </a>
             </li>
           </ul>
@@ -35,22 +39,22 @@ function Footer() {
           <ul className='text-gray-500'>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Discord Server
+                {t('footer.discord server')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Twitter
+                {t('footer.twitter')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Facebook
+                {t('footer.facebook')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Contact Us
+                {t('footer.contact us')}
               </a>
             </li>
           </ul>
@@ -60,17 +64,17 @@ function Footer() {
           <ul className='text-gray-500'>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Privacy Policy
+                {t('footer.privacy policy')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Licensing
+                {t('footer.licensing')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Terms &amp; Conditions
+                {t('footer.terms')} &amp; {t('footer.conditions')}
               </a>
             </li>
           </ul>
@@ -80,22 +84,22 @@ function Footer() {
           <ul className='text-gray-500'>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                iOS
+                {t('footer.ios')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Android
+                {t('footer.android')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Windows
+                {t('footer.windows')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                MacOS
+                {t('footer.macos')}
               </a>
             </li>
           </ul>

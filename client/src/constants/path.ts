@@ -3,7 +3,7 @@ const path = {
   profile: '/profile/*',
   login: '/login',
   register: '/register',
-  admin: '/admin',
+  admin: '/admin/*',
   productDetails: '/product/:id',
   cart: '/cart',
   product: '/product',
