@@ -35,9 +35,11 @@ function CartPopover() {
           ref={elmRef}
           role='button'
         >
-          <p className='absolute top-0 -right-1 flex items-center justify-center rounded-md bg-white px-2 text-xs text-orange-600'>
-            {totalCartItems}
-          </p>
+          {totalCartItems !== 0 && (
+            <p className='absolute top-0 -right-1 flex items-center justify-center rounded-md bg-white px-2 text-xs text-orange-600'>
+              {totalCartItems}
+            </p>
+          )}
           <BsCart className='text-2xl' />
         </button>
         {isShowSettings && (

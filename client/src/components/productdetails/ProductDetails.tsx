@@ -161,18 +161,20 @@ function ProductDetails() {
                 })}
               </Carousel>
             )}
-            <div>
-              <h1 className='my-2 px-2 text-base font-medium text-black'>Cấu hình chi tiết</h1>
-              <ul>
-                {product?.data &&
-                  product.data.specs.map((spec) => (
-                    <li key={nanoid(6)} className='flex items-center px-2 py-1 text-xs odd:bg-slate-100'>
-                      <span className='w-1/3 font-semibold'>{spec.key}:</span>
-                      <span className='w-2/3 text-slate-400'>{spec.value}:</span>
-                    </li>
-                  ))}
-              </ul>
-            </div>
+            {product?.data.specs.length !== 0 && (
+              <div>
+                <h1 className='my-2 px-2 text-base font-semibold text-black'>Cấu hình chi tiết</h1>
+                <ul>
+                  {product?.data &&
+                    product.data.specs.map((spec) => (
+                      <li key={nanoid(6)} className='flex items-center px-2 py-1 text-xs odd:bg-slate-100'>
+                        <span className='w-1/3 font-semibold'>{spec.key}:</span>
+                        <span className='w-2/3 text-slate-400'>{spec.value}:</span>
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            )}
           </div>
         )}
         {isLoading && (
