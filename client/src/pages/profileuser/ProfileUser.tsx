@@ -13,8 +13,10 @@ import File from 'src/components/user/file';
 import Password from 'src/components/user/password';
 import Security from 'src/components/user/security';
 import { RootState } from 'src/store';
+import { useTranslation } from 'react-i18next';
 
 function ProfileUser() {
+  const { t } = useTranslation('profileUser');
   const [breadcrumbs, setBreadcrums] = useState<string>('');
   const { id: userId } = useSelector((state: RootState) => state.userReducer.userInfo);
   const { data: user, refetch } = useQuery({
@@ -39,28 +41,28 @@ function ProfileUser() {
         }
       }
       if (matchBreadCrums.current === 'file') {
-        matchBreadCrums.current = 'Hồ sơ';
+        matchBreadCrums.current = t('profileUser.profile');
       }
       if (matchBreadCrums.current === 'address') {
-        matchBreadCrums.current = 'Địa chỉ';
+        matchBreadCrums.current = t('profileUser.address');
       }
       if (matchBreadCrums.current === 'password') {
-        matchBreadCrums.current = 'Đổi mật khẩu';
+        matchBreadCrums.current = t('profileUser.change password');
       }
       setBreadcrums(matchBreadCrums.current);
     }
-  }, [match]);
+  }, [match, t]);
 
   return (
     <>
       {breadcrumbs && (
         <div className='mx-auto my-2 max-w-7xl'>
-          <BreadCrumb path={['Fstore', 'Tài khoản của bạn', breadcrumbs]} />
+          <BreadCrumb path={['Fstore', `${t('profileUser.my account')}`, breadcrumbs]} />
         </div>
       )}
       {!breadcrumbs && (
         <div className='mx-auto my-2 max-w-7xl'>
-          <BreadCrumb path={['Fstore', 'Tài khoản của bạn']} />
+          <BreadCrumb path={['Fstore', t('profileUser.my account')]} />
         </div>
       )}
       <div className='mx-auto my-2 grid max-w-7xl grid-cols-12 overflow-hidden rounded-md bg-blue-100 lg:min-h-[300px] lg:bg-transparent'>
@@ -70,7 +72,7 @@ function ProfileUser() {
             <div className='flex items-center p-4'>
               <button
                 type='button'
-                className='mr-2 inline-flex items-center rounded-lg bg-blue-700 p-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
+                className='mr-2 inline-flex items-center rounded-lg bg-blue-700 p-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300'
               >
                 <svg
                   aria-hidden='true'
@@ -100,7 +102,7 @@ function ProfileUser() {
                   to='/profile/file'
                 >
                   <AiOutlineFileText className='mr-2 text-xl' />
-                  <span>Hồ sơ</span>
+                  <span>{t('profileUser.profile')}</span>
                 </NavLink>
               </li>
               <li>
@@ -111,7 +113,7 @@ function ProfileUser() {
                   to='/profile/address'
                 >
                   <HiOutlineLocationMarker className='mr-2 text-xl' />
-                  <span>Địa chỉ</span>
+                  <span>{t('profileUser.address')}</span>
                 </NavLink>
               </li>
               <li>
@@ -122,7 +124,7 @@ function ProfileUser() {
                   to='/profile/password'
                 >
                   <RiLockPasswordLine className='mr-2 text-xl' />
-                  <span>Đổi mật khẩu</span>
+                  <span>{t('profileUser.change password')}</span>
                 </NavLink>
               </li>
             </ul>

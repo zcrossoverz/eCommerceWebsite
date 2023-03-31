@@ -1,0 +1,17 @@
+{
+  "address": {
+    "my address": "My Address",
+    "receiving address": "Receiving Address",
+    "default": "Default",
+    "delete": "Delete",
+    "update": "Update",
+    "edit confirmation": "Edit Confirmation",
+    "default settings": "Default Settings",
+    "add address": "Add Address",
+    "enter your address here": "Enter your address here",
+    "back": "Back",
+    "more confirmation": "More confirmation",
+    "update address": "Update address"
+
+  }
+}

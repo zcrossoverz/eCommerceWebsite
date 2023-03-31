@@ -21,7 +21,9 @@ import BreadCrumb from '../admindashboard/breadcrumb';
 import HelmetSale from '../Helmet';
 import { nanoid } from '@reduxjs/toolkit';
 import Loading from '../loading';
+import { useTranslation } from 'react-i18next';
 function ProductDetails() {
+  const { t } = useTranslation('productdetail');
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -51,11 +53,13 @@ function ProductDetails() {
       for (let i = 0; i < op.length; i++) {
         if (op[i].quantity) {
           setOptionSelected({ ...op[i], index: i });
+          break;
         }
       }
     },
     retry: 0,
   });
+  const [loadMore, setLoadmore] = useState<boolean>(false);
   const [optionSelected, setOptionSelected] = useState<OptionProduct>();
   const [quantity, setQuantity] = useState<number | string>('');
   const decreaseQuantity = () => {
@@ -72,18 +76,19 @@ function ProductDetails() {
   };
   useEffect(() => {
     if (Number(quantity) > Number(optionSelected?.quantity)) {
-      toast.error('Số lượng vượt quá hàng tồn');
+      toast.error(t('productdetail.quantity exceeds stock'));
       setQuantity(optionSelected?.quantity || 1);
     }
     if (Number(quantity) === 0) {
       setQuantity(1);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quantity]);
 
   const userInfo = useSelector((state: RootState) => state.userReducer.userInfo);
   const handleAddToCart = () => {
     if (!userInfo.role) {
-      toast.warning('Vui lòng đăng nhập');
+      toast.warning(t('productdetail.please login'));
       navigate(path.login, {
         replace: true,
         state: {
@@ -93,7 +98,7 @@ function ProductDetails() {
       return;
     }
     if (!optionSelected) {
-      toast.error('Vui lòng chọn sản phẩm bạn muốn mua!');
+      toast.error(t('productdetail.select product'));
       return;
     }
     const opt = product?.data.product_options.find((e) => {
@@ -123,68 +128,63 @@ function ProductDetails() {
         <div className='hidden md:block'>
           <BreadCrumb
             key={nanoid()}
-            path={['Fstore', 'Danh sách sản phẩm', 'chi tiết sản phẩm', product?.data.name as string]}
+            path={[
+              'Fstore',
+              t('productdetail.list of products'),
+              t('productdetail.product details'),
+              product?.data.name as string,
+            ]}
           />
         </div>
+
         <div className=' md:hidden'>
           <BreadCrumb key={nanoid()} path={['Fstore', '...', '...', product?.data.name as string]} />
         </div>
       </div>
       <div className='mx-auto mt-1 grid grid-cols-1 grid-rows-1 bg-white shadow-md md:p-4 lg:w-[80%] lg:grid-cols-[1fr,2fr]'>
-        <div>
-          {product?.data.product_options && product.data.product_options.every((e) => e.image !== null) ? (
-            <Carousel selectedItem={optionSelected?.index} showThumbs={false} autoPlay emulateTouch={true}>
-              {product?.data.product_options.map((item, i) => (
-                <div key={i}>
-                  <img className='' src={`${baseURL}/${item.image?.image_url}`} alt={`${i} Slide`} />
-                </div>
-              ))}
-            </Carousel>
-          ) : (
-            <Carousel showThumbs={false} infiniteLoop={true} autoPlay={true} emulateTouch={true}>
-              {product?.data.product_options.map((item, i) => {
-                return (
-                  <div key={item.product_option_id}>
-                    <img
-                      className=''
-                      src={`${baseURL}/${item.image?.image_url ? item.image.image_url : product.data.images.image_url}`}
-                      alt={`${i} Slide`}
-                    />
-                  </div>
-                );
-              })}
-            </Carousel>
-          )}
+        {!isLoading && (
           <div>
-            <h1>Cấu hình chi tiết</h1>
-            <ul>
-              <li className='flex items-center'>
-                <span className='w-1/3'>a</span>
-                <span className='w-2/3'>bc</span>
-              </li>
-              <li className='flex items-center'>
-                <span className='w-1/3'>a</span>
-                <span className='w-2/3'>bc</span>
-              </li>
-              <li className='flex items-center'>
-                <span className='w-1/3'>a</span>
-                <span className='w-2/3'>bc</span>
-              </li>
-              <li className='flex items-center'>
-                <span className='w-1/3'>a</span>
-                <span className='w-2/3'>bc</span>
-              </li>
-              <li className='flex items-center'>
-                <span className='w-1/3'>a</span>
-                <span className='w-2/3'>bc</span>
-              </li>
-              <li className='flex items-center'>
-                <span className='w-1/3'>a</span>
-                <span className='w-2/3'>bc</span>
-              </li>
-            </ul>
+            {product?.data.product_options && product.data.product_options.every((e) => e.image !== null) ? (
+              <Carousel selectedItem={optionSelected?.index} showThumbs={false} emulateTouch={true}>
+                {product?.data.product_options.map((item, i) => (
+                  <div key={i}>
+                    <img className='object-contain' src={`${baseURL}/${item.image?.image_url}`} alt={`${i} Slide`} />
+                  </div>
+                ))}
+              </Carousel>
+            ) : (
+              <Carousel showThumbs={false} infiniteLoop={true} emulateTouch={true}>
+                {product?.data.product_options.map((item, i) => {
+                  return (
+                    <div key={item.product_option_id}>
+                      <img
+                        className=''
+                        src={`${baseURL}/${
+                          item.image?.image_url ? item.image.image_url : product.data.images.image_url
+                        }`}
+                        alt={`${i} Slide`}
+                      />
+                    </div>
+                  );
+                })}
+              </Carousel>
+            )}
+            {product?.data.specs.length !== 0 && (
+              <div>
+                <h1 className='my-2 px-2 text-base font-semibold text-black'>Cấu hình chi tiết</h1>
+                <ul>
+                  {product?.data &&
+                    product.data.specs.map((spec) => (
+                      <li key={nanoid(6)} className='flex items-center px-2 py-1 text-xs odd:bg-slate-100'>
+                        <span className='w-1/3 font-semibold'>{spec.key}:</span>
+                        <span className='w-2/3 text-slate-400'>{spec.value}:</span>
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            )}
           </div>
-        </div>
+        )}
         {isLoading && (
           <div className='col-span-2 flex min-h-[300px] items-center justify-center'>
             <Loading />
@@ -218,13 +218,15 @@ function ProductDetails() {
                         <div className='flex items-center justify-center'>
                           <span>Ram: {op.ram}</span>
                           <span className='mx-3'>Rom: {op.rom}</span>
-                          <span>Color: {op.color}</span>
+                          <span>
+                            {t('productdetail.color')}: {op.color}
+                          </span>
                         </div>
                         <div className='flex items-center justify-around'>
                           <span className='text-3xl'>{formatPrice(Number(op.price))}</span>
                           <span>
                             <b className={!op.quantity ? 'text-red-600' : 'text-green-600'}>
-                              {!op.quantity ? 'Hết hàng' : 'Còn hàng'}
+                              {!op.quantity ? t('productdetail.out of stock') : t('productdetail.stocking')}
                             </b>
                           </span>
                         </div>
@@ -233,7 +235,7 @@ function ProductDetails() {
                   })}
               </div>
               <div className='mt-4 mb-2 flex items-center'>
-                <span className='quantity mr-2'>Số lượng</span>
+                <span className='quantity mr-2'>{t('productdetail.quantity')}</span>
                 <div className='flex items-center'>
                   {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
                   <span
@@ -264,7 +266,7 @@ function ProductDetails() {
                 type='button'
                 onClick={() => handleAddToCart()}
                 className={classNames(
-                  'my-4 mr-2 flex items-center rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white duration-300 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800',
+                  'my-4 mr-2 flex items-center rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white duration-300 focus:outline-none focus:ring-cyan-300',
                   {
                     'hover:bg-gradient-to-bl': Boolean(optionSelected),
                     'cursor-not-allowed': Boolean(!optionSelected),
@@ -272,32 +274,38 @@ function ProductDetails() {
                 )}
               >
                 <BsCartPlus className='text-xl' />
-                <span className='ml-2 text-lg'>Thêm vào giỏ hàng</span>
+                <span className='ml-2 text-lg'>{t('productdetail.add to card')}</span>
               </button>
             </div>
             <div className='min-h-[6rem] w-full overflow-hidden rounded-md bg-red-200'>
               <div className='flex min-h-[3rem] w-full items-center bg-red-600 px-2'>
-                <span className='border-r pr-2 text-xl font-bold uppercase text-yellow-400 md:text-3xl'>SỐ 1</span>
-                <span className='pl-2 text-lg uppercase text-white md:text-2xl'>VỀ BẢO HÀNH VÀ HẬU MÃI</span>
+                <span className='border-r pr-2 text-xl font-bold uppercase text-yellow-400 md:text-3xl'>
+                  {t('productdetail.no1')}
+                </span>
+                <span className='pl-2 text-lg uppercase text-white md:text-2xl'>
+                  {t('productdetail.about warranty and sale')}
+                </span>
               </div>
-              <p className='p-2'>Bảo hành 1 ĐỔI 1 trong 6 tháng</p>
+              <p className='p-2'>{t('productdetail.warranty')}</p>
             </div>
             <div className='my-4 min-h-[5rem] w-full overflow-hidden rounded-md border border-orange-200'>
               <div className='w-full bg-orange-200 p-2'>Mô tả sản phẩm</div>
               <div className='relative'>
-                <p className='px-2 text-base line-clamp-4'>
-                  {product?.data.description} asd dasd asdasd adsasd asdasd ada asda dsa sd ada dsasd adsa sda sda ssd
-                  asd asdas das dasd asd asd asd as das da sd asd asss da sda sd as d asdasd as dasd asda sd asda sd as
-                  das das d asd asd asd asd asd s asda asd asd asda sda sdas dasd asd asd asd asd asd as das das da sd
-                  asd asd
+                <p
+                  className={classNames('whitespace-pre-line px-2 text-justify text-base', {
+                    'line-clamp-4': !loadMore,
+                  })}
+                >
+                  {product?.data.description}
                 </p>
                 <button
                   type='button'
+                  onClick={() => setLoadmore(!loadMore)}
                   className={classNames(
                     'w-full rounded-lg px-5 py-1 text-center text-sm font-semibold text-blue-400 duration-300 focus:outline-none'
                   )}
                 >
-                  <span className='ml-2 text-lg'>Xem thêm</span>
+                  <span className='ml-2 text-lg'>{loadMore ? 'Thu gọn' : 'Xem thêm'}</span>
                 </button>
               </div>
             </div>
@@ -305,13 +313,15 @@ function ProductDetails() {
         )}
       </div>
       {/* desc */}
-      <div className='mx-auto mt-4 p-4 shadow-md lg:w-[80%]'>
-        <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>Chi tiết cấu hình của sản phẩm</h3>
-        <p className='mx-auto w-[96%] break-words px-4 py-2'>{product?.data.specs}</p>
-      </div>
+      {!isLoading && (
+        <div className='mx-auto mt-4 p-4 shadow-md lg:w-[80%]'>
+          <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>Chi tiết cấu hình của sản phẩm</h3>
+          <p className='mx-auto w-[96%] break-words px-4 py-2'></p>
+        </div>
+      )}
       {/* Reviews */}
       <div className='mx-auto mt-4 p-4 shadow-md lg:w-[80%]'>
-        <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>Đánh giá sản phẩm</h3>
+        <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>{t('productdetail.product reviews')}</h3>
       </div>
     </>
   );

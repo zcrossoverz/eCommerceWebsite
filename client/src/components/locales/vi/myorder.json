@@ -1,0 +1,20 @@
+{
+  "myorder": {
+    "shutdown process": "Tắt tiến trình",
+    "see progress": "Xem tiến trình",
+    "ordered": "Đã đặt hàng",
+    "paid": "Đã thanh toán",
+    "processing": "Đang xử lý",
+    "in transit": "Đang vận chuyển",
+    "received": "Đã nhận hàng",
+    "address": "Địa chỉ",
+    "phone number": "Số điện thoại",
+    "receiver": "Người nhận",
+    "quantity": "Số lượng",
+    "into money": "Thành tiền",
+    "payment": "Thanh toán",
+    "unfinished": "Bạn chưa hoàn thành việc thanh toán, thanh toán ngay!",
+    "classification": "Phân loại hàng",
+    "color": "MÀU"
+  }
+}

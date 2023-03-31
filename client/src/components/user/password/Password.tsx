@@ -5,12 +5,14 @@ import { toast } from 'react-toastify';
 import userApi from 'src/apis/user.api';
 import { isAxiosErr } from 'src/utils/error';
 import { ChangePass, changePassSchema } from 'src/utils/rulesValidateForm';
+import { useTranslation } from 'react-i18next';
 
 function Password() {
+  const { t } = useTranslation('password');
   const changePassMutation = useMutation({
     mutationFn: (body: { oldPass: string; newPass: string }) => userApi.changePassword(body.oldPass, body.newPass),
     onSuccess: () => {
-      toast.success('Đổi mât khẩu thành công', {
+      toast.success(t('password.change password successfully'), {
         autoClose: 2000,
       });
       reset();
@@ -22,7 +24,7 @@ function Password() {
         }>(err)
       ) {
         if (err.response?.data.message === 'old password is not correct') {
-          toast.error('Mật khẩu cũ không đúng', { autoClose: 2000 });
+          toast.error(t('pasword.old password is incorrect'), { autoClose: 2000 });
         }
       }
     },
@@ -42,13 +44,14 @@ function Password() {
     };
     changePassMutation.mutate(formData);
   });
+
   return (
     <div className='my-2 py-4'>
       <form className='md:min-w-[680px]' onSubmit={onSubmitChange}>
         <div className='mb-6 min-h-[4rem] md:flex md:items-center'>
           <div className='md:w-1/3'>
             <label className='mb-1 block pr-4 font-bold text-gray-500 md:mb-0 md:text-right' htmlFor='inline-full-name'>
-              Mật khẩu cũ
+              {t('password.old password')}
             </label>
           </div>
           <div className='md:w-2/3'>
@@ -57,17 +60,17 @@ function Password() {
               id='inline-full-name'
               {...register('oldPassword')}
               type='password'
-              placeholder='Mât khẩu cũ'
+              placeholder={t('password.old password') || 'Mật khẩu cũ'}
             />
             {errors.oldPassword?.message && (
-              <span className='text-xs italic text-red-500'>{errors.oldPassword.message}</span>
+              <span className='text-xs italic text-red-500'>{t('password.password is required')}</span>
             )}
           </div>
         </div>
         <div className='mb-6 min-h-[4rem] md:flex md:items-center'>
           <div className='md:w-1/3'>
             <label className='mb-1 block pr-4 font-bold text-gray-500 md:mb-0 md:text-right' htmlFor='inline-password'>
-              Mật khẩu mới
+              {t('password.new password')}
             </label>
           </div>
           <div className='md:w-2/3'>
@@ -76,17 +79,17 @@ function Password() {
               id='inline-password'
               {...register('newPassword')}
               type='password'
-              placeholder='Mât khẩu mới'
+              placeholder={t('password.new password') || 'Mật khẩu mới'}
             />
             {errors.newPassword?.message && (
-              <span className='text-xs italic text-red-500'>{errors.newPassword.message}</span>
+              <span className='text-xs italic text-red-500'>{t('password.password is required')}</span>
             )}
           </div>
         </div>
         <div className='mb-6 min-h-[4rem] md:flex md:items-center '>
           <div className='md:w-1/3'>
             <label className='mb-1 block pr-4 font-bold text-gray-500 md:mb-0 md:text-right' htmlFor='inline-password'>
-              Nhập lại mật khẩu mới
+              {t('password.enter a new password')}
             </label>
           </div>
           <div className='md:w-2/3'>
@@ -95,10 +98,10 @@ function Password() {
               id='inline-password'
               type='password'
               {...register('confirmNewPassword')}
-              placeholder='Nhập lại mật khẩu mới'
+              placeholder={t('password.enter a new password') || 'Nhập lại mật khẩu mới'}
             />
             {errors.confirmNewPassword?.message && (
-              <span className='text-xs italic text-red-500'>{errors.confirmNewPassword.message}</span>
+              <span className='text-xs italic text-red-500'>{t('password.password re-enter is required')}</span>
             )}
           </div>
         </div>
@@ -110,7 +113,7 @@ function Password() {
               type='submit'
               className='rounded-lg bg-gradient-to-br from-pink-500 to-orange-400 px-4 py-2 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none'
             >
-              Đổi mật khẩu
+              {t('password.change password')}
             </button>
           </div>
         </div>

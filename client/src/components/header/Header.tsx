@@ -18,14 +18,23 @@ import { GrUserAdmin } from 'react-icons/gr';
 import { useDispatch } from 'react-redux';
 import { setUserInfor } from 'src/slices/user.slice';
 import logo from 'src/assets/logo.svg';
+import Language from '../language/Language';
+import { GrLanguage } from 'react-icons/gr';
+import { useTranslation } from 'react-i18next';
+import { locales } from 'src/i18n/i18n';
+import { MdLanguage } from 'react-icons/md';
 
 function Header() {
+  const { t } = useTranslation();
+  const { i18n } = useTranslation();
+  const currentLanguage = locales[i18n.language as keyof typeof locales];
   const navigate = useNavigate();
   const { isAuth, setIsAuth } = useContext(AppContext);
   const [showMenuUser, setShowMenuUser] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useState<UserInfo>();
   const [searchProduct, setSearchProduct] = useState<string>('');
   const [scrolled, setScrolled] = useState<boolean>(false);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -77,6 +86,10 @@ function Header() {
       search: `?search=${searchProduct}`,
     });
   };
+  const changeLanguage = (lng: 'vi' | 'en') => {
+    i18n.changeLanguage(lng);
+  };
+
   return (
     <AnimatePresence>
       <motion.header
@@ -89,7 +102,7 @@ function Header() {
             duration: 0.3,
           },
         }}
-        className={classNames('top-0 left-0 right-0 z-10 bg-orange-600 text-white shadow-md dark:bg-gray-900', {
+        className={classNames('top-0 left-0 right-0 z-10 bg-orange-600 text-white shadow-md', {
           fixed: scrolled,
           relative: !scrolled,
         })}
@@ -106,7 +119,7 @@ function Header() {
                   value={searchProduct}
                   onChange={handleChangeSearch}
                   type='search'
-                  className='block max-h-[2.5rem] w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pr-10 text-sm text-gray-900 outline-none placeholder:line-clamp-1 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400'
+                  className='block max-h-[2.5rem] w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pr-10 text-sm text-gray-900 outline-none placeholder:line-clamp-1'
                   placeholder='Tìm theo tên sản phẩm'
                   required
                 />
@@ -136,22 +149,22 @@ function Header() {
                     setShowMenuUser(!showMenuUser);
                   }}
                   type='button'
-                  className='group ml-1 flex h-10 w-10 items-center justify-center rounded-[50%] duration-300 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600'
+                  className='group ml-1 flex h-10 w-10 items-center justify-center rounded-[50%] duration-300 focus:outline-none'
                 >
-                  <RiUserSettingsLine className='text-3xl text-white group-hover:text-orange-600 group-focus:text-orange-600' />
+                  <RiUserSettingsLine className='text-3xl text-white' />
                 </button>
                 {/* menu user */}
 
                 {showMenuUser && (
                   <motion.div
-                    className={classNames('absolute top-14 right-0 w-[300px] rounded-lg bg-slate-300 px-4 py-1 ')}
+                    className={classNames('absolute top-14 right-0 w-[300px] rounded-lg bg-white px-4 py-1 shadow-md ')}
                     initial={{ opacity: 0, transform: 'scale(0)' }}
                     animate={{ opacity: 1, transform: 'scale(1)' }}
                     exit={{ opacity: 0, transform: 'scale(0)' }}
                     transition={{ duration: 0.2 }}
                   >
                     {/* triangle up */}
-                    <div className='absolute -top-[12px] right-2 h-0 w-0 border-l-[10px] border-b-[15px] border-r-[10px] border-l-transparent border-b-slate-300 border-r-transparent'></div>
+                    <div className='absolute -top-[12px] right-2 h-0 w-0 border-l-[10px] border-b-[15px] border-r-[10px] border-l-transparent border-b-white border-r-transparent'></div>
 
                     {isAuth && userInfo && (
                       <div className='flex items-center border-b py-2'>
@@ -171,20 +184,26 @@ function Header() {
                       <li className='nav-item mt-4'>
                         <Link to='/profile' className='flex items-center'>
                           <FiSettings className='mr-4 text-lg' />
-                          <span>My Account</span>
+                          <span>{t('header.my account')}</span>
                         </Link>
                       </li>
                       <li className='nav-item mt-2'>
                         <Link to={path.myOrders} className='flex items-center'>
                           <BiShoppingBag className='mr-4 text-xl' />
-                          <span>My Order</span>
+                          <span>{t('header.my order')}</span>
                         </Link>
                       </li>
                       <li className='nav-item mt-2'>
                         <Link to='/user' className='flex items-center'>
                           <BiHelpCircle className='mr-4 text-xl' />
-                          <span>Help</span>
+                          <span>{t('header.help')}</span>
                         </Link>
+                      </li>
+                      <li className='nav-item mt-2 block '>
+                        <div className='flex items-center'>
+                          <MdLanguage className='mr-4 text-xl text-gray-700' />
+                          <Language />
+                        </div>
                       </li>
 
                       <li className='nav-item mt-2'>
@@ -199,13 +218,13 @@ function Header() {
                             className='flex items-center'
                           >
                             <BiLogIn className='mr-4 text-xl' />
-                            <span>Logout</span>
+                            <span>{t('header.logout')}</span>
                           </span>
                         )}
                         {!isAuth && (
                           <Link to='/login' className='flex items-center'>
                             <BiLogIn className='mr-4 text-xl' />
-                            <span>Login</span>
+                            <span>{t('header.login')}</span>
                           </Link>
                         )}
                       </li>
@@ -214,30 +233,6 @@ function Header() {
                 )}
               </div>
             </div>
-
-            {/* show menu btn */}
-            {/* <button
-            type='button'
-            onClick={() => setShowMenu(!showMenu)}
-            className='ml-1 inline-flex items-center rounded-lg p-2 text-sm text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600 lg:hidden'
-          >
-            <FiMenu className='text-xl' />
-          </button> */}
-            {/* menu item */}
-            {/* <div className={`${showMenu ? 'absolute inset-x-0 top-14 block' : 'hidden'} z-10 w-full md:w-auto lg:block`}>
-            <ul className='mt-4 flex flex-col rounded-lg border border-gray-100 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800 md:mt-0 md:flex-row md:space-x-8 md:border-0 md:bg-white md:text-sm md:font-medium md:dark:bg-gray-900'>
-              <li className='nav-item'>
-                <span>Home</span>
-              </li>
-
-              <li className='nav-item'>
-                <Link to='/login' className='flex items-center'>
-                  <BiLogIn className='mr-1 text-xl' />
-                  <span>Login</span>
-                </Link>
-              </li>
-            </ul>
-          </div> */}
           </div>
         </nav>
       </motion.header>

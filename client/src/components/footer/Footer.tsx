@@ -1,101 +1,105 @@
 import { Link } from 'react-router-dom';
 import logo from 'src/assets/logo.svg';
 import path from 'src/constants/path';
+import { useTranslation } from 'react-i18next';
+
 function Footer() {
+  const { t } = useTranslation();
+
   return (
-    <footer className='relative z-10 bg-white dark:bg-gray-900'>
+    <footer className='relative z-10 bg-white'>
       <div className='mx-auto grid max-w-7xl grid-cols-2 gap-8 px-6 py-8 md:grid-cols-5'>
         <div>
-          <h2 className='mb-6 text-sm font-semibold uppercase text-gray-500 dark:text-gray-400'>Company</h2>
-          <ul className='text-gray-500 dark:text-gray-400'>
+          <h2 className='mb-6 text-sm font-semibold uppercase text-gray-500'>Company</h2>
+          <ul className='text-gray-500'>
             <li className='mb-4'>
               <a href='#ads' className=' hover:underline'>
-                About
+                {t('footer.about')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Careers
+                {t('footer.careers')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Brand Center
+                {t('footer.brand center')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Blog
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div>
-          <h2 className='mb-6 text-sm font-semibold uppercase text-gray-500 dark:text-gray-400'>Help center</h2>
-          <ul className='text-gray-500 dark:text-gray-400'>
-            <li className='mb-4'>
-              <a href='#ads' className='hover:underline'>
-                Discord Server
-              </a>
-            </li>
-            <li className='mb-4'>
-              <a href='#ads' className='hover:underline'>
-                Twitter
-              </a>
-            </li>
-            <li className='mb-4'>
-              <a href='#ads' className='hover:underline'>
-                Facebook
-              </a>
-            </li>
-            <li className='mb-4'>
-              <a href='#ads' className='hover:underline'>
-                Contact Us
+                {t('footer.blog')}
               </a>
             </li>
           </ul>
         </div>
         <div>
-          <h2 className='mb-6 text-sm font-semibold uppercase text-gray-500 dark:text-gray-400'>Legal</h2>
-          <ul className='text-gray-500 dark:text-gray-400'>
+          <h2 className='mb-6 text-sm font-semibold uppercase text-gray-500'>Help center</h2>
+          <ul className='text-gray-500'>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Privacy Policy
+                {t('footer.discord server')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Licensing
+                {t('footer.twitter')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Terms &amp; Conditions
+                {t('footer.facebook')}
+              </a>
+            </li>
+            <li className='mb-4'>
+              <a href='#ads' className='hover:underline'>
+                {t('footer.contact us')}
               </a>
             </li>
           </ul>
         </div>
         <div>
-          <h2 className='mb-6 text-sm font-semibold uppercase text-gray-500 dark:text-gray-400'>Download</h2>
-          <ul className='text-gray-500 dark:text-gray-400'>
+          <h2 className='mb-6 text-sm font-semibold uppercase text-gray-500'>Legal</h2>
+          <ul className='text-gray-500'>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                iOS
+                {t('footer.privacy policy')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Android
+                {t('footer.licensing')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                Windows
+                {t('footer.terms')} &amp; {t('footer.conditions')}
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div>
+          <h2 className='mb-6 text-sm font-semibold uppercase text-gray-500'>Download</h2>
+          <ul className='text-gray-500'>
+            <li className='mb-4'>
+              <a href='#ads' className='hover:underline'>
+                {t('footer.ios')}
               </a>
             </li>
             <li className='mb-4'>
               <a href='#ads' className='hover:underline'>
-                MacOS
+                {t('footer.android')}
+              </a>
+            </li>
+            <li className='mb-4'>
+              <a href='#ads' className='hover:underline'>
+                {t('footer.windows')}
+              </a>
+            </li>
+            <li className='mb-4'>
+              <a href='#ads' className='hover:underline'>
+                {t('footer.macos')}
               </a>
             </li>
           </ul>
@@ -106,12 +110,12 @@ function Footer() {
           </Link>
         </div>
       </div>
-      <div className='bg-gray-100 px-4 py-6 dark:bg-gray-700 md:flex md:items-center md:justify-between'>
-        <span className='text-sm text-gray-500 dark:text-gray-300 sm:text-center'>
+      <div className='bg-gray-100 px-4 py-6 md:flex md:items-center md:justify-between'>
+        <span className='text-sm text-gray-500  sm:text-center'>
           © 2023 <a href='https://flowbite.com/'>Flowbite™</a>. All Rights Reserved.
         </span>
         <div className='mt-4 flex space-x-6 sm:justify-center md:mt-0'>
-          <a href='#ads' className='text-gray-400 hover:text-gray-900 dark:hover:text-white'>
+          <a href='#ads' className='text-gray-400 hover:text-gray-900'>
             <svg className='h-5 w-5' fill='currentColor' viewBox='0 0 24 24' aria-hidden='true'>
               <path
                 fillRule='evenodd'
@@ -121,7 +125,7 @@ function Footer() {
             </svg>
             <span className='sr-only'>Facebook page</span>
           </a>
-          <a href='#ads' className='text-gray-400 hover:text-gray-900 dark:hover:text-white'>
+          <a href='#ads' className='text-gray-400 hover:text-gray-900'>
             <svg className='h-5 w-5' fill='currentColor' viewBox='0 0 24 24' aria-hidden='true'>
               <path
                 fillRule='evenodd'
@@ -131,13 +135,13 @@ function Footer() {
             </svg>
             <span className='sr-only'>Instagram page</span>
           </a>
-          <a href='#ads' className='text-gray-400 hover:text-gray-900 dark:hover:text-white'>
+          <a href='#ads' className='text-gray-400 hover:text-gray-900'>
             <svg className='h-5 w-5' fill='currentColor' viewBox='0 0 24 24' aria-hidden='true'>
               <path d='M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84' />
             </svg>
             <span className='sr-only'>Twitter page</span>
           </a>
-          <a href='#ads' className='text-gray-400 hover:text-gray-900 dark:hover:text-white'>
+          <a href='#ads' className='text-gray-400 hover:text-gray-900'>
             <svg className='h-5 w-5' fill='currentColor' viewBox='0 0 24 24' aria-hidden='true'>
               <path
                 fillRule='evenodd'
@@ -147,7 +151,7 @@ function Footer() {
             </svg>
             <span className='sr-only'>GitHub account</span>
           </a>
-          <a href='#ads' className='text-gray-400 hover:text-gray-900 dark:hover:text-white'>
+          <a href='#ads' className='text-gray-400 hover:text-gray-900'>
             <svg className='h-5 w-5' fill='currentColor' viewBox='0 0 24 24' aria-hidden='true'>
               <path
                 fillRule='evenodd'

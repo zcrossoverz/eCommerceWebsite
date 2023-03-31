@@ -12,8 +12,10 @@ import { toast } from 'react-toastify';
 import path from 'src/constants/path';
 import authApi from 'src/apis/auth.api';
 import { isAxiosErr } from 'src/utils/error';
+import { useTranslation } from 'react-i18next';
 type FormDataRegister = Schema;
 function Register() {
+  const { t } = useTranslation(['register']);
   const navigate = useNavigate();
   const registerAccountMutation = useMutation({
     mutationFn: (body: Omit<FormDataRegister, 'confirmPassword'>) => authApi.registerAccount(body),
@@ -30,7 +32,7 @@ function Register() {
     const body = omit(data, ['confirmPassword']);
     registerAccountMutation.mutate(body, {
       onSuccess: () => {
-        toast.success('Tạo tài khoản thành công');
+        toast.success(t('register.account successfully created'));
         reset();
         navigate(path.login);
       },
@@ -55,7 +57,7 @@ function Register() {
             <span className='text-sm text-form'>Fstore</span>
           </div>
           <div className='py-10'>
-            <h2 className='mb-2 text-3xl font-bold text-form'>Đăng ký tài khoản</h2>
+            <h2 className='mb-2 text-3xl font-bold text-form'>{t('register.sign up account')}</h2>
             <div className='border-primary mb-2 inline-block w-10 border-2'></div>
             <div className='mb-2 flex items-center justify-center'>
               <a href='#a' className='mx-1 rounded-full border-2 p-3 duration-300 hover:bg-form hover:text-white'>
@@ -68,7 +70,7 @@ function Register() {
                 <AiOutlineGoogle className='text-xl' />
               </a>
             </div>
-            <p className='text- my-3 '>Hoặc đăng ký bằng email</p>
+            <p className='text- my-3 '>{t('register.sign up email')}</p>
             <form className='flex flex-col items-center' noValidate onSubmit={onSubmit}>
               <div
                 className={classNames('relative mb-6 flex w-60 flex-row-reverse items-center rounded-md border-2 p-2', {
@@ -111,7 +113,7 @@ function Register() {
                 <input
                   type={showPass ? 'text' : 'password'}
                   {...register('password')}
-                  placeholder='password'
+                  placeholder={t('register.password') || 'password'}
                   className='peer/password ml-2 w-full bg-transparent outline-none'
                 />
                 <AiOutlineLock className='text-xl peer-focus/password:text-form' />
@@ -144,7 +146,7 @@ function Register() {
                 <input
                   type={showPass ? 'text' : 'password'}
                   {...register('confirmPassword')}
-                  placeholder='confirm password'
+                  placeholder={t('confirm password') || 'confirm password'}
                   className={classNames('peer/confirmPassword ml-2 w-full flex-1 bg-transparent outline-none', {
                     'text-red-700 placeholder-red-500': errors.confirmPassword?.message,
                   })}
@@ -165,7 +167,7 @@ function Register() {
                 <input
                   type='text'
                   {...register('firstName')}
-                  placeholder='first name'
+                  placeholder={t('first password') || 'first password'}
                   className='ml-2 w-full bg-transparent outline-none'
                 />
                 <div className='absolute -bottom-5 -left-0 -mt-4 text-left text-xs text-err'>
@@ -181,7 +183,7 @@ function Register() {
                 <input
                   type='text'
                   {...register('lastName')}
-                  placeholder='last name'
+                  placeholder={t('last password') || 'last password'}
                   className='ml-2 w-full bg-transparent outline-none'
                 />
                 <div className='absolute -bottom-5 -left-0 -mt-4 text-left text-xs text-err'>
@@ -200,7 +202,7 @@ function Register() {
                   )}
                   disabled={registerAccountMutation.isLoading}
                 >
-                  Đăng ký
+                  {t('login.register')}
                 </button>
               </div>
             </form>
@@ -208,14 +210,14 @@ function Register() {
         </div>
         {/* signup section */}
         <div className='bg-primary row-span-1 w-full rounded-tr-2xl rounded-br-2xl rounded-bl-2xl border border-t p-4 md:col-span-1 md:py-36 md:px-12'>
-          <h2 className='mb-2 text-center text-3xl font-bold'>Bạn đã có tài khoản?</h2>
+          <h2 className='mb-2 text-center text-3xl font-bold'>{t('login.do not account')}</h2>
           <div className='mb-2 inline-block w-10 border-2 border-white'></div>
-          <p className='font mb-8 font-semibold'>Đăng nhập vào để tiếp tục với chúng tôi!</p>
+          <p className='font mb-8 font-semibold'>{t('login.fill in')}</p>
           <Link
             to='/login'
             className='inline-block rounded-full border-2 border-white px-6 py-2 duration-300 hover:bg-form hover:text-black '
           >
-            Đăng nhập
+            {t('login.log in')}
           </Link>
         </div>
       </div>

@@ -1,0 +1,12 @@
+{
+  "login": {
+    "login account": "Đăng nhập vào tài khoản",
+    "login email": "Hoặc đăng nhập bằng email",
+    "password": "mật khẩu",
+    "forgot password": "Quên mật khẩu?",
+    "log in": "Đăng nhập",
+    "do not account": "Bạn chưa có tài khoản?",
+    "fill in": "Điền thông tin cá nhân của bạn để bắt đầu ngay với chúng tôi.",
+    "register": "Đăng ký"
+  }
+}
