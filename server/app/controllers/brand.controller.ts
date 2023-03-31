@@ -25,7 +25,8 @@ export const deleteOne = async (req: Request, res: Response, next: NextFunction)
 }
 
 export const getAll = async (req: Request, res: Response, next: NextFunction) => {
-    const rs = await brandServices.getAll();
+    const { search } = req.query;
+    const rs = await brandServices.getAll(search && String(search));
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
 }
 

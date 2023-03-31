@@ -8,7 +8,7 @@ import { RootState } from 'src/store';
 //   isAuth: boolean;
 //   isAdmin:boolean;
 //   authenticationPath: string;
-//   outlet: JSX.Element;
+//   outlet: JSX.Element;a
 // };
 function AdminRoute() {
   const userInfo = useSelector((state: RootState) => state.userReducer.userInfo);

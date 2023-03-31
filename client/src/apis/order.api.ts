@@ -15,6 +15,11 @@ const orderApi = {
       method,
     });
   },
+  updateStatusPayment(id: number) {
+    return http.patch<{
+      message: string;
+    }>(`order/update_status_payment/${id}`);
+  },
   updateStatus(status: string, id: number) {
     return http.patch<{
       message: string;

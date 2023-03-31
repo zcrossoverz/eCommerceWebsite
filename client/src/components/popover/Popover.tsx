@@ -13,8 +13,8 @@ function Popover({ coords, position = 'left', children, className = 'z-10' }: Po
   return createPortal(
     <motion.div
       style={{
-        left: position === 'right' ? coords.x + coords.width : coords.x,
-        top: coords.y + coords.height * 1.5,
+        left: position === 'right' ? coords.x + coords.width - 8 : coords.x - 8,
+        top: coords.y + coords.height * 1.1,
       }}
       initial={{ opacity: 0, transform: 'scale(0) ' }}
       animate={{ opacity: 1, transform: 'scale(1) translateX(-100%)' }}

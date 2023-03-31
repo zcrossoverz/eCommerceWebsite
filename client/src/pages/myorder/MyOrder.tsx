@@ -14,6 +14,9 @@ import { produce } from 'immer';
 import { StatusOrder, timeLine } from 'src/constants/timeline';
 import { nanoid } from '@reduxjs/toolkit';
 import classNames from 'classnames';
+import convertDate from 'src/utils/convertDate';
+import { isAxiosErr } from 'src/utils/error';
+import { toast } from 'react-toastify';
 function MyOrder() {
   const navigate = useNavigate();
   const [orders, setOders] = useState<Pick<ResGetAllOrder, 'total' | 'data'>>();
@@ -28,7 +31,7 @@ function MyOrder() {
     }[]
   >([]);
   // call api get all order by user
-  const { data } = useQuery({
+  useQuery({
     queryKey: ['ordersOfUser'],
     queryFn: () =>
       orderApi.getOrdersOfUser({
@@ -37,11 +40,18 @@ function MyOrder() {
     enabled: Boolean(userId),
     refetchOnWindowFocus: false,
     onSuccess: (data) => {
+      const revertData = data.data.data.reverse();
       setOders({
         total: data.data.total,
-        data: data.data.data,
+        data: revertData,
       });
       setIsOpenProcess(data.data.data.map((it) => ({ id: it.order_id, open: false })));
+    },
+    onError: (err) => {
+      if (isAxiosErr<{ message: string }>(err)) {
+        toast.error(err.response?.data.message, { autoClose: 2000 });
+        return;
+      }
     },
   });
   const handleCheckout = (id: number) => {
@@ -56,7 +66,12 @@ function MyOrder() {
     <div className='mx-auto max-w-7xl p-2'>
       {orders?.data.length &&
         orders.data.map((order, i) => (
-          <div key={order.order_id} className='my-4 rounded-sm bg-white p-2 shadow-sm'>
+          <div
+            key={order.order_id}
+            className={classNames('my-4 rounded-sm bg-white p-2 shadow-sm', {
+              hidden: order.status === 'CANCELLED',
+            })}
+          >
             {/* section address timeline */}
             <div className='mb-2 flex min-h-[4rem] items-center border-b'>
               <button
@@ -88,7 +103,7 @@ function MyOrder() {
                       <li key={nanoid(5)} className='relative mb-6 w-1/5 sm:mb-0'>
                         <div className='mb-1 flex items-center'>
                           <div
-                            className={classNames('h-0.5 w-full bg-gray-200 dark:bg-gray-700 sm:flex', {
+                            className={classNames('h-0.5 w-full bg-gray-200 sm:flex', {
                               'opacity-0': Boolean(i === 0),
                               'bg-green-500':
                                 tl.id <=
@@ -100,7 +115,7 @@ function MyOrder() {
                           />
                           <div
                             className={classNames(
-                              'z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-[3px] text-lg ring-0 ring-white dark:bg-blue-900 dark:ring-gray-900 sm:ring-8',
+                              'z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-[3px] text-lg ring-0 ring-white sm:ring-8',
                               {
                                 'border-green-500 text-green-500':
                                   tl.id <=
@@ -114,7 +129,7 @@ function MyOrder() {
                             {tl.component}
                           </div>
                           <div
-                            className={classNames('h-0.5 w-full bg-gray-200 dark:bg-gray-700 sm:flex', {
+                            className={classNames('h-0.5 w-full bg-gray-200 sm:flex', {
                               'opacity-0': i === timeLine.length - 1,
                               'bg-green-500':
                                 tl.id <=
@@ -127,7 +142,7 @@ function MyOrder() {
                           />
                         </div>
                         <div className=' '>
-                          <h3 className='text-center text-sm font-semibold text-gray-900 dark:text-white'>{tl.name}</h3>
+                          <h3 className='text-center text-sm font-semibold text-gray-900'>{tl.name}</h3>
                         </div>
                       </li>
                     ))}
@@ -191,6 +206,7 @@ function MyOrder() {
                 </div>
               ))}
             <div className='mr-4 flex items-center justify-between'>
+              <span className='px-2 text-sm text-slate-400'>Ngày đặt hàng: {convertDate(order.create_at)}</span>
               {order.status === 'PENDING' && (
                 <span className='text-sm text-slate-400'>Bạn chưa hoàn thành việc thanh toán, thanh toán ngay!</span>
               )}

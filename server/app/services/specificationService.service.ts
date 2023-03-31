@@ -13,19 +13,24 @@ export interface SpecificationInterface {
 
 export const create = async (
   product_id: number,
-  spec: SpecificationInterface
+  spec: SpecificationInterface[]
 ) => {
   const product = await productRepository.findOneBy({ id: product_id });
   if (!product) return BadRequestError("product not found");
-  if (spec.key && spec.value) {
-    const new_spec = specificationRepository.create({
-      ...spec,
-      product,
-    });
-
-    return await specificationRepository.save(new_spec);
+  const new_specs: Specification[] = [];
+  if (spec.length) {
+    await Promise.all(spec.map(async e => {
+      if(!e.key || !e.value) return BadRequestError("please fill all the information");
+      const new_spec = specificationRepository.create({
+        ...e,
+        product,
+      });
+  
+      return new_specs.push(await specificationRepository.save(new_spec));
+    }));
+    return new_specs;
   }
-  return BadRequestError("please fill all the information");
+  return BadRequestError("data empty");
 };
 
 export const deleteOne = async (id: number) => {

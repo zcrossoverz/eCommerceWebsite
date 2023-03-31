@@ -6,13 +6,13 @@ const timeout = (ms: number) => {
 };
 const productsApi = {
   async getProductsList(params: ProductListConfig) {
-    await timeout(3000);
+    await timeout(500);
     return http.get<ProductsList>(`${URL}/get_all`, {
       params,
     });
   },
   async getProductDetail(id: string) {
-    await timeout(3000);
+    await timeout(500);
     return http.get<Product>(`${URL}/${id}`);
   },
 };

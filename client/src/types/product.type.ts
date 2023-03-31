@@ -7,7 +7,10 @@ export interface Product {
   brand: string;
   brand_description: string;
   rate: number;
-  specs: never[];
+  specs: {
+    key: string;
+    value: string;
+  }[];
   images: {
     id: string;
     type: string;

@@ -17,6 +17,11 @@ module.exports = {
       },
       backgroundImage: {
         security: 'linear-gradient(to right, rgb(56, 189, 248), rgb(59, 130, 246))',
+        load: 'linear-gradient(to bottom,rgba(255 255 255/0),rgba(255 255 255/62.5),rgba(255 255 255/1))',
+      },
+      lineHeight: {
+        'extra-loose': '5',
+        '20': '6rem',
       },
     },
   },

@@ -2,7 +2,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import classNames from 'classnames';
 import { useForm } from 'react-hook-form';
 import { GrFilter } from 'react-icons/gr';
-import { MdStar, MdStarBorder } from 'react-icons/md';
 import { createSearchParams, Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Star from 'src/components/star';
@@ -77,19 +76,19 @@ function AsignFilter({ queryConfig, brands }: Props) {
               type='text'
               placeholder='₫ TỪ'
               {...register('minPrice')}
-              className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 sm:text-xs'
+              className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-xs'
             />
             <span className='mx-1 h-0.5 w-[20%] bg-slate-600'></span>
             <input
               type='text'
               placeholder='₫ ĐẾN'
               {...register('maxPrice')}
-              className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500 sm:text-xs'
+              className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-xs'
             />
           </div>
           <button
             type='submit'
-            className='mr-2 mb-2 mt-4 w-full rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800'
+            className='mr-2 mb-2 mt-4 w-full rounded-lg bg-blue-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 '
           >
             ÁP DỤNG
           </button>
@@ -161,22 +160,19 @@ function AsignFilter({ queryConfig, brands }: Props) {
             })}
         </div>
       </div>
-      <button
-        type='button'
-        className='mr-2 mb-2 w-full rounded-lg border border-blue-700 px-5 py-2.5 text-center text-sm font-medium text-blue-700 duration-300 hover:bg-blue-800 hover:text-white focus:outline-none dark:border-blue-500 dark:text-blue-500 dark:hover:bg-blue-500 dark:hover:text-white'
+
+      <Link
+        className='mr-2 mt-4 block w-full rounded-lg border border-blue-700 px-5 py-2.5 text-center text-sm font-medium text-blue-700 duration-300 hover:bg-blue-800 hover:text-white focus:outline-none'
+        to={{
+          pathname: path.home,
+          search: createSearchParams({
+            page: queryConfig.page as string,
+            limit: queryConfig.limit as string,
+          }).toString(),
+        }}
       >
-        <Link
-          to={{
-            pathname: path.home,
-            search: createSearchParams({
-              page: queryConfig.page as string,
-              limit: queryConfig.limit as string,
-            }).toString(),
-          }}
-        >
-          Xóa Bô Lọc
-        </Link>
-      </button>
+        Xóa Bô Lọc
+      </Link>
     </div>
   );
 }

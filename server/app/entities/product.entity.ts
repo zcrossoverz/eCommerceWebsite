@@ -16,7 +16,8 @@ export class Product {
     name!: string;
 
     @Column({
-        nullable: true
+        nullable: true,
+        type: 'longtext'
     })
     description!: string;
 
