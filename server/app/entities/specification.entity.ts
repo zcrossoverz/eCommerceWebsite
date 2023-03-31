@@ -14,7 +14,10 @@ export class Specification {
 
     @ManyToOne(
         () => Product,
-        product => product.specifications
+        product => product.specifications,
+        {
+            onDelete: "CASCADE"
+        }
     )
     @JoinColumn({
         name: "product_id"
