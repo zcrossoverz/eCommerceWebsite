@@ -3,6 +3,7 @@ import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import classNames from 'classnames';
 import { Fragment, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { BsPaypal } from 'react-icons/bs';
 import { FaWallet } from 'react-icons/fa';
 import { HiLocationMarker } from 'react-icons/hi';
@@ -22,6 +23,7 @@ interface LocationState {
   userId: number;
 }
 function Checkout() {
+  const { t } = useTranslation('checkout');
   const navigate = useNavigate();
   // lấy id user từ state url
   const location = useLocation();
@@ -173,7 +175,7 @@ function Checkout() {
         {
           onSuccess: () => {
             if (!userInfo?.phone) {
-              toast.error('Bạn chưa điền số điện thoại', { autoClose: 1500 });
+              toast.error(t('checkout.you have not entered your phone number'), { autoClose: 1500 });
               return;
             } else {
               if (status && status === 'COMPLETED') {
@@ -183,7 +185,7 @@ function Checkout() {
                       { id: orderItems.data.order_id, status: 'PROCESSING' },
                       {
                         onSuccess: () => {
-                          toast.success('Thanh toán thành công');
+                          toast.success(t('checkout.payment success'));
                           navigate(path.myOrders);
                         },
                       }
@@ -196,7 +198,7 @@ function Checkout() {
                   { id: orderItems.data.order_id, status: 'PROCESSING' },
                   {
                     onSuccess: () => {
-                      toast.success('Thanh toán thành công');
+                      toast.success(t('checkout.payment success'));
                       navigate(path.myOrders);
                     },
                   }
@@ -215,11 +217,13 @@ function Checkout() {
         <div className='col-span-2 grid grid-cols-1 lg:grid-cols-2'>
           <div className='col-span-1 border-r bg-white pr-2'>
             <div className='w-full'>
-              <h2 className='bg-blue-200 px-2 py-3 text-lg font-semibold text-orange-500'>Thông tin người nhận hàng</h2>
+              <h2 className='bg-blue-200 px-2 py-3 text-lg font-semibold text-orange-500'>
+                {t('checkout.consignee information')}
+              </h2>
               <div>
                 {userInfo?.firstName && userInfo.lastName && (
                   <p className='text-slate-500'>
-                    <span>Họ và tên: </span>
+                    <span>{t('checkout.first and last name')}: </span>
                     <span className='text-base font-medium italic text-black'>
                       {userInfo.firstName + ' ' + userInfo.lastName}
                     </span>
@@ -227,15 +231,15 @@ function Checkout() {
                 )}
                 {userInfo?.phone && (
                   <p className='text-slate-500'>
-                    <span>Số điện thoại: </span>
+                    <span>{t('checkout.phone number')}: </span>
                     <span className='text-base font-medium italic text-black'>{userInfo.phone}</span>
                   </p>
                 )}
                 {!userInfo?.phone && (
                   <div className='mt-2 flex flex-wrap'>
-                    <span className='mr-2 text-red-500'>Vui lòng thêm số điện thoại</span>
+                    <span className='mr-2 text-red-500'>{t('checkout.please add phone number')}</span>
                     <Link to='/profile/file' className='text-blue-500 hover:text-black'>
-                      Thêm sdt
+                      {t('checkout.add phone number')}
                     </Link>
                   </div>
                 )}
@@ -248,21 +252,23 @@ function Checkout() {
                     <span>
                       <HiLocationMarker className='text-xl text-orange-600' />
                     </span>
-                    <span className='ml-2 text-lg font-semibold text-orange-500'>Địa chỉ nhận hàng:</span>
+                    <span className='ml-2 text-lg font-semibold text-orange-500'>
+                      {t('checkout.delivery address')}:
+                    </span>
                   </div>
                   <div className='flex flex-wrap items-center'>
                     <span className='mr-2 text-base'>{address.content}</span>
                     <div className='flex items-center'>
                       {userInfo.default_address === address.id && (
                         <span className='mr-2 rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800'>
-                          Mặc định
+                          {t('checkout.default')}
                         </span>
                       )}
                       <button
                         className='whitespace-nowrap rounded-sm text-blue-400 duration-300 hover:text-orange-500'
                         onClick={openModal}
                       >
-                        Thay đổi
+                        {t('checkout.change')}
                       </button>
                     </div>
                     {/* thay đổi addr */}
@@ -293,7 +299,7 @@ function Checkout() {
                             >
                               <Dialog.Panel className='w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all'>
                                 <Dialog.Title as='h3' className='text-lg font-semibold leading-6 text-orange-400'>
-                                  Địa chỉ của bạn
+                                  {t('checkout.your address')}
                                 </Dialog.Title>
                                 <div className='mt-2'>
                                   {userInfo.address.length > 0 &&
@@ -318,7 +324,7 @@ function Checkout() {
                                               }
                                             )}
                                           >
-                                            Mặc định
+                                            {t('checkout.default')}
                                           </span>
                                         )}
                                       </button>
@@ -331,14 +337,14 @@ function Checkout() {
                                     className='mr-4 inline-flex justify-center rounded-md border border-transparent bg-orange-100 px-4 py-2 text-sm font-medium text-black duration-200 hover:bg-orange-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2'
                                     onClick={closeModal}
                                   >
-                                    Trở về
+                                    {t('checkout.back')}
                                   </button>
                                   <button
                                     type='button'
                                     className='inline-flex justify-center rounded-md border border-transparent bg-orange-400 px-4 py-2 text-sm font-medium text-white duration-200 hover:bg-orange-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2'
                                     onClick={handleChangeAddress}
                                   >
-                                    Xác nhận đổi
+                                    {t('checkout.confirm exchange')}
                                   </button>
                                 </div>
                               </Dialog.Panel>
@@ -351,13 +357,13 @@ function Checkout() {
                 </div>
               ) : (
                 <div className='mt-2 flex flex-col justify-start text-red-500'>
-                  <span>Vui lòng thêm địa chỉ để chúng tôi có thể thực hiện việc giao hàng cho bạn</span>
+                  <span>{t('checkout.please add an address so we can make the delivery for you')}</span>
                   <Link
                     to='/profile/address'
                     type='button'
                     className='mr-4 inline-flex justify-center rounded-md border border-transparent bg-orange-100 px-4 py-2 text-sm font-medium text-black duration-200 hover:bg-orange-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2'
                   >
-                    Thêm địa chỉ
+                    {t('checkout.Add address')}
                   </Link>
                 </div>
               )}
@@ -367,13 +373,15 @@ function Checkout() {
                   onClick={handleCancelOrder}
                   className=' mt-4 mb-2 rounded-lg border border-orange-500 px-3 py-2.5 text-center text-sm font-medium text-slate-400 duration-150 hover:bg-gradient-to-bl hover:text-slate-700 focus:outline-none focus:ring-4 focus:ring-cyan-300 '
                 >
-                  Hủy đơn hàng
+                  {t('checkout.cancel order')}
                 </button>
               )}
             </div>
           </div>
           <div className='col-span-1 mt-2 pr-2 lg:mt-0 lg:px-2'>
-            <h2 className='bg-blue-200 px-2 py-3 text-lg font-semibold text-orange-500'>Thông tin sản phẩm đặt hàng</h2>
+            <h2 className='bg-blue-200 px-2 py-3 text-lg font-semibold text-orange-500'>
+              {t('checkout.ordered product information')}
+            </h2>
             <div className='max-h-[300px] overflow-y-auto'>
               {orderItems?.data.order_items.length &&
                 orderItems.data.order_items.map((item) => (
@@ -388,11 +396,11 @@ function Checkout() {
           <div className='col-span-2 border-l p-2 lg:col-span-1'>
             <div className='mb-2 flex items-center'>
               <FaWallet className='text-xl text-blue-400' />
-              <h2 className='ml-2 text-xl font-semibold'>Thanh toán</h2>
+              <h2 className='ml-2 text-xl font-semibold'>{t('checkout.payment')}</h2>
             </div>
             <div className='w-full'>
               <div>
-                <h3 className='mb-2 bg-slate-300 p-2'>Chọn phương thức thanh toán</h3>
+                <h3 className='mb-2 bg-slate-300 p-2'>{t('checkout.payment on delivery')}</h3>
                 <div>
                   <button
                     onClick={() => setPaymentMethod({ method: 'CASH_ON_DELIVERY', id: 1 })}
@@ -406,7 +414,7 @@ function Checkout() {
                     <span className='flex h-10 w-10 items-center justify-center rounded-md  bg-green-400'>
                       <HiOutlineHomeModern className='text-3xl text-white' />
                     </span>
-                    <h4 className='ml-2'>Thanh toán khi nhận hàng</h4>
+                    <h4 className='ml-2'>{t('checkout.payment on delivery')}</h4>
                   </button>
                   <button
                     onClick={() => setPaymentMethod({ method: 'PAYPAL', id: 2 })}
@@ -420,12 +428,12 @@ function Checkout() {
                     <span className='flex h-10 w-10 items-center justify-center rounded-md  bg-blue-400'>
                       <BsPaypal className='text-3xl text-white' />
                     </span>
-                    <h4 className='ml-2'>Thanh toán bằng Paypal</h4>
+                    <h4 className='ml-2'>{t('checkout.pay by Paypal')}</h4>
                   </button>
                 </div>
               </div>
               <div className='mt-4'>
-                <h3 className='bg-slate-300 p-2'>Mã giảm giá</h3>
+                <h3 className='bg-slate-300 p-2'>{t('checkout.discount code')}</h3>
                 <div className='mt-2 flex items-center p-1'>
                   <input
                     type='text'
@@ -437,23 +445,25 @@ function Checkout() {
                     // onClick={() => throttled.current()()}
                     className='ml-2 whitespace-nowrap rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none'
                   >
-                    Chọn mã
-                  </button>
+                    {t('checkout.select code')}
+                  </button>{' '}
                 </div>
               </div>
               <div className='mt-2'>
-                <h3 className='bg-slate-300 p-2'>Thông tin đơn hàng</h3>
+                <h3 className='bg-slate-300 p-2'>{t('checkout.information order')}</h3>
                 <div className='mt-2 p-1'>
                   <div className='flex w-full items-center justify-between'>
-                    <span className='text-left text-gray-400'>Tạm tính ({price.totalQuantity} sản phẩm)</span>
+                    <span className='text-left text-gray-400'>
+                      {t('checkout.provisional')} ({price.totalQuantity} {t('checkout.product')})
+                    </span>
                     <span className='text-end'>{formatPrice(price?.total || 0)}</span>
                   </div>
                   <div className='flex w-full items-center justify-between'>
-                    <span className='text-left text-gray-400'>Giảm giá</span>
+                    <span className='text-left text-gray-400'>{t('checkout.discount')}</span>
                     <span className='text-end'>{formatPrice(price.discount)}</span>
                   </div>
                   <div className='mt-2 flex w-full items-center justify-between'>
-                    <span className='text-left text-gray-400'>Tổng cộng</span>
+                    <span className='text-left text-gray-400'>{t('checkout.total')}</span>
                     <span className='text-end text-lg font-semibold text-orange-400'>
                       {formatPrice(price?.finalPrice)}
                     </span>
@@ -467,7 +477,7 @@ function Checkout() {
                     type='button'
                     className='mr-2 mb-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-cyan-300 '
                   >
-                    Xác nhận thanh toán
+                    {t('checkout.payment confirmation')}
                   </button>
                 ) : (
                   <PayPalScriptProvider
@@ -502,7 +512,7 @@ function Checkout() {
             </div>
           </div>
         ) : (
-          <div className='text-lg font-semibold text-orange-400'>Bạn đã thanh toán thành công</div>
+          <div className='text-lg font-semibold text-orange-400'>{t('checkout.you have successfully paid')}</div>
         )}
       </div>
     </div>
