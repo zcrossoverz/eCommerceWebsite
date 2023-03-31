@@ -17,6 +17,7 @@ import classNames from 'classnames';
 import convertDate from 'src/utils/convertDate';
 import { isAxiosErr } from 'src/utils/error';
 import { toast } from 'react-toastify';
+import BreadCrumb from 'src/components/admindashboard/breadcrumb';
 function MyOrder() {
   const navigate = useNavigate();
   const [orders, setOders] = useState<Pick<ResGetAllOrder, 'total' | 'data'>>();
@@ -64,6 +65,9 @@ function MyOrder() {
   };
   return (
     <div className='mx-auto max-w-7xl p-2'>
+      <div className='mx-auto my-2 max-w-7xl'>
+        <BreadCrumb path={['Fstore', 'Đơn hàng']} />
+      </div>
       {orders?.data.length &&
         orders.data.map((order, i) => (
           <div

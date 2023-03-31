@@ -1,6 +1,6 @@
 {
   "aside filter": {
-    "search filter": "Bộ loc tìm kiếm",
+    "search filter": "Bộ lọc tìm kiếm",
     "by price": "Theo Giá",
     "by manufacturer": "Theo Nhà Sản Xuất",
     "by rating": "Theo Đánh Giá",
@@ -34,8 +34,8 @@
   },
   "header": {
     "admin dashboard": "Quản Trị Viên",
-    "my account": "Tài Khoản Của Tôi",
-    "my order": "Đơn Hàng Của Tôi",
+    "my account": "Tài Khoản",
+    "my order": "Đơn Hàng",
     "help": "Hỗ Trợ",
     "login": "Đăng Nhập",
     "logout": "Đăng Xuất",

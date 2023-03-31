@@ -9,10 +9,10 @@ interface P {
 export default function Languege(props: P) {
   const currentLanguage = locales[i18n.language as keyof typeof locales];
   return (
-    <div className='nav-item relative z-50 p-0'>
+    <div className='nav-item relative p-0'>
       <Menu as='div' className=''>
         <div>
-          <Menu.Button className={`mr-1 pl-0 text-lg text-gray-700 ${props.textColor}`}>
+          <Menu.Button className={`mr-1 pl-0 text-lg text-gray-700 lg:text-sm lg:text-white ${props.textColor}`}>
             {currentLanguage === 'Tiếng Việt' ? 'Ngôn ngữ' : 'Language'}
           </Menu.Button>
         </div>
@@ -26,7 +26,7 @@ export default function Languege(props: P) {
           leaveTo='transform opacity-0 scale-95'
         >
           <Menu.Items className='absolute right-0 z-50 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
-            <div className='px-1 py-1 '>
+            <div className='px-1 py-1'>
               <Menu.Item>
                 {({ active }) => (
                   <button
