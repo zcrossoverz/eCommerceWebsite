@@ -26,6 +26,12 @@ import LOGIN_EN from 'src/components/locales/en/login.json';
 import LOGIN_VN from 'src/components/locales/vi/login.json';
 import REGISTER_EN from 'src/components/locales/en/register.json';
 import REGISTER_VN from 'src/components/locales/vi/register.json';
+import NOTFOUND_EN from 'src/components/locales/en/notfound.json';
+import NOTFOUND_VN from 'src/components/locales/vi/notfound.json';
+import ASIGNFILTER_EN from 'src/components/locales/en/asignfilter.json';
+import ASIGNFILTER_VN from 'src/components/locales/vi/asignfilter.json';
+import CHECKOUT_EN from 'src/components/locales/en/checkout.json';
+import CHECKOUT_VN from 'src/components/locales/vi/checkout.json';
 
 export const locales = {
   en: 'English',
@@ -47,6 +53,9 @@ const resources = {
     addashboard: ADDASHBOARD_EN,
     login: LOGIN_EN,
     register: REGISTER_EN,
+    notfound: NOTFOUND_EN,
+    asignfilter: ASIGNFILTER_EN,
+    checkout: CHECKOUT_EN,
   },
   vi: {
     home: HOME_VN,
@@ -62,6 +71,9 @@ const resources = {
     addashboard: ADDASHBOARD_VN,
     login: LOGIN_VN,
     register: REGISTER_VN,
+    notfound: NOTFOUND_VN,
+    asignfilter: ASIGNFILTER_VN,
+    checkout: CHECKOUT_VN,
   },
 };
 
@@ -81,6 +93,9 @@ i18n.use(initReactI18next).init({
     'addashboard',
     'login',
     'register',
+    'notfound',
+    'asignfilter',
+    'checkout',
   ],
   lng: 'vi',
   fallbackLng: 'vi',

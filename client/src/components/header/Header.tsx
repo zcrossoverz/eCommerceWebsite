@@ -110,7 +110,7 @@ function Header() {
             <div className='hidden items-center px-2 lg:flex'>
               <BsTelephoneForward className='mr-2 text-lg' />
               <div className='flex flex-col items-start'>
-                <span className='text-sm'>Hotline hỗ trợ</span>
+                <span className='text-sm'>{t('aside filter.support hotline')}</span>
                 <span className='text-sm font-bold'>0907588963</span>
               </div>
             </div>
@@ -122,7 +122,7 @@ function Header() {
                   onChange={handleChangeSearch}
                   type='search'
                   className='block max-h-[2.5rem] w-full rounded-lg border border-gray-300 bg-gray-50 p-4 pr-10 text-sm text-gray-900 outline-none placeholder:line-clamp-1'
-                  placeholder='Tìm theo tên sản phẩm'
+                  placeholder={t('header.search by product name') || ''}
                   required
                 />
                 <button

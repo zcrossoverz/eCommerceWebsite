@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { baseURL } from 'src/constants/constants';
 import { formatPrice } from 'src/utils/formatPrice';
 interface Props {
@@ -13,6 +14,7 @@ interface Props {
   };
 }
 function OrderItem({ orderItem }: Props) {
+  const { t } = useTranslation('myorder');
   return (
     <div className='flex w-full items-center border-b p-2'>
       <div className='flex-shrink-0'>
@@ -29,7 +31,7 @@ function OrderItem({ orderItem }: Props) {
               ROM: <i>{orderItem.rom}</i>
             </span>
             <span className='border-r px-2 text-sm font-medium text-slate-400'>
-              Màu: <i>{orderItem.color}</i>
+              {t('myorder.color')}: <i>{orderItem.color}</i>
             </span>
             <div className='inline-block'>
               <span className='flex-shrink text-base font-semibold text-orange-400'>
