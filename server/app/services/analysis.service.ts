@@ -1,4 +1,4 @@
-import { MoreThan } from "typeorm";
+import { ILike, MoreThan } from "typeorm";
 import { AppDataSource } from "../database";
 import { ProductOption } from "../entities/productOption.entity";
 import { BadRequestError } from "../utils/error";
@@ -6,11 +6,18 @@ import { Brand } from "../entities/brand.entity";
 import { Order } from "../entities/order.entity";
 import { User } from "../entities/user.entity";
 import { productRepository } from "./product.service";
+import { getMonth, getYear } from "../utils/time";
+import {
+  EnumInventoryTransactionType,
+  InventoryTransaction,
+} from "../entities/inventoryTransaction.entity";
 
 const productOptionRepo = AppDataSource.getRepository(ProductOption);
 const orderRepo = AppDataSource.getRepository(Order);
 const brandRepository = AppDataSource.getRepository(Brand);
 const userRepo = AppDataSource.getRepository(User);
+const inventoryTransactionRepo =
+  AppDataSource.getRepository(InventoryTransaction);
 
 export const productInWarehouse = async (limit: number, page: number) => {
   const offset = (page - 1) * limit;
@@ -156,27 +163,28 @@ export const top_sale = async () => {
     };
   });
 
-  return Promise.all(products_data.map(async (e) => {
-    const product = await productRepository.findOneBy({ id: e.product_id });
-    if (!product) return BadRequestError("product id error");
-    return {
-      name: product.name,
-      product_options: e.product_options.map(async (el) => {
-        const opt = await productOptionRepo.findOneBy({
-          id: el.product_option_id,
-        });
-        return {
-          color: opt?.color,
-          ram: opt?.ram,
-          rom: opt?.rom,
-          sale_number: el.sale_number,
-          amount: el.amount,
-        };
-      }),
-      total_sale: e.total_sale,
-    };
-  }));
-
+  return Promise.all(
+    products_data.map(async (e) => {
+      const product = await productRepository.findOneBy({ id: e.product_id });
+      if (!product) return BadRequestError("product id error");
+      return {
+        name: product.name,
+        product_options: e.product_options.map(async (el) => {
+          const opt = await productOptionRepo.findOneBy({
+            id: el.product_option_id,
+          });
+          return {
+            color: opt?.color,
+            ram: opt?.ram,
+            rom: opt?.rom,
+            sale_number: el.sale_number,
+            amount: el.amount,
+          };
+        }),
+        total_sale: e.total_sale,
+      };
+    })
+  );
 };
 
 export const analysOverview = async () => {
@@ -212,4 +220,132 @@ export const analysisPrices = async (product_option_id: number) => {
   });
   if (!product_option) return BadRequestError("product option not found");
   return product_option.price.priceHistories;
+};
+
+enum monthToString {
+  "Jan" = 1,
+  "Feb" = 2,
+  "Mar" = 3,
+  "Apr" = 4,
+  "May" = 5,
+  "Jun" = 6,
+  "Jul" = 7,
+  "Aug" = 8,
+  "Sep" = 9,
+  "Oct" = 10,
+  "Nov" = 11,
+  "Dec" = 12,
+}
+
+export const getRevenue = async (value: string, key: string, explicit = 0) => {
+  const relations = explicit
+    ? {
+        payment: true,
+      }
+    : {
+        payment: true,
+        orderItems: {
+          product_option: {
+            product: true,
+          },
+        },
+      };
+  const [orders, count] = await orderRepo.findAndCount({
+    where: {
+      createAt: ILike(`${value}%`),
+    },
+    relations,
+  });
+
+  let amount = 0;
+
+  orders.map((el) => {
+    amount += Number(el.payment.amount);
+  });
+
+  return {
+    total_order: count,
+    month: key,
+    amount,
+  };
+};
+
+export const trackingProduct = async (time: string, explicit = 0) => {
+  // const relations = explicit ? {
+  //   payment: true,
+  // } : {
+  //   payment: true,
+  //   orderItems: {
+  //     product_option: {
+  //       product: true
+  //     }
+  //   }
+  // };
+  const actions = await inventoryTransactionRepo.find({
+    where: {
+      date: ILike(`${time}%`),
+    },
+  });
+
+  const tracking = {
+    in: 0,
+    out: 0,
+  };
+
+  actions.map((e) => {
+    if (e.type === EnumInventoryTransactionType.IN) {
+      tracking.in += e.quantity;
+    }
+    if (e.type === EnumInventoryTransactionType.OUT) {
+      tracking.out += e.quantity;
+    }
+  });
+
+  return {
+    ...tracking,
+  };
+};
+
+export const analysisSale = async () => {
+  const months: { value: string; key: string }[] = [];
+  for (let i = -6; i <= 0; i++) {
+    const month = getMonth() + i;
+    const year = getYear();
+    if (i < 0) {
+      months.push({
+        value: `${month < 1 ? year - 1 : year}-${(
+          "0" + (month < 1 ? month + 12 : month).toString()
+        ).slice(-2)}`,
+        key: `${monthToString[month < 1 ? month + 12 : month]}`,
+      });
+    } else {
+      months.push({
+        value: `${month > 12 ? year + 1 : year}-${(
+          "0" + (month > 12 ? month - 12 : month).toString()
+        ).slice(-2)}`,
+        key: `${monthToString[month > 12 ? month - 12 : month]}`,
+      });
+    }
+  }
+
+  type statistic = {
+    total_order: number;
+    amount: number;
+    month: string;
+    _id: number;
+  };
+
+  const data: statistic[] = [];
+
+  await Promise.all(
+    months.map(async (e, i) => {
+      return data.push({
+        ...(await getRevenue(e.value, e.key)),
+        ...(await trackingProduct(e.value)),
+        _id: i,
+      });
+    })
+  );
+
+  return data.sort((a, b) => a._id - b._id);
 };

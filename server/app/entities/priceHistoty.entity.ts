@@ -17,7 +17,7 @@ export class PriceHistory {
     new_price!: number;
 
     @CreateDateColumn()
-    update_at!: Date;
+    update_at!: string;
 
     @ManyToOne(() => Price, (price) => price.priceHistories)
     @JoinColumn({
