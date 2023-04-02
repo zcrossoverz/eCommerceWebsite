@@ -67,7 +67,6 @@ function MainDashboard() {
   const overview = useQuery(['analysis_overview'], () => analysisApi.analysOverview());
   const data_product_sale = useQuery(['top_sales'], () => analysisApi.topSales());
 
-
   // const product_sale = useQueries({
   //   queries: data_product_sale.map(
   //     (e: {
@@ -93,10 +92,10 @@ function MainDashboard() {
         <Card title='Total Users' value={overview.data?.data.countBrands} icon={3} />
       </div>
       <div className='mt-2 grid grid-flow-col grid-cols-3 gap-8'>
-        <div className='col-span-2 -ml-1 mr-2 rounded-xl rounded-xl bg-white bg-white p-9 p-2 shadow-lg'>
+        <div className='col-span-2 -ml-1 mr-2 rounded-xl bg-white p-2 shadow-lg'>
           <LineChart />
         </div>
-        <div className='flex rounded-xl rounded-xl bg-white p-8 shadow-lg'>
+        <div className='flex rounded-xl bg-white p-8 shadow-lg'>
           <PieChart />
         </div>
       </div>
