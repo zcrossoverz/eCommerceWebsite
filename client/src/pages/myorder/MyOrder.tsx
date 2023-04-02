@@ -110,7 +110,10 @@ function MyOrder() {
                             className={classNames('h-0.5 w-full bg-gray-200 sm:flex', {
                               'opacity-0': Boolean(i === 0),
                               'bg-green-500':
-                                tl.id <= StatusOrder[order.timeline[0].content as keyof typeof StatusOrder],
+                                tl.id <=
+                                StatusOrder[
+                                  order.timeline[order.timeline.length - 1].content as keyof typeof StatusOrder
+                                ],
                             })}
                           />
                           <div
@@ -118,7 +121,10 @@ function MyOrder() {
                               'z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-[3px] text-lg ring-0 ring-white sm:ring-8',
                               {
                                 'border-green-500 text-green-500':
-                                  tl.id <= StatusOrder[order.timeline[0].content as keyof typeof StatusOrder],
+                                  tl.id <=
+                                  StatusOrder[
+                                    order.timeline[order.timeline.length - 1].content as keyof typeof StatusOrder
+                                  ],
                               }
                             )}
                           >
@@ -128,7 +134,11 @@ function MyOrder() {
                             className={classNames('h-0.5 w-full bg-gray-200 sm:flex', {
                               'opacity-0': i === timeLine.length - 1,
                               'bg-green-500':
-                                tl.id <= StatusOrder[order.timeline[0].content as keyof typeof StatusOrder] - 1,
+                                tl.id <=
+                                StatusOrder[
+                                  order.timeline[order.timeline.length - 1].content as keyof typeof StatusOrder
+                                ] -
+                                  1,
                             })}
                           />
                         </div>

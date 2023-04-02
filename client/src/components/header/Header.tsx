@@ -21,12 +21,14 @@ import logo from 'src/assets/logo.svg';
 import Language from '../language/Language';
 import { useTranslation } from 'react-i18next';
 import { MdLanguage } from 'react-icons/md';
+import { IoMdNotificationsOutline } from 'react-icons/io';
 
 function Header() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { isAuth, setIsAuth } = useContext(AppContext);
   const [showMenuUser, setShowMenuUser] = useState<boolean>(false);
+  const [showNotify, setShowNotify] = useState<boolean>(false);
   const [userInfo, setUserInfo] = useState<UserInfo>();
   const [searchProduct, setSearchProduct] = useState<string>('');
   const [scrolled, setScrolled] = useState<boolean>(false);
@@ -139,6 +141,92 @@ function Header() {
             </div>
             {/* cart */}
             <div className='flex items-center justify-between lg:min-w-[8rem]'>
+              <div className='relative'>
+                <button
+                  className='flex h-10 w-10 items-center justify-center rounded-[50%] duration-300 focus:outline-none'
+                  onClick={() => setShowNotify(!showNotify)}
+                >
+                  <IoMdNotificationsOutline className='text-2xl text-white' />
+                </button>
+                {showNotify && (
+                  <motion.div
+                    className={classNames(
+                      'absolute top-10 -right-1.5 w-[300px] rounded-lg bg-white px-4 py-1 shadow-md '
+                    )}
+                    initial={{ opacity: 0, transform: 'scale(0)' }}
+                    animate={{ opacity: 1, transform: 'scale(1)' }}
+                    exit={{ opacity: 0, transform: 'scale(0)' }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {/* triangle up */}
+                    <div className='absolute -top-[12px] right-2 h-0 w-0 border-l-[10px] border-b-[15px] border-r-[10px] border-l-transparent border-b-white border-r-transparent'></div>
+
+                    {isAuth && userInfo && (
+                      <div className='flex items-center border-b py-2'>
+                        <GoDiffRenamed className='mr-4 text-lg text-black' />
+                        <span className='text-lg font-semibold text-gray-700'>{`${userInfo.firstName} ${userInfo.lastName}`}</span>
+                      </div>
+                    )}
+                    <ul className='flex flex-col pb-2'>
+                      {userInfo?.role === 'admin' && (
+                        <li className='nav-item mt-4'>
+                          <Link to='/admin' className='flex items-center'>
+                            <GrUserAdmin className='mr-4 text-lg' />
+                            <span>Admin Dashboard</span>
+                          </Link>
+                        </li>
+                      )}
+                      <li className='nav-item mt-4'>
+                        <Link to='/profile' className='flex items-center'>
+                          <FiSettings className='mr-4 text-lg' />
+                          <span>{t('header.my account')}</span>
+                        </Link>
+                      </li>
+                      <li className='nav-item mt-2'>
+                        <Link to={path.myOrders} className='flex items-center'>
+                          <BiShoppingBag className='mr-4 text-xl' />
+                          <span>{t('header.my order')}</span>
+                        </Link>
+                      </li>
+                      <li className='nav-item mt-2'>
+                        <Link to='/user' className='flex items-center'>
+                          <BiHelpCircle className='mr-4 text-xl' />
+                          <span>{t('header.help')}</span>
+                        </Link>
+                      </li>
+                      <li className='nav-item mt-2 block lg:hidden'>
+                        <div className='flex items-center'>
+                          <MdLanguage className='mr-4 text-xl text-gray-700' />
+                          <Language />
+                        </div>
+                      </li>
+
+                      <li className='nav-item mt-2'>
+                        {isAuth && (
+                          // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
+                          <span
+                            onClick={() => {
+                              setIsAuth(false);
+                              clearAccessToken();
+                              dispath(setUserInfor({ firstName: '', lastName: '', role: '', id: 0 }));
+                            }}
+                            className='flex items-center'
+                          >
+                            <BiLogIn className='mr-4 text-xl' />
+                            <span>{t('header.logout')}</span>
+                          </span>
+                        )}
+                        {!isAuth && (
+                          <Link to='/login' className='flex items-center'>
+                            <BiLogIn className='mr-4 text-xl' />
+                            <span>{t('header.login')}</span>
+                          </Link>
+                        )}
+                      </li>
+                    </ul>
+                  </motion.div>
+                )}
+              </div>
               <Cart />
               {/* user setting */}
               <div className='relative flex' ref={nodeRef}>
@@ -147,12 +235,12 @@ function Header() {
                     setShowMenuUser(!showMenuUser);
                   }}
                   type='button'
-                  className='group ml-1 flex h-10 w-10 items-center justify-center rounded-[50%] duration-300 focus:outline-none'
+                  className='group flex h-10 w-10 items-center justify-center rounded-[50%] duration-300 focus:outline-none'
                 >
                   <RiUserSettingsLine className='mt-0.5 text-2xl text-white' />
                 </button>
-                {/* menu user */}
 
+                {/* menu user */}
                 {showMenuUser && (
                   <motion.div
                     className={classNames('absolute top-14 right-0 w-[300px] rounded-lg bg-white px-4 py-1 shadow-md ')}

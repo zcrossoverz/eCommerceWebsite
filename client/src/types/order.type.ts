@@ -17,7 +17,11 @@ export interface ResCreateOrder {
     is_paid: boolean;
   };
   id: number;
-  status: number;
+  status: {
+    status: string;
+    payment: string;
+    is_paid: boolean;
+  };
   createAt?: string;
   updateAt?: string;
 }

@@ -63,12 +63,12 @@ function ProductDetails() {
   const [optionSelected, setOptionSelected] = useState<OptionProduct>();
   const [quantity, setQuantity] = useState<number | string>('');
   const decreaseQuantity = () => {
-    if (quantity && quantity >= 2) {
+    if (Number(quantity) && Number(quantity) >= 2) {
       setQuantity(Number(quantity) - 1);
     }
   };
   const increaseQuantity = () => {
-    if (quantity <= Number(optionSelected?.quantity)) {
+    if (Number(quantity) <= Number(optionSelected?.quantity)) {
       setQuantity((prev) => {
         return Number(prev) + 1;
       });
