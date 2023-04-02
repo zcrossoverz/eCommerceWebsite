@@ -3,13 +3,22 @@ import BreadCrumb from '../breadcrumb';
 import productsApi from 'src/apis/product.api';
 import Pagination from 'src/components/paginate';
 import useQueryParams from 'src/hooks/useQueryParams';
+import { useState } from 'react';
 
 export default function ManageProduct() {
+  const [search, setSearch] = useState('');
   const query = useQueryParams();
-  
-  const { data, isLoading } = useQuery(['products', query], () =>
-    productsApi.getProductsList(Object.keys(query).length ? query : { limit: '9' })
+  const params = {
+    ...query,
+    search,
+  };
+
+  const { data, isLoading } = useQuery(
+    ['products', params],
+    () => productsApi.getProductsList(Object.keys(query).length ? params : { limit: '9' }),
+    { retry: false }
   );
+  // console.log(data);
 
   return (
     <div className='mt-4'>
@@ -21,11 +30,12 @@ export default function ManageProduct() {
             id='inline-full-name'
             type='text'
             placeholder='search'
+            onChange={(e) => setSearch(e.target.value)}
           />
         </div>
         <div className='col-span-1'>
           <select className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-500 focus:shadow-lg focus:shadow-blue-300 focus:ring-blue-500'>
-            <option className='mt-1' selected>
+            <option className='mt-1' defaultValue=''>
               Sort by
             </option>
             <option className='mt-1' value='sale'>
@@ -108,7 +118,10 @@ export default function ManageProduct() {
                       </tbody>
                     </table>
                     <div className='flex justify-end'>
-                      <Pagination pageSize={2} queryConfig={{ limit: '9', path: '/admin/product/' }} />
+                      <Pagination
+                        pageSize={Math.ceil(data.data.total / data.data.data_per_page)}
+                        queryConfig={{ limit: '9', path: '/admin/product/' }}
+                      />
                     </div>
                   </div>
                 )}
