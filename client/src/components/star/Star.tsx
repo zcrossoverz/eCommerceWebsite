@@ -1,4 +1,3 @@
-import React from 'react';
 import { MdStar, MdStarHalf, MdStarBorder } from 'react-icons/md';
 interface Props {
   ratings: number;

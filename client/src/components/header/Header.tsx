@@ -22,6 +22,9 @@ import Language from '../language/Language';
 import { useTranslation } from 'react-i18next';
 import { MdLanguage } from 'react-icons/md';
 import { IoMdNotificationsOutline } from 'react-icons/io';
+import { useQuery } from '@tanstack/react-query';
+import notiApi from 'src/apis/noti.api';
+import { ResNoti } from 'src/types/noti.type';
 
 function Header() {
   const { t } = useTranslation();
@@ -32,7 +35,17 @@ function Header() {
   const [userInfo, setUserInfo] = useState<UserInfo>();
   const [searchProduct, setSearchProduct] = useState<string>('');
   const [scrolled, setScrolled] = useState<boolean>(false);
-
+  const [noti, setNoti] = useState<ResNoti>();
+  useQuery({
+    queryKey: ['noti'],
+    queryFn: () => notiApi.getAllNoti(userInfo?.id || 0),
+    onSuccess: (data) => {
+      console.log(data.data);
+      setNoti(data.data);
+    },
+    retry: 1,
+    enabled: Boolean(userInfo?.id),
+  });
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -74,6 +87,9 @@ function Header() {
   const { nodeRef } = useClickOutSide(() => {
     setShowMenuUser(false);
   });
+  const { nodeRef: notiRef } = useClickOutSide(() => {
+    setShowNotify(false);
+  });
   const handleChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchProduct(e.target.value);
   };
@@ -84,7 +100,6 @@ function Header() {
       search: `?search=${searchProduct}`,
     });
   };
-
   return (
     <AnimatePresence>
       <motion.header
@@ -139,9 +154,8 @@ function Header() {
               <MdLanguage className='mr-1 mt-0.5 text-lg text-gray-700 lg:text-white' />
               <Language />
             </div>
-            {/* cart */}
             <div className='flex items-center justify-between lg:min-w-[8rem]'>
-              <div className='relative'>
+              <div className='relative' ref={notiRef}>
                 <button
                   className='flex h-10 w-10 items-center justify-center rounded-[50%] duration-300 focus:outline-none'
                   onClick={() => setShowNotify(!showNotify)}
@@ -151,7 +165,7 @@ function Header() {
                 {showNotify && (
                   <motion.div
                     className={classNames(
-                      'absolute top-10 -right-1.5 w-[300px] rounded-lg bg-white px-4 py-1 shadow-md '
+                      'fixed top-14 right-0.5 w-[full] rounded-lg bg-white px-4 py-1 shadow-md md:absolute md:w-[360px]'
                     )}
                     initial={{ opacity: 0, transform: 'scale(0)' }}
                     animate={{ opacity: 1, transform: 'scale(1)' }}
@@ -159,74 +173,29 @@ function Header() {
                     transition={{ duration: 0.2 }}
                   >
                     {/* triangle up */}
-                    <div className='absolute -top-[12px] right-2 h-0 w-0 border-l-[10px] border-b-[15px] border-r-[10px] border-l-transparent border-b-white border-r-transparent'></div>
-
-                    {isAuth && userInfo && (
-                      <div className='flex items-center border-b py-2'>
-                        <GoDiffRenamed className='mr-4 text-lg text-black' />
-                        <span className='text-lg font-semibold text-gray-700'>{`${userInfo.firstName} ${userInfo.lastName}`}</span>
-                      </div>
-                    )}
+                    <div className='absolute -top-[12px] right-2 hidden h-0 w-0 border-l-[10px] border-b-[15px] border-r-[10px] border-l-transparent border-b-white border-r-transparent md:block'></div>
                     <ul className='flex flex-col pb-2'>
-                      {userInfo?.role === 'admin' && (
-                        <li className='nav-item mt-4'>
-                          <Link to='/admin' className='flex items-center'>
-                            <GrUserAdmin className='mr-4 text-lg' />
-                            <span>Admin Dashboard</span>
-                          </Link>
-                        </li>
-                      )}
-                      <li className='nav-item mt-4'>
-                        <Link to='/profile' className='flex items-center'>
-                          <FiSettings className='mr-4 text-lg' />
-                          <span>{t('header.my account')}</span>
-                        </Link>
-                      </li>
-                      <li className='nav-item mt-2'>
-                        <Link to={path.myOrders} className='flex items-center'>
-                          <BiShoppingBag className='mr-4 text-xl' />
-                          <span>{t('header.my order')}</span>
-                        </Link>
-                      </li>
-                      <li className='nav-item mt-2'>
-                        <Link to='/user' className='flex items-center'>
-                          <BiHelpCircle className='mr-4 text-xl' />
-                          <span>{t('header.help')}</span>
-                        </Link>
-                      </li>
-                      <li className='nav-item mt-2 block lg:hidden'>
-                        <div className='flex items-center'>
-                          <MdLanguage className='mr-4 text-xl text-gray-700' />
-                          <Language />
+                      {!noti?.data.length && (
+                        <div className='flex h-full w-full flex-col items-center justify-center'>
+                          <img
+                            className='h-24'
+                            alt='img'
+                            src='https://cdn.dribbble.com/users/1373705/screenshots/6457914/no_notification_yiran.png?compress=1&resize=400x300&vertical=top'
+                          />
+                          <span className='text-black'>Không có thông báo!</span>
                         </div>
-                      </li>
-
-                      <li className='nav-item mt-2'>
-                        {isAuth && (
-                          // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
-                          <span
-                            onClick={() => {
-                              setIsAuth(false);
-                              clearAccessToken();
-                              dispath(setUserInfor({ firstName: '', lastName: '', role: '', id: 0 }));
-                            }}
-                            className='flex items-center'
-                          >
-                            <BiLogIn className='mr-4 text-xl' />
-                            <span>{t('header.logout')}</span>
-                          </span>
-                        )}
-                        {!isAuth && (
-                          <Link to='/login' className='flex items-center'>
-                            <BiLogIn className='mr-4 text-xl' />
-                            <span>{t('header.login')}</span>
-                          </Link>
-                        )}
-                      </li>
+                      )}
+                      {noti?.data.length &&
+                        noti?.data.map((notiItem) => (
+                          <li key={notiItem.id} className='nav-item mt-4 border-b pb-2'>
+                            <p className='text-justify text-xs text-gray-400 md:text-sm'>{notiItem.content}</p>
+                          </li>
+                        ))}
                     </ul>
                   </motion.div>
                 )}
               </div>
+              {/* cart */}
               <Cart />
               {/* user setting */}
               <div className='relative flex' ref={nodeRef}>

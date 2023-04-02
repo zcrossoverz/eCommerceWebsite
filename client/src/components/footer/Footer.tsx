@@ -7,7 +7,7 @@ function Footer() {
   const { t } = useTranslation();
 
   return (
-    <footer className='relative z-10 bg-white'>
+    <footer className='relative -z-10 bg-white'>
       <div className='mx-auto grid max-w-7xl grid-cols-2 gap-8 px-6 py-8 md:grid-cols-5'>
         <div>
           <h2 className='mb-6 text-sm font-semibold uppercase text-gray-500'>Company</h2>
