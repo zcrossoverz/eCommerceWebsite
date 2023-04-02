@@ -94,7 +94,7 @@ function SidebarDashboard() {
       </div>
       <hr className='mx-4 border-blue-100/20' />
       <div className='my-4'>
-        <ButtonNav name={'Home'} Icon={AiFillHome} link='/' active={location === '/'} />
+        <ButtonNav name={'Home'} Icon={AiFillHome} link='/' active={location === '' || location === '/'} />
         <ButtonNavDropdown
           name={'Products'}
           Icon={BsFillCartFill}

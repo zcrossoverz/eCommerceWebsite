@@ -12,7 +12,7 @@ export class InventoryTransaction {
     id!: number;
 
     @CreateDateColumn()
-    date!: Date;
+    date!: string;
 
     @Column({
         type: "enum",

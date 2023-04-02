@@ -27,10 +27,10 @@ export class Order {
     status!: EnumStatusOrder
 
     @CreateDateColumn()
-    createAt!: Date;
+    createAt!: string;
 
     @UpdateDateColumn()
-    updateAt!: Date;
+    updateAt!: string;
 
     @Column()
     address!: string;
