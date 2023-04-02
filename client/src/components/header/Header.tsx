@@ -38,9 +38,8 @@ function Header() {
   const [noti, setNoti] = useState<ResNoti>();
   useQuery({
     queryKey: ['noti'],
-    queryFn: () => notiApi.getAllNoti(userInfo?.id || 0),
+    queryFn: () => notiApi.getUnreadNoti(userInfo?.id || 0),
     onSuccess: (data) => {
-      console.log(data.data);
       setNoti(data.data);
     },
     retry: 1,
@@ -155,11 +154,17 @@ function Header() {
               <Language />
             </div>
             <div className='flex items-center justify-between lg:min-w-[8rem]'>
+              {/* notify */}
               <div className='relative' ref={notiRef}>
                 <button
                   className='flex h-10 w-10 items-center justify-center rounded-[50%] duration-300 focus:outline-none'
                   onClick={() => setShowNotify(!showNotify)}
                 >
+                  {noti?.data && noti.data.length > 0 && (
+                    <span className='absolute top-0 right-0.5 flex items-center justify-center rounded-md bg-white px-1 text-xs text-orange-600'>
+                      {noti.data.length}
+                    </span>
+                  )}
                   <IoMdNotificationsOutline className='text-2xl text-white' />
                 </button>
                 {showNotify && (
@@ -174,7 +179,7 @@ function Header() {
                   >
                     {/* triangle up */}
                     <div className='absolute -top-[12px] right-2 hidden h-0 w-0 border-l-[10px] border-b-[15px] border-r-[10px] border-l-transparent border-b-white border-r-transparent md:block'></div>
-                    <ul className='flex flex-col pb-2'>
+                    <ul className='flex max-h-[340px] flex-col overflow-auto pb-2'>
                       {!noti?.data.length && (
                         <div className='flex h-full w-full flex-col items-center justify-center'>
                           <img
@@ -182,7 +187,7 @@ function Header() {
                             alt='img'
                             src='https://cdn.dribbble.com/users/1373705/screenshots/6457914/no_notification_yiran.png?compress=1&resize=400x300&vertical=top'
                           />
-                          <span className='text-black'>Không có thông báo!</span>
+                          <span className='text-black'>Không có thông báo mới nào!</span>
                         </div>
                       )}
                       {noti?.data.length &&
