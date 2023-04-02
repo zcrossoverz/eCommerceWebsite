@@ -103,7 +103,7 @@ function SidebarDashboard() {
             { title: 'Manage Brand', link: '/brand' },
             { title: 'Manage Coupon', link: '/coupon' },
           ]}
-          active={location === '/product' || location === '/brand' || location === '/coupon'}
+          active={location.includes('/product') || location.includes('/brand') || location.includes('/coupon')}
         />
         <ButtonNav name={'Orders'} Icon={FaMoneyCheckAlt} link='/order' active={location === '/order'} />
         <ButtonNav name={'Inventory'} Icon={AiFillSetting} link='/inventory' active={location === '/inventory'} />

@@ -67,11 +67,11 @@ function Address({ user, refetchAddress }: Props) {
               <span>{address.address}</span>
               <div className='flex items-center'>
                 <span className='mr-2 rounded border border-blue-400 bg-blue-100 px-2.5 py-0.5 text-xs font-medium text-blue-800'>
-                  Địa chỉ nhận
+                  {t('address.receiving address')}
                 </span>
                 {user.default_address === address.id && (
                   <span className='mr-2 rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800'>
-                    Mặc định
+                    {t('address.default')}
                   </span>
                 )}
               </div>

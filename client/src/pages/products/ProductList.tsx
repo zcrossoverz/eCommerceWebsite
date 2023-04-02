@@ -57,7 +57,7 @@ function ProductList() {
   });
   const { data: brands } = useQuery({
     queryKey: ['brand'],
-    queryFn: () => brandApi.getAllBrand(),
+    queryFn: () => brandApi.getAllBrand(''),
   });
   return (
     <div className='mx-auto max-w-7xl py-4 px-2'>

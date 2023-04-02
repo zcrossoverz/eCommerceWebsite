@@ -1,14 +1,15 @@
 import { useQuery } from '@tanstack/react-query';
 import BreadCrumb from '../breadcrumb';
 import productsApi from 'src/apis/product.api';
-import { useState } from 'react';
+import Pagination from 'src/components/paginate';
+import useQueryParams from 'src/hooks/useQueryParams';
 
 export default function ManageProduct() {
-  const [params, setParams] = useState({
-    limit: '10',
-    page: '1',
-  });
-  const { data, isLoading } = useQuery(['products', params], () => productsApi.getProductsList(params));
+  const query = useQueryParams();
+  
+  const { data, isLoading } = useQuery(['products', query], () =>
+    productsApi.getProductsList(Object.keys(query).length ? query : { limit: '9' })
+  );
 
   return (
     <div className='mt-4'>
@@ -67,44 +68,49 @@ export default function ManageProduct() {
                   </div>
                 )}
                 {data?.data && (
-                  <table className='min-w-full divide-y divide-gray-200 bg-white'>
-                    <thead className='bg-pink-400/20'>
-                      <tr>
-                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          ID
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          Name
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          Brand
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-right text-xs font-bold uppercase text-gray-500 '>
-                          Edit
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-right text-xs font-bold uppercase text-gray-500 '>
-                          Delete
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className='divide-y divide-gray-200'>
-                      {data?.data.data.map((e, i) => {
-                        return (
-                          <tr key={i.toString()}>
-                            <td className='whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800'>{e.id}</td>
-                            <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.name}</td>
-                            <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.brand}</td>
-                            <td className='whitespace-nowrap px-6 py-4 text-right text-sm font-medium'>
-                              <div className='text-green-500 hover:text-green-700'>Edit</div>
-                            </td>
-                            <td className='whitespace-nowrap px-6 py-4 text-right text-sm font-medium'>
-                              <div className='text-red-500 hover:text-red-700'>Delete</div>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+                  <div>
+                    <table className='min-w-full divide-y divide-gray-200 bg-white'>
+                      <thead className='bg-pink-400/20'>
+                        <tr>
+                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                            ID
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                            Name
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                            Brand
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-right text-xs font-bold uppercase text-gray-500 '>
+                            Edit
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-right text-xs font-bold uppercase text-gray-500 '>
+                            Delete
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className='divide-y divide-gray-200'>
+                        {data?.data.data.map((e, i) => {
+                          return (
+                            <tr key={i.toString()}>
+                              <td className='whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800'>{e.id}</td>
+                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.name}</td>
+                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.brand}</td>
+                              <td className='whitespace-nowrap px-6 py-4 text-right text-sm font-medium'>
+                                <div className='text-green-500 hover:text-green-700'>Edit</div>
+                              </td>
+                              <td className='whitespace-nowrap px-6 py-4 text-right text-sm font-medium'>
+                                <div className='text-red-500 hover:text-red-700'>Delete</div>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                    <div className='flex justify-end'>
+                      <Pagination pageSize={2} queryConfig={{ limit: '9', path: '/admin/product/' }} />
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
