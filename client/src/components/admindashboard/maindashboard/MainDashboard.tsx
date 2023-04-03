@@ -67,29 +67,13 @@ function MainDashboard() {
   const overview = useQuery(['analysis_overview'], () => analysisApi.analysOverview());
   const data_product_sale = useQuery(['top_sales'], () => analysisApi.topSales());
 
-  // const product_sale = useQueries({
-  //   queries: data_product_sale.map(
-  //     (e: {
-  //       product_id: number;
-  //       product_options: { product_option_id: number; sale_number: number; amount: number }[];
-  //     }) => {
-  //       return {
-  //         queryKey: ['get_product', e.product_id],
-  //         queryFn: () => productsApi.getProductDetail(`${e.product_id}`),
-  //       };
-  //     }
-  //   ),
-  // });
-
-  // console.log(product_sale);
-
   return (
     <div>
       <div className='grid md:grid-cols-2 lg:grid-cols-4'>
         <Card title='Total Products' value={overview.data?.data.countProducts} icon={0} />
         <Card title='Total Orders' value={overview.data?.data.countOrders} icon={2} />
         <Card title='Total Brands' value={overview.data?.data.countBrands} icon={1} />
-        <Card title='Total Users' value={overview.data?.data.countBrands} icon={3} />
+        <Card title='Total Users' value={overview.data?.data.countUsers} icon={3} />
       </div>
       <div className='mt-2 grid grid-flow-col grid-cols-3 gap-8'>
         <div className='col-span-2 -ml-1 mr-2 rounded-xl bg-white p-2 shadow-lg'>

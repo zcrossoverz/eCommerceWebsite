@@ -27,7 +27,7 @@ export class Feedback {
     comment!: string;
 
     @CreateDateColumn()
-    create_at!: Date;
+    create_at!: string;
 
     @ManyToOne(
         () => Product,

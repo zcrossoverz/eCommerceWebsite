@@ -94,7 +94,7 @@ function SidebarDashboard() {
       </div>
       <hr className='mx-4 border-blue-100/20' />
       <div className='my-4'>
-        <ButtonNav name={'Home'} Icon={AiFillHome} link='/' active={location === '/'} />
+        <ButtonNav name={'Home'} Icon={AiFillHome} link='/' active={location === '' || location === '/'} />
         <ButtonNavDropdown
           name={'Products'}
           Icon={BsFillCartFill}
@@ -103,7 +103,7 @@ function SidebarDashboard() {
             { title: 'Manage Brand', link: '/brand' },
             { title: 'Manage Coupon', link: '/coupon' },
           ]}
-          active={location === '/product' || location === '/brand' || location === '/coupon'}
+          active={location.includes('/product') || location.includes('/brand') || location.includes('/coupon')}
         />
         <ButtonNav name={'Orders'} Icon={FaMoneyCheckAlt} link='/order' active={location === '/order'} />
         <ButtonNav name={'Inventory'} Icon={AiFillSetting} link='/inventory' active={location === '/inventory'} />

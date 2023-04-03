@@ -22,7 +22,12 @@ import HelmetSale from '../Helmet';
 import { nanoid } from '@reduxjs/toolkit';
 import Loading from '../loading';
 import { useTranslation } from 'react-i18next';
+import Comments from './comments';
 function ProductDetails() {
+  const rating = useSelector(
+    (state: RootState) => state.productReducer.rating,
+    (prev, next) => prev !== next
+  );
   const { t } = useTranslation('productdetail');
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();
@@ -312,16 +317,11 @@ function ProductDetails() {
           </div>
         )}
       </div>
-      {/* desc */}
-      {!isLoading && (
-        <div className='mx-auto mt-4 p-4 shadow-md lg:w-[80%]'>
-          <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>Chi tiết cấu hình của sản phẩm</h3>
-          <p className='mx-auto w-[96%] break-words px-4 py-2'></p>
-        </div>
-      )}
+
       {/* Reviews */}
-      <div className='mx-auto mt-4 p-4 shadow-md lg:w-[80%]'>
-        <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>{t('productdetail.product reviews')}</h3>
+      <div className='mx-auto mt-4 shadow-md lg:w-[80%]'>
+        {/* <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>{t('productdetail.product reviews')}</h3> */}
+        <Comments rating={rating} />
       </div>
     </>
   );

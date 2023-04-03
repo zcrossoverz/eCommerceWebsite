@@ -15,6 +15,9 @@ const analysisApi = {
   topSales() {
     return http.get(`${baseURL}/top_sale`);
   },
+  saleSatistic() {
+    return http.get(`${baseURL}/sales`);
+  },
 };
 
 export default analysisApi;

@@ -5,3 +5,7 @@ import { Request, Response } from "express";
 export const analysOverview = async (req: Request, res: Response) => {
     return res.json(await analysisServices.analysOverview());
 }
+
+export const analysisSale = async (req: Request, res: Response) => {
+    return res.json(await analysisServices.analysisSale());
+}
