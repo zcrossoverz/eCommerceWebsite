@@ -91,9 +91,28 @@ function MainDashboard() {
           </div>
           <hr className='-ml-6 bg-gray-300' />
           <div>
-            {data_product_sale.data?.data.map((e: any, i: string) => (
-              <div key={i.toString()}>{e.name}</div>
-            ))}
+            <div>
+              <table className='table-fixed'>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Number sold</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data_product_sale.data?.data
+                    .sort((a: any, b: any) => b.total_sale - a.total_sale)
+                    .map((e: any, i: string) => (
+                      <tr key={i.toString()}>
+                        <td className='px-10 text-center'>{(i + 1).toString()}</td>
+                        <td className='px-10 text-left'>{e.name}</td>
+                        <td className='px-10 text-center'>{e.total_sale}</td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
         <div className='col-span-2 rounded-xl bg-white p-8 shadow-lg'>
@@ -101,6 +120,27 @@ function MainDashboard() {
             <div className='text-xl font-semibold leading-loose'>Recent activity</div>
           </div>
           <hr className='-ml-6 bg-gray-300' />
+          <div className='flex flex-col'>
+          <div className='flex justify-between px-2'>
+              <div className=''>abc vua xyz..... </div>
+              <div className=''> 10:11:20 30/3/2023</div>
+            </div><div className='flex justify-between px-2'>
+              <div className=''>abc vua xyz..... </div>
+              <div className=''> 10:11:20 30/3/2023</div>
+            </div><div className='flex justify-between px-2'>
+              <div className=''>abc vua xyz..... </div>
+              <div className=''> 10:11:20 30/3/2023</div>
+            </div><div className='flex justify-between px-2'>
+              <div className=''>abc vua xyz..... </div>
+              <div className=''> 10:11:20 30/3/2023</div>
+            </div><div className='flex justify-between px-2'>
+              <div className=''>abc vua xyz..... </div>
+              <div className=''> 10:11:20 30/3/2023</div>
+            </div><div className='flex justify-between px-2'>
+              <div className=''>abc vua xyz..... </div>
+              <div className=''> 10:11:20 30/3/2023</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

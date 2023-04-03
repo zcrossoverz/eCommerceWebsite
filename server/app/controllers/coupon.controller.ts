@@ -23,3 +23,8 @@ export const clearCoupon = async (req: Request, res: Response, next: NextFunctio
     const rs = await couponServices.clearCoupon(order_id);
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
 }
+
+export const getAllCoupon = async (req: Request, res: Response, next: NextFunction) => {
+    const rs = await couponServices.getAllCoupon();
+    return isError(rs) ? next(err(rs, res)) : res.json(rs);
+}
