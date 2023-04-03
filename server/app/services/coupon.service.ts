@@ -190,3 +190,17 @@ export const clearCoupon = async (order_id: number) => {
     default: return;
   }
 }
+
+
+export const getAllCoupon = async () => {
+  return (await couponRepo.find()).map(e => {
+    const start_d = e.start_date.split('/');
+    const end_d = e.end_date.split('/');
+    return {
+      ...e,
+      type: EnumTypeCoupon[e.type],
+      start_date: `${start_d[1]}/${start_d[0]}/${start_d[2]}`,
+      end_date: `${end_d[1]}/${end_d[0]}/${end_d[2]}`
+    }
+  });
+}
