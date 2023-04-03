@@ -12,6 +12,7 @@ import useQueryParams from 'src/hooks/useQueryParams';
 import { ProductListConfig } from 'src/types/product.type';
 import { isAxiosErr } from 'src/utils/error';
 import AsignFillter from './asignfilter';
+import Discount from 'src/components/discount';
 
 // import SortProduct from './sortlist';
 
@@ -66,7 +67,7 @@ function ProductList() {
         <div className='hidden md:col-span-3 md:block'>
           <AsignFillter brands={brands?.data || []} queryConfig={queryParams} />
         </div>
-        <div className='col-span-12 min-h-[41rem] md:col-span-9'>
+        <div className='col-span-12  md:col-span-9'>
           {/* <div>
             <SortProduct />
           </div> */}
@@ -88,6 +89,9 @@ function ProductList() {
           </div>
           <Pagination queryConfig={queryParams} pageSize={products?.data.last_page || 1} />
         </div>
+      </div>
+      <div>
+        <Discount />
       </div>
     </div>
   );

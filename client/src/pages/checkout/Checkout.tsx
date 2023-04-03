@@ -129,7 +129,7 @@ function Checkout() {
         return {
           ...prev,
           total: orderItems.data.payment.amount,
-          finalPrice: orderItems.data.payment.amount - prev?.discount,
+          finalPrice: orderItems.data.payment.amount - prev?.discount + 50000,
           totalQuantity: totalPrice.quantity,
         };
       });
@@ -461,6 +461,10 @@ function Checkout() {
                   <div className='flex w-full items-center justify-between'>
                     <span className='text-left text-gray-400'>{t('checkout.discount')}</span>
                     <span className='text-end'>{formatPrice(price.discount)}</span>
+                  </div>
+                  <div className='flex w-full items-center justify-between'>
+                    <span className='text-left text-gray-400'>Phí vận chuyển toàn quốc</span>
+                    <span className='text-end'>{formatPrice(50000)}</span>
                   </div>
                   <div className='mt-2 flex w-full items-center justify-between'>
                     <span className='text-left text-gray-400'>{t('checkout.total')}</span>
