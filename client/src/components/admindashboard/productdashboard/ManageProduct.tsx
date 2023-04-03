@@ -3,22 +3,35 @@ import BreadCrumb from '../breadcrumb';
 import productsApi from 'src/apis/product.api';
 import Pagination from 'src/components/paginate';
 import useQueryParams from 'src/hooks/useQueryParams';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function ManageProduct() {
   const [search, setSearch] = useState('');
   const query = useQueryParams();
-  const params = {
-    ...query,
-    search,
-  };
+  const [params, setParams] = useState({
+    page: '1',
+    limit: '9',
+    search: '',
+  });
+  useEffect(() => {
+    setParams({
+      limit: '9',
+      page: '1',
+      search,
+    });
+  }, [search]);
+  useEffect(() => {
+    setParams({
+      ...params,
+      page: `${query.page}`,
+    });
+  }, [query.page]);
 
   const { data, isLoading } = useQuery(
     ['products', params],
-    () => productsApi.getProductsList(Object.keys(query).length ? params : { limit: '9' }),
+    () => productsApi.getProductsList(search.length || query.page ? params : { limit: '9' }),
     { retry: false }
   );
-  // console.log(data);
 
   return (
     <div className='mt-4'>
@@ -38,10 +51,10 @@ export default function ManageProduct() {
             <option className='mt-1' defaultValue=''>
               Sort by
             </option>
-            <option className='mt-1' value='sale'>
+            <option className='mt-1' defaultValue='sale'>
               sale
             </option>
-            <option className='mt-1' value='stock'>
+            <option className='mt-1' defaultValue='stock'>
               stock
             </option>
           </select>
