@@ -12,7 +12,6 @@ import useQueryParams from 'src/hooks/useQueryParams';
 import { ProductListConfig } from 'src/types/product.type';
 import { isAxiosErr } from 'src/utils/error';
 import AsignFillter from './asignfilter';
-import Discount from 'src/components/discount';
 
 // import SortProduct from './sortlist';
 
