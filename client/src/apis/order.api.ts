@@ -39,6 +39,11 @@ const orderApi = {
       params,
     });
   },
+  getAllOrders(params?: orderQueryConfig) {
+    return http.get<ResGetAllOrder>(`order/get_all`, {
+      params,
+    });
+  },
 };
 
 export default orderApi;
