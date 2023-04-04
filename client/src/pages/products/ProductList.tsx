@@ -90,9 +90,6 @@ function ProductList() {
           <Pagination queryConfig={queryParams} pageSize={products?.data.last_page || 1} />
         </div>
       </div>
-      <div>
-        <Discount />
-      </div>
     </div>
   );
 }

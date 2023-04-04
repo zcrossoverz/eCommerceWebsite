@@ -23,6 +23,7 @@ import CheckoutLayout from './layouts/checkoutlayout';
 import Checkout from './pages/checkout';
 import MyOrderLayout from './layouts/myorderlayout/MyOrderLayout';
 import MyOrder from './pages/myorder';
+import Discount from './components/discount';
 function App() {
   return (
     <div>
@@ -34,6 +35,7 @@ function App() {
             <MainLayout>
               <Banner />
               <ProductList />
+              <Discount />
             </MainLayout>
           }
         />
