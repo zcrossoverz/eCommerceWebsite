@@ -96,7 +96,7 @@ export const getNoti = async (user_id: number, type: getType) => {
     await userRepo.update({
         id: user_id
     }, {
-        unread_message: user.unread_message - noti.length
+        unread_message: 0
     });
     return {
       data: noti.map((e) => e),
