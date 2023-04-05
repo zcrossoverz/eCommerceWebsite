@@ -16,7 +16,7 @@ const couponApi = {
   clearCoupon(orderId: number) {
     return http.post<{
       message: string;
-    }>('/coupon/apply', {
+    }>('/coupon/clear', {
       order_id: orderId,
     });
   },

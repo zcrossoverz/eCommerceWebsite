@@ -66,7 +66,7 @@ function Checkout() {
     id: -1,
     content: '',
   });
-  const { data: orderItems } = useQuery({
+  const { data: orderItems, refetch } = useQuery({
     queryKey: ['id', stateOrderItems.current.id],
     queryFn: () => orderApi.getOneOrder(stateOrderItems.current.id),
     enabled: Boolean(stateOrderItems.current.id),
@@ -88,8 +88,8 @@ function Checkout() {
   const selectMethodMutation = useMutation({
     mutationFn: (body: { id: number; method: string }) => orderApi.setPaymentMethod(body.method, body.id),
     onError: (err) => {
-      if (isAxiosErr<{ message: string }>(err)) {
-        toast.error(err.response?.data.message, { autoClose: 2000 });
+      if (isAxiosErr<{ error: string }>(err)) {
+        toast.error(err.response?.data.error, { autoClose: 2000 });
         return;
       }
     },
@@ -97,8 +97,8 @@ function Checkout() {
   const updateOrderMutation = useMutation({
     mutationFn: (body: { id: number; status: string }) => orderApi.updateStatus(body.status, body.id),
     onError: (err) => {
-      if (isAxiosErr<{ message: string }>(err)) {
-        toast.error(err.response?.data.message, { autoClose: 2000 });
+      if (isAxiosErr<{ error: string }>(err)) {
+        toast.error(err.response?.data.error, { autoClose: 2000 });
         return;
       }
     },
@@ -106,26 +106,29 @@ function Checkout() {
   const updateAddressOrderMutation = useMutation({
     mutationFn: (body: { id: number; address: string }) => orderApi.updateAddressOrder(body.address, body.id),
     onError: (err) => {
-      if (isAxiosErr<{ message: string }>(err)) {
-        toast.error(err.response?.data.message, { autoClose: 2000 });
+      if (isAxiosErr<{ error: string }>(err)) {
+        toast.error(err.response?.data.error, { autoClose: 2000 });
         return;
       }
     },
   });
   const updateStatusPaymentMutation = useMutation({
     mutationFn: (id: number) => orderApi.updateStatusPayment(id),
-    onError: (err) => {
-      if (isAxiosErr<{ message: string }>(err)) {
-        toast.error(err.response?.data.message, { autoClose: 2000 });
-        return;
-      }
-    },
   });
   const applyCodeMutation = useMutation({
     mutationFn: (body: { code: string; orderId: number }) => couponApi.applyCoupon(body.code, body.orderId),
     onError: (err) => {
-      if (isAxiosErr<{ message: string }>(err)) {
-        toast.error(err.response?.data.message, { autoClose: 2000 });
+      if (isAxiosErr<{ error: string }>(err)) {
+        toast.error(err.response?.data.error, { autoClose: 2000 });
+        return;
+      }
+    },
+  });
+  const clearCodeMutation = useMutation({
+    mutationFn: (orderId: number) => couponApi.clearCoupon(orderId),
+    onError: (err) => {
+      if (isAxiosErr<{ error: string }>(err)) {
+        toast.error(err.response?.data.error, { autoClose: 2000 });
         return;
       }
     },
@@ -146,14 +149,21 @@ function Checkout() {
         );
         return {
           ...prev,
-          total: orderItems.data.payment.amount,
-          finalPrice: orderItems.data.payment.amount - prev?.discount + 50000,
+          total: Number(
+            orderItems.data.payment.previous_amount
+              ? orderItems.data.payment.previous_amount
+              : orderItems.data.payment.amount
+          ),
+          finalPrice: Number(orderItems.data.payment.amount) + 50000,
           totalQuantity: totalPrice.quantity,
+          discount: Number(orderItems.data.payment.discount),
         };
       });
     }
+    if (orderItems?.data && orderItems.data.coupon) {
+      setCode({ content: orderItems.data.coupon, success: true });
+    }
   }, [orderItems]);
-
   function closeModal() {
     setIsActive(address.id);
     setIsOpen(false);
@@ -183,12 +193,34 @@ function Checkout() {
     }
   };
   const handleApplyCode = (codeContent: string) => {
-    if (codeContent) {
-      // applyCodeMutation.mutate({
-      //   code:codeContent,
-      //   orderId: stateOrderItems.current.id,
-      // });
-      setCode({ ...code, success: true });
+    if (codeContent && stateOrderItems.current.id) {
+      applyCodeMutation.mutate(
+        {
+          code: codeContent,
+          orderId: stateOrderItems.current.id,
+        },
+        {
+          onSuccess: () => {
+            setCode({ ...code, success: true });
+            refetch();
+          },
+          onError: (err) => {
+            if (isAxiosErr<{ error: string }>(err)) {
+              toast.error(err.response?.data.error, { autoClose: 2000 });
+            }
+          },
+        }
+      );
+    }
+  };
+  const handleClearCode = () => {
+    if (stateOrderItems.current.id) {
+      clearCodeMutation.mutate(stateOrderItems.current.id, {
+        onSuccess: () => {
+          setCode({ content: '', success: false });
+          refetch();
+        },
+      });
     }
   };
   const handleCheckoutOrder = (status?: string) => {
@@ -472,7 +504,7 @@ function Checkout() {
                     />
                     <button
                       type='button'
-                      onClick={() => handleApplyCode(code.content)}
+                      onClick={() => handleClearCode()}
                       className='ml-2 whitespace-nowrap rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none'
                     >
                       Bỏ áp dụng
@@ -508,7 +540,7 @@ function Checkout() {
                   </div>
                   <div className='flex w-full items-center justify-between'>
                     <span className='text-left text-gray-400'>{t('checkout.discount')}</span>
-                    <span className='text-end'>{formatPrice(price.discount)}</span>
+                    <span className='text-end'>{formatPrice(price.discount || 0)}</span>
                   </div>
                   <div className='flex w-full items-center justify-between'>
                     <span className='text-left text-gray-400'>Phí vận chuyển toàn quốc</span>

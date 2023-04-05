@@ -51,8 +51,10 @@ export interface ResGetAllOrder {
     }[];
     payment: {
       method: string;
-      amount: number;
-      is_paid: boolean;
+      previous_amount: number;
+      discount: string;
+      amount: string;
+      is_paid: false;
     };
     timeline: {
       id: number;
@@ -68,6 +70,7 @@ export interface ResGetOneOrder {
   update_at: string;
   address: string;
   user: User;
+  coupon?: string;
   order_items: {
     product_name: string;
     product_option_id: number;
@@ -81,7 +84,9 @@ export interface ResGetOneOrder {
 
   payment: {
     method: string;
-    amount: number;
+    previous_amount: number;
+    discount: string;
+    amount: string;
     is_paid: boolean;
   };
   timeline: {
