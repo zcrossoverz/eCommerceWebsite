@@ -90,7 +90,9 @@ export const getFeedbackByProduct = async (product_id: number) => {
       id: product_id,
     },
     relations: {
-      feedbacks: true,
+      feedbacks: {
+        user: true
+      },
     },
   });
   if (!product) return BadRequestError("product not found");
