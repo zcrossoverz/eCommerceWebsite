@@ -124,7 +124,7 @@ export const applyCoupon = async (code: string, order_id: number) => {
       return status ? success() : failed();
     }
     case EnumTypeCoupon.PERCENT: {
-      const value = (Number(payment.amount)-(Number(payment.amount)/100*coupon.value)) >= 0 ? (Number(payment.amount)-(Number(payment.amount)/100*coupon.value)) : 0;
+      const value = (Number(payment.amount)-((Number(payment.amount)/100)*coupon.value)) >= 0 ? (Number(payment.amount)-((Number(payment.amount)/100)*coupon.value)) : 0;
       const status = (await paymentRepo.update({
         id: payment.id
       }, { amount: `${value}` })).affected;
@@ -177,7 +177,7 @@ export const clearCoupon = async (order_id: number) => {
       return status ? success() : failed();
     }
     case EnumTypeCoupon.PERCENT: {
-      const value = ((Number(payment.amount)*100/coupon.value));
+      const value = ((Number(payment.amount)/(100-coupon.value)*100));
       const status = (await paymentRepo.update({
         id: payment.id
       }, { amount: `${value}` })).affected;
