@@ -2,7 +2,7 @@ import { AppDataSource } from "../database";
 import { Feedback } from "../entities/feedback.entity";
 import { Product } from "../entities/product.entity";
 import { User } from "../entities/user.entity";
-import { BadRequestError } from "../utils/error";
+import { BadRequestError, isError } from "../utils/error";
 import { failed, success } from "../utils/response";
 import * as workQueueServices from "../services/workqueue.service";
 import { EnumWorkQueueType } from "../entities/workQueue.entity";
@@ -31,7 +31,7 @@ export const createFeedback = async (
   if (!can_rate.can_rate || can_rate.is_done)
     return BadRequestError("you cannot rate this product");
   await workQueueServices.markAsDone(product, user, EnumWorkQueueType.RATE);
-  return await feedbackRepo.save(
+  const rs = await feedbackRepo.save(
     feedbackRepo.create({
       rate: rate,
       comment: comment ? comment : "",
@@ -39,6 +39,8 @@ export const createFeedback = async (
       user,
     })
   );
+  await syncRate(product_id);
+  return rs;
 };
 
 export const updateFeedback = async (
@@ -57,18 +59,29 @@ export const updateFeedback = async (
       },
     });
     if (!feedback) return BadRequestError("feedback not found");
-    if (!data.comment && !data.rate)
-      return BadRequestError("rate and comment empty");
-    return (await feedbackRepo.update({ id: feedback.id }, { ...data }))
+    if (!data.comment && !data.rate) return BadRequestError("rate and comment empty");
+    const rs = (await feedbackRepo.update({ id: feedback.id }, { ...data }))
       .affected
       ? success()
       : failed();
+    await syncRate(product_id);
+    return rs;
   }
   return BadRequestError("you cannot update rate for this product");
 };
 
 export const deleteFeedback = async (id: number) => {
-  return (await feedbackRepo.delete({ id })).affected ? success() : failed();
+  const product = await feedbackRepo.findOne({
+    where: {
+      id
+    },
+    relations:{
+      product: true
+    }
+  });
+  const rs = (await feedbackRepo.delete({ id })).affected ? success() : failed();
+  if(product) await syncRate(product.id);
+  return rs;
 };
 
 export const getFeedbackByProduct = async (product_id: number) => {
@@ -84,9 +97,9 @@ export const getFeedbackByProduct = async (product_id: number) => {
   const feedbacks = product.feedbacks;
   return feedbacks.length
     ? {
-        rate: (
+        rate: Math.ceil(
           feedbacks.reduce((acc, cur) => acc + cur.rate, 0) / feedbacks.length
-        ).toFixed(1),
+        ),
         data: feedbacks.map((e) => {
           return {
             ...e,
@@ -94,4 +107,16 @@ export const getFeedbackByProduct = async (product_id: number) => {
         }),
       }
     : BadRequestError("product has no feedback yet");
+};
+
+export const syncRate = async (product_id: number) => {
+  const feedbacks = await getFeedbackByProduct(product_id);
+  return (
+    await productRepo.update(
+      { id: product_id },
+      { rate: isError(feedbacks) ? "0" : `${Number(feedbacks.rate)}` }
+    )
+  ).affected
+    ? success()
+    : failed();
 };
