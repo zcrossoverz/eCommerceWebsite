@@ -5,7 +5,7 @@ interface ProductState {
 }
 
 const initialState: ProductState = {
-  rating: 4,
+  rating: 5,
 };
 
 const productSlice = createSlice({

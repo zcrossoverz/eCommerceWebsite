@@ -24,10 +24,7 @@ import Loading from '../loading';
 import { useTranslation } from 'react-i18next';
 import Comments from './comments';
 function ProductDetails() {
-  const rating = useSelector(
-    (state: RootState) => state.productReducer.rating,
-    (prev, next) => prev !== next
-  );
+  const rating = useSelector((state: RootState) => state.productReducer.rating);
   const { t } = useTranslation('productdetail');
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();

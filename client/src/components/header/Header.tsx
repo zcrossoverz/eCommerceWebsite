@@ -7,16 +7,14 @@ import { BiHelpCircle, BiLogIn, BiShoppingBag } from 'react-icons/bi';
 import { Link, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AppContext } from 'src/contexts/app.context';
-import { clearAccessToken, getAccessToken } from 'src/utils/auth';
-import jwtDecode from 'jwt-decode';
-import { UserInfo } from 'src/types/user.type';
+import { clearAccessToken } from 'src/utils/auth';
+import userApi from 'src/apis/user.api';
 import path from 'src/constants/path';
 import { RiUserSettingsLine } from 'react-icons/ri';
 import Cart from '../popover/CartPopover';
 import useClickOutSide from 'src/hooks/useClickOutSide';
 import { GrUserAdmin } from 'react-icons/gr';
-import { useDispatch } from 'react-redux';
-import { setUserInfor } from 'src/slices/user.slice';
+import { useDispatch, useSelector } from 'react-redux';
 import logo from 'src/assets/logo.svg';
 import Language from '../language/Language';
 import { useTranslation } from 'react-i18next';
@@ -25,6 +23,7 @@ import { IoMdNotificationsOutline } from 'react-icons/io';
 import { useQuery } from '@tanstack/react-query';
 import notiApi from 'src/apis/noti.api';
 import { ResNoti } from 'src/types/noti.type';
+import { RootState } from 'src/store';
 
 function Header() {
   const { t } = useTranslation();
@@ -32,19 +31,29 @@ function Header() {
   const { isAuth, setIsAuth } = useContext(AppContext);
   const [showMenuUser, setShowMenuUser] = useState<boolean>(false);
   const [showNotify, setShowNotify] = useState<boolean>(false);
-  const [userInfo, setUserInfo] = useState<UserInfo>();
+  const userInfo = useSelector((state: RootState) => state.userReducer.userInfo);
   const [searchProduct, setSearchProduct] = useState<string>('');
   const [scrolled, setScrolled] = useState<boolean>(false);
   const [noti, setNoti] = useState<ResNoti>();
-  useQuery({
+  const { data: user, refetch: refetchUser } = useQuery({
+    queryKey: ['user'],
+    queryFn: () => userApi.getUserByid(userInfo.id as number),
+    enabled: userInfo.id !== undefined,
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+  const { refetch } = useQuery({
     queryKey: ['noti'],
     queryFn: () => notiApi.getUnreadNoti(userInfo?.id || 0),
     onSuccess: (data) => {
       setNoti(data.data);
+      refetchUser();
     },
     retry: 1,
-    enabled: Boolean(userInfo?.id),
+    enabled: false,
+    refetchOnWindowFocus: false,
   });
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -59,29 +68,6 @@ function Header() {
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
-  const dispath = useDispatch();
-  useEffect(() => {
-    const token = getAccessToken();
-    if (token) {
-      const user = jwtDecode<{
-        firstName: string;
-        lastName: string;
-        user_id: number;
-        iat: string;
-        role: string;
-      }>(token);
-      const userFinal: UserInfo = {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role,
-        id: user.user_id,
-      };
-      setUserInfo(userFinal);
-      dispath(setUserInfor(userFinal));
-    } else {
-      setUserInfo(undefined);
-    }
-  }, [isAuth, dispath]);
 
   const { nodeRef } = useClickOutSide(() => {
     setShowMenuUser(false);
@@ -158,11 +144,14 @@ function Header() {
               <div className='relative' ref={notiRef}>
                 <button
                   className='flex h-10 w-10 items-center justify-center rounded-[50%] duration-300 focus:outline-none'
-                  onClick={() => setShowNotify(!showNotify)}
+                  onClick={() => {
+                    setShowNotify(!showNotify);
+                    refetch();
+                  }}
                 >
-                  {noti?.data && noti.data.length > 0 && (
+                  {user?.data && user.data.unread_message > 0 && (
                     <span className='absolute top-0 right-0.5 flex items-center justify-center rounded-md bg-white px-1 text-xs text-orange-600'>
-                      {noti.data.length}
+                      {user.data.unread_message}
                     </span>
                   )}
                   <IoMdNotificationsOutline className='text-2xl text-white' />
@@ -269,17 +258,16 @@ function Header() {
                       <li className='nav-item mt-2'>
                         {isAuth && (
                           // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
-                          <span
+                          <button
                             onClick={() => {
                               setIsAuth(false);
                               clearAccessToken();
-                              dispath(setUserInfor({ firstName: '', lastName: '', role: '', id: 0 }));
                             }}
                             className='flex items-center'
                           >
                             <BiLogIn className='mr-4 text-xl' />
                             <span>{t('header.logout')}</span>
-                          </span>
+                          </button>
                         )}
                         {!isAuth && (
                           <Link to='/login' className='flex items-center'>

@@ -6,6 +6,7 @@ enum modeEnum {
   'COMMENT',
 }
 function Comments({ rating }: Props) {
+  console.log(rating);
   return (
     <section className='bg-white/60 py-8 lg:py-16'>
       <div className='mx-auto max-w-2xl px-4'>

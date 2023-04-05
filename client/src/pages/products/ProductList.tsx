@@ -54,10 +54,13 @@ function ProductList() {
       }
     },
     retry: 0,
+    refetchOnWindowFocus: false,
   });
   const { data: brands } = useQuery({
     queryKey: ['brand'],
     queryFn: () => brandApi.getAllBrand(''),
+    refetchOnWindowFocus: false,
+    retry: 1,
   });
   return (
     <div className='mx-auto mb-4 max-w-7xl bg-slate-50 py-4 px-2 shadow-sm'>

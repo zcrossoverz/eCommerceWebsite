@@ -1,15 +1,23 @@
 import { MdStar, MdStarHalf, MdStarBorder } from 'react-icons/md';
+import { useDispatch } from 'react-redux';
+import { setRating } from 'src/slices/product.slice';
 interface Props {
   ratings: number;
   size?: string;
   mode?: string;
 }
-const handleChangeRating = (rate: number, mode?: string) => {
-  if (mode === 'COMMENT') {
-    console.log(rate);
-  }
-};
+
 function Star({ ratings, size, mode }: Props) {
+  const dispatch = useDispatch();
+  const handleChangeRating = (rate: number, mode?: string) => {
+    if (mode === 'COMMENT') {
+      dispatch(
+        setRating({
+          rating: rate,
+        })
+      );
+    }
+  };
   const rating = Array.from({ length: 5 }, (_, i) => {
     const nums = i + 0.5;
     return (
