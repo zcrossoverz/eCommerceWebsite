@@ -1,5 +1,12 @@
-import { useMutation } from '@tanstack/react-query';
+import {
+  type QueryObserverResult,
+  type RefetchOptions,
+  type RefetchQueryFilters,
+  useMutation,
+} from '@tanstack/react-query';
+import type { AxiosResponse } from 'axios';
 import { FormEvent, useEffect, useState } from 'react';
+import { toast } from 'react-toastify';
 import feedbackApi from 'src/apis/feedback.api';
 import Star from 'src/components/star';
 import { Feedback, ResGetFeedback } from 'src/types/product.type';
@@ -11,11 +18,14 @@ type Props = {
   userId?: number;
   feedbackOfProduct?: ResGetFeedback;
   numFeedback?: number;
+  refetchGetFeed: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<AxiosResponse<ResGetFeedback, any>, unknown>>;
 };
 enum modeEnum {
   'COMMENT',
 }
-function Comments({ rating, canRate, productId, userId, feedbackOfProduct, numFeedback }: Props) {
+function Comments({ rating, refetchGetFeed, canRate, productId, userId, feedbackOfProduct, numFeedback }: Props) {
   const [feedback, setFeedback] = useState<Feedback>({
     comment: '',
     product_id: 0,
@@ -29,6 +39,7 @@ function Comments({ rating, canRate, productId, userId, feedbackOfProduct, numFe
       product_id: Number(productId),
       user_id: Number(userId),
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productId, userId, rating]);
   const feedbackMutation = useMutation({
     mutationFn: (feedback: Feedback) => feedbackApi.createFeedback(feedback),
@@ -38,7 +49,12 @@ function Comments({ rating, canRate, productId, userId, feedbackOfProduct, numFe
     if (feedback) {
       feedbackMutation.mutate(feedback, {
         onSuccess: () => {
-          console.log('comment success');
+          refetchGetFeed();
+          toast.success('Bình luận đã được ghi nhận', { autoClose: 1000 });
+          setFeedback({
+            ...feedback,
+            comment: '',
+          });
         },
       });
     }
