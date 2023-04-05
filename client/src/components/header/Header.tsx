@@ -24,9 +24,11 @@ import { useQuery } from '@tanstack/react-query';
 import notiApi from 'src/apis/noti.api';
 import { ResNoti } from 'src/types/noti.type';
 import { RootState } from 'src/store';
+import { logoutCart } from 'src/slices/cart.slice';
 
 function Header() {
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isAuth, setIsAuth } = useContext(AppContext);
   const [showMenuUser, setShowMenuUser] = useState<boolean>(false);
@@ -84,6 +86,11 @@ function Header() {
       pathname: path.home,
       search: `?search=${searchProduct}`,
     });
+  };
+  const handleLogout = () => {
+    setIsAuth(false);
+    clearAccessToken();
+    dispatch(logoutCart([]));
   };
   return (
     <AnimatePresence>
@@ -260,8 +267,7 @@ function Header() {
                           // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
                           <button
                             onClick={() => {
-                              setIsAuth(false);
-                              clearAccessToken();
+                              handleLogout();
                             }}
                             className='flex items-center'
                           >

@@ -57,8 +57,11 @@ const cartSlice = createSlice({
       state.cartItem = action.payload;
       saveCartItemToLocal(state.cartItem);
     },
+    logoutCart: (state, action: PayloadAction<CartItemType[]>) => {
+      state.cartItem = action.payload;
+    },
   },
 });
-export const { addItemtoCart, updateCart, getCart, clearCart } = cartSlice.actions;
+export const { addItemtoCart, logoutCart, updateCart, getCart, clearCart } = cartSlice.actions;
 
 export default cartSlice.reducer;

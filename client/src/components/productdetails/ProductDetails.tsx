@@ -347,6 +347,7 @@ function ProductDetails() {
         <Comments
           feedbackOfProduct={feedback}
           productId={product?.data.id}
+          numFeedback={product?.data.feedback.length}
           userId={userId}
           rating={rating}
           canRate={canRate}

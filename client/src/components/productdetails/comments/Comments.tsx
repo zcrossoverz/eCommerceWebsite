@@ -10,11 +10,12 @@ type Props = {
   productId?: number;
   userId?: number;
   feedbackOfProduct?: ResGetFeedback;
+  numFeedback?: number;
 };
 enum modeEnum {
   'COMMENT',
 }
-function Comments({ rating, canRate, productId, userId, feedbackOfProduct }: Props) {
+function Comments({ rating, canRate, productId, userId, feedbackOfProduct, numFeedback }: Props) {
   const [feedback, setFeedback] = useState<Feedback>({
     comment: '',
     product_id: 0,
@@ -46,7 +47,7 @@ function Comments({ rating, canRate, productId, userId, feedbackOfProduct }: Pro
     <section className='bg-white/60 py-8 lg:py-16'>
       <div className='mx-auto max-w-2xl px-4'>
         <div className='mb-6 flex items-center justify-between'>
-          <h2 className='text-lg font-bold text-gray-900 lg:text-2xl'>Discussion (20)</h2>
+          <h2 className='text-lg font-bold text-gray-500 lg:text-2xl'>Đánh giá ({numFeedback ? numFeedback : 0})</h2>
         </div>
         {canRate && (
           <form className='mb-6' onSubmit={handleSubmit}>
@@ -75,7 +76,7 @@ function Comments({ rating, canRate, productId, userId, feedbackOfProduct }: Pro
               type='submit'
               className='mt-2 inline-flex items-center rounded-lg bg-orange-400 py-2.5 px-4 text-center text-xs font-medium text-white hover:bg-orange-600 focus:ring-4'
             >
-              Post comment
+              Bình luận
             </button>
           </form>
         )}
@@ -86,7 +87,9 @@ function Comments({ rating, canRate, productId, userId, feedbackOfProduct }: Pro
             <article key={comment.id} className='mb-6 border-t border-gray-200 bg-white p-6 text-base '>
               <footer className='mb-2 flex items-center justify-between'>
                 <div className='flex items-center'>
-                  <p className='mr-3 inline-flex items-center text-sm text-gray-900 '>Bonnie Green</p>
+                  <p className='mr-3 inline-flex items-center text-sm text-gray-900 '>
+                    {comment.user.firstName + ' ' + comment.user.lastName}
+                  </p>
                   <p className='text-sm text-gray-600 '>
                     <time dateTime={comment.create_at} title={comment.create_at}>
                       {convertDate(comment.create_at)}
@@ -134,7 +137,7 @@ function Comments({ rating, canRate, productId, userId, feedbackOfProduct }: Pro
                   </ul>
                 </div>
               </footer>
-              <p className='text-gray-500 '>{comment.comment}</p>
+              <p className='text-justify text-gray-500'>{comment.comment}</p>
               <div className='mt-4 flex items-center space-x-4'>
                 <button type='button' className='flex items-center text-sm text-gray-500 hover:underline '>
                   <svg
