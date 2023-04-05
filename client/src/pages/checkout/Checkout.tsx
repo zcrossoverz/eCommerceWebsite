@@ -10,6 +10,7 @@ import { HiLocationMarker } from 'react-icons/hi';
 import { HiOutlineHomeModern } from 'react-icons/hi2';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import couponApi from 'src/apis/coupon.api';
 import orderApi from 'src/apis/order.api';
 import path from 'src/constants/path';
 import OrderItem from 'src/pages/checkout/orderitem/OrderItems';
@@ -30,6 +31,13 @@ function Checkout() {
   const stateOrderItems = useRef(location.state as LocationState);
   // set user info
   const [userInfo, setUserInfo] = useState<User>();
+  const [code, setCode] = useState<{
+    content: string;
+    success: boolean;
+  }>({
+    content: '',
+    success: false,
+  });
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isActive, setIsActive] = useState<number>();
   const [paymentMethod, setPaymentMethod] = useState<{
@@ -75,6 +83,7 @@ function Checkout() {
       }
     },
     refetchOnWindowFocus: false,
+    retry: 1,
   });
   const selectMethodMutation = useMutation({
     mutationFn: (body: { id: number; method: string }) => orderApi.setPaymentMethod(body.method, body.id),
@@ -105,6 +114,15 @@ function Checkout() {
   });
   const updateStatusPaymentMutation = useMutation({
     mutationFn: (id: number) => orderApi.updateStatusPayment(id),
+    onError: (err) => {
+      if (isAxiosErr<{ message: string }>(err)) {
+        toast.error(err.response?.data.message, { autoClose: 2000 });
+        return;
+      }
+    },
+  });
+  const applyCodeMutation = useMutation({
+    mutationFn: (body: { code: string; orderId: number }) => couponApi.applyCoupon(body.code, body.orderId),
     onError: (err) => {
       if (isAxiosErr<{ message: string }>(err)) {
         toast.error(err.response?.data.message, { autoClose: 2000 });
@@ -162,6 +180,15 @@ function Checkout() {
       navigate('/');
     } else {
       return;
+    }
+  };
+  const handleApplyCode = (codeContent: string) => {
+    if (codeContent) {
+      // applyCodeMutation.mutate({
+      //   code:codeContent,
+      //   orderId: stateOrderItems.current.id,
+      // });
+      setCode({ ...code, success: true });
     }
   };
   const handleCheckoutOrder = (status?: string) => {
@@ -434,20 +461,41 @@ function Checkout() {
               </div>
               <div className='mt-4'>
                 <h3 className='bg-slate-300 p-2'>{t('checkout.discount code')}</h3>
-                <div className='mt-2 flex items-center p-1'>
-                  <input
-                    type='text'
-                    id='small-input'
-                    className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-xs'
-                  />
-                  <button
-                    type='button'
-                    // onClick={() => throttled.current()()}
-                    className='ml-2 whitespace-nowrap rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none'
-                  >
-                    {t('checkout.select code')}
-                  </button>{' '}
-                </div>
+                {code.success ? (
+                  <div className='mt-2 flex items-center p-1'>
+                    <input
+                      type='text'
+                      id='small-input'
+                      value={code.content}
+                      readOnly
+                      className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-xs'
+                    />
+                    <button
+                      type='button'
+                      onClick={() => handleApplyCode(code.content)}
+                      className='ml-2 whitespace-nowrap rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none'
+                    >
+                      Bỏ áp dụng
+                    </button>
+                  </div>
+                ) : (
+                  <div className='mt-2 flex items-center p-1'>
+                    <input
+                      type='text'
+                      id='small-input'
+                      value={code.content}
+                      onChange={(e) => setCode({ ...code, content: e.target.value })}
+                      className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-xs'
+                    />
+                    <button
+                      type='button'
+                      onClick={() => handleApplyCode(code.content)}
+                      className='ml-2 whitespace-nowrap rounded-lg border border-gray-300 bg-white px-5 py-2.5 text-sm font-medium text-gray-900 hover:bg-gray-100 focus:outline-none'
+                    >
+                      {t('checkout.select code')}
+                    </button>
+                  </div>
+                )}
               </div>
               <div className='mt-2'>
                 <h3 className='bg-slate-300 p-2'>{t('checkout.information order')}</h3>

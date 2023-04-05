@@ -60,7 +60,7 @@ function ProductList() {
     queryFn: () => brandApi.getAllBrand(''),
   });
   return (
-    <div className='mx-auto max-w-7xl py-4 px-2'>
+    <div className='mx-auto mb-4 max-w-7xl bg-slate-50 py-4 px-2 shadow-sm'>
       <HelmetSale title='Trang chủ'></HelmetSale>
       <div className='grid grid-cols-12 gap-4'>
         <div className='hidden md:col-span-3 md:block'>
