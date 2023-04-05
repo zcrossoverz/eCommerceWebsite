@@ -13,6 +13,7 @@ import { failed, success } from "../utils/response";
 import { decreaseStock, increaseStock } from "./inventory.service";
 import { addNewNoti } from "./notification.service";
 import { markAsPaid } from "./payment.service";
+import { addRemindFeedback } from "./workqueue.service";
 
 interface data_order {
   product_option_id: number;
@@ -439,6 +440,9 @@ export const updateStatusOrder = async (
           await markAsPaid(order.payment);
         await addTimeline(order, EnumTimelineStatus.ORDER_DELIVERED);
         await addNewNoti(EnumTypeNotify.COMPLETED, order.id, order.user.id);
+        await Promise.all(order.orderItems.map(async e => {
+          return await addRemindFeedback(e.product_option.product, order.user);
+        }));
         return (
           await orderRepo.update(
             { id: order.id },
