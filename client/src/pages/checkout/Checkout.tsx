@@ -204,11 +204,6 @@ function Checkout() {
             setCode({ ...code, success: true });
             refetch();
           },
-          onError: (err) => {
-            if (isAxiosErr<{ error: string }>(err)) {
-              toast.error(err.response?.data.error, { autoClose: 2000 });
-            }
-          },
         }
       );
     }
