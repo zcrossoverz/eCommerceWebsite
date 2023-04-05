@@ -1,3 +1,5 @@
+import { User } from './user.type';
+
 export interface Product {
   id: number;
   name: string;
@@ -49,3 +51,32 @@ export interface ProductListConfig {
   rate?: string;
   search?: string;
 }
+export type Feedback = {
+  product_id: number;
+  user_id: number;
+  rate: number;
+  comment: string;
+};
+export type ResFeedback = {
+  rate: number;
+  comment: string;
+  product: {
+    id: 1;
+    name: string;
+    createAt: string;
+    updateAt: string;
+    rate: string;
+  };
+  user: User;
+  id: number;
+  create_at: string;
+};
+export type ResGetFeedback = {
+  rate: number;
+  data: {
+    id: number;
+    rate: number;
+    comment: string;
+    create_at: string;
+  }[];
+};

@@ -87,7 +87,7 @@ function Login() {
                 <input
                   type='email'
                   {...register('email')}
-                  className={classNames('peer/email ml-2 w-full flex-1 bg-transparent outline-none', {
+                  className={classNames('peer/email ml-2 w-full flex-1 bg-transparent text-gray-500 outline-none', {
                     'text-red-700 placeholder-red-500': errors.email?.message,
                   })}
                   placeholder='email'

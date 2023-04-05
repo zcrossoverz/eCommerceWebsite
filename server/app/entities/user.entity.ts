@@ -9,6 +9,7 @@ import { Order } from "./order.entity";
 import { Address } from "./address.entity";
 import { Notification } from "./notification.entity";
 import { Feedback } from "./feedback.entity";
+import { WorkQueue } from "./workQueue.entity";
 
 export enum UserRole {
   ADMIN = "admin",
@@ -95,4 +96,9 @@ export class User {
   )
   feedbacks!: Feedback[];
 
+  @OneToMany(
+    () => WorkQueue,
+    workqueue => workqueue.user
+  )
+  workqueue!: WorkQueue[];
 }

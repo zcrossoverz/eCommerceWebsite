@@ -9,6 +9,7 @@ import { Warehouse } from "../entities/warehouse.entity";
 import { BadRequestError } from "../utils/error";
 import { failed, success } from "../utils/response";
 import { ProductOptionInterface } from "./productOption.service";
+import { EnumWorkQueueType, WorkQueue } from "../entities/workQueue.entity";
 
 interface ProductInterface {
   name: string;
@@ -32,7 +33,6 @@ export const getAll = async (
   filter: FilterProduct | null = null,
   search: string | undefined = undefined
 ) => {
-  
   const offset = (page - 1) * limit;
   const [result, count] = await productRepository.findAndCount({
     relations: {
@@ -46,7 +46,11 @@ export const getAll = async (
     take: limit,
     skip: offset,
     where: {
-      name: (search !== undefined && search !== "" && search !== null) ? ILike(`%${search}%`) : undefined,
+      rate: filter?.rate ? `${filter.rate}` : undefined,
+      name:
+        search !== undefined && search !== "" && search !== null
+          ? ILike(`%${search}%`)
+          : undefined,
       brand: {
         id: filter?.brand_id ? filter.brand_id : undefined,
       },
@@ -67,78 +71,34 @@ export const getAll = async (
   const prev_page = page - 1 < 1 ? null : page - 1;
   const next_page = page + 1 > last_page ? null : page + 1;
   return result.length
-    ? filter?.rate
-      ? {
-          current_page: page,
-          prev_page,
-          next_page,
-          last_page,
-          data_per_page: limit,
-          total: count,
-          ...(search !== undefined && search !== "" && search !== null && {search_query:search}),
-          rate_filter: filter?.rate,
-          data: result
-            .filter(
-              (e) =>
-                (e.feedbacks.length
-                  ? (
-                      e.feedbacks.reduce((acc, cur) => acc + cur.rate, 0) /
-                      e.feedbacks.length
-                    ).toFixed(1)
-                  : 0) === filter?.rate
-            )
-            .map((e) => {
+    ? {
+        current_page: page,
+        prev_page,
+        next_page,
+        last_page,
+        data_per_page: limit,
+        total: count,
+        ...(search !== undefined &&
+          search !== "" &&
+          search !== null && { search_query: search }),
+        rate_filter: filter?.rate,
+        data: result.map((e) => {
+          return {
+            id: e.id,
+            name: e.name,
+            description: e.description,
+            images: e.images.find((e) => e.type === EnumTypeImage.thumbnail),
+            brand: e.brand.name,
+            rate: e.rate,
+            product_options: e.productOptions.map((el) => {
               return {
-                id: e.id,
-                name: e.name,
-                description: e.description,
-                images: e.images.find(e => e.type === EnumTypeImage.thumbnail),
-                brand: e.brand.name,
-                rate: e.feedbacks.length
-                  ? (
-                      e.feedbacks.reduce((acc, cur) => acc + cur.rate, 0) /
-                      e.feedbacks.length
-                    ).toFixed(1)
-                  : 0,
-                product_options: e.productOptions.map((el) => {
-                  return {
-                    product_option_id: el.id,
-                    price: el.price.price,
-                  };
-                }),
+                product_option_id: el.id,
+                price: el.price.price,
               };
             }),
-        }
-      : {
-          current_page: page,
-          prev_page,
-          next_page,
-          last_page,
-          data_per_page: limit,
-          ...(search !== undefined && search !== "" && search !== null && {search_query:search}),
-          total: count,
-          data: result.map((e) => {
-            return {
-              id: e.id,
-              name: e.name,
-              description: e.description,
-              images: e.images.find(e => e.type === EnumTypeImage.thumbnail),
-              brand: e.brand.name,
-              rate: e.feedbacks.length
-                ? (
-                    e.feedbacks.reduce((acc, cur) => acc + cur.rate, 0) /
-                    e.feedbacks.length
-                  ).toFixed(1)
-                : 0,
-              product_options: e.productOptions.map((el) => {
-                return {
-                  product_option_id: el.id,
-                  price: el.price.price,
-                };
-              }),
-            };
-          }),
-        }
+          };
+        }),
+      }
     : BadRequestError("product not found!");
 };
 
@@ -185,11 +145,13 @@ export const create = async (
       type: EnumTypeImage.thumbnail,
     });
     const newImage = await imageRepo.save(tempImage);
-    const image_opt = await imageRepo.save(imageRepo.create({
-      image_url: image_path,
-      product: newProduct,
-      type: EnumTypeImage.options
-    }));
+    const image_opt = await imageRepo.save(
+      imageRepo.create({
+        image_url: image_path,
+        product: newProduct,
+        type: EnumTypeImage.options,
+      })
+    );
     const opt =
       color && ram && rom
         ? productOptionRepository.create({
@@ -199,7 +161,7 @@ export const create = async (
             product: newProduct,
             price: newPrice,
             warehouse: newWarehouse,
-            image: image_opt
+            image: image_opt,
           })
         : productOptionRepository.create({
             color: "black",
@@ -208,7 +170,7 @@ export const create = async (
             product: newProduct,
             price: newPrice,
             warehouse: newWarehouse,
-            image: image_opt
+            image: image_opt,
           });
 
     const newOtp = await productOptionRepository.save(opt);
@@ -234,7 +196,7 @@ export const getOneById = async (id: number) => {
       productOptions: {
         price: true,
         warehouse: true,
-        image: true
+        image: true,
       },
       feedbacks: true,
     },
@@ -248,12 +210,7 @@ export const getOneById = async (id: number) => {
         updateAt: product.updateAt,
         brand: product.brand.name,
         brand_description: product.brand.description,
-        rate: product.feedbacks.length
-          ? (
-              product.feedbacks.reduce((acc, cur) => acc + cur.rate, 0) /
-              product.feedbacks.length
-            ).toFixed(1)
-          : 0,
+        rate: product.rate,
         feedback: product.feedbacks.map((e) => {
           return {
             ...e,
@@ -264,7 +221,7 @@ export const getOneById = async (id: number) => {
           const { id, ...rest } = e;
           return { ...rest };
         }),
-        images: product.images.filter(e => e.type === EnumTypeImage.desc),
+        images: product.images.filter((e) => e.type === EnumTypeImage.desc),
         product_options: product.productOptions.map((e) => {
           return {
             product_option_id: e.id,
@@ -273,7 +230,7 @@ export const getOneById = async (id: number) => {
             rom: e.rom,
             price: e.price.price,
             quantity: e.warehouse.quantity,
-            image: e.image
+            image: e.image,
           };
         }),
       }
@@ -310,4 +267,25 @@ export const addImages = async (product_id: number, image: string[]) => {
       );
     })
   );
+};
+
+export const canRate = async (product_id: number, user_id: number) => {
+  const workRepo = AppDataSource.getRepository(WorkQueue);
+  const data = await workRepo.findOneBy({
+    product: {
+      id: product_id,
+    },
+    user: {
+      id: user_id,
+    },
+  });
+
+  return data && data.type === EnumWorkQueueType.RATE
+    ? {
+        can_rate: true,
+        is_done: data.is_done,
+      }
+    : {
+        can_rate: false,
+      };
 };

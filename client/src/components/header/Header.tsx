@@ -150,7 +150,7 @@ function Header() {
                   }}
                 >
                   {user?.data && user.data.unread_message > 0 && (
-                    <span className='absolute top-0 right-0.5 flex items-center justify-center rounded-md bg-white px-1 text-xs text-orange-600'>
+                    <span className='absolute top-0 right-0.5 flex items-center justify-center rounded-md bg-white px-1.5 text-xs text-orange-600'>
                       {user.data.unread_message}
                     </span>
                   )}

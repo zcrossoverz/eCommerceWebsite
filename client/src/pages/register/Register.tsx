@@ -83,7 +83,7 @@ function Register() {
                 <input
                   type='email'
                   {...register('email')}
-                  className='peer/email ml-2 w-full flex-1 bg-transparent outline-none'
+                  className='peer/email ml-2 w-full flex-1 bg-transparent text-gray-500 outline-none'
                   placeholder='email'
                 />
                 <AiOutlineMail className='peer-focus/email:text-form' />
@@ -120,7 +120,7 @@ function Register() {
                   type={showPass ? 'text' : 'password'}
                   {...register('password')}
                   placeholder={t('register.password') || 'password'}
-                  className='peer/password ml-2 w-full bg-transparent outline-none'
+                  className='peer/password ml-2 w-full bg-transparent text-gray-500 outline-none'
                 />
                 <AiOutlineLock className='text-xl peer-focus/password:text-form' />
                 <div className='absolute -bottom-5 -left-0 -mt-4 text-left text-xs text-err'>
@@ -156,9 +156,12 @@ function Register() {
                   type={showPass ? 'text' : 'password'}
                   {...register('confirmPassword')}
                   placeholder={t('register.confirm password') || 'confirm password'}
-                  className={classNames('peer/confirmPassword ml-2 w-full flex-1 bg-transparent outline-none', {
-                    'text-red-700 placeholder-red-500': errors.confirmPassword?.message,
-                  })}
+                  className={classNames(
+                    'peer/confirmPassword ml-2 w-full flex-1 bg-transparent text-gray-500 outline-none',
+                    {
+                      'text-red-700 placeholder-red-500': errors.confirmPassword?.message,
+                    }
+                  )}
                 />
                 <AiOutlineLock className='text-lg peer-focus/confirmPassword:text-form' />
                 <div className='absolute -bottom-5 -left-0 -mt-4 text-left text-xs text-err'>
@@ -180,7 +183,7 @@ function Register() {
                   type='text'
                   {...register('firstName')}
                   placeholder={t('register.first name') || 'first name'}
-                  className='ml-2 w-full bg-transparent outline-none'
+                  className='ml-2 w-full bg-transparent text-gray-500 outline-none'
                 />
                 <div className='absolute -bottom-5 -left-0 -mt-4 text-left text-xs text-err'>
                   {errors.firstName && errors.firstName.message && <span>{errors.firstName.message}</span>}
@@ -199,7 +202,7 @@ function Register() {
                   type='text'
                   {...register('lastName')}
                   placeholder={t('register.last name') || 'last name'}
-                  className='ml-2 w-full bg-transparent outline-none'
+                  className='ml-2 w-full bg-transparent text-gray-500 outline-none'
                 />
                 <div className='absolute -bottom-5 -left-0 -mt-4 text-left text-xs text-err'>
                   {errors.lastName && errors.lastName.message && <span>{errors.lastName.message}</span>}

@@ -106,3 +106,15 @@ export const addImages = async (
   );
   return isError(rs) ? next(err(rs, res)) : res.json(rs);
 };
+
+
+export const canRate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if(!req.user) return next(err(BadRequestError("error"), res));
+  const { product_id } = req.params;
+  const rs = await productServices.canRate(Number(product_id), req.user.user_id);
+  return isError(rs) ? next(err(rs, res)) : res.json(rs);
+};

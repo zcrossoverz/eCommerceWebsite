@@ -64,4 +64,9 @@ export class Product {
     )
     feedbacks!: Feedback[];
 
+    @Column({
+        default: '0'
+    })
+    rate!: string;
+
 }

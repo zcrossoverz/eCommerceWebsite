@@ -15,6 +15,13 @@ const productsApi = {
     await timeout(500);
     return http.get<Product>(`${URL}/${id}`);
   },
+  async canRate(id: number) {
+    await timeout(500);
+    return http.get<{
+      done: boolean;
+      can_rate: boolean;
+    }>(`${URL}/can_rate/${id}`);
+  },
 };
 
 export default productsApi;

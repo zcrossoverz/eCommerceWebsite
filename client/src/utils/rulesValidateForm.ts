@@ -69,13 +69,13 @@ export const schema = yup.object({
   password: yup
     .string()
     .required('password bắt buộc nhập')
-    .min(6, 'password có it nhất 6 ký tự')
+    .min(5, 'password có it nhất 5 ký tự')
     .max(18, 'password có tối đa 18 ký tự'),
 
   confirmPassword: yup
     .string()
     .required('bắt buộc nhập lại password')
-    .min(6, 'password có it nhất 6 ký tự')
+    .min(5, 'password có it nhất 5 ký tự')
     .max(18, 'password có tối đa 18 ký tự')
     .oneOf([yup.ref('password')], 'password không khớp'),
   firstName: yup
