@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AppDataSource } from "../database";
+import { EnumTypeCoupon } from "../entities/coupon.entity";
 import { EnumTypeNotify } from "../entities/notification.entity";
 import { EnumStatusOrder, Order } from "../entities/order.entity";
 import { OrderItem } from "../entities/orderItem.entity";
@@ -198,6 +199,8 @@ export const getOneOrder = async (order_id: number) => {
     }),
     payment: {
       method: EnumPaymentMethod[method],
+      previous_amount: rs.coupon && (rs.coupon.type === EnumTypeCoupon.PERCENT ? (Number(rs.payment.amount)/(100-Number(rs.coupon.value))*100) : (Number(rs.payment.amount)+Number(rs.coupon.value))),
+      discount: rs.coupon && `${rs.coupon.type === EnumTypeCoupon.PERCENT ? Number(rs.payment.amount)/(100-Number(rs.coupon.value))*100 - Number(rs.payment.amount) : rs.coupon.value}`,
       ...payment,
     },
     timeline: rs.timeline.sort((a, b) => a.id - b.id),
