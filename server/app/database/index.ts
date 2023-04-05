@@ -21,6 +21,7 @@ import { InventoryInboundNote } from "../entities/inventoryInboundNote.entity";
 import { InventoryTransaction } from "../entities/inventoryTransaction.entity";
 import { Address } from "../entities/address.entity";
 import { Notification } from "../entities/notification.entity";
+import { WorkQueue } from "../entities/workQueue.entity";
 
 export const AppDataSource = new DataSource({
   type: "mysql",
@@ -54,7 +55,8 @@ export const AppDataSource = new DataSource({
     InventoryInboundNote,
     InventoryTransaction,
     Address,
-    Notification
+    Notification,
+    WorkQueue
   ],
   migrations: [],
   subscribers: [],

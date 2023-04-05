@@ -13,9 +13,9 @@ export const createFeedback =  async (req: Request, res: Response, next: NextFun
 }
 
 export const updateFeedback = async (req: Request, res: Response, next: NextFunction) => {
-    const { feedback_id } = req.params;
+    const { product_id } = req.params;
     const { rate, comment } = req.body;
-    const rs = await feedbackServices.updateFeedback(Number(feedback_id), { rate, comment });
+    const rs = await feedbackServices.updateFeedback(Number(product_id), Number(req.user?.user_id), { rate, comment });
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
 }
 
