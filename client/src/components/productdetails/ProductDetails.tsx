@@ -22,12 +22,23 @@ import HelmetSale from '../Helmet';
 import { nanoid } from '@reduxjs/toolkit';
 import Loading from '../loading';
 import { useTranslation } from 'react-i18next';
+import Comments from './comments';
+import feedbackApi from 'src/apis/feedback.api';
+import { ResGetFeedback } from 'src/types/product.type';
 function ProductDetails() {
+  const rating = useSelector((state: RootState) => state.productReducer.rating);
+  const userId = useSelector((state: RootState) => state.userReducer.userInfo.id);
   const { t } = useTranslation('productdetail');
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [canRate, setCanRate] = useState<boolean>(false);
+  const [feedback, setFeedback] = useState<ResGetFeedback>();
+  const [loadMore, setLoadmore] = useState<boolean>(false);
+  const [optionSelected, setOptionSelected] = useState<OptionProduct>();
+  const [quantity, setQuantity] = useState<number | string>('');
   const { data: product, isLoading } = useQuery({
     queryKey: [
       'product',
@@ -59,16 +70,33 @@ function ProductDetails() {
     },
     retry: 0,
   });
-  const [loadMore, setLoadmore] = useState<boolean>(false);
-  const [optionSelected, setOptionSelected] = useState<OptionProduct>();
-  const [quantity, setQuantity] = useState<number | string>('');
+  useQuery({
+    queryKey: ['canRate', product?.data.id],
+    queryFn: () => productsApi.canRate(Number(product?.data.id)),
+    enabled: Boolean(product?.data.id),
+    onSuccess: (data) => {
+      setCanRate(data.data.can_rate);
+    },
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+  useQuery({
+    queryKey: ['getFeedback', product?.data.id],
+    queryFn: () => feedbackApi.getFeedback(Number(product?.data.id)),
+    enabled: Boolean(product?.data.id),
+    onSuccess: (data) => {
+      setFeedback(data.data);
+    },
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
   const decreaseQuantity = () => {
-    if (quantity && quantity >= 2) {
+    if (Number(quantity) && Number(quantity) >= 2) {
       setQuantity(Number(quantity) - 1);
     }
   };
   const increaseQuantity = () => {
-    if (quantity <= Number(optionSelected?.quantity)) {
+    if (Number(quantity) <= Number(optionSelected?.quantity)) {
       setQuantity((prev) => {
         return Number(prev) + 1;
       });
@@ -312,16 +340,18 @@ function ProductDetails() {
           </div>
         )}
       </div>
-      {/* desc */}
-      {!isLoading && (
-        <div className='mx-auto mt-4 p-4 shadow-md lg:w-[80%]'>
-          <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>Chi tiết cấu hình của sản phẩm</h3>
-          <p className='mx-auto w-[96%] break-words px-4 py-2'></p>
-        </div>
-      )}
+
       {/* Reviews */}
-      <div className='mx-auto mt-4 p-4 shadow-md lg:w-[80%]'>
-        <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>{t('productdetail.product reviews')}</h3>
+      <div className='mx-auto mt-4 shadow-md lg:w-[80%]'>
+        {/* <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>{t('productdetail.product reviews')}</h3> */}
+        <Comments
+          feedbackOfProduct={feedback}
+          productId={product?.data.id}
+          numFeedback={product?.data.feedback.length}
+          userId={userId}
+          rating={rating}
+          canRate={canRate}
+        />
       </div>
     </>
   );

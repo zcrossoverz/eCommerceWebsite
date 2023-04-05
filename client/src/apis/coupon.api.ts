@@ -1,23 +1,24 @@
+import { Coupon } from 'src/types/coupon';
 import http from 'src/utils/http';
 
-const timeout = (ms: number) => {
-  return new Promise((s) => setTimeout(s, ms));
-};
-
-const baseURL = '/coupon';
 const couponApi = {
-  async getAllCoupon() {
-    await timeout(300);
-    return http.get(`${baseURL}/get_all`);
+  getAllCoupon() {
+    return http.get<Coupon[]>('/coupon/get_all');
   },
-  async createBrand(name: string, description: string) {
-    return http.post(baseURL, { name, description });
+  applyCoupon(code: string, orderId: number) {
+    return http.post<{
+      message: string;
+    }>('/coupon/apply', {
+      code,
+      order_id: orderId,
+    });
   },
-  async delete(id: number) {
-    return http.delete(`${baseURL}/${id}`);
-  },
-  async update(id: number, name: string, desc: string) {
-    return http.put(`${baseURL}/${id}`, { name, description: desc });
+  clearCoupon(orderId: number) {
+    return http.post<{
+      message: string;
+    }>('/coupon/clear', {
+      order_id: orderId,
+    });
   },
 };
 export default couponApi;

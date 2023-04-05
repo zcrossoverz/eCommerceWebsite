@@ -54,19 +54,22 @@ function ProductList() {
       }
     },
     retry: 0,
+    refetchOnWindowFocus: false,
   });
   const { data: brands } = useQuery({
     queryKey: ['brand'],
     queryFn: () => brandApi.getAllBrand(''),
+    refetchOnWindowFocus: false,
+    retry: 1,
   });
   return (
-    <div className='mx-auto max-w-7xl py-4 px-2'>
+    <div className='mx-auto mb-4 max-w-7xl bg-slate-50 py-4 px-2 shadow-sm'>
       <HelmetSale title='Trang chủ'></HelmetSale>
       <div className='grid grid-cols-12 gap-4'>
         <div className='hidden md:col-span-3 md:block'>
           <AsignFillter brands={brands?.data || []} queryConfig={queryParams} />
         </div>
-        <div className='col-span-12 min-h-[41rem] md:col-span-9'>
+        <div className='col-span-12  md:col-span-9'>
           {/* <div>
             <SortProduct />
           </div> */}

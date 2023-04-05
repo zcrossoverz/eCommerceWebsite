@@ -56,6 +56,7 @@ function MyOrder() {
         return;
       }
     },
+    retry: 1,
   });
   const handleCheckout = (id: number) => {
     navigate(path.checkout, {
@@ -184,7 +185,7 @@ function MyOrder() {
                   {order.address}
                 </span>
                 <span className='whitespace-nowrap text-sm font-semibold text-orange-500 lg:text-base'>
-                  {order.timeline[0].content}
+                  {order.timeline[order.timeline.length - 1].content}
                 </span>
               </div>
             </div>

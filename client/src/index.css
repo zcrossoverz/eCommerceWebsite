@@ -27,3 +27,18 @@
     @apply absolute top-[50%] hidden -translate-x-0 translate-y-[-50%] cursor-pointer rounded-full bg-black/20 p-2 text-2xl text-white group-hover:block;
   }
 }
+.slick-initialized .slick-slide {
+  padding: 0 10px;
+}
+.slick-slider .slick-prev {
+  left: 0px;
+  z-index: 10;
+}
+.slick-slider .slick-next {
+  right: 0px;
+  z-index: 10;
+}
+.slick-prev::before,
+.slick-next::before {
+  color: #27aa9a;
+}
