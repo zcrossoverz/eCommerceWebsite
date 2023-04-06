@@ -4,6 +4,7 @@ import productsApi from 'src/apis/product.api';
 import Pagination from 'src/components/paginate';
 import useQueryParams from 'src/hooks/useQueryParams';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export default function ManageProduct() {
   const [search, setSearch] = useState('');
@@ -32,6 +33,7 @@ export default function ManageProduct() {
     () => productsApi.getProductsList(search.length || query.page ? params : { limit: '9' }),
     { retry: false }
   );
+  const navigate = useNavigate();
 
   return (
     <div className='mt-4'>
@@ -60,7 +62,9 @@ export default function ManageProduct() {
           </select>
         </div>
         <div className='col-span-1 col-end-7'>
-          <button className='rounded-xl bg-blue-900 py-3 px-8 text-gray-400 hover:bg-blue-600 hover:text-white hover:shadow-primary hover:shadow-lg'>
+          <button className='rounded-xl bg-blue-900 py-3 px-8 text-gray-400 hover:bg-blue-600 hover:text-white hover:shadow-primary hover:shadow-lg'
+          onClick={() => navigate('./form')}
+          >
             CREATE
           </button>
         </div>
