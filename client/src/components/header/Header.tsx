@@ -20,13 +20,14 @@ import Language from '../language/Language';
 import { useTranslation } from 'react-i18next';
 import { MdLanguage } from 'react-icons/md';
 import { IoMdNotificationsOutline } from 'react-icons/io';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import notiApi from 'src/apis/noti.api';
 import { ResNoti } from 'src/types/noti.type';
 import { RootState } from 'src/store';
 import { logoutCart } from 'src/slices/cart.slice';
 
 function Header() {
+  const queryClient = useQueryClient();
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -40,7 +41,7 @@ function Header() {
   const { data: user, refetch: refetchUser } = useQuery({
     queryKey: ['user'],
     queryFn: () => userApi.getUserByid(userInfo.id as number),
-    enabled: userInfo.id !== undefined,
+    enabled: isAuth,
     retry: 1,
     refetchOnWindowFocus: false,
   });
@@ -91,6 +92,7 @@ function Header() {
     setIsAuth(false);
     clearAccessToken();
     dispatch(logoutCart([]));
+    queryClient.removeQueries();
   };
   return (
     <AnimatePresence>
