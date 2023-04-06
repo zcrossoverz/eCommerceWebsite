@@ -4,6 +4,8 @@ import productsApi from 'src/apis/product.api';
 import Pagination from 'src/components/paginate';
 import useQueryParams from 'src/hooks/useQueryParams';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 export default function ManageProduct() {
   const [search, setSearch] = useState('');
@@ -27,11 +29,12 @@ export default function ManageProduct() {
     });
   }, [query.page]);
 
-  const { data, isLoading } = useQuery(
+  const { data, isLoading, refetch } = useQuery(
     ['products', params],
     () => productsApi.getProductsList(search.length || query.page ? params : { limit: '9' }),
     { retry: false }
   );
+  const navigate = useNavigate();
 
   return (
     <div className='mt-4'>
@@ -60,7 +63,10 @@ export default function ManageProduct() {
           </select>
         </div>
         <div className='col-span-1 col-end-7'>
-          <button className='rounded-xl bg-blue-900 py-3 px-8 text-gray-400 hover:bg-blue-600 hover:text-white hover:shadow-primary hover:shadow-lg'>
+          <button
+            className='rounded-xl bg-blue-900 py-3 px-8 text-gray-400 hover:bg-blue-600 hover:text-white hover:shadow-primary hover:shadow-lg'
+            onClick={() => navigate('./form')}
+          >
             CREATE
           </button>
         </div>
@@ -123,7 +129,16 @@ export default function ManageProduct() {
                                 <div className='text-green-500 hover:text-green-700'>Edit</div>
                               </td>
                               <td className='whitespace-nowrap px-6 py-4 text-right text-sm font-medium'>
-                                <div className='text-red-500 hover:text-red-700'>Delete</div>
+                                <button
+                                  onClick={async () => {
+                                    await productsApi.deleteProduct(e.id);
+                                    toast.success('delete success!');
+                                    refetch();
+                                  }}
+                                  className='text-red-500 hover:text-red-700'
+                                >
+                                  Delete
+                                </button>
                               </td>
                             </tr>
                           );
