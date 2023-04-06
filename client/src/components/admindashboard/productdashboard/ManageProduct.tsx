@@ -75,7 +75,7 @@ export default function ManageProduct() {
         <div className='mt-4 flex flex-col'>
           <div className='overflow-x-auto'>
             <div className='inline-block w-full align-middle'>
-              <div className='overflow-hidden rounded-xl border h-full'>
+              <div className='h-full overflow-hidden rounded-xl border'>
                 {isLoading && (
                   <div className='grid h-80 place-items-center'>
                     <svg
