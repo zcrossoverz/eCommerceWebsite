@@ -25,6 +25,7 @@ import notiApi from 'src/apis/noti.api';
 import { ResNoti } from 'src/types/noti.type';
 import { RootState } from 'src/store';
 import { logoutCart } from 'src/slices/cart.slice';
+import { reset } from 'src/slices/user.slice';
 
 function Header() {
   const queryClient = useQueryClient();
@@ -92,6 +93,7 @@ function Header() {
     setIsAuth(false);
     clearAccessToken();
     dispatch(logoutCart([]));
+    dispatch(reset());
     queryClient.removeQueries();
   };
   return (

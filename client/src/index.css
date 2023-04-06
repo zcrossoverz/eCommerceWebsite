@@ -32,11 +32,11 @@
 }
 .slick-slider .slick-prev {
   left: 0px;
-  z-index: 10;
+  z-index: 1;
 }
 .slick-slider .slick-next {
   right: 0px;
-  z-index: 10;
+  z-index: 1;
 }
 .slick-prev::before,
 .slick-next::before {

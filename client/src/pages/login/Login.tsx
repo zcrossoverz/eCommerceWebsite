@@ -14,6 +14,7 @@ import { isAxiosErr } from 'src/utils/error';
 import { useDispatch } from 'react-redux';
 import { getCart } from 'src/slices/cart.slice';
 import { useTranslation } from 'react-i18next';
+import { reset } from 'src/slices/user.slice';
 type FormDataLogin = LoginSchema;
 function Login() {
   const { t } = useTranslation('login');
@@ -34,6 +35,7 @@ function Login() {
   const onSubmit = handleSubmit((data) => {
     loginMutation.mutate(data, {
       onSuccess: (data) => {
+        dispatch(reset());
         if (data.data.token && data.data.message) {
           setIsAuth(true);
           if (location.state) {

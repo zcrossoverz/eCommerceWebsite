@@ -11,6 +11,7 @@ function Star({ ratings, size, mode }: Props) {
   const dispatch = useDispatch();
   const handleChangeRating = (rate: number, mode?: string) => {
     if (mode === 'COMMENT') {
+      console.log(rate);
       dispatch(
         setRating({
           rating: rate,

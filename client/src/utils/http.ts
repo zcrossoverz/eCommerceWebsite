@@ -9,8 +9,13 @@ class Http {
     this.instance = axios.create({
       baseURL: 'http://localhost:3000/api',
       timeout: 10000,
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${this.token}` },
+      headers: { 'Content-Type': 'application/json' },
     });
+    this.instance.interceptors.request.use((config) => {
+      config.headers['Authorization'] = 'bearer ' + this.token;
+      return config;
+    });
+
     this.instance.interceptors.response.use(
       (res) => {
         if (res.config.url === '/auth') {

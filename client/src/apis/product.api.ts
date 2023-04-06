@@ -21,7 +21,7 @@ const productsApi = {
     return http.get<{
       is_done: boolean;
       can_rate: boolean;
-    }>(`${URL}/can_rate/${id}`);
+    }>(`${URL}can_rate/${id}`);
   },
   async createProduct(data: any) {
     return await http.post('/product', data, {
