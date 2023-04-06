@@ -30,6 +30,9 @@ const productsApi = {
       },
     });
   },
+  async deleteProduct(product_id: number) {
+    return http.delete(`/product/${product_id}`);
+  },
 };
 
 export default productsApi;
