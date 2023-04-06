@@ -3,21 +3,39 @@ import BreadCrumb from '../breadcrumb';
 import { useQuery } from '@tanstack/react-query';
 import brandApi from 'src/apis/brand.api';
 import { useEffect, useState } from 'react';
+import productsApi from 'src/apis/product.api';
+import { toast } from 'react-toastify';
 
 export default function ProductForm() {
   const navigate = useNavigate();
   const brand = useQuery(['get_all_brands'], () => brandApi.getAllBrand(''));
   const [name, setName] = useState('');
-  const [brandId, setBrandId] = useState(-1);
+  const [brand_id, setBrandId] = useState(-1);
   const [image, setImage] = useState<File>();
-  const [desc, setDesc] = useState('');
+  const [description, setDesc] = useState('');
   const [ram, setRam] = useState('');
   const [rom, setRom] = useState('');
   const [color, setColor] = useState('');
   const [price, setPrice] = useState('');
 
-  const save = () => {
-    console.log(name, brandId, image, desc, ram, rom, color, price);
+  const createProduct = async () => {
+    if (!image) {
+      toast.error('please select image for product');
+      return;
+    }
+    const data = new FormData();
+    data.append('name', name);
+    data.append('brand_id', `${brand_id}`);
+    data.append('description', description);
+    data.append('ram', ram);
+    data.append('rom', rom);
+    data.append('color', color);
+    data.append('price', price);
+    data.append('image', image);
+    const response = await productsApi.createProduct(data);
+  
+    if (response.status === 200) toast.success('create new product success');
+    else toast.error(`an error occured when create product: ${response.statusText}`);
   };
 
   return (
@@ -120,7 +138,7 @@ export default function ProductForm() {
                 <div className='flex justify-start pt-4 pb-2'>
                   <button
                     className='mr-2 mb-2 rounded-lg bg-green-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 dark:bg-green-600'
-                    onClick={save}
+                    onClick={createProduct}
                   >
                     SAVE
                   </button>

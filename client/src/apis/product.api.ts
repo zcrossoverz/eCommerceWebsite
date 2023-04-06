@@ -1,9 +1,10 @@
-import { Product, ProductListConfig, ProductsList } from 'src/types/product.type';
+import { Product, ProductData, ProductListConfig, ProductsList } from 'src/types/product.type';
 import http from 'src/utils/http';
 const URL = '/product/';
 const timeout = (ms: number) => {
   return new Promise((s) => setTimeout(s, ms));
 };
+
 const productsApi = {
   async getProductsList(params: ProductListConfig) {
     await timeout(500);
@@ -21,6 +22,13 @@ const productsApi = {
       is_done: boolean;
       can_rate: boolean;
     }>(`${URL}/can_rate/${id}`);
+  },
+  async createProduct(data: any) {
+    return await http.post('/product', data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
   },
 };
 
