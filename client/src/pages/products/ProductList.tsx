@@ -65,14 +65,11 @@ function ProductList() {
   return (
     <div className='mx-auto mb-4 max-w-7xl bg-slate-50 py-4 px-2 shadow-sm'>
       <HelmetSale title='Trang chủ'></HelmetSale>
-      <div className='grid grid-cols-12 gap-4'>
+      <div className='grid grid-cols-12 gap-4 overflow-hidden'>
         <div className='hidden md:col-span-3 md:block'>
           <AsignFillter brands={brands?.data || []} queryConfig={queryParams} />
         </div>
-        <div className='col-span-12  md:col-span-9'>
-          {/* <div>
-            <SortProduct />
-          </div> */}
+        <div className='relative col-span-12 md:col-span-9'>
           {isLoading && (
             <div className='flex h-full w-full justify-center pt-[10rem]'>
               <Loading />
@@ -89,7 +86,9 @@ function ProductList() {
                 );
               })}
           </div>
-          <Pagination queryConfig={queryParams} pageSize={products?.data.last_page || 1} />
+          <div className='flex flex-col justify-end'>
+            <Pagination queryConfig={queryParams} pageSize={products?.data.last_page || 1} />
+          </div>
         </div>
       </div>
     </div>

@@ -27,7 +27,8 @@ import feedbackApi from 'src/apis/feedback.api';
 import { ResGetFeedback } from 'src/types/product.type';
 function ProductDetails() {
   const rating = useSelector((state: RootState) => state.productReducer.rating);
-  const userId = useSelector((state: RootState) => state.userReducer.userInfo.id);
+  const userInfo = useSelector((state: RootState) => state.userReducer.userInfo);
+
   const { t } = useTranslation('productdetail');
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();
@@ -57,9 +58,7 @@ function ProductDetails() {
       },
     ],
     queryFn: () => productsApi.getProductDetail(id as string),
-    // onSuccess: (data) => {
-    //   // console.log(data);
-    // },
+
     onError: (err) => {
       if (
         isAxiosErr<{
@@ -83,7 +82,7 @@ function ProductDetails() {
   const { refetch: refetchCanRate } = useQuery({
     queryKey: ['canRate', product?.data.id],
     queryFn: () => productsApi.canRate(Number(product?.data.id)),
-    enabled: Boolean(product?.data.id),
+    enabled: Boolean(product?.data.id && userInfo.id),
     onSuccess: (data) => {
       setCanRate({ success: data.data.can_rate, isRated: data.data.is_done });
     },
@@ -123,7 +122,6 @@ function ProductDetails() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quantity]);
 
-  const userInfo = useSelector((state: RootState) => state.userReducer.userInfo);
   const handleAddToCart = () => {
     if (!userInfo.role) {
       toast.warning(t('productdetail.please login'));
@@ -358,7 +356,7 @@ function ProductDetails() {
           feedbackOfProduct={feedback}
           productId={product?.data.id}
           numFeedback={product?.data.feedback.length}
-          userId={userId}
+          userId={userInfo.id || 0}
           rating={rating}
           canRate={canRate}
           refetchGetFeed={refetchGetFeed}
