@@ -8,5 +8,14 @@ const feedbackApi = {
   getFeedback(productId: number) {
     return http.get<ResGetFeedback>(`/feedback/get_by_product/${productId}`);
   },
+  updateFeedback(
+    productId: number,
+    feedback: {
+      rate: number;
+      comment: string;
+    }
+  ) {
+    return http.put<{ message: string }>(`/feedback/update/${productId}`, feedback);
+  },
 };
 export default feedbackApi;

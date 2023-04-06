@@ -34,12 +34,22 @@ function ProductDetails() {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const [canRate, setCanRate] = useState<boolean>(false);
+  const [canRate, setCanRate] = useState<{
+    success: boolean;
+    isRated: boolean;
+  }>({
+    success: false,
+    isRated: false,
+  });
   const [feedback, setFeedback] = useState<ResGetFeedback>();
   const [loadMore, setLoadmore] = useState<boolean>(false);
   const [optionSelected, setOptionSelected] = useState<OptionProduct>();
   const [quantity, setQuantity] = useState<number | string>('');
-  const { data: product, isLoading } = useQuery({
+  const {
+    data: product,
+    isLoading,
+    refetch: refetchUser,
+  } = useQuery({
     queryKey: [
       'product',
       {
@@ -70,12 +80,12 @@ function ProductDetails() {
     },
     retry: 0,
   });
-  useQuery({
+  const { refetch: refetchCanRate } = useQuery({
     queryKey: ['canRate', product?.data.id],
     queryFn: () => productsApi.canRate(Number(product?.data.id)),
     enabled: Boolean(product?.data.id),
     onSuccess: (data) => {
-      setCanRate(data.data.can_rate);
+      setCanRate({ success: data.data.can_rate, isRated: data.data.is_done });
     },
     retry: 1,
     refetchOnWindowFocus: false,
@@ -352,6 +362,8 @@ function ProductDetails() {
           rating={rating}
           canRate={canRate}
           refetchGetFeed={refetchGetFeed}
+          refetchUser={refetchUser}
+          refetchCanRate={refetchCanRate}
         />
       </div>
     </>

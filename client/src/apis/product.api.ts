@@ -18,7 +18,7 @@ const productsApi = {
   async canRate(id: number) {
     await timeout(500);
     return http.get<{
-      done: boolean;
+      is_done: boolean;
       can_rate: boolean;
     }>(`${URL}/can_rate/${id}`);
   },
