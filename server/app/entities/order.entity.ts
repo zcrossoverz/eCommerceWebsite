@@ -12,6 +12,7 @@ export enum EnumStatusOrder {
     COMPLETED, // the order has been successfully completed, customer received their product - don hang giao thanh cong, khach hang nhan duoc san pham
     CANCELLED, // cancelled by customer or seller - don hang bi huy
     RETURNED, // customer has returned or exchange - khach hang huy don hoac doi hang
+    RETURNED_COMPLETED 
 }
 
 @Entity("orders")

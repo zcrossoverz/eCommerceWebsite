@@ -8,7 +8,9 @@ export enum EnumTypeNotify {
     USER_FEEDBACK,
     SHIPPED,
     COMPLETED,
-    CANCELLED
+    CANCELLED,
+    RETURNED,
+    RETURNED_COMPLETED
 }
 
 
