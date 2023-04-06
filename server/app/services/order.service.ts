@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AppDataSource } from "../database";
 import { EnumTypeCoupon } from "../entities/coupon.entity";
@@ -12,7 +13,7 @@ import { BadRequestError } from "../utils/error";
 import { failed, success } from "../utils/response";
 import { decreaseStock, increaseStock } from "./inventory.service";
 import { addNewNoti } from "./notification.service";
-import { markAsPaid } from "./payment.service";
+import { markAsPaid, markAsRefund } from "./payment.service";
 import { addRemindFeedback } from "./workqueue.service";
 
 interface data_order {
@@ -32,6 +33,8 @@ enum EnumTimelineStatus {
   ORDER_SHIPPED = "Đã bàn giao cho đơn vị vận chuyển.",
   ORDER_DELIVERED = "Giao hàng thành công",
   ORDER_CANCELLED = "Đơn hàng đã hủy",
+  ORDER_RETURNED = "Đang xử lý yêu cầu trả hàng",
+  ORDER_RETURNED_COMPLETED = "Trả hàng thành công"
 }
 
 export interface error_info {
@@ -473,14 +476,38 @@ export const updateStatusOrder = async (
       return BadRequestError("error when update status");
     }
     case String(EnumStatusOrder.RETURNED): {
-      return (
-        await orderRepo.update(
-          { id: order.id },
-          { status: Number(EnumStatusOrder[status]) }
-        )
-      ).affected
-        ? success()
-        : failed();
+      if (order.status === EnumStatusOrder.COMPLETED) {
+        await addTimeline(order, EnumTimelineStatus.ORDER_RETURNED);
+        await addNewNoti(EnumTypeNotify.RETURNED, order.id, order.user.id);
+        return (
+          await orderRepo.update(
+            { id: order.id },
+            { status: Number(EnumStatusOrder[status]) }
+          )
+        ).affected
+          ? success()
+          : failed();
+      }
+      return BadRequestError("error when update status");
+    }
+    case String(EnumStatusOrder.RETURNED_COMPLETED): {
+      if (order.status === EnumStatusOrder.RETURNED) {
+        await addTimeline(order, EnumTimelineStatus.ORDER_RETURNED_COMPLETED);
+        await addNewNoti(EnumTypeNotify.RETURNED_COMPLETED, order.id, order.user.id);
+        order.orderItems.map(async (e) => {
+          await increaseStock(e.product_option.id, e.quantity);
+        });
+        await markAsRefund(order.payment);
+        return (
+          await orderRepo.update(
+            { id: order.id },
+            { status: Number(EnumStatusOrder[status]) }
+          )
+        ).affected
+          ? success()
+          : failed();
+      }
+      return BadRequestError("error when update status");
     }
   }
   return;
