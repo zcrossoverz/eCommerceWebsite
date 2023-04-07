@@ -57,6 +57,17 @@ export const markAsPaid = async (payment: Payment) => {
     : failed;
 };
 
+export const markAsRefund = async (payment: Payment) => {
+  return (
+    await paymentRepo.update(
+      { id: payment.id },
+      { is_paid: false, method: EnumPaymentMethod.RETURNED }
+    )
+  ).affected
+    ? success()
+    : failed();
+};
+
 // paypal method
 const { PAYPAL_CLIENT_ID, PAYPAL_APP_SECRET } = process.env;
 const environment = process.env.ENVIRONMENT || "sandbox";
@@ -66,8 +77,6 @@ paypal.configure({
   client_id: `${PAYPAL_CLIENT_ID}`,
   client_secret: `${PAYPAL_APP_SECRET}`,
 });
-
-
 
 export const generatePaypalAccessToken = async () => {
   const auth = Buffer.from(`${PAYPAL_CLIENT_ID}:${PAYPAL_APP_SECRET}`).toString(

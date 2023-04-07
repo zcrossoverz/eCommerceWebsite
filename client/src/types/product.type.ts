@@ -87,3 +87,14 @@ export type ResGetFeedback = {
     user: User;
   }[];
 };
+
+export type ProductData = {
+  name: string;
+  image?: File;
+  description: string;
+  ram: string;
+  rom: string;
+  price: string;
+  brand_id: number;
+  color: string;
+};

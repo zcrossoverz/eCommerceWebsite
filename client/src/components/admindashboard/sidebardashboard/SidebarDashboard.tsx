@@ -105,7 +105,7 @@ function SidebarDashboard() {
           ]}
           active={location.includes('/product') || location.includes('/brand') || location.includes('/coupon')}
         />
-        <ButtonNav name={'Orders'} Icon={FaMoneyCheckAlt} link='/order' active={location === '/order'} />
+        <ButtonNav name={'Orders'} Icon={FaMoneyCheckAlt} link='/order' active={location.includes('/order')} />
         <ButtonNav name={'Inventory'} Icon={AiFillSetting} link='/inventory' active={location === '/inventory'} />
         <ButtonNav name={'Reports'} Icon={AiFillSetting} link='/report' active={location === '/report'} />
         <ButtonNav name={'Users'} Icon={AiFillSetting} link='/user' active={location === '/user'} />

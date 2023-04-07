@@ -1,165 +1,160 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useQuery } from '@tanstack/react-query';
 import BreadCrumb from '../breadcrumb';
-import { JSXElementConstructor, Key, ReactElement, ReactFragment, ReactPortal, useState } from 'react';
-import brandApi from 'src/apis/brand.api';
-import { useDispatch, useSelector } from 'react-redux';
-import { popup, selectCurrentModal } from 'src/slices/modal.slice';
-import { toast } from 'react-toastify';
+import { Key, useEffect, useState } from 'react';
 import orderApi from 'src/apis/order.api';
-
-const BrandModal = ({
-  refetch,
-  nameDefault,
-  descriptionDefault,
-  type,
-  id,
-}: {
-  refetch: any;
-  nameDefault: string;
-  descriptionDefault: string;
-  type: string;
-  id?: number;
-}) => {
-  const dispatch = useDispatch();
-  const [name, setName] = useState(nameDefault);
-  const [description, setDescription] = useState(descriptionDefault);
-  return (
-    <div className='z-100 fixed inset-0 top-1/2 left-1/2 -translate-x-1/3 -translate-y-3/4'>
-      <div className='relative h-full w-full max-w-2xl md:h-auto'>
-        <div className='relative rounded-lg bg-white shadow-xl'>
-          <div className='flex items-start justify-between rounded-t border-b p-4'>
-            <h3 className='text-xl font-semibold text-gray-900'>
-              {type === 'create' ? 'Create New Brand' : 'Edit Brand'}
-            </h3>
-            <button
-              className='ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900'
-              onClick={() => dispatch(popup(''))}
-            >
-              <svg
-                aria-hidden='true'
-                className='h-5 w-5'
-                fill='currentColor'
-                viewBox='0 0 20 20'
-                xmlns='http://www.w3.org/2000/svg'
-              >
-                <path d='M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z'></path>
-              </svg>
-              <span className='sr-only'>Close modal</span>
-            </button>
-          </div>
-
-          <div className='space-y-6 p-6'>
-            <p className='text-base leading-relaxed text-gray-500'>
-              <p>Name: </p>
-              <input
-                className='w-full rounded-xl border border-gray-400 px-2 py-2'
-                defaultValue={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </p>
-            <p className='text-base leading-relaxed text-gray-500'>
-              <p>Description:</p>
-              <textarea
-                className='w-full rounded-xl border border-gray-400 px-2 py-6'
-                defaultValue={description}
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </p>
-          </div>
-
-          <div className='flex items-center space-x-2 rounded-b border-t border-gray-200 p-6'>
-            <button
-              className='rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 '
-              onClick={async () => {
-                if (type === 'create') {
-                  const rs = await brandApi.createBrand(name, description);
-                  if (rs.status === 200) toast.success('create brand success!');
-                  else toast.error('create brand failed!');
-                }
-                if (type === 'edit') {
-                  const rs = await brandApi.update(Number(id), name, description);
-                  if (rs.status === 200) toast.success('edit brand success!');
-                  else toast.error('create brand failed!');
-                }
-                refetch();
-                dispatch(popup(''));
-              }}
-            >
-              Confirm
-            </button>
-            <button
-              className='rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300'
-              onClick={() => dispatch(popup(''))}
-            >
-              Cancel
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+import Pagination from 'src/components/paginate';
+import useQueryParams from 'src/hooks/useQueryParams';
 
 export default function OrderDashboard() {
+  const query = useQueryParams();
+  const [orderBy, setOrderBy] = useState('newest');
+  const [filterStatus, setFilterStatus] = useState(-1);
+  const [filterMethodPayment, setMethodPayment] = useState(-1);
+  const [filterPaymentIsPaid, setPaymentIsPaid] = useState(-1);
   const [params, setParams] = useState({
-    limit: '10',
     page: '1',
-    search: '',
+    limit: '9',
+    order: '',
+    status: -1,
+    method: -1,
+    paid: -1,
   });
+  useEffect(() => {
+    setParams({
+      ...params,
+      page: query.page !== undefined ? `${query.page}` : '1',
+    });
+  }, [query.page]);
+  useEffect(() => {
+    setParams({
+      ...params,
+      order: orderBy,
+    });
+  }, [orderBy]);
+  useEffect(() => {
+    setParams({
+      ...params,
+      status: filterStatus,
+    });
+  }, [filterStatus]);
 
-  const currentModal = useSelector(selectCurrentModal);
-  const dispatch = useDispatch();
+  useEffect(() => {
+    setParams({
+      ...params,
+      method: filterMethodPayment,
+    });
+  }, [filterMethodPayment]);
 
-  const { data, isLoading, refetch } = useQuery(['get_all_orders'], () => orderApi.getAllOrders());
-  console.log(data);
+  useEffect(() => {
+    setParams({
+      ...params,
+      paid: filterPaymentIsPaid,
+    });
+  }, [filterPaymentIsPaid]);
+
+  console.log(params);
+
+  const { data, isLoading, refetch } = useQuery(['get_all_orders', params], () => orderApi.getAll(params), {
+    retry: false,
+  });
 
   return (
     <div className='mt-4'>
       <BreadCrumb path={['Product', 'Order Dashboard']} />
-      <div className='mt-4 grid grid-cols-6'>
+      <div className='mt-4 grid grid-cols-6 gap-4'>
         <div className='col-span-2 mr-4'>
           <input
             className='w-full appearance-none rounded-lg border-2 border-gray-50 bg-gray-50 py-3 px-4 leading-tight text-gray-700 focus:border-purple-500 focus:bg-white focus:shadow-md focus:shadow-purple-300 focus:outline-none'
             id='inline-full-name'
             type='text'
             placeholder='search'
-            onChange={(e) =>
-              setParams({
-                ...params,
-                search: e.target.value,
-              })
-            }
           />
         </div>
         <div className='col-span-1'>
-          <select className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-500 focus:shadow-lg focus:shadow-blue-300 focus:ring-blue-500'>
-            <option className='mt-1' value='default'>
-              Sort by
+          <select
+            className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-500 focus:shadow-lg focus:shadow-blue-300 focus:ring-blue-500'
+            onChange={(e) => setOrderBy(e.target.value)}
+          >
+            <option className='mt-1' value='newest' defaultChecked={true}>
+              Newest
             </option>
-            <option className='mt-1' value='sale'>
-              sale
+            <option className='mt-1' value='oldest'>
+              Oldest
             </option>
-            <option className='mt-1' value='stock'>
-              stock
+          </select>
+        </div>
+        <div className='col-span-1'>
+          <select
+            className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-500 focus:shadow-lg focus:shadow-blue-300 focus:ring-blue-500'
+            onChange={(e) => setFilterStatus(Number(e.target.value))}
+          >
+            <option className='mt-1' value='-1'>
+              All Status
+            </option>
+            <option className='mt-1' value='0'>
+              Status: PENDING
+            </option>
+            <option className='mt-1' value='1'>
+              Status: PROCESSING
+            </option>
+            <option className='mt-1' value='2'>
+              Status: SHIPPED
+            </option>
+            <option className='mt-1' value='3'>
+              Status: COMPLETED
+            </option>
+            <option className='mt-1' value='4'>
+              Status: CANCELLED
+            </option>
+            <option className='mt-1' value='5'>
+              Status: RETURNED
+            </option>
+            <option className='mt-1' value='6'>
+              Status: RETURN_COMPLETED
+            </option>
+          </select>
+        </div>
+        <div className='col-span-1'>
+          <select
+            className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-500 focus:shadow-lg focus:shadow-blue-300 focus:ring-blue-500'
+            onChange={(e) => setMethodPayment(Number(e.target.value))}
+          >
+            <option className='mt-1' value='-1'>
+              All Payment
+            </option>
+            <option className='mt-1' value='3'>
+              Method: NOT_SET
+            </option>
+            <option className='mt-1' value='1'>
+              Method: CASH_ON_DELIVERY
+            </option>
+            <option className='mt-1' value='2'>
+              Method: PAYPAL
+            </option>
+            <option className='mt-1' value='4'>
+              Method: RETURNED
+            </option>
+          </select>
+        </div>
+        <div className='col-span-1'>
+          <select
+            className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-500 focus:shadow-lg focus:shadow-blue-300 focus:ring-blue-500'
+            onChange={(e) => setPaymentIsPaid(Number(e.target.value))}
+          >
+            <option className='mt-1' value='-1'>
+              All
+            </option>
+            <option className='mt-1' value='1'>
+              Paid: YES
+            </option>
+            <option className='mt-1' value='0'>
+              Paid: NO
             </option>
           </select>
         </div>
       </div>
       <div>
-        {currentModal.open &&
-          ((currentModal.name === 'create' && (
-            <BrandModal refetch={() => refetch()} nameDefault='' descriptionDefault='' type='create' />
-          )) ||
-            (currentModal.name === 'edit' && (
-              <BrandModal
-                refetch={() => refetch()}
-                nameDefault={currentModal.nameDefault}
-                descriptionDefault={currentModal.descriptionDefault}
-                type='edit'
-                id={currentModal.id}
-              />
-            )))}
         <div className='mt-4 flex flex-col'>
           <div className='overflow-x-auto'>
             <div className='inline-block w-full align-middle'>
@@ -184,69 +179,86 @@ export default function OrderDashboard() {
                     </svg>
                   </div>
                 )}
-
                 {data?.data && data.data.data.length > 0 && (
-                  <table className='min-w-full divide-y divide-gray-200 bg-white'>
-                    <thead className='bg-pink-400/20'>
-                      <tr>
-                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          ID
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          STATUS
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          CUSTOMER
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          METHOD
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          AMOUNT
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          PAID
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          TIME
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-center text-xs font-bold uppercase text-gray-500 '>
-                          Action
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className='divide-y divide-gray-200'>
-                      {data?.data.data.map((e, i: { toString: () => Key | null | undefined }) => {
-                        return (
-                          <tr key={i.toString()}>
-                            <td className='whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800'>
-                              {e.order_id}
-                            </td>
-                            <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.status}</td>
-                            <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{`${e.user.firstName} ${e.user.lastName}`}</td>
-                            <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.payment.method}</td>
-                            <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.payment.amount}</td>
-                            <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>
-                              {e.payment.is_paid ? 'YES' : 'NO'}
-                            </td>
-                            <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.create_at}</td>
-                            <td className='whitespace-nowrap px-6 py-4 text-center text-sm font-medium'>
-                              <button
-                                className='text-red-500 hover:text-red-700'
-                                // onClick={async () => {
-                                //   await brandApi.delete(e.id);
-                                //   toast.success('delete success!');
-                                //   refetch();
-                                // }}
-                              >
-                                Delete
-                              </button>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+                  <div>
+                    <table className='min-w-full divide-y divide-gray-200 bg-white'>
+                      <thead className='bg-pink-400/20'>
+                        <tr>
+                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                            ID
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                            STATUS
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                            CUSTOMER
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                            METHOD
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                            AMOUNT
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                            PAID
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                            TIME
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-center text-xs font-bold uppercase text-gray-500 '>
+                            Action
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className='divide-y divide-gray-200'>
+                        {data?.data.data.map((e, i: { toString: () => Key | null | undefined }) => {
+                          const date = new Date(e.create_at);
+                          const hours = date.getUTCHours();
+                          const minutes = date.getUTCMinutes();
+                          const seconds = date.getUTCSeconds();
+                          const day = date.getUTCDate();
+                          const month = date.getUTCMonth() + 1;
+                          const year = date.getUTCFullYear();
+
+                          return (
+                            <tr key={i.toString()}>
+                              <td className='whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800'>
+                                {e.order_id}
+                              </td>
+                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.status}</td>
+                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{`${e.user.firstName} ${e.user.lastName}`}</td>
+                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.payment.method}</td>
+                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.payment.amount}</td>
+                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>
+                                {e.payment.is_paid ? 'YES' : 'NO'}
+                              </td>
+                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{`${('0' + day).slice(
+                                -2
+                              )}/${('0' + month).slice(-2)}/${year} ${hours}:${minutes}:${seconds}`}</td>
+                              <td className='whitespace-nowrap px-6 py-4 text-center text-sm font-medium'>
+                                <button
+                                  className='text-red-500 hover:text-red-700'
+                                  // onClick={async () => {
+                                  //   await brandApi.delete(e.id);
+                                  //   toast.success('delete success!');
+                                  //   refetch();
+                                  // }}
+                                >
+                                  Delete
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                    <div className='flex justify-end'>
+                      <Pagination
+                        pageSize={Math.ceil(data.data.total / data.data.data_per_page)}
+                        queryConfig={{ limit: '9', path: '/admin/order/' }}
+                      />
+                    </div>
+                  </div>
                 )}
               </div>
             </div>

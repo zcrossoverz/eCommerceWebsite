@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AppDataSource } from "../database";
 import { EnumTypeCoupon } from "../entities/coupon.entity";
@@ -12,7 +13,7 @@ import { BadRequestError } from "../utils/error";
 import { failed, success } from "../utils/response";
 import { decreaseStock, increaseStock } from "./inventory.service";
 import { addNewNoti } from "./notification.service";
-import { markAsPaid } from "./payment.service";
+import { markAsPaid, markAsRefund } from "./payment.service";
 import { addRemindFeedback } from "./workqueue.service";
 
 interface data_order {
@@ -32,6 +33,8 @@ enum EnumTimelineStatus {
   ORDER_SHIPPED = "Đã bàn giao cho đơn vị vận chuyển.",
   ORDER_DELIVERED = "Giao hàng thành công",
   ORDER_CANCELLED = "Đơn hàng đã hủy",
+  ORDER_RETURNED = "Đang xử lý yêu cầu trả hàng",
+  ORDER_RETURNED_COMPLETED = "Trả hàng thành công",
 }
 
 export interface error_info {
@@ -200,17 +203,38 @@ export const getOneOrder = async (order_id: number) => {
     }),
     payment: {
       method: EnumPaymentMethod[method],
-      previous_amount: rs.coupon && (rs.coupon.type === EnumTypeCoupon.PERCENT ? (Number(rs.payment.amount)/(100-Number(rs.coupon.value))*100) : (Number(rs.payment.amount)+Number(rs.coupon.value))),
-      discount: rs.coupon && `${rs.coupon.type === EnumTypeCoupon.PERCENT ? Number(rs.payment.amount)/(100-Number(rs.coupon.value))*100 - Number(rs.payment.amount) : rs.coupon.value}`,
+      previous_amount:
+        rs.coupon &&
+        (rs.coupon.type === EnumTypeCoupon.PERCENT
+          ? (Number(rs.payment.amount) / (100 - Number(rs.coupon.value))) * 100
+          : Number(rs.payment.amount) + Number(rs.coupon.value)),
+      discount:
+        rs.coupon &&
+        `${
+          rs.coupon.type === EnumTypeCoupon.PERCENT
+            ? (Number(rs.payment.amount) / (100 - Number(rs.coupon.value))) *
+                100 -
+              Number(rs.payment.amount)
+            : rs.coupon.value
+        }`,
       ...payment,
     },
     timeline: rs.timeline.sort((a, b) => a.id - b.id),
   };
 };
 
-export const getAllOrder = async (limit: number, page: number) => {
+export const getAllOrder = async (
+  limit: number,
+  page: number,
+  order = "newest",
+  status = -1,
+  method = -1,
+  paid = -1
+) => {
   const orderRepo = AppDataSource.getRepository(Order);
   const offset = (page - 1) * limit;
+  const orderById = order === "oldest" ? "ASC" : "DESC";
+
   const [rs, count] = await orderRepo.findAndCount({
     relations: {
       user: true,
@@ -225,6 +249,17 @@ export const getAllOrder = async (limit: number, page: number) => {
     },
     take: limit,
     skip: offset,
+    order: {
+      id: orderById,
+    },
+    where: {
+      status: status !== -1 ? status + 1 : undefined,
+
+      payment: {
+        method: method !== -1 ? method : undefined,
+        is_paid: paid !== -1 ? (paid === 0 ? false : true) : undefined,
+      },
+    },
   });
 
   const last_page = Math.ceil(count / limit);
@@ -440,9 +475,14 @@ export const updateStatusOrder = async (
           await markAsPaid(order.payment);
         await addTimeline(order, EnumTimelineStatus.ORDER_DELIVERED);
         await addNewNoti(EnumTypeNotify.COMPLETED, order.id, order.user.id);
-        await Promise.all(order.orderItems.map(async e => {
-          return await addRemindFeedback(e.product_option.product, order.user);
-        }));
+        await Promise.all(
+          order.orderItems.map(async (e) => {
+            return await addRemindFeedback(
+              e.product_option.product,
+              order.user
+            );
+          })
+        );
         return (
           await orderRepo.update(
             { id: order.id },
@@ -473,14 +513,42 @@ export const updateStatusOrder = async (
       return BadRequestError("error when update status");
     }
     case String(EnumStatusOrder.RETURNED): {
-      return (
-        await orderRepo.update(
-          { id: order.id },
-          { status: Number(EnumStatusOrder[status]) }
-        )
-      ).affected
-        ? success()
-        : failed();
+      if (order.status === EnumStatusOrder.COMPLETED) {
+        await addTimeline(order, EnumTimelineStatus.ORDER_RETURNED);
+        await addNewNoti(EnumTypeNotify.RETURNED, order.id, order.user.id);
+        return (
+          await orderRepo.update(
+            { id: order.id },
+            { status: Number(EnumStatusOrder[status]) }
+          )
+        ).affected
+          ? success()
+          : failed();
+      }
+      return BadRequestError("error when update status");
+    }
+    case String(EnumStatusOrder.RETURNED_COMPLETED): {
+      if (order.status === EnumStatusOrder.RETURNED) {
+        await addTimeline(order, EnumTimelineStatus.ORDER_RETURNED_COMPLETED);
+        await addNewNoti(
+          EnumTypeNotify.RETURNED_COMPLETED,
+          order.id,
+          order.user.id
+        );
+        order.orderItems.map(async (e) => {
+          await increaseStock(e.product_option.id, e.quantity);
+        });
+        await markAsRefund(order.payment);
+        return (
+          await orderRepo.update(
+            { id: order.id },
+            { status: Number(EnumStatusOrder[status]) }
+          )
+        ).affected
+          ? success()
+          : failed();
+      }
+      return BadRequestError("error when update status");
     }
   }
   return;

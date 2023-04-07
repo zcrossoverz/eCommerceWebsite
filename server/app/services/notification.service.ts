@@ -28,6 +28,14 @@ const generateContent = async (type: EnumTypeNotify, id: number) => {
       const order = await orderRepo.findOneBy({ id });
       return `Chúng tôi đã hủy đơn hàng #${order?.id} của bạn.`;
     }
+    case EnumTypeNotify.RETURNED: {
+      const order = await orderRepo.findOneBy({ id });
+      return `Chúng tôi đã tiếp nhận yêu cầu trả hàng cho đơn hàng #${order?.id} của bạn. Yêu cầu sẽ được xử lý trong thời gian sớm nhất.`;
+    }
+    case EnumTypeNotify.RETURNED_COMPLETED: {
+      const order = await orderRepo.findOneBy({ id });
+      return `Đơn hàng #${order?.id} của bạn đã được trả hàng thành công.`;
+    }
   }
   return;
 };
