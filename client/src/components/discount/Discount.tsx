@@ -56,7 +56,7 @@ function Discount() {
     };
   }, []);
   return (
-    <div className='mx-auto mb-2 max-w-7xl border-t bg-white pb-4 shadow-sm'>
+    <div className='mx-auto mb-2 max-w-7xl overflow-hidden border-t bg-white pb-4 shadow-sm'>
       <div className='mb-2 flex items-center justify-center'>
         <FcFlashOn className='text-6xl' />
         <h2 className='text-3xl font-semibold uppercase text-yellow-400'>Săn mã giảm giá</h2>

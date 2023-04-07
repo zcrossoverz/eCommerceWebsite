@@ -66,6 +66,9 @@ function MyOrder() {
       },
     });
   };
+  const handleReturnProduct = (orderId: number) => {
+    console.log(1);
+  };
   return (
     <div className='mx-auto max-w-7xl p-2'>
       <div className='mx-auto my-2 max-w-7xl'>
@@ -242,18 +245,29 @@ function MyOrder() {
                   <FaMoneyCheckAlt className='mr-1 hidden text-2xl text-orange-400 lg:inline-block' />
                   <span className='text-base font-semibold text-black'>
                     <b className='mr-2 hidden font-semibold lg:inline-block'>{t('myorder.into money')}:</b>
-                    <i className='text-base text-orange-500 md:text-xl'>{formatPrice(order.payment.amount)}</i>
+                    <i className='text-base text-orange-500 md:text-xl'>{formatPrice(Number(order.payment.amount))}</i>
                   </span>
                 </div>
-                {order.status === 'PENDING' && (
-                  <button
-                    type='button'
-                    onClick={() => handleCheckout(order.order_id)}
-                    className='ml-2 mt-2 inline-flex justify-center whitespace-nowrap rounded-md border border-blue-500 px-2 py-1 text-sm font-medium text-blue-400 duration-200 hover:scale-105 hover:border-orange-500 hover:text-orange-400 md:py-2 md:px-4'
-                  >
-                    {t('myorder.payment')}
-                  </button>
-                )}
+                <div className='ml-2 mt-2 flex'>
+                  {order.status === 'PENDING' && (
+                    <button
+                      type='button'
+                      onClick={() => handleCheckout(order.order_id)}
+                      className=' inline-flex justify-center whitespace-nowrap rounded-md border border-blue-500 px-2 py-1 text-sm font-medium text-blue-400 duration-200 hover:scale-105 hover:border-orange-500 hover:text-orange-400 md:py-2 md:px-4'
+                    >
+                      {t('myorder.payment')}
+                    </button>
+                  )}
+                  {order.status === 'COMPLETED' && (
+                    <button
+                      type='button'
+                      onClick={() => handleReturnProduct(order.order_id)}
+                      className=' inline-flex justify-center whitespace-nowrap rounded-md border border-blue-500 px-2 py-1 text-sm font-medium text-blue-400 duration-200 hover:scale-105 hover:border-orange-500 hover:text-orange-400 md:py-2 md:px-4'
+                    >
+                      Hoàn trả hàng
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>
