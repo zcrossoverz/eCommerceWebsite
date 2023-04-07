@@ -63,11 +63,13 @@ export default function OrderDashboard() {
     });
   }, [filterSearch]);
 
-  console.log(params);
 
   const { data, isLoading, refetch } = useQuery(['get_all_orders', params], () => orderApi.getAll(params), {
     retry: false,
   });
+
+  console.log(params);
+
 
   return (
     <div className='mt-4'>
@@ -77,7 +79,7 @@ export default function OrderDashboard() {
           <input
             className='w-full appearance-none rounded-lg border-2 border-gray-50 bg-gray-50 py-3 px-4 leading-tight text-gray-700 focus:border-purple-500 focus:bg-white focus:shadow-md focus:shadow-purple-300 focus:outline-none'
             id='inline-full-name'
-            type='text'
+            type='number'
             placeholder='enter id of order'
             onChange={(e) => setFilterSearch(e.target.value)}
           />
