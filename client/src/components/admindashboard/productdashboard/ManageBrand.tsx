@@ -5,6 +5,7 @@ import brandApi from 'src/apis/brand.api';
 import { useDispatch, useSelector } from 'react-redux';
 import { popup, selectCurrentModal } from 'src/slices/modal.slice';
 import { toast } from 'react-toastify';
+import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 
 const BrandModal = ({
   refetch,
@@ -238,7 +239,7 @@ export default function ManageBrand() {
                                   );
                                 }}
                               >
-                                Edit
+                                <AiOutlineEdit className='text-2xl' />
                               </button>
                             </td>
                             <td className='whitespace-nowrap px-6 py-4 text-right text-sm font-medium'>
@@ -250,7 +251,7 @@ export default function ManageBrand() {
                                   refetch();
                                 }}
                               >
-                                Delete
+                                <AiOutlineDelete className='text-2xl' />
                               </button>
                             </td>
                           </tr>

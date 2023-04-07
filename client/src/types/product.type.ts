@@ -8,6 +8,7 @@ export interface Product {
   updateAt: string;
   brand: string;
   brand_description: string;
+  brand_id?: number;
   rate: number;
   feedback: {
     id: number;
