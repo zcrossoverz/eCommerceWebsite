@@ -5,10 +5,12 @@ import { Key, useEffect, useState } from 'react';
 import orderApi from 'src/apis/order.api';
 import Pagination from 'src/components/paginate';
 import useQueryParams from 'src/hooks/useQueryParams';
+import { AiOutlineDelete, AiOutlineFileSearch } from 'react-icons/ai';
 
 export default function OrderDashboard() {
   const query = useQueryParams();
   const [orderBy, setOrderBy] = useState('newest');
+  const [filterSearch, setFilterSearch] = useState('');
   const [filterStatus, setFilterStatus] = useState(-1);
   const [filterMethodPayment, setMethodPayment] = useState(-1);
   const [filterPaymentIsPaid, setPaymentIsPaid] = useState(-1);
@@ -19,6 +21,7 @@ export default function OrderDashboard() {
     status: -1,
     method: -1,
     paid: -1,
+    search: ''
   });
   useEffect(() => {
     setParams({
@@ -53,6 +56,13 @@ export default function OrderDashboard() {
     });
   }, [filterPaymentIsPaid]);
 
+  useEffect(() => {
+    setParams({
+      ...params,
+      search: filterSearch,
+    });
+  }, [filterSearch]);
+
   console.log(params);
 
   const { data, isLoading, refetch } = useQuery(['get_all_orders', params], () => orderApi.getAll(params), {
@@ -68,7 +78,8 @@ export default function OrderDashboard() {
             className='w-full appearance-none rounded-lg border-2 border-gray-50 bg-gray-50 py-3 px-4 leading-tight text-gray-700 focus:border-purple-500 focus:bg-white focus:shadow-md focus:shadow-purple-300 focus:outline-none'
             id='inline-full-name'
             type='text'
-            placeholder='search'
+            placeholder='enter id of order'
+            onChange={(e) => setFilterSearch(e.target.value)}
           />
         </div>
         <div className='col-span-1'>
@@ -235,16 +246,12 @@ export default function OrderDashboard() {
                               <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{`${('0' + day).slice(
                                 -2
                               )}/${('0' + month).slice(-2)}/${year} ${hours}:${minutes}:${seconds}`}</td>
-                              <td className='whitespace-nowrap px-6 py-4 text-center text-sm font-medium'>
-                                <button
-                                  className='text-red-500 hover:text-red-700'
-                                  // onClick={async () => {
-                                  //   await brandApi.delete(e.id);
-                                  //   toast.success('delete success!');
-                                  //   refetch();
-                                  // }}
-                                >
-                                  Delete
+                              <td className='flex whitespace-nowrap px-6 py-4 text-center text-sm font-medium'>
+                                <button className='px-1 text-blue-500 hover:text-blue-700'>
+                                  <AiOutlineFileSearch className='text-2xl' />
+                                </button>
+                                <button className='px-1 text-red-400 hover:text-red-600'>
+                                  <AiOutlineDelete className='text-2xl' />
                                 </button>
                               </td>
                             </tr>

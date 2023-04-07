@@ -31,9 +31,10 @@ export const getAll = async (
   limit: number,
   page: number,
   filter: FilterProduct | null = null,
-  search: string | undefined = undefined
+  search: string | undefined = undefined,
+  order: string
 ) => {
-  const offset = (page - 1) * limit;
+  const offset = ((page ? page : 1) - 1) * limit;
   const [result, count] = await productRepository.findAndCount({
     relations: {
       images: true,
@@ -66,6 +67,9 @@ export const getAll = async (
         },
       },
     },
+    order: {
+      id: order === 'newest' ? 'DESC' : 'ASC'
+    }
   });
   const last_page = Math.ceil(count / limit);
   const prev_page = page - 1 < 1 ? null : page - 1;
@@ -209,6 +213,7 @@ export const getOneById = async (id: number) => {
         createAt: product.createAt,
         updateAt: product.updateAt,
         brand: product.brand.name,
+        brand_id: product.brand.id,
         brand_description: product.brand.description,
         rate: product.rate,
         feedback: product.feedbacks.map((e) => {

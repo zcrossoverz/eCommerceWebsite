@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { ILike } from "typeorm";
 import { AppDataSource } from "../database";
 import { EnumTypeCoupon } from "../entities/coupon.entity";
 import { EnumTypeNotify } from "../entities/notification.entity";
@@ -229,7 +230,8 @@ export const getAllOrder = async (
   order = "newest",
   status = -1,
   method = -1,
-  paid = -1
+  paid = -1,
+  search = ''
 ) => {
   const orderRepo = AppDataSource.getRepository(Order);
   const offset = (page - 1) * limit;
@@ -254,7 +256,7 @@ export const getAllOrder = async (
     },
     where: {
       status: status !== -1 ? status + 1 : undefined,
-
+      id: ILike(Number(search)),
       payment: {
         method: method !== -1 ? method : undefined,
         is_paid: paid !== -1 ? (paid === 0 ? false : true) : undefined,

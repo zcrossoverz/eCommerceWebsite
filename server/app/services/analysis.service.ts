@@ -304,6 +304,9 @@ export const getRevenue = async (value: string, key: string, explicit = 0) => {
   const [orders, count] = await orderRepo.findAndCount({
     where: {
       createAt: ILike(`${value}%`),
+      payment: {
+        is_paid: true
+      }
     },
     relations,
   });
