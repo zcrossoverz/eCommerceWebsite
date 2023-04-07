@@ -6,22 +6,32 @@ import useQueryParams from 'src/hooks/useQueryParams';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { AiOutlineDelete, AiOutlineEdit, AiOutlineFileSearch } from 'react-icons/ai';
 
 export default function ManageProduct() {
   const [search, setSearch] = useState('');
   const query = useQueryParams();
+  const [filterOrder, setFilterOrder] = useState('newest');
   const [params, setParams] = useState({
     page: '1',
     limit: '9',
     search: '',
+    order: 'newest',
   });
   useEffect(() => {
     setParams({
       limit: '9',
       page: '1',
       search,
+      order: 'newest',
     });
   }, [search]);
+  useEffect(() => {
+    setParams({
+      ...params,
+      order: filterOrder,
+    });
+  }, [filterOrder]);
   useEffect(() => {
     setParams({
       ...params,
@@ -29,10 +39,17 @@ export default function ManageProduct() {
     });
   }, [query.page]);
 
+
   const { data, isLoading, refetch } = useQuery(
     ['products', params],
-    () => productsApi.getProductsList(search.length || query.page ? params : { limit: '9' }),
-    { retry: false }
+    () =>
+      productsApi.getProductsList({
+        ...params,
+        page: params.page !== undefined ? params.page : '1',
+      }),
+    {
+      retry: false,
+    }
   );
   const navigate = useNavigate();
 
@@ -50,22 +67,28 @@ export default function ManageProduct() {
           />
         </div>
         <div className='col-span-1'>
-          <select className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-500 focus:shadow-lg focus:shadow-blue-300 focus:ring-blue-500'>
-            <option className='mt-1' defaultValue=''>
-              Sort by
+          <select
+            className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-500 focus:shadow-lg focus:shadow-blue-300 focus:ring-blue-500'
+            onChange={(e) => setFilterOrder(e.target.value)}
+          >
+            <option className='mt-1' value='newest' defaultChecked={true}>
+              Newest
             </option>
-            <option className='mt-1' defaultValue='sale'>
-              sale
-            </option>
-            <option className='mt-1' defaultValue='stock'>
-              stock
+            <option className='mt-1' value='oldest'>
+              Oldest
             </option>
           </select>
         </div>
         <div className='col-span-1 col-end-7'>
           <button
             className='rounded-xl bg-blue-900 py-3 px-8 text-gray-400 hover:bg-blue-600 hover:text-white hover:shadow-primary hover:shadow-lg'
-            onClick={() => navigate('./form')}
+            onClick={() =>
+              navigate('./form', {
+                state: {
+                  type: 'create',
+                },
+              })
+            }
           >
             CREATE
           </button>
@@ -111,10 +134,7 @@ export default function ManageProduct() {
                             Brand
                           </th>
                           <th scope='col' className='px-6 py-3 text-right text-xs font-bold uppercase text-gray-500 '>
-                            Edit
-                          </th>
-                          <th scope='col' className='px-6 py-3 text-right text-xs font-bold uppercase text-gray-500 '>
-                            Delete
+                            <p className='mr-4'>Actions</p>
                           </th>
                         </tr>
                       </thead>
@@ -126,9 +146,12 @@ export default function ManageProduct() {
                               <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.name}</td>
                               <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.brand}</td>
                               <td className='whitespace-nowrap px-6 py-4 text-right text-sm font-medium'>
-                                <div className='text-green-500 hover:text-green-700'>Edit</div>
-                              </td>
-                              <td className='whitespace-nowrap px-6 py-4 text-right text-sm font-medium'>
+                                <button className='px-1 text-blue-500 hover:text-blue-700'>
+                                  <AiOutlineFileSearch className='text-2xl' />
+                                </button>
+                                <button className='px-1 text-green-400 hover:text-green-600'>
+                                  <AiOutlineEdit className='text-2xl' />
+                                </button>
                                 <button
                                   onClick={async () => {
                                     await productsApi.deleteProduct(e.id);
@@ -137,7 +160,7 @@ export default function ManageProduct() {
                                   }}
                                   className='text-red-500 hover:text-red-700'
                                 >
-                                  Delete
+                                  <AiOutlineDelete className='text-2xl' />
                                 </button>
                               </td>
                             </tr>

@@ -44,7 +44,15 @@ const orderApi = {
       params,
     });
   },
-  getAll(params?: { limit?: string; page?: string; order?: string; status?: number; method?: number; paid?: number }) {
+  getAll(params?: {
+    limit?: string;
+    page?: string;
+    order?: string;
+    status?: number;
+    method?: number;
+    paid?: number;
+    search?: string;
+  }) {
     return http.get<ResGetAllOrder>(`order/get_all`, {
       params,
     });

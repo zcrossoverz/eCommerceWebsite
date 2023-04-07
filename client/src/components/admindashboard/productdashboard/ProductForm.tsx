@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import BreadCrumb from '../breadcrumb';
 import { useQuery } from '@tanstack/react-query';
 import brandApi from 'src/apis/brand.api';
@@ -8,6 +8,8 @@ import { toast } from 'react-toastify';
 
 export default function ProductForm() {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const brand = useQuery(['get_all_brands'], () => brandApi.getAllBrand(''));
   const [name, setName] = useState('');
   const [brand_id, setBrandId] = useState(-1);
@@ -17,6 +19,21 @@ export default function ProductForm() {
   const [rom, setRom] = useState('');
   const [color, setColor] = useState('');
   const [price, setPrice] = useState('');
+
+  console.log(location.state.type);
+
+  useEffect(() => {
+    if (location.state.type === 'edit') {
+      productsApi
+        .getProductDetail(location.state.id)
+        .then((res) => res.data)
+        .then((data) => {
+          setName(data.name);
+          setBrandId(data.brand_id !== undefined ? data.brand_id : -1);
+          setDesc(data.description);
+        });
+    }
+  }, []);
 
   const createProduct = async () => {
     if (!image) {
@@ -33,7 +50,7 @@ export default function ProductForm() {
     data.append('price', price);
     data.append('image', image);
     const response = await productsApi.createProduct(data);
-  
+
     if (response.status === 200) toast.success('create new product success');
     else toast.error(`an error occured when create product: ${response.statusText}`);
   };
@@ -46,7 +63,9 @@ export default function ProductForm() {
           <div className='overflow-x-auto'>
             <div className='inline-block w-full align-middle'>
               <div className='overflow-hidden rounded-xl border bg-white p-4'>
-                <h1 className='text-lg font-semibold leading-loose'>CREATE PRODUCT</h1>
+                <h1 className='text-lg font-semibold leading-loose'>
+                  {location.state.type === 'create' ? 'CREATE PRODUCT' : 'UPDATE PRODUCT'}
+                </h1>
                 <div className='grid grid-cols-2 gap-4 pt-4'>
                   <div>
                     <p className='text-md pb-1 indent-2 leading-normal'>Name</p>
@@ -54,6 +73,7 @@ export default function ProductForm() {
                       type='text'
                       className='bg-gray-150 w-full rounded-md border border-gray-300 py-2 px-4'
                       placeholder='Name...'
+                      defaultValue={name}
                       onChange={(e) => setName(e.target.value)}
                     />
                   </div>
@@ -65,7 +85,7 @@ export default function ProductForm() {
                     >
                       <option>Select Brand</option>
                       {brand.data?.data.map((e: { id: number; name: string }, i) => (
-                        <option key={i.toString()} value={e.id}>
+                        <option key={i.toString()} value={e.id} selected={brand_id === e.id}>
                           {e.name}
                         </option>
                       ))}

@@ -22,8 +22,8 @@ export const getOneOrder = async (req: Request, res: Response, next: NextFunctio
 }
 
 export const getAllOrder = async (req: Request, res: Response, next: NextFunction) => {
-    const { limit = 10, page = 1, order = 'newest', status = -1, method = -1, paid = -1 } = req.query;
-    const rs = await orderServices.getAllOrder(Number(limit), Number(page), String(order), Number(status), Number(method), Number(paid));
+    const { limit = 10, page = 1, order = 'newest', status = -1, method = -1, paid = -1, search = '' } = req.query;
+    const rs = await orderServices.getAllOrder(Number(limit), Number(page), String(order), Number(status), Number(method), Number(paid), String(search));
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
 }
 

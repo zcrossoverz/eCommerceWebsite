@@ -163,24 +163,75 @@ export const top_sale = async () => {
     };
   });
 
-  return Promise.all(
-    products_data.map(async (e) => {
-      const product = await productRepository.findOneBy({ id: e.product_id });
+  return await Promise.all(
+    products_data.sort((a,b) => a.total_sale - b.total_sale).map(async (e) => {
+      const product = await productRepository.findOne({
+        where: {
+          id: e.product_id 
+        },
+        relations: {
+          brand: true
+        }
+      });
       if (!product) return BadRequestError("product id error");
+      // console.log(product);
+
+      // return {
+      //   name: product.name,
+      //   product_options: await Promise.all(e.product_options.map(async (el) => {
+      //     const opt = await productOptionRepo.findOne({
+      //       where:{
+
+      //         id: el.product_option_id,
+      //       },
+      //       relations: {
+      //         price: true,
+      //         image: true
+      //       },
+      //       order: {
+      //         price: {
+      //           price: 'ASC'
+      //         }
+      //       }
+      //     });
+      //     return {
+      //       color: opt?.color,
+      //       ram: opt?.ram,
+      //       rom: opt?.rom,
+      //       sale_number: el.sale_number,
+      //       amount: el.amount,
+      //       price: opt?.price.price,
+      //       image: opt?.image.image_url
+      //     };
+      //   })),
+      //   rate: product.rate,
+      //   total_sale: e.total_sale,
+      // };
+
+      const options = await productOptionRepo.findOne({
+        where: {
+          product: {
+            id: product.id
+          }
+        },
+        relations: {
+          price: true,
+          image: true,
+        },
+        order: {
+          price: {
+            price: "ASC",
+          },
+        },
+      });
+
       return {
+        id: product.id,
         name: product.name,
-        product_options: e.product_options.map(async (el) => {
-          const opt = await productOptionRepo.findOneBy({
-            id: el.product_option_id,
-          });
-          return {
-            color: opt?.color,
-            ram: opt?.ram,
-            rom: opt?.rom,
-            sale_number: el.sale_number,
-            amount: el.amount,
-          };
-        }),
+        rate: product.rate,
+        image: options?.image.image_url,
+        price: options?.price.price,
+        brand: product.brand,
         total_sale: e.total_sale,
       };
     })
@@ -253,6 +304,9 @@ export const getRevenue = async (value: string, key: string, explicit = 0) => {
   const [orders, count] = await orderRepo.findAndCount({
     where: {
       createAt: ILike(`${value}%`),
+      payment: {
+        is_paid: true
+      }
     },
     relations,
   });
