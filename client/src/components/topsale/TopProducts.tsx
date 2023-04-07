@@ -4,10 +4,10 @@ import Star from '../star';
 import { formatPrice } from 'src/utils/formatPrice';
 import { FcSalesPerformance } from 'react-icons/fc';
 
-function SampleNextArrow(props) {
-  const { className, style, onClick } = props;
-  return <div className={className} style={{ ...style, display: 'block', background: 'red' }} onClick={onClick} />;
-}
+// function SampleNextArrow(props) {
+//   const { className, style, onClick } = props;
+//   return <div className={className} style={{ ...style, display: 'block', background: 'red' }} onClick={onClick} />;
+// }
 function TopProducts() {
   const settings = {
     className: 'center',
@@ -16,11 +16,11 @@ function TopProducts() {
     centerPadding: '60px',
     slidesToShow: 3,
     speed: 500,
-    nextArrow: <SampleNextArrow />,
+    nextArrow: <div style={{ display: 'block', background: 'red' }}>ádsd</div>,
   };
   return (
     <div className='mx-auto mb-4 mt-4 max-w-7xl overflow-hidden rounded-sm bg-slate-50 pb-8 shadow-md'>
-      <div className='mb-6 flex items-center justify-center bg-white p-2'>
+      {/* <div className='mb-6 flex items-center justify-center bg-white p-2'>
         <FcSalesPerformance className='text-4xl' />
         <h2 className='ml-2 text-center text-3xl font-semibold uppercase text-yellow-400'>top sản phẩm bán chạy</h2>
       </div>
@@ -150,7 +150,7 @@ function TopProducts() {
             </div>
           </div>
         </Link>
-      </Slider>
+      </Slider> */}
     </div>
   );
 }
