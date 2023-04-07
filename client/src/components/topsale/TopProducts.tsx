@@ -49,6 +49,8 @@ function TopProducts() {
       infinite: true,
       centerPadding: '60px',
       slidesToShow: 3,
+      autoplay: true,
+      autoplaySpeed: 3000,
       speed: 500,
       responsive: [
         {

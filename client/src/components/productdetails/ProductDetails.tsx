@@ -89,7 +89,7 @@ function ProductDetails() {
     retry: 1,
     refetchOnWindowFocus: false,
   });
-  const { refetch: refetchGetFeed } = useQuery({
+  const { refetch: refetchGetFeed, isLoading: isLoadFeed } = useQuery({
     queryKey: ['getFeedback', product?.data.id],
     queryFn: () => feedbackApi.getFeedback(Number(product?.data.id)),
     enabled: Boolean(product?.data.id),
@@ -362,6 +362,7 @@ function ProductDetails() {
           refetchGetFeed={refetchGetFeed}
           refetchUser={refetchUser}
           refetchCanRate={refetchCanRate}
+          isLoadFeed={isLoadFeed}
         />
       </div>
     </>
