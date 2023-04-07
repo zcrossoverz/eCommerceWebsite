@@ -5,7 +5,7 @@
 
 @layer base {
   body {
-    @apply bg-[#f2f2f2] font-poppins;
+    @apply scroll-smooth bg-[#f2f2f2] font-poppins;
   }
   /* Chrome, Safari, Edge, Opera */
   input::-webkit-outer-spin-button,

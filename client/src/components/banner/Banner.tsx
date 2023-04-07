@@ -100,7 +100,7 @@ function Banner() {
           />
         </AnimatePresence>
         {/* left Arrow */}
-        <div className='btn-slide left-5'>
+        <div className='left-5'>
           <BsChevronCompactLeft onClick={prevStep} size={30} />
         </div>
         {/* Right Arrow */}
