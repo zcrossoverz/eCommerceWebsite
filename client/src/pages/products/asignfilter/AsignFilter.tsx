@@ -110,6 +110,7 @@ function AsignFilter({ queryConfig, brands }: Props) {
                 >
                   {i === 0 && (
                     <Link
+                      className='w-full'
                       to={{
                         pathname: path.home,
                         search: createSearchParams({ ...queryConfig, rate: '5' }).toString(),
@@ -120,6 +121,7 @@ function AsignFilter({ queryConfig, brands }: Props) {
                   )}
                   {i === 1 && (
                     <Link
+                      className='w-full'
                       to={{
                         pathname: path.home,
                         search: createSearchParams({ ...queryConfig, rate: '4' }).toString(),
@@ -130,6 +132,7 @@ function AsignFilter({ queryConfig, brands }: Props) {
                   )}
                   {i === 2 && (
                     <Link
+                      className='w-full'
                       to={{
                         pathname: path.home,
                         search: createSearchParams({ ...queryConfig, rate: '3' }).toString(),
@@ -140,6 +143,7 @@ function AsignFilter({ queryConfig, brands }: Props) {
                   )}
                   {i === 3 && (
                     <Link
+                      className='w-full'
                       to={{
                         pathname: path.home,
                         search: createSearchParams({ ...queryConfig, rate: '2' }).toString(),
@@ -150,6 +154,7 @@ function AsignFilter({ queryConfig, brands }: Props) {
                   )}
                   {i === 4 && (
                     <Link
+                      className='w-full'
                       to={{
                         pathname: path.home,
                         search: createSearchParams({ ...queryConfig, rate: '1' }).toString(),

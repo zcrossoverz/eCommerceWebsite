@@ -5,7 +5,7 @@
 
 @layer base {
   body {
-    @apply bg-[#f2f2f2] font-poppins;
+    @apply scroll-smooth bg-[#f2f2f2] font-poppins;
   }
   /* Chrome, Safari, Edge, Opera */
   input::-webkit-outer-spin-button,
@@ -23,6 +23,7 @@
   .nav-item {
     @apply block cursor-pointer rounded border-0 py-2 pl-3 pr-4 text-lg text-gray-700 hover:bg-gray-100 hover:bg-transparent hover:text-blue-700 md:p-0;
   }
+
   .btn-slide {
     @apply absolute top-[50%] hidden -translate-x-0 translate-y-[-50%] cursor-pointer rounded-full bg-black/20 p-2 text-2xl text-white group-hover:block;
   }
@@ -41,4 +42,10 @@
 .slick-prev::before,
 .slick-next::before {
   color: #27aa9a;
+}
+.slick-center {
+  @apply scale-105;
+}
+.slick-list {
+  overflow: unset;
 }

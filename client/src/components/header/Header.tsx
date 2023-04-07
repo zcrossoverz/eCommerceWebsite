@@ -95,6 +95,7 @@ function Header() {
     dispatch(logoutCart([]));
     dispatch(reset());
     queryClient.removeQueries();
+    navigate('/');
   };
   return (
     <AnimatePresence>
@@ -217,7 +218,9 @@ function Header() {
                 {/* menu user */}
                 {showMenuUser && (
                   <motion.div
-                    className={classNames('absolute top-14 right-0 w-[300px] rounded-lg bg-white px-4 py-1 shadow-md ')}
+                    className={classNames(
+                      'absolute top-14 right-0 z-20 w-[300px] rounded-lg bg-white px-4 py-1 shadow-md '
+                    )}
                     initial={{ opacity: 0, transform: 'scale(0)' }}
                     animate={{ opacity: 1, transform: 'scale(1)' }}
                     exit={{ opacity: 0, transform: 'scale(0)' }}
@@ -253,12 +256,7 @@ function Header() {
                           <span>{t('header.my order')}</span>
                         </Link>
                       </li>
-                      <li className='nav-item mt-2'>
-                        <Link to='/user' className='flex items-center'>
-                          <BiHelpCircle className='mr-4 text-xl' />
-                          <span>{t('header.help')}</span>
-                        </Link>
-                      </li>
+
                       <li className='nav-item mt-2 block lg:hidden'>
                         <div className='flex items-center'>
                           <MdLanguage className='mr-4 text-xl text-gray-700' />

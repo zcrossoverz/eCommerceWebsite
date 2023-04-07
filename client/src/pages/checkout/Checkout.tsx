@@ -219,7 +219,6 @@ function Checkout() {
     }
   };
   const handleCheckoutOrder = (status?: string) => {
-    console.log(status);
     if (address.content && address.id !== orderItems?.data.user.default_address && orderItems?.data.order_id) {
       updateAddressOrderMutation.mutate({ id: orderItems.data.order_id, address: address.content });
     }

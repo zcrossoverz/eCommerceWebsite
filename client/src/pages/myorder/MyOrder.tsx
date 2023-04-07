@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { FaMoneyCheckAlt } from 'react-icons/fa';
 import { AnimatePresence, motion } from 'framer-motion';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import orderApi from 'src/apis/order.api';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/store';
@@ -34,7 +34,7 @@ function MyOrder() {
     }[]
   >([]);
   // call api get all order by user
-  useQuery({
+  const { refetch } = useQuery({
     queryKey: ['ordersOfUser'],
     queryFn: () =>
       orderApi.getOrdersOfUser({
@@ -58,6 +58,15 @@ function MyOrder() {
     },
     retry: 1,
   });
+  const updateOrderMutation = useMutation({
+    mutationFn: (body: { id: number; status: string }) => orderApi.updateStatus(body.status, body.id),
+    onError: (err) => {
+      if (isAxiosErr<{ error: string }>(err)) {
+        toast.error(err.response?.data.error, { autoClose: 2000 });
+        return;
+      }
+    },
+  });
   const handleCheckout = (id: number) => {
     navigate(path.checkout, {
       state: {
@@ -65,6 +74,21 @@ function MyOrder() {
         userId,
       },
     });
+  };
+  const handleReturnProduct = (status: string, orderId: number) => {
+    if (status && orderId) {
+      updateOrderMutation.mutate(
+        { id: orderId, status },
+        {
+          onSuccess: () => {
+            toast.success('Đã nhận được yêu cầu hoàn trả đơn hàng', {
+              autoClose: 2000,
+            });
+            refetch();
+          },
+        }
+      );
+    }
   };
   return (
     <div className='mx-auto max-w-7xl p-2'>
@@ -107,16 +131,19 @@ function MyOrder() {
                     transition={{ duration: 0.2 }}
                   >
                     {timeLine.map((tl, i) => (
-                      <li key={nanoid(5)} className='relative mb-6 w-1/5 sm:mb-0'>
+                      <li
+                        key={nanoid(5)}
+                        className={classNames('relative mb-6 w-1/5 sm:mb-0', {
+                          hidden:
+                            StatusOrder[order.status as keyof typeof StatusOrder] < StatusOrder.RETURNED &&
+                            tl.id >= StatusOrder.RETURNED,
+                        })}
+                      >
                         <div className='mb-1 flex items-center'>
                           <div
                             className={classNames('h-0.5 w-full bg-gray-200 sm:flex', {
                               'opacity-0': Boolean(i === 0),
-                              'bg-green-500':
-                                tl.id <=
-                                StatusOrder[
-                                  order.timeline[order.timeline.length - 1].content as keyof typeof StatusOrder
-                                ],
+                              'bg-green-500': tl.id <= StatusOrder[order.status as keyof typeof StatusOrder],
                             })}
                           />
                           <div
@@ -124,24 +151,19 @@ function MyOrder() {
                               'z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-[3px] text-lg ring-0 ring-white sm:ring-8',
                               {
                                 'border-green-500 text-green-500':
-                                  tl.id <=
-                                  StatusOrder[
-                                    order.timeline[order.timeline.length - 1].content as keyof typeof StatusOrder
-                                  ],
+                                  tl.id <= StatusOrder[order.status as keyof typeof StatusOrder],
                               }
                             )}
                           >
                             {tl.component}
                           </div>
                           <div
-                            className={classNames('h-0.5 w-full bg-gray-200 sm:flex', {
-                              'opacity-0': i === timeLine.length - 1,
-                              'bg-green-500':
-                                tl.id <=
-                                StatusOrder[
-                                  order.timeline[order.timeline.length - 1].content as keyof typeof StatusOrder
-                                ] -
-                                  1,
+                            className={classNames('h-0.5 w-full bg-gray-200 ', {
+                              'opacity-0':
+                                i === timeLine.length - 1 ||
+                                (StatusOrder[order.status as keyof typeof StatusOrder] < StatusOrder.RETURNED &&
+                                  tl.id === StatusOrder.COMPLETED),
+                              'bg-green-500': tl.id <= StatusOrder[order.status as keyof typeof StatusOrder] - 1,
                             })}
                           />
                         </div>
@@ -242,18 +264,29 @@ function MyOrder() {
                   <FaMoneyCheckAlt className='mr-1 hidden text-2xl text-orange-400 lg:inline-block' />
                   <span className='text-base font-semibold text-black'>
                     <b className='mr-2 hidden font-semibold lg:inline-block'>{t('myorder.into money')}:</b>
-                    <i className='text-base text-orange-500 md:text-xl'>{formatPrice(order.payment.amount)}</i>
+                    <i className='text-base text-orange-500 md:text-xl'>{formatPrice(Number(order.payment.amount))}</i>
                   </span>
                 </div>
-                {order.status === 'PENDING' && (
-                  <button
-                    type='button'
-                    onClick={() => handleCheckout(order.order_id)}
-                    className='ml-2 mt-2 inline-flex justify-center whitespace-nowrap rounded-md border border-blue-500 px-2 py-1 text-sm font-medium text-blue-400 duration-200 hover:scale-105 hover:border-orange-500 hover:text-orange-400 md:py-2 md:px-4'
-                  >
-                    {t('myorder.payment')}
-                  </button>
-                )}
+                <div className='ml-2 mt-2 flex'>
+                  {order.status === 'PENDING' && (
+                    <button
+                      type='button'
+                      onClick={() => handleCheckout(order.order_id)}
+                      className=' inline-flex justify-center whitespace-nowrap rounded-md border border-blue-500 px-2 py-1 text-sm font-medium text-blue-400 duration-200 hover:scale-105 hover:border-orange-500 hover:text-orange-400 md:py-2 md:px-4'
+                    >
+                      {t('myorder.payment')}
+                    </button>
+                  )}
+                  {order.status === 'COMPLETED' && (
+                    <button
+                      type='button'
+                      onClick={() => handleReturnProduct('RETURNED', order.order_id)}
+                      className=' inline-flex justify-center whitespace-nowrap rounded-md border border-blue-500 px-2 py-1 text-sm font-medium text-blue-400 duration-200 hover:scale-105 hover:border-orange-500 hover:text-orange-400 md:py-2 md:px-4'
+                    >
+                      Hoàn trả hàng
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </div>

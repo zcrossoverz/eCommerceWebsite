@@ -63,7 +63,7 @@ function ProductList() {
     retry: 1,
   });
   return (
-    <div className='mx-auto mb-4 max-w-7xl bg-slate-50 py-4 px-2 shadow-sm'>
+    <div className='mx-auto mb-4 min-h-[42rem] max-w-7xl bg-slate-50 py-4 px-2 shadow-sm'>
       <HelmetSale title='Trang chủ'></HelmetSale>
       <div className='grid grid-cols-12 gap-4 overflow-hidden'>
         <div className='hidden md:col-span-3 md:block'>
