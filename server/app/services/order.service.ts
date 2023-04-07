@@ -256,7 +256,7 @@ export const getAllOrder = async (
     },
     where: {
       status: status !== -1 ? status + 1 : undefined,
-      id: ILike(Number(search)),
+      id: Number(search) ? ILike(Number(search)) : undefined,
       payment: {
         method: method !== -1 ? method : undefined,
         is_paid: paid !== -1 ? (paid === 0 ? false : true) : undefined,
