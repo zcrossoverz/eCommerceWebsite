@@ -71,7 +71,7 @@ function Comments({
   useEffect(() => {
     setFeedback({
       ...feedback,
-      rate: rating,
+      rate: rating || 5,
       product_id: Number(productId),
       user_id: Number(userId),
     });

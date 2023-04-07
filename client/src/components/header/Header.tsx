@@ -95,6 +95,7 @@ function Header() {
     dispatch(logoutCart([]));
     dispatch(reset());
     queryClient.removeQueries();
+    navigate('/');
   };
   return (
     <AnimatePresence>
