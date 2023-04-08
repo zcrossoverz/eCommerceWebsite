@@ -56,7 +56,6 @@ function Address({ user, refetchAddress }: Props) {
     <div className='h-full w-full bg-white'>
       <div className='flex items-center justify-between border-b p-4'>
         <h2 className='text-xl font-semibold'>{t('address.my address')}</h2>
-
         <BtnAddAress user={user} refetchAddress={refetchAddress} />
       </div>
       {user?.address &&
@@ -97,9 +96,9 @@ function Address({ user, refetchAddress }: Props) {
 
               <button
                 onClick={() => handleSetDefaultAdress(address.id)}
-                className='whitespace-nowrap rounded-sm border border-black px-2 py-1 duration-300 hover:bg-orange-200 '
+                className='rounded-sm border border-black px-2 py-1 duration-300 hover:bg-orange-200 '
               >
-                <span className='hidden md:inline-block'>{t('address.default settings')}</span>
+                <span className='md:inline-block'>{t('address.default settings')}</span>
               </button>
             </div>
           </div>

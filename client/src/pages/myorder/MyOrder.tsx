@@ -93,9 +93,9 @@ function MyOrder() {
   };
   return (
     <div className='mx-auto max-w-7xl p-2'>
-      <HelmetSEO title='Đơn hàng'></HelmetSEO>
+      <HelmetSEO title={t('myorder.title')}></HelmetSEO>
       <div className='mx-auto my-2 max-w-7xl'>
-        <BreadCrumb path={['Fstore', 'Đơn hàng']} />
+        <BreadCrumb path={['Fstore', t('myorder.title')]} />
       </div>
       {orders?.data.length &&
         orders.data.map((order, i) => (

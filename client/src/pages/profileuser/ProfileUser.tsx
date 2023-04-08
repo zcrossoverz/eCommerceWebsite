@@ -65,9 +65,9 @@ function ProfileUser() {
           <BreadCrumb path={['Fstore', t('profileUser.my account')]} />
         </div>
       )}
-      <HelmetSEO title='Tài khoản của bạn'></HelmetSEO>
-      <div className='mx-auto my-2 grid max-w-7xl grid-cols-12 overflow-hidden rounded-md bg-blue-100 lg:min-h-[300px] lg:bg-transparent'>
-        <div className='col-span-12 lg:col-span-3'>
+      <HelmetSEO title={t('profileUser.my account')}></HelmetSEO>
+      <div className='mx-auto my-2 grid max-w-7xl grid-cols-12 overflow-hidden rounded-md bg-white p-4 lg:min-h-[300px]'>
+        <div className='col-span-12 pr-4 lg:col-span-3'>
           <div className='hidden border-b lg:block'>
             <div className='flex items-center p-4'>
               <button
@@ -130,7 +130,7 @@ function ProfileUser() {
             </ul>
           </div>
         </div>
-        <div className='col-span-12 flex items-center justify-center bg-white shadow-md lg:col-span-9'>
+        <div className='col-span-12 flex items-center justify-center border-l bg-white px-2 lg:col-span-9'>
           <Routes>
             <Route index path='/' element={<Security />}></Route>
             <Route path='/file' element={<File refetchAddress={refetch} user={user?.data} />}></Route>
