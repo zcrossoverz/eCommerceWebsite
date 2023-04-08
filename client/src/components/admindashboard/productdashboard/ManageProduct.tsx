@@ -40,7 +40,6 @@ export default function ManageProduct() {
     });
   }, [query.page]);
 
-
   const { data, isLoading, refetch } = useQuery(
     ['products', params],
     () =>
@@ -152,7 +151,17 @@ export default function ManageProduct() {
                                   <AiOutlineFileSearch className='text-2xl' />
                                 </button>
                                 <button className='px-1 text-green-400 hover:text-green-600'>
-                                  <AiOutlineEdit className='text-2xl' />
+                                  <AiOutlineEdit
+                                    className='text-2xl'
+                                    onClick={() => {
+                                      navigate('./form', {
+                                        state: {
+                                          type: 'edit',
+                                          id: e.id,
+                                        },
+                                      });
+                                    }}
+                                  />
                                 </button>
                                 <button
                                   onClick={async () => {

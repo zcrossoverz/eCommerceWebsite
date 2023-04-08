@@ -33,6 +33,16 @@ const productsApi = {
   async deleteProduct(product_id: number) {
     return http.delete(`/product/${product_id}`);
   },
+  async updateProduct(
+    product_id: number,
+    data: {
+      name: string;
+      description: string;
+      brand_id: number;
+    }
+  ) {
+    return http.put(`product/${product_id}`, data);
+  },
 };
 
 export default productsApi;

@@ -88,9 +88,6 @@ const ButtonNavDropdown = ({ name, Icon, subnav, active }: PropsNavButton) => {
 
 function SidebarDashboard() {
   const location = useLocation().pathname.replace('/admin', '');
-  function IoPeople(props: IconBaseProps): Element {
-    throw new Error('Function not implemented.');
-  }
 
   return (
     <div>
