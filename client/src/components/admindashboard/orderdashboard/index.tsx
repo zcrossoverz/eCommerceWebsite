@@ -6,6 +6,9 @@ import orderApi from 'src/apis/order.api';
 import Pagination from 'src/components/paginate';
 import useQueryParams from 'src/hooks/useQueryParams';
 import { AiOutlineDelete, AiOutlineFileSearch } from 'react-icons/ai';
+import HelmetSale from 'src/components/Helmet';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 export default function OrderDashboard() {
   const query = useQueryParams();
@@ -21,7 +24,7 @@ export default function OrderDashboard() {
     status: -1,
     method: -1,
     paid: -1,
-    search: ''
+    search: '',
   });
   useEffect(() => {
     setParams({
@@ -63,16 +66,15 @@ export default function OrderDashboard() {
     });
   }, [filterSearch]);
 
-
   const { data, isLoading, refetch } = useQuery(['get_all_orders', params], () => orderApi.getAll(params), {
     retry: false,
   });
 
-  console.log(params);
-
+  const navigate = useNavigate();
 
   return (
     <div className='mt-4'>
+      <HelmetSale title='Admin Dashboard | Manage Order'></HelmetSale>
       <BreadCrumb path={['Product', 'Order Dashboard']} />
       <div className='mt-4 grid grid-cols-6 gap-4'>
         <div className='col-span-2 mr-4'>
@@ -250,10 +252,20 @@ export default function OrderDashboard() {
                               )}/${('0' + month).slice(-2)}/${year} ${hours}:${minutes}:${seconds}`}</td>
                               <td className='flex whitespace-nowrap px-6 py-4 text-center text-sm font-medium'>
                                 <button className='px-1 text-blue-500 hover:text-blue-700'>
-                                  <AiOutlineFileSearch className='text-2xl' />
+                                  <AiOutlineFileSearch
+                                    className='text-2xl'
+                                    onClick={() => navigate(`./detail/${e.order_id}`)}
+                                  />
                                 </button>
                                 <button className='px-1 text-red-400 hover:text-red-600'>
-                                  <AiOutlineDelete className='text-2xl' />
+                                  <AiOutlineDelete
+                                    className='text-2xl'
+                                    onClick={async () => {
+                                      await orderApi.deleteOrder(e.order_id);
+                                      toast.success('delete success!');
+                                      refetch();
+                                    }}
+                                  />
                                 </button>
                               </td>
                             </tr>

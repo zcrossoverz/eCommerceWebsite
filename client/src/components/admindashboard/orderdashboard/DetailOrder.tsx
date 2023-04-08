@@ -2,9 +2,15 @@ import { useQuery } from '@tanstack/react-query';
 import BreadCrumb from '../breadcrumb';
 import orderApi from 'src/apis/order.api';
 import { formatPrice } from 'src/utils/formatPrice';
+import HelmetSale from 'src/components/Helmet';
+import { useNavigate, useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 export default function DetailOrder() {
-  const { data } = useQuery(['get_order_details'], () => orderApi.getOneOrder(1));
+  const { order_id } = useParams();
+  const navigate = useNavigate();
+  if (!Number(order_id)) navigate('/admin/order');
+  const { data, refetch } = useQuery(['get_order_details'], () => orderApi.getOneOrder(Number(order_id)));
 
   const order = data?.data;
   const date = new Date(order ? order?.create_at : '');
@@ -17,6 +23,7 @@ export default function DetailOrder() {
 
   return (
     <div className='mt-4'>
+      <HelmetSale title='Admin Dashboard | Detail Order'></HelmetSale>
       <BreadCrumb path={['Product', 'Order Dashboard', 'Detail Dashboard']} />
       <div>
         <div className='mt-4 flex flex-col'>
@@ -37,7 +44,49 @@ export default function DetailOrder() {
                     </div>
                   </div>
                   <div className='mb-32 flex justify-end'>
-                    <button className='mx-4 border border-gray-300 px-8'>SHIPPED</button>
+                    {order?.status === 'PROCESSING' && (
+                      <button
+                        className='mx-4 rounded-md border border-gray-300 bg-pink-500 px-8 text-white'
+                        onClick={async () => {
+                          await orderApi.updateStatus('SHIPPED', order.order_id);
+                          toast.success(`update status order #${order.order_id} from PROCESSING to SHIPPED success!`);
+                          refetch();
+                        }}
+                      >
+                        SHIPPED
+                      </button>
+                    )}
+                    {order?.status === 'SHIPPED' && (
+                      <button
+                        className='mx-4 rounded-md border border-gray-300 bg-green-500 px-8 text-white'
+                        onClick={async () => {
+                          await orderApi.updateStatus('COMPLETED', order.order_id);
+                          toast.success(`update status order #${order.order_id} from SHIPPED to COMPLETED success!`);
+                          refetch();
+                        }}
+                      >
+                        COMPLETED
+                      </button>
+                    )}
+                    {order?.status === 'COMPLETED' && (
+                      <button className='mx-4 rounded-md border border-gray-300 bg-purple-500 px-8 text-white'>
+                        PRINT RECEIPT
+                      </button>
+                    )}
+                    {order?.status === 'RETURNED' && (
+                      <button
+                        className='mx-4 rounded-md border border-gray-300 bg-blue-500 px-8 text-white'
+                        onClick={async () => {
+                          await orderApi.updateStatus('RETURNED_COMPLETED', order.order_id);
+                          toast.success(
+                            `update status order #${order.order_id} from RETURNED to RETURNED_COMPLETED success!`
+                          );
+                          refetch();
+                        }}
+                      >
+                        RETURNED_COMPLETED
+                      </button>
+                    )}
                   </div>
                 </div>
                 <hr className='my-2 bg-gray-600' />

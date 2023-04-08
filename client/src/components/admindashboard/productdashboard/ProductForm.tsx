@@ -5,6 +5,7 @@ import brandApi from 'src/apis/brand.api';
 import { useEffect, useState } from 'react';
 import productsApi from 'src/apis/product.api';
 import { toast } from 'react-toastify';
+import HelmetSale from 'src/components/Helmet';
 
 export default function ProductForm() {
   const navigate = useNavigate();
@@ -57,6 +58,9 @@ export default function ProductForm() {
 
   return (
     <div className='mt-4'>
+      <HelmetSale
+        title={`Admin Dashboard | ${location.state.type === 'create' ? 'Create Product' : 'Update Product'}`}
+      ></HelmetSale>
       <BreadCrumb path={['Product', 'Create Product']} />
       <div>
         <div className='mt-4 flex flex-col'>

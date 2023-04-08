@@ -23,7 +23,7 @@ export const dashboard_tab: dashboardTabInterface[] = [
   { name: 'brand', component: <ManageBrand />, link: '/brand' },
   { name: 'coupon', component: <ManageCoupon />, link: '/coupon' },
   { name: 'order', component: <OrderDashboard />, link: '/order' },
-  { name: 'order', component: <DetailOrder />, link: '/order/detail/:id' },
+  { name: 'order', component: <DetailOrder />, link: '/order/detail/:order_id' },
   { name: 'inventory', component: <InventoryDashboard />, link: '/inventory' },
   { name: 'report', component: <ReportDashboard />, link: '/report' },
   { name: 'user', component: <UserDashboard />, link: '/user' },

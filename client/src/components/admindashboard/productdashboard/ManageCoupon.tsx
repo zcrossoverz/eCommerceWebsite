@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { popup, selectCurrentModal } from 'src/slices/modal.slice';
 import { toast } from 'react-toastify';
 import couponApi from 'src/apis/coupon.api';
+import HelmetSale from 'src/components/Helmet';
 
 const BrandModal = ({
   refetch,
@@ -115,6 +116,7 @@ export default function ManageCoupon() {
 
   return (
     <div className='mt-4'>
+      <HelmetSale title='Admin Dashboard | Manage Coupon'></HelmetSale>
       <BreadCrumb path={['Product', 'Manage Coupon']} />
       <div className='mt-4 grid grid-cols-6'>
         <div className='col-span-2 mr-4 hidden'>

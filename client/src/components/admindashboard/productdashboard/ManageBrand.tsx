@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { popup, selectCurrentModal } from 'src/slices/modal.slice';
 import { toast } from 'react-toastify';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
+import Pagination from 'src/components/paginate';
+import HelmetSale from 'src/components/Helmet';
 
 const BrandModal = ({
   refetch,
@@ -102,7 +104,7 @@ const BrandModal = ({
 
 export default function ManageBrand() {
   const [params, setParams] = useState({
-    limit: '10',
+    limit: '2',
     page: '1',
     search: '',
   });
@@ -114,6 +116,7 @@ export default function ManageBrand() {
 
   return (
     <div className='mt-4'>
+      <HelmetSale title='Admin Dashboard | Manage Brand'></HelmetSale>
       <BreadCrumb path={['Product', 'Manage Brand']} />
       <div className='mt-4 grid grid-cols-6'>
         <div className='col-span-2 mr-4'>
@@ -198,67 +201,72 @@ export default function ManageBrand() {
                 )}
 
                 {data?.data && data.data.length > 0 && (
-                  <table className='min-w-full divide-y divide-gray-200 bg-white'>
-                    <thead className='bg-pink-400/20'>
-                      <tr>
-                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          ID
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          Name
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          Description
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-right text-xs font-bold uppercase text-gray-500 '>
-                          Edit
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-right text-xs font-bold uppercase text-gray-500 '>
-                          Delete
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className='divide-y divide-gray-200'>
-                      {data?.data.map((e, i) => {
-                        return (
-                          <tr key={i.toString()}>
-                            <td className='whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800'>{e.id}</td>
-                            <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.name}</td>
-                            <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.description}</td>
-                            <td className='whitespace-nowrap px-6 py-4 text-right text-sm font-medium'>
-                              <button
-                                className='text-green-500 hover:text-green-700'
-                                onClick={() => {
-                                  dispatch(
-                                    popup({
-                                      name: 'edit',
-                                      nameDefault: e.name,
-                                      descriptionDefault: e.description,
-                                      id: e.id,
-                                    })
-                                  );
-                                }}
-                              >
-                                <AiOutlineEdit className='text-2xl' />
-                              </button>
-                            </td>
-                            <td className='whitespace-nowrap px-6 py-4 text-right text-sm font-medium'>
-                              <button
-                                className='text-red-500 hover:text-red-700'
-                                onClick={async () => {
-                                  await brandApi.delete(e.id);
-                                  toast.success('delete success!');
-                                  refetch();
-                                }}
-                              >
-                                <AiOutlineDelete className='text-2xl' />
-                              </button>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+                  <div>
+                    <table className='min-w-full divide-y divide-gray-200 bg-white'>
+                      <thead className='bg-pink-400/20'>
+                        <tr>
+                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                            ID
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                            Name
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                            Description
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-right text-xs font-bold uppercase text-gray-500 '>
+                            Edit
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-right text-xs font-bold uppercase text-gray-500 '>
+                            Delete
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className='divide-y divide-gray-200'>
+                        {data?.data.map((e, i) => {
+                          return (
+                            <tr key={i.toString()}>
+                              <td className='whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800'>{e.id}</td>
+                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.name}</td>
+                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.description}</td>
+                              <td className='whitespace-nowrap px-6 py-4 text-right text-sm font-medium'>
+                                <button
+                                  className='text-green-500 hover:text-green-700'
+                                  onClick={() => {
+                                    dispatch(
+                                      popup({
+                                        name: 'edit',
+                                        nameDefault: e.name,
+                                        descriptionDefault: e.description,
+                                        id: e.id,
+                                      })
+                                    );
+                                  }}
+                                >
+                                  <AiOutlineEdit className='text-2xl' />
+                                </button>
+                              </td>
+                              <td className='whitespace-nowrap px-6 py-4 text-right text-sm font-medium'>
+                                <button
+                                  className='text-red-500 hover:text-red-700'
+                                  onClick={async () => {
+                                    await brandApi.delete(e.id);
+                                    toast.success('delete success!');
+                                    refetch();
+                                  }}
+                                >
+                                  <AiOutlineDelete className='text-2xl' />
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                    <div className='flex justify-end'>
+                      <Pagination pageSize={Math.ceil(1)} queryConfig={{ limit: '2', path: '/admin/brand/' }} />
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
