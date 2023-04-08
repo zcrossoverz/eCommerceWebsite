@@ -1,11 +1,12 @@
 import { Menu } from '@headlessui/react';
 import { useState } from 'react';
-import { AiFillHome, AiFillSetting } from 'react-icons/ai';
+import { AiFillHome } from 'react-icons/ai';
 import { BsFillCartFill } from 'react-icons/bs';
 import { FaMoneyCheckAlt } from 'react-icons/fa';
-import { HiChevronDown } from 'react-icons/hi';
+import { HiChevronDown, HiDocumentReport } from 'react-icons/hi';
 // eslint-disable-next-line import/named
 import { IconType } from 'react-icons/lib';
+import { MdInventory, MdPeopleAlt } from 'react-icons/md';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 type PropsButton = {
@@ -87,6 +88,10 @@ const ButtonNavDropdown = ({ name, Icon, subnav, active }: PropsNavButton) => {
 
 function SidebarDashboard() {
   const location = useLocation().pathname.replace('/admin', '');
+  function IoPeople(props: IconBaseProps): Element {
+    throw new Error('Function not implemented.');
+  }
+
   return (
     <div>
       <div className='mx-2 flex items-center py-6'>
@@ -106,9 +111,9 @@ function SidebarDashboard() {
           active={location.includes('/product') || location.includes('/brand') || location.includes('/coupon')}
         />
         <ButtonNav name={'Orders'} Icon={FaMoneyCheckAlt} link='/order' active={location.includes('/order')} />
-        <ButtonNav name={'Inventory'} Icon={AiFillSetting} link='/inventory' active={location === '/inventory'} />
-        <ButtonNav name={'Reports'} Icon={AiFillSetting} link='/report' active={location === '/report'} />
-        <ButtonNav name={'Users'} Icon={AiFillSetting} link='/user' active={location === '/user'} />
+        <ButtonNav name={'Inventory'} Icon={MdInventory} link='/inventory' active={location === '/inventory'} />
+        <ButtonNav name={'Reports'} Icon={HiDocumentReport} link='/report' active={location === '/report'} />
+        <ButtonNav name={'Users'} Icon={MdPeopleAlt} link='/user' active={location === '/user'} />
       </div>
     </div>
   );
