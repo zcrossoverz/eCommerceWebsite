@@ -9,6 +9,7 @@ import { useQueries, useQuery } from '@tanstack/react-query';
 import analysisApi from 'src/apis/analysis.api';
 import productsApi from 'src/apis/product.api';
 import { useState } from 'react';
+import HelmetSale from 'src/components/Helmet';
 
 type card_props = {
   title: string;
@@ -69,14 +70,15 @@ function MainDashboard() {
 
   return (
     <div>
+      <HelmetSale title='Admin Dashboard | Home'></HelmetSale>
       <div className='grid md:grid-cols-2 lg:grid-cols-4'>
         <Card title='Total Products' value={overview.data?.data.countProducts} icon={0} />
         <Card title='Total Orders' value={overview.data?.data.countOrders} icon={2} />
         <Card title='Total Brands' value={overview.data?.data.countBrands} icon={1} />
         <Card title='Total Users' value={overview.data?.data.countUsers} icon={3} />
       </div>
-      <div className='mt-2 grid grid-flow-col grid-cols-3 gap-8'>
-        <div className='col-span-2 -ml-1 mr-2 rounded-xl bg-white p-2 shadow-lg'>
+      <div className='mt-2 grid grid-flow-col grid-cols-3 gap-4'>
+        <div className='col-span-2 -ml-1 mr-1 rounded-xl bg-white p-2 shadow-lg'>
           <LineChart />
         </div>
         <div className='flex rounded-xl bg-white p-8 shadow-lg'>
@@ -84,7 +86,7 @@ function MainDashboard() {
         </div>
       </div>
 
-      <div className='mt-4 -ml-1 grid grid-flow-col grid-cols-4 gap-8'>
+      <div className='mt-4 -ml-1 grid grid-flow-col grid-cols-4 gap-4'>
         <div className='col-span-2 rounded-xl bg-white p-8 shadow-lg'>
           <div className=' -mt-6 -ml-4'>
             <div className='text-xl font-semibold leading-loose'>Top Sales</div>

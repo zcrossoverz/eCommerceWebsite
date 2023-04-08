@@ -242,10 +242,22 @@ export const getOneById = async (id: number) => {
     : BadRequestError("product not found!");
 };
 
-export const update = async (id: number, product: ProductInterface) => {
-  const _product = await productRepository.findOneBy({ id });
+export const update = async (id: number, product: ProductInterface, brand_id = -1) => {
+  const _product = await productRepository.findOne({
+    where: {
+      id
+    },
+    relations: {
+      brand: true
+    }
+  });
   if (!_product) return BadRequestError("product not found!");
-  return (await productRepository.update({ id }, { ...product })).affected
+  const brandRepo = AppDataSource.getRepository(Brand);
+  const brand = await brandRepo.findOneBy({ id: brand_id !== -1 ? brand_id : _product.brand.id });
+  if(!brand) return BadRequestError("error when retrieve brand");
+  // console.log(brand);
+  
+  return (await productRepository.update({ id }, { ...product, brand })).affected
     ? success()
     : failed();
 };

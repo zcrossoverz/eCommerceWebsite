@@ -59,7 +59,8 @@ export const updateFeedback = async (
       },
     });
     if (!feedback) return BadRequestError("feedback not found");
-    if (!data.comment && !data.rate) return BadRequestError("rate and comment empty");
+    if (!data.comment && !data.rate)
+      return BadRequestError("rate and comment empty");
     const rs = (await feedbackRepo.update({ id: feedback.id }, { ...data }))
       .affected
       ? success()
@@ -73,14 +74,16 @@ export const updateFeedback = async (
 export const deleteFeedback = async (id: number) => {
   const product = await feedbackRepo.findOne({
     where: {
-      id
+      id,
     },
-    relations:{
-      product: true
-    }
+    relations: {
+      product: true,
+    },
   });
-  const rs = (await feedbackRepo.delete({ id })).affected ? success() : failed();
-  if(product) await syncRate(product.id);
+  const rs = (await feedbackRepo.delete({ id })).affected
+    ? success()
+    : failed();
+  if (product) await syncRate(product.id);
   return rs;
 };
 
@@ -91,7 +94,7 @@ export const getFeedbackByProduct = async (product_id: number) => {
     },
     relations: {
       feedbacks: {
-        user: true
+        user: true,
       },
     },
   });
@@ -108,7 +111,10 @@ export const getFeedbackByProduct = async (product_id: number) => {
           };
         }),
       }
-    : BadRequestError("product has no feedback yet");
+    : {
+        rate: 0,
+        data: [],
+      };
 };
 
 export const syncRate = async (product_id: number) => {

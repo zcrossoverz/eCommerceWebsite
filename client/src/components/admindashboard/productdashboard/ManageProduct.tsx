@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AiOutlineDelete, AiOutlineEdit, AiOutlineFileSearch } from 'react-icons/ai';
+import HelmetSale from 'src/components/Helmet';
 
 export default function ManageProduct() {
   const [search, setSearch] = useState('');
@@ -39,7 +40,6 @@ export default function ManageProduct() {
     });
   }, [query.page]);
 
-
   const { data, isLoading, refetch } = useQuery(
     ['products', params],
     () =>
@@ -55,6 +55,7 @@ export default function ManageProduct() {
 
   return (
     <div className='mt-4'>
+      <HelmetSale title='Admin Dashboard | Manage Product'></HelmetSale>
       <BreadCrumb path={['Product', 'Manage Product']} />
       <div className='mt-4 grid grid-cols-6'>
         <div className='col-span-2 mr-4'>
@@ -147,10 +148,23 @@ export default function ManageProduct() {
                               <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.brand}</td>
                               <td className='whitespace-nowrap px-6 py-4 text-right text-sm font-medium'>
                                 <button className='px-1 text-blue-500 hover:text-blue-700'>
-                                  <AiOutlineFileSearch className='text-2xl' />
+                                  <AiOutlineFileSearch
+                                    className='text-2xl'
+                                    onClick={() => navigate(`./detail/${e.id}`)}
+                                  />
                                 </button>
                                 <button className='px-1 text-green-400 hover:text-green-600'>
-                                  <AiOutlineEdit className='text-2xl' />
+                                  <AiOutlineEdit
+                                    className='text-2xl'
+                                    onClick={() => {
+                                      navigate('./form', {
+                                        state: {
+                                          type: 'edit',
+                                          id: e.id,
+                                        },
+                                      });
+                                    }}
+                                  />
                                 </button>
                                 <button
                                   onClick={async () => {
