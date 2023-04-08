@@ -24,7 +24,7 @@ export default function DetailOrder() {
   return (
     <div className='mt-4'>
       <HelmetSale title='Admin Dashboard | Detail Order'></HelmetSale>
-      <BreadCrumb path={['Product', 'Order Dashboard', 'Detail Dashboard']} />
+      <BreadCrumb path={['Product', 'Order Dashboard', 'Detail']} />
       <div>
         <div className='mt-4 flex flex-col'>
           <div className='overflow-x-auto'>

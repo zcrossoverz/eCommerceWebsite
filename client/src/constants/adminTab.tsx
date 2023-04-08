@@ -3,6 +3,7 @@ import MainDashboard from 'src/components/admindashboard/maindashboard/MainDashb
 import OrderDashboard from 'src/components/admindashboard/orderdashboard';
 import DetailOrder from 'src/components/admindashboard/orderdashboard/DetailOrder';
 import ProductDashboard from 'src/components/admindashboard/productdashboard';
+import DetailProduct from 'src/components/admindashboard/productdashboard/DetailProduct';
 import ManageBrand from 'src/components/admindashboard/productdashboard/ManageBrand';
 import ManageCoupon from 'src/components/admindashboard/productdashboard/ManageCoupon';
 import ManageProduct from 'src/components/admindashboard/productdashboard/ManageProduct';
@@ -20,6 +21,7 @@ export const dashboard_tab: dashboardTabInterface[] = [
   { name: 'home', component: <MainDashboard />, link: '/' },
   { name: 'products', component: <ManageProduct />, link: '/product' },
   { name: 'product', component: <ProductForm />, link: '/product/form' },
+  { name: 'product', component: <DetailProduct />, link: '/product/detail/:product_id' },
   { name: 'brand', component: <ManageBrand />, link: '/brand' },
   { name: 'coupon', component: <ManageCoupon />, link: '/coupon' },
   { name: 'order', component: <OrderDashboard />, link: '/order' },
