@@ -7,13 +7,13 @@ import { useSelector } from 'react-redux';
 import { NavLink, type PathMatch, Route, Routes, useMatch } from 'react-router-dom';
 import userApi from 'src/apis/user.api';
 import BreadCrumb from 'src/components/admindashboard/breadcrumb';
-import HelmetSale from 'src/components/Helmet';
 import Adress from 'src/components/user/adress';
 import File from 'src/components/user/file';
 import Password from 'src/components/user/password';
 import Security from 'src/components/user/security';
 import { RootState } from 'src/store';
 import { useTranslation } from 'react-i18next';
+import HelmetSEO from 'src/components/Helmet';
 
 function ProfileUser() {
   const { t } = useTranslation('profileUser');
@@ -65,8 +65,8 @@ function ProfileUser() {
           <BreadCrumb path={['Fstore', t('profileUser.my account')]} />
         </div>
       )}
+      <HelmetSEO title='Tài khoản của bạn'></HelmetSEO>
       <div className='mx-auto my-2 grid max-w-7xl grid-cols-12 overflow-hidden rounded-md bg-blue-100 lg:min-h-[300px] lg:bg-transparent'>
-        <HelmetSale title='Tài khoản của bạn'></HelmetSale>
         <div className='col-span-12 lg:col-span-3'>
           <div className='hidden border-b lg:block'>
             <div className='flex items-center p-4'>

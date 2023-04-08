@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AiOutlineDelete, AiOutlineEdit, AiOutlineFileSearch } from 'react-icons/ai';
+import HelmetSEO from 'src/components/Helmet';
 
 export default function ManageProduct() {
   const [search, setSearch] = useState('');
@@ -39,7 +40,6 @@ export default function ManageProduct() {
     });
   }, [query.page]);
 
-
   const { data, isLoading, refetch } = useQuery(
     ['products', params],
     () =>
@@ -55,6 +55,7 @@ export default function ManageProduct() {
 
   return (
     <div className='mt-4'>
+      <HelmetSEO title='Quản lý sản phẩm'></HelmetSEO>
       <BreadCrumb path={['Product', 'Manage Product']} />
       <div className='mt-4 grid grid-cols-6'>
         <div className='col-span-2 mr-4'>

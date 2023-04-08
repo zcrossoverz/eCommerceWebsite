@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { popup, selectCurrentModal } from 'src/slices/modal.slice';
 import { toast } from 'react-toastify';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
+import HelmetSEO from 'src/components/Helmet';
 
 const BrandModal = ({
   refetch,
@@ -114,6 +115,7 @@ export default function ManageBrand() {
 
   return (
     <div className='mt-4'>
+      <HelmetSEO title='Quản lý thương hiệu'></HelmetSEO>
       <BreadCrumb path={['Product', 'Manage Brand']} />
       <div className='mt-4 grid grid-cols-6'>
         <div className='col-span-2 mr-4'>

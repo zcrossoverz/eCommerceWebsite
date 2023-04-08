@@ -19,6 +19,7 @@ import { isAxiosErr } from 'src/utils/error';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import BreadCrumb from 'src/components/admindashboard/breadcrumb';
+import HelmetSEO from 'src/components/Helmet';
 function MyOrder() {
   const { t } = useTranslation('myorder');
   const navigate = useNavigate();
@@ -92,6 +93,7 @@ function MyOrder() {
   };
   return (
     <div className='mx-auto max-w-7xl p-2'>
+      <HelmetSEO title='Đơn hàng'></HelmetSEO>
       <div className='mx-auto my-2 max-w-7xl'>
         <BreadCrumb path={['Fstore', 'Đơn hàng']} />
       </div>

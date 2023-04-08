@@ -7,7 +7,7 @@ import { produce } from 'immer';
 import { omit } from 'lodash';
 import { updateCart as updateCartList, clearCart } from 'src/slices/cart.slice';
 import { baseURL } from 'src/constants/constants';
-import HelmetSale from 'src/components/Helmet';
+import HelmetSEO from 'src/components/Helmet';
 import BreadCrumb from 'src/components/admindashboard/breadcrumb';
 import { useNavigate } from 'react-router-dom';
 // import path from 'src/constants/path';
@@ -167,7 +167,7 @@ function CartUser() {
   };
   return (
     <div className='mx-auto max-w-7xl bg-transparent p-4'>
-      <HelmetSale title='Giỏ hàng'></HelmetSale>
+      <HelmetSEO title='Giỏ hàng'></HelmetSEO>
       <div className='mb-2'>
         <BreadCrumb path={['Fstore', 'Giỏ hàng']} />
       </div>

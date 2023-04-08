@@ -18,13 +18,13 @@ import { RootState } from 'src/store';
 import path from 'src/constants/path';
 import { baseURL } from 'src/constants/constants';
 import BreadCrumb from '../admindashboard/breadcrumb';
-import HelmetSale from '../Helmet';
 import { nanoid } from '@reduxjs/toolkit';
 import Loading from '../loading';
 import { useTranslation } from 'react-i18next';
 import Comments from './comments';
 import feedbackApi from 'src/apis/feedback.api';
 import { ResGetFeedback } from 'src/types/product.type';
+import HelmetSEO from '../Helmet';
 function ProductDetails() {
   const rating = useSelector((state: RootState) => state.productReducer.rating);
   const userInfo = useSelector((state: RootState) => state.userReducer.userInfo);
@@ -159,7 +159,7 @@ function ProductDetails() {
   };
   return (
     <>
-      <HelmetSale title={product?.data.name as string}></HelmetSale>
+      <HelmetSEO title={product?.data.name as string}></HelmetSEO>
       <div className='mx-auto max-w-7xl md:px-4'>
         <div className='hidden md:block'>
           <BreadCrumb

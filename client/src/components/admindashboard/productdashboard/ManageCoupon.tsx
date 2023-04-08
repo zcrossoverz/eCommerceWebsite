@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { popup, selectCurrentModal } from 'src/slices/modal.slice';
 import { toast } from 'react-toastify';
 import couponApi from 'src/apis/coupon.api';
+import HelmetSEO from 'src/components/Helmet';
 
 const BrandModal = ({
   refetch,
@@ -115,6 +116,7 @@ export default function ManageCoupon() {
 
   return (
     <div className='mt-4'>
+      <HelmetSEO title='Quản lý mã giảm giá'></HelmetSEO>
       <BreadCrumb path={['Product', 'Manage Coupon']} />
       <div className='mt-4 grid grid-cols-6'>
         <div className='col-span-2 mr-4 hidden'>
@@ -132,7 +134,7 @@ export default function ManageCoupon() {
           />
         </div>
         <div className='col-span-1'>
-          <select className='block hidden w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-500 focus:shadow-lg focus:shadow-blue-300 focus:ring-blue-500'>
+          <select className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-500 focus:shadow-lg focus:shadow-blue-300 focus:ring-blue-500'>
             <option className='mt-1' value='default'>
               Sort by
             </option>

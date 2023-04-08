@@ -1,3 +1,3 @@
-import HelmetSale from './HelmetSale';
+import HelmetSEO from './HelmetSEO';
 
-export default HelmetSale;
+export default HelmetSEO;

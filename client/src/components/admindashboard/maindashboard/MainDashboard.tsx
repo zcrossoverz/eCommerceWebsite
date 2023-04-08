@@ -9,6 +9,7 @@ import { useQueries, useQuery } from '@tanstack/react-query';
 import analysisApi from 'src/apis/analysis.api';
 import productsApi from 'src/apis/product.api';
 import { useState } from 'react';
+import HelmetSEO from 'src/components/Helmet';
 
 type card_props = {
   title: string;
@@ -69,6 +70,7 @@ function MainDashboard() {
 
   return (
     <div>
+      <HelmetSEO title='Admin'></HelmetSEO>
       <div className='grid md:grid-cols-2 lg:grid-cols-4'>
         <Card title='Total Products' value={overview.data?.data.countProducts} icon={0} />
         <Card title='Total Orders' value={overview.data?.data.countOrders} icon={2} />
@@ -121,22 +123,27 @@ function MainDashboard() {
           </div>
           <hr className='-ml-6 bg-gray-300' />
           <div className='flex flex-col'>
-          <div className='flex justify-between px-2'>
+            <div className='flex justify-between px-2'>
               <div className=''>abc vua xyz..... </div>
               <div className=''> 10:11:20 30/3/2023</div>
-            </div><div className='flex justify-between px-2'>
+            </div>
+            <div className='flex justify-between px-2'>
               <div className=''>abc vua xyz..... </div>
               <div className=''> 10:11:20 30/3/2023</div>
-            </div><div className='flex justify-between px-2'>
+            </div>
+            <div className='flex justify-between px-2'>
               <div className=''>abc vua xyz..... </div>
               <div className=''> 10:11:20 30/3/2023</div>
-            </div><div className='flex justify-between px-2'>
+            </div>
+            <div className='flex justify-between px-2'>
               <div className=''>abc vua xyz..... </div>
               <div className=''> 10:11:20 30/3/2023</div>
-            </div><div className='flex justify-between px-2'>
+            </div>
+            <div className='flex justify-between px-2'>
               <div className=''>abc vua xyz..... </div>
               <div className=''> 10:11:20 30/3/2023</div>
-            </div><div className='flex justify-between px-2'>
+            </div>
+            <div className='flex justify-between px-2'>
               <div className=''>abc vua xyz..... </div>
               <div className=''> 10:11:20 30/3/2023</div>
             </div>
