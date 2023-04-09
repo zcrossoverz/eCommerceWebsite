@@ -42,5 +42,8 @@ const userApi = {
       params,
     });
   },
+  deleteUser(userId: number) {
+    return http.delete(`/user/${userId}`);
+  },
 };
 export default userApi;
