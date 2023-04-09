@@ -50,6 +50,9 @@ const productsApi = {
       },
     });
   },
+  async deleteOption(option_id: number) {
+    return await http.delete(`product_option/${option_id}`);
+  },
 };
 
 export default productsApi;

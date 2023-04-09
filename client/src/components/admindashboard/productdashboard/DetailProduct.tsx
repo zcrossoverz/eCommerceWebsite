@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import BreadCrumb from '../breadcrumb';
-import orderApi from 'src/apis/order.api';
 import { formatPrice } from 'src/utils/formatPrice';
 import HelmetSale from 'src/components/Helmet';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -16,10 +15,12 @@ const OptionModal = ({
   id,
   type,
   setModal,
+  refetch,
 }: {
   type: string;
   id: number;
   setModal: Dispatch<SetStateAction<boolean>>;
+  refetch: any;
 }) => {
   const [image, setImage] = useState<File>();
   const [ram, setRam] = useState('');
@@ -124,6 +125,7 @@ const OptionModal = ({
             <button
               onClick={async () => {
                 await createOption();
+                refetch();
               }}
               className='rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 '
             >
@@ -210,7 +212,7 @@ export default function DetailProduct() {
                             </th>
                             <td className='px-6 py-4'>
                               <img
-                                className='h-32 w-24 text-left'
+                                className='w-26 h-28 text-left'
                                 src={`${baseURL}/${e.image?.image_url !== undefined ? e.image?.image_url : ''}`}
                                 alt={`product_image`}
                               />
@@ -222,7 +224,14 @@ export default function DetailProduct() {
                                 <AiOutlineEdit className='text-2xl' />
                               </button>
                               <button className='text-red-500 hover:text-red-700'>
-                                <AiOutlineDelete className='text-2xl' />
+                                <AiOutlineDelete
+                                  className='text-2xl'
+                                  onClick={async () => {
+                                    await productsApi.deleteOption(e.product_option_id ? e.product_option_id : 0);
+                                    toast.success('delete option success!');
+                                    refetch();
+                                  }}
+                                />
                               </button>
                             </td>
                           </tr>
@@ -231,7 +240,12 @@ export default function DetailProduct() {
                     </tbody>
                   </table>
                   {modal && (
-                    <OptionModal type='create' id={product?.id !== undefined ? product.id : 0} setModal={setModal} />
+                    <OptionModal
+                      type='create'
+                      id={product?.id !== undefined ? product.id : 0}
+                      setModal={setModal}
+                      refetch={refetch}
+                    />
                   )}
                 </div>
               </div>
