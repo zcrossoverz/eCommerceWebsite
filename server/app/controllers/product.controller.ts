@@ -81,8 +81,8 @@ export const update = async (
   next: NextFunction
 ) => {
   const { id } = req.params;
-  const { name, description } = req.body;
-  const rs = await productServices.update(Number(id), { name, description });
+  const { name, description, brand_id = -1 } = req.body;
+  const rs = await productServices.update(Number(id), { name, description }, brand_id);
   return isError(rs) ? next(err(rs, res)) : res.json(rs);
 };
 

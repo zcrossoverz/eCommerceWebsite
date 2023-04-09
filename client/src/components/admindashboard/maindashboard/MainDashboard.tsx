@@ -77,8 +77,8 @@ function MainDashboard() {
         <Card title='Total Brands' value={overview.data?.data.countBrands} icon={1} />
         <Card title='Total Users' value={overview.data?.data.countUsers} icon={3} />
       </div>
-      <div className='mt-2 grid grid-flow-col grid-cols-3 gap-8'>
-        <div className='col-span-2 -ml-1 mr-2 rounded-xl bg-white p-2 shadow-lg'>
+      <div className='mt-2 grid grid-flow-col grid-cols-3 gap-4'>
+        <div className='col-span-2 -ml-1 mr-1 rounded-xl bg-white p-2 shadow-lg'>
           <LineChart />
         </div>
         <div className='flex rounded-xl bg-white p-8 shadow-lg'>
@@ -86,7 +86,7 @@ function MainDashboard() {
         </div>
       </div>
 
-      <div className='mt-4 -ml-1 grid grid-flow-col grid-cols-4 gap-8'>
+      <div className='mt-4 -ml-1 grid grid-flow-col grid-cols-4 gap-4'>
         <div className='col-span-2 rounded-xl bg-white p-8 shadow-lg'>
           <div className=' -mt-6 -ml-4'>
             <div className='text-xl font-semibold leading-loose'>Top Sales</div>

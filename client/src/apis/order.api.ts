@@ -57,6 +57,9 @@ const orderApi = {
       params,
     });
   },
+  deleteOrder(id: number) {
+    return http.delete(`order/${id}`);
+  },
 };
 
 export default orderApi;

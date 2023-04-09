@@ -148,10 +148,23 @@ export default function ManageProduct() {
                               <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.brand}</td>
                               <td className='whitespace-nowrap px-6 py-4 text-right text-sm font-medium'>
                                 <button className='px-1 text-blue-500 hover:text-blue-700'>
-                                  <AiOutlineFileSearch className='text-2xl' />
+                                  <AiOutlineFileSearch
+                                    className='text-2xl'
+                                    onClick={() => navigate(`./detail/${e.id}`)}
+                                  />
                                 </button>
                                 <button className='px-1 text-green-400 hover:text-green-600'>
-                                  <AiOutlineEdit className='text-2xl' />
+                                  <AiOutlineEdit
+                                    className='text-2xl'
+                                    onClick={() => {
+                                      navigate('./form', {
+                                        state: {
+                                          type: 'edit',
+                                          id: e.id,
+                                        },
+                                      });
+                                    }}
+                                  />
                                 </button>
                                 <button
                                   onClick={async () => {
