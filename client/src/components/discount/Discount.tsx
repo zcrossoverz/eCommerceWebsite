@@ -28,7 +28,7 @@ function Discount() {
       className: 'center',
       infinite: true,
       centerPadding: '60px',
-      slidesToShow: 5,
+      slidesToShow: coupons.length > 4 ? 5 : coupons.length,
       swipeToSlide: true,
       autoplay: true,
       cssEase: 'linear',
@@ -55,7 +55,7 @@ function Discount() {
         },
       ],
     };
-  }, []);
+  }, [coupons]);
   return (
     <div className='mx-auto mb-2 max-w-7xl overflow-hidden border-t bg-white pb-4 shadow-sm'>
       <div className='mb-2 flex items-center justify-center'>

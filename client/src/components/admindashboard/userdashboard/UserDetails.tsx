@@ -22,6 +22,7 @@ function UserDetails() {
         role: string;
       };
     }) => userApi.updateInfo(body.id, body.data),
+    retry: 1,
   });
   const handleChangeRole = (e: ChangeEvent<HTMLSelectElement>) => {
     if (user?.data && user.data.id && user.data.role !== e.target.value && e.target.value !== 'notValid') {
@@ -35,6 +36,7 @@ function UserDetails() {
         {
           onSuccess() {
             toast.success('Thay đổi thông tin thành công', { autoClose: 2000 });
+            refetch();
           },
         }
       );
