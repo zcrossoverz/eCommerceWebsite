@@ -53,6 +53,17 @@ const productsApi = {
   async deleteOption(option_id: number) {
     return await http.delete(`product_option/${option_id}`);
   },
+  async updateOption(
+    product_option_id: number,
+    data: {
+      ram?: string;
+      rom?: string;
+      color?: string;
+      price?: string;
+    }
+  ) {
+    return http.put(`product_option/${product_option_id}`, data);
+  },
 };
 
 export default productsApi;
