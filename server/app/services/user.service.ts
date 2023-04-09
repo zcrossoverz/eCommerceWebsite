@@ -17,6 +17,7 @@ interface UserInterface {
   firstName: string;
   lastName: string;
   phone: string;
+  role?: UserRole;
 }
 
 interface UserReturnInterface extends UserInterface {
