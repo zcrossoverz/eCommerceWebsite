@@ -3,7 +3,7 @@ import { BsSearch, BsTelephoneForward } from 'react-icons/bs';
 import { GoDiffRenamed } from 'react-icons/go';
 import classNames from 'classnames';
 import { FiSettings } from 'react-icons/fi';
-import { BiHelpCircle, BiLogIn, BiShoppingBag } from 'react-icons/bi';
+import { BiLogIn, BiShoppingBag } from 'react-icons/bi';
 import { Link, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AppContext } from 'src/contexts/app.context';
@@ -240,11 +240,11 @@ function Header() {
                         <li className='nav-item mt-4'>
                           <Link to='/admin' className='flex items-center'>
                             <GrUserAdmin className='mr-4 text-lg' />
-                            <span>Admin Dashboard</span>
+                            <span>Admin</span>
                           </Link>
                         </li>
                       )}
-                      <li className='nav-item mt-4'>
+                      <li className='nav-item mt-2'>
                         <Link to='/profile' className='flex items-center'>
                           <FiSettings className='mr-4 text-lg' />
                           <span>{t('header.my account')}</span>

@@ -1,10 +1,11 @@
 import http from 'src/utils/http';
-import { User, UserInfoWhenUpdate } from 'src/types/user.type';
+import { ResGetAllUser, User, UserInfoWhenUpdate } from 'src/types/user.type';
+import { ProductListConfig } from 'src/types/product.type';
 const userApi = {
   getUserByid(id: number) {
     return http.get<User>(`/user/${id}`);
   },
-  updateInfo(id: number, body: UserInfoWhenUpdate) {
+  updateInfo(id: number, body: UserInfoWhenUpdate | { role: string }) {
     return http.put(`/user/${id}`, body);
   },
   addAddress(id: number, address: string) {
@@ -34,6 +35,11 @@ const userApi = {
     }>('/user/change_password', {
       old_password,
       new_password,
+    });
+  },
+  getAllUser(params: ProductListConfig) {
+    return http.get<ResGetAllUser>('user/get_all', {
+      params,
     });
   },
 };

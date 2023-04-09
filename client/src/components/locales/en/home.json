@@ -40,5 +40,14 @@
     "login": "LogIn",
     "logout": "LogOut",
     "search by product name": "Search By Product Name"
+  },
+  "discount": {
+    "title": "Hunt for discount coupons",
+    "startDate": "Effective date",
+    "endDate": "Expiry date",
+    "discount": "Discount"
+  },
+  "topSale": {
+    "title": "Top selling products"
   }
 }

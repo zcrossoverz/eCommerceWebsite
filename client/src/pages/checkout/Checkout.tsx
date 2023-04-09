@@ -12,6 +12,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import couponApi from 'src/apis/coupon.api';
 import orderApi from 'src/apis/order.api';
+import HelmetSEO from 'src/components/Helmet';
 import path from 'src/constants/path';
 import OrderItem from 'src/pages/checkout/orderitem/OrderItems';
 import { CartItem as CartItemType } from 'src/types/cart';
@@ -266,6 +267,7 @@ function Checkout() {
 
   return (
     <div className='mx-auto my-2 max-w-7xl bg-white p-2 shadow-md'>
+      <HelmetSEO title='Thanh toán'></HelmetSEO>
       <div className='grid grid-cols-2 lg:grid-cols-3'>
         <div className='col-span-2 grid grid-cols-1 lg:grid-cols-2'>
           <div className='col-span-1 border-r bg-white pr-2'>

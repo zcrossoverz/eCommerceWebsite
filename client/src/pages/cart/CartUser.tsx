@@ -7,7 +7,7 @@ import { produce } from 'immer';
 import { omit } from 'lodash';
 import { updateCart as updateCartList, clearCart } from 'src/slices/cart.slice';
 import { baseURL } from 'src/constants/constants';
-import HelmetSale from 'src/components/Helmet';
+import HelmetSEO from 'src/components/Helmet';
 import BreadCrumb from 'src/components/admindashboard/breadcrumb';
 import { useNavigate } from 'react-router-dom';
 // import path from 'src/constants/path';
@@ -16,10 +16,12 @@ import { useMutation } from '@tanstack/react-query';
 import orderApi from 'src/apis/order.api';
 import { isAxiosErr } from 'src/utils/error';
 import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
 interface ExtendCartItem extends CartItem {
   checked: boolean;
 }
 function CartUser() {
+  const { t } = useTranslation();
   const [extendCartItems, setExtendCartItem] = useState<ExtendCartItem[]>([]);
   const navigate = useNavigate();
   // lấy id và cart của user
@@ -167,24 +169,24 @@ function CartUser() {
   };
   return (
     <div className='mx-auto max-w-7xl bg-transparent p-4'>
-      <HelmetSale title='Giỏ hàng'></HelmetSale>
+      <HelmetSEO title='Giỏ hàng'></HelmetSEO>
       <div className='mb-2'>
-        <BreadCrumb path={['Fstore', 'Giỏ hàng']} />
+        <BreadCrumb path={['Fstore', t('cartUser:cartUser.cart')]} />
       </div>
       {/* top section cart*/}
       <div className='grid grid-cols-12 gap-2 bg-white px-6 py-4 text-lg font-semibold shadow-sm'>
         <div className='col-span-1'>
           <input checked={isCheckedAll} onChange={handleCheckedAll} type='checkbox' />
         </div>
-        <h2 className='col-span-6'>Sản phẩm</h2>
+        <h2 className='col-span-6'>{t('cartUser:cartUser.Product')}</h2>
         <button onClick={handleDeleteChecked} className='col-span-5 text-center md:hidden'>
           Xóa
         </button>
         <div className='col-span-5 hidden grid-cols-12 lg:grid'>
-          <span className='col-span-3 text-center'>Đơn giá</span>
-          <span className='col-span-3 text-center'>Số lượng</span>
-          <span className='col-span-3 text-center'>Thành tiền</span>
-          <span className='col-span-3 text-center'>Thao tác</span>
+          <span className='col-span-3 text-center'>{t('cartUser:cartUser.unit price')}</span>
+          <span className='col-span-3 text-center'>{t('cartUser:cartUser.quantity')}</span>
+          <span className='col-span-3 text-center'>{t('cartUser:cartUser.into money')}</span>
+          <span className='col-span-3 text-center'>{t('cartUser:cartUser.operation')}</span>
         </div>
       </div>
       {/* bottom section cart */}
@@ -253,7 +255,7 @@ function CartUser() {
                   {formatPrice(Number(item.option.price) * Number(item.option.quantity))}
                 </span>
                 <button onClick={handleDelete(index)} className='col-span-3 text-center'>
-                  Xóa
+                  {t('cartUser:cartUser.delete')}
                 </button>
               </div>
             </div>
@@ -264,22 +266,24 @@ function CartUser() {
         <div className='flex flex-shrink-0 items-center'>
           <input type='checkbox' onChange={handleCheckedAll} checked={isCheckedAll} />
           <button onClick={handleCheckedAll} className='mx-3 cursor-pointer text-sm md:text-lg'>
-            Chọn tất cả
+            {t('cartUser:cartUser.select all')}
           </button>
           <button onClick={handleDeleteChecked} className='hidden cursor-pointer md:inline-block'>
-            Xóa
+            {t('cartUser:cartUser.delete')}
           </button>
         </div>
         <div className='flex items-center'>
           <div className='flex-grow md:px-2'>
-            <span className='hidden md:inline-block'>Tổng thanh toán ({checkedItems.length} sản phẩm):</span>
+            <span className='hidden md:inline-block'>
+              {t('cartUser:cartUser.total payment')} ({checkedItems.length} {t('cartUser:cartUser.Product')}):
+            </span>
             <span className='mr-2 text-lg text-orange-500 md:text-2xl'>{formatPrice(totalCost) || formatPrice(0)}</span>
           </div>
           <button
             onClick={() => handleCheckout()}
             className='min-w-[3rem] flex-shrink-0 rounded border-b-4 border-blue-700 bg-blue-500 py-2 px-1 font-bold text-white hover:border-blue-500 hover:bg-blue-400 md:px-4'
           >
-            Tạo đơn hàng
+            {t('cartUser:cartUser.createOrder')}
           </button>
         </div>
       </div>

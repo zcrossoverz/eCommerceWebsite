@@ -40,5 +40,14 @@
     "login": "Đăng Nhập",
     "logout": "Đăng Xuất",
     "search by product name": "Tìm Kiếm Theo Tên Sản Phẩm"
+  },
+  "discount": {
+    "title": "Săn mã giảm giá",
+    "startDate": "Ngày bắt đầu",
+    "endDate": "Hiệu lực đến",
+    "discount": "Giảm"
+  },
+  "topSale": {
+    "title": "Top sản phẩm bán chạy"
   }
 }

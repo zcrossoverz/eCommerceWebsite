@@ -10,6 +10,7 @@ import ManageProduct from 'src/components/admindashboard/productdashboard/Manage
 import ProductForm from 'src/components/admindashboard/productdashboard/ProductForm';
 import ReportDashboard from 'src/components/admindashboard/reportdashboard';
 import UserDashboard from 'src/components/admindashboard/userdashboard';
+import UserDetails from 'src/components/admindashboard/userdashboard/UserDetails';
 
 export interface dashboardTabInterface {
   name: string;
@@ -29,4 +30,5 @@ export const dashboard_tab: dashboardTabInterface[] = [
   { name: 'inventory', component: <InventoryDashboard />, link: '/inventory' },
   { name: 'report', component: <ReportDashboard />, link: '/report' },
   { name: 'user', component: <UserDashboard />, link: '/user' },
+  { name: 'user', component: <UserDetails />, link: '/user/details/:userId' },
 ];

@@ -6,6 +6,7 @@ import { useMemo, useRef, useState } from 'react';
 import { BsChevronCompactLeft, BsChevronCompactRight, BsPieChart } from 'react-icons/bs';
 import { useQuery } from '@tanstack/react-query';
 import analysisApi, { ResTopSale } from 'src/apis/analysis.api';
+import { useTranslation } from 'react-i18next';
 
 // function SampleNextArrow(props) {
 //   const { className, style, onClick } = props;
@@ -21,6 +22,7 @@ interface SliderRef extends React.Component<Settings, never> {
 }
 
 function TopProducts() {
+  const { t } = useTranslation();
   const [topSales, setTopSales] = useState<ResTopSale[]>();
   const dataProductSales = useQuery({
     queryKey: ['topSales'],
@@ -80,18 +82,18 @@ function TopProducts() {
       <div className='mb-6 flex items-center justify-center bg-white p-2'>
         <BsPieChart className='text-4xl text-orange-500' />
         <h2 className='ml-2 text-center text-2xl font-semibold uppercase text-orange-500 md:text-3xl'>
-          top sản phẩm bán chạy
+          {t('topSale.title')}
         </h2>
       </div>
       <div className='relative'>
         <button
-          className='absolute left-0 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center bg-black/20'
+          className='absolute left-0 top-1/2 z-[1] flex h-12 w-12 -translate-y-1/2 items-center justify-center bg-black/20'
           onClick={() => slider?.current?.slickPrev()}
         >
           <BsChevronCompactLeft className='text-3xl text-white' />
         </button>
         <button
-          className='absolute right-0 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center bg-black/20'
+          className='absolute right-0 top-1/2 z-[1] flex h-12 w-12 -translate-y-1/2 items-center justify-center bg-black/20'
           onClick={() => slider?.current?.slickNext()}
         >
           <BsChevronCompactRight className='text-3xl text-white' />

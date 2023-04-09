@@ -1,5 +1,5 @@
 {
-  "cartuser": {
+  "cartUser": {
     "cart": "Giỏ hàng",
     "Product": "Sản phẩm",
     "unit price": "Đơn giá",
@@ -10,6 +10,7 @@
     "delete": "Xóa",
     "total payment": "Tổng thanh toán",
     "product": "sản phẩm",
-    "payment": "Thanh toán"
+    "payment": "Thanh toán",
+    "createOrder": "Tạo đơn hàng"
   }
 }
