@@ -1,4 +1,4 @@
-import { DeleteResult, UpdateResult } from "typeorm";
+import { DeleteResult } from "typeorm";
 import { AppDataSource } from "../database";
 import { User } from "../entities/user.entity";
 import { BadRequestError, ErrorInterface } from "../utils/error";
