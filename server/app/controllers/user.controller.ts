@@ -31,9 +31,9 @@ export const getOne = async (req: Request, res: Response, next: NextFunction) =>
 };
 
 export const updateOne = async (req: Request, res: Response, next: NextFunction) => {
-    const { email, password, firstName, lastName, phone } = req.body;
+    const { email, password, firstName, lastName, phone, role } = req.body;
     const { id } = req.params;
-    const rs = await userServices.updateOne(Number(id), {email, password, firstName, lastName, phone});
+    const rs = await userServices.updateOne(Number(id), {email, password, firstName, lastName, phone, role});
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
 };
 
