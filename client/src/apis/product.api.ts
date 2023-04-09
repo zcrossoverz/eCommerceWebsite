@@ -43,6 +43,13 @@ const productsApi = {
   ) {
     return http.put(`product/${product_id}`, data);
   },
+  async createOption(product_id: number, data: any) {
+    return await http.post(`product_option/${product_id}`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
 };
 
 export default productsApi;

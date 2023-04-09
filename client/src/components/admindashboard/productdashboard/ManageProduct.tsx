@@ -185,7 +185,7 @@ export default function ManageProduct() {
                     <div className='flex justify-end'>
                       <Pagination
                         pageSize={Math.ceil(data.data.total / data.data.data_per_page)}
-                        queryConfig={{ limit: '9', path: '/admin/product/' }}
+                        queryConfig={{ limit: params.limit, page: params.page, path: '/admin/product/' }}
                       />
                     </div>
                   </div>
