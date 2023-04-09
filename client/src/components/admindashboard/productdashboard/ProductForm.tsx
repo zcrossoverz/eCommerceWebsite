@@ -120,7 +120,7 @@ export default function ProductForm() {
                         }
                       }}
                     />
-                    <p className='mt-1 text-sm text-gray-500'>SVG, PNG, JPG or GIF (MAX. 800x400px).</p>
+                    <p className='mt-1 text-sm text-gray-500'>JPEG, PNG or JPG (MAX. 800x400px).</p>
                   </div>
                 )}
                 <div className='pt-4'>
