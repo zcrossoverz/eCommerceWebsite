@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import moment from 'moment';
 import { toast } from 'react-toastify';
 import userApi from 'src/apis/user.api';
@@ -9,8 +9,8 @@ import { isAxiosErr } from 'src/utils/error';
 import 'moment/src/locale/vi';
 import convertDate from 'src/utils/convertDate';
 import { AiOutlineDelete, AiOutlineInfoCircle } from 'react-icons/ai';
-import { GrOverview } from 'react-icons/gr';
 import { Link } from 'react-router-dom';
+import BreadCrumb from '../breadcrumb';
 export default function UserDashboard() {
   moment.updateLocale('vi', {});
   const query = useQueryParams();
@@ -18,7 +18,7 @@ export default function UserDashboard() {
     page: query.page ? query.page : '1',
     limit: query.limit ? query.limit : '10',
   };
-  const { data } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ['getAllUsers', queryParams],
     queryFn: () => userApi.getAllUser(queryParams),
     onError: (err) => {
@@ -33,9 +33,28 @@ export default function UserDashboard() {
     retry: 1,
     refetchOnWindowFocus: false,
   });
+  const deleteUserMutation = useMutation({
+    mutationFn: (userId: number) => userApi.deleteUser(userId),
+  });
+  const handleDeleteUser = (userId: number) => () => {
+    if (userId) {
+      deleteUserMutation.mutate(userId, {
+        onSuccess() {
+          toast.success('Xóa người dùng thành công', { autoClose: 2000 });
+          refetch();
+        },
+        onError(err) {
+          if (isAxiosErr<{ error: string }>(err)) {
+            toast.error(err.response?.data.error, { autoClose: 2000 });
+          }
+        },
+      });
+    }
+  };
   return (
     <div className=''>
-      <div className='overflow-x-auto rounded-lg border border-gray-200 shadow-md'>
+      <BreadCrumb path={['Fstore', 'Admin Dashboard', 'Quản lý người dùng']} />
+      <div className='mt-2 overflow-x-auto rounded-lg border border-gray-200 shadow-md'>
         <table className='w-full border-collapse bg-white text-left text-sm text-gray-500'>
           <thead className='bg-teal-400'>
             <tr>
@@ -76,11 +95,11 @@ export default function UserDashboard() {
                   </td>
                   <td className='px-6 py-4'>
                     <div className='flex gap-4'>
-                      <span>
-                        <AiOutlineDelete size={30} />
-                      </span>
+                      <button onClick={handleDeleteUser(Number(user.id))}>
+                        <AiOutlineDelete className='text-red-500' size={30} />
+                      </button>
                       <Link to={`details/${user.id}`}>
-                        <AiOutlineInfoCircle size={30} />
+                        <AiOutlineInfoCircle size={30} className='text-green-500' />
                       </Link>
                     </div>
                   </td>
