@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import BreadCrumb from '../breadcrumb';
-import orderApi from 'src/apis/order.api';
 import { formatPrice } from 'src/utils/formatPrice';
 import HelmetSale from 'src/components/Helmet';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -10,8 +9,185 @@ import { dateToString } from 'src/utils/convertDate';
 import { LineChart } from '../maindashboard/chart/LineChart';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 import { baseURL } from 'src/constants/constants';
+import { Dispatch, SetStateAction, useState } from 'react';
+
+const OptionModal = ({
+  id,
+  setModal,
+  refetch,
+  type,
+  data,
+}: {
+  type: string;
+  id: number;
+  setModal: Dispatch<
+    SetStateAction<{
+      open: boolean;
+      type: string;
+    }>
+  >;
+  refetch: any;
+  data?: {
+    ram: string;
+    rom: string;
+    color: string;
+    price: string;
+    product_option_id: number;
+  };
+}) => {
+  const [image, setImage] = useState<File>();
+  const [ram, setRam] = useState(data ? data.ram : '');
+  const [rom, setRom] = useState(data ? data.rom : '');
+  const [color, setColor] = useState(data ? data.color : '');
+  const [price, setPrice] = useState(data ? data.price : '');
+
+  const createOption = async () => {
+    if (!image) {
+      toast.error('please select image for product');
+      return;
+    }
+    const data = new FormData();
+    data.append('ram', ram);
+    data.append('rom', rom);
+    data.append('color', color);
+    data.append('price', price);
+    data.append('image', image);
+    const response = await productsApi.createOption(id, data);
+
+    if (response.status === 200) toast.success('create new product success!');
+    else toast.error(`an error occured when create product: ${response.statusText}`);
+  };
+
+  const editOption = async () => {
+    const response = await productsApi.updateOption(data?.product_option_id ? data.product_option_id : 0, {
+      ram,
+      rom,
+      color,
+      price,
+    });
+
+    if (response.status === 200) toast.success('update product success!');
+    else toast.error(`an error occured when create product: ${response.statusText}`);
+  };
+
+  return (
+    <div className='z-100 fixed inset-0 top-1/2 left-1/2 -translate-x-1/3 -translate-y-3/4'>
+      <div className='relative h-full w-full max-w-2xl md:h-auto'>
+        <div className='relative rounded-lg bg-white shadow-xl'>
+          <div className='flex items-start justify-between rounded-t border-b p-4'>
+            <h3 className='text-xl font-semibold text-gray-900'>
+              {type === 'create' ? 'ADD NEW OPTION' : 'EDIT OPTION'}
+            </h3>
+            <button
+              onClick={() => setModal({ open: false, type: '' })}
+              className='ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900'
+            >
+              <svg
+                aria-hidden='true'
+                className='h-5 w-5'
+                fill='currentColor'
+                viewBox='0 0 20 20'
+                xmlns='http://www.w3.org/2000/svg'
+              >
+                <path d='M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z'></path>
+              </svg>
+              <span className='sr-only'>Close modal</span>
+            </button>
+          </div>
+
+          <div className='space-y-6 p-6'>
+            <div className='grid grid-cols-2 gap-4'>
+              <div className='px-8 text-base leading-relaxed text-gray-500'>
+                <p>RAM: </p>
+                <input
+                  onChange={(e) => setRam(e.target.value)}
+                  defaultValue={ram}
+                  className='w-full rounded-xl border border-gray-400 px-2 py-2'
+                />
+              </div>
+              <div className='-ml-10 mr-8 px-8 text-base leading-relaxed text-gray-500'>
+                <p>ROM:</p>
+                <input
+                  onChange={(e) => setRom(e.target.value)}
+                  defaultValue={rom}
+                  className='w-full rounded-xl border border-gray-400 px-2 py-2'
+                />
+              </div>
+            </div>
+            <div className='grid grid-cols-2 gap-4'>
+              <div className='px-8 text-base leading-relaxed text-gray-500'>
+                <p>COLOR: </p>
+                <input
+                  defaultValue={color}
+                  onChange={(e) => setColor(e.target.value)}
+                  className='w-full rounded-xl border border-gray-400 px-2 py-2'
+                />
+              </div>
+              <div className='-ml-10 mr-8 px-8 text-base leading-relaxed text-gray-500'>
+                <p>PRICE:</p>
+                <input
+                  defaultValue={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  className='w-full rounded-xl border border-gray-400 px-2 py-2'
+                />
+              </div>
+            </div>
+            {type === 'create' && (
+              <div className='mr-8 grid grid-cols-1'>
+                <div className='px-8 text-base leading-relaxed text-gray-500'>
+                  <p>Image: </p>
+                  <input
+                    type='file'
+                    onChange={(e) => {
+                      const image = e.target.files;
+                      if (image?.length) {
+                        setImage(image[0]);
+                      }
+                    }}
+                    className='bg-gray-150 w-full cursor-pointer rounded-lg border border-gray-300 text-sm font-medium leading-loose text-gray-900 focus:outline-none'
+                  />
+                  <p className='mt-1 text-sm text-gray-500'>JPEG, PNG or JPG (MAX. 800x400px).</p>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className='flex items-center space-x-2 rounded-b border-t border-gray-200 p-6'>
+            <button
+              onClick={async () => {
+                if (type === 'create') await createOption();
+                if (type === 'edit') await editOption();
+                refetch();
+              }}
+              className='rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 '
+            >
+              Confirm
+            </button>
+            <button
+              className='rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300'
+              onClick={() => setModal({ open: false, type: '' })}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default function DetailProduct() {
+  const [modal, setModal] = useState({
+    open: false,
+    type: 'create',
+  });
+  const [data_opt, setDataOpt] = useState({
+    ram: '',
+    rom: '',
+    color: '',
+    price: '',
+    product_option_id: 0,
+  });
   const { product_id } = useParams();
   const navigate = useNavigate();
   if (product_id === undefined || !Number(product_id)) navigate('/admin/product');
@@ -19,7 +195,6 @@ export default function DetailProduct() {
     productsApi.getProductDetail(product_id !== undefined ? product_id : '1')
   );
   const product = data?.data;
-  console.log(product);
   const product_options = product?.product_options ? product.product_options : [];
 
   return (
@@ -51,7 +226,17 @@ export default function DetailProduct() {
                 <div className='grid grid-cols-2'>
                   <h1 className='py-2 text-lg font-semibold'>PRODUCT OPTIONS</h1>
                   <div className='flex justify-end'>
-                    <button className='mr-8 rounded-lg bg-red-400 px-4 py-2 text-white'>ADD OPTION</button>
+                    <button
+                      className='mr-8 rounded-lg bg-red-400 px-4 py-2 text-white'
+                      onClick={() =>
+                        setModal({
+                          type: 'create',
+                          open: true,
+                        })
+                      }
+                    >
+                      ADD OPTION
+                    </button>
                   </div>
                 </div>
                 <div className='relative mt-4 overflow-x-auto'>
@@ -74,7 +259,7 @@ export default function DetailProduct() {
                             </th>
                             <td className='px-6 py-4'>
                               <img
-                                className='h-32 w-24 text-left'
+                                className='w-26 h-28 text-left'
                                 src={`${baseURL}/${e.image?.image_url !== undefined ? e.image?.image_url : ''}`}
                                 alt={`product_image`}
                               />
@@ -83,10 +268,32 @@ export default function DetailProduct() {
                             <td className='px-6 py-4'>{formatPrice(Number(e.price) ? Number(e.price) : 0)}</td>
                             <td className='px-6 py-4 text-center'>
                               <button className='pr-1 text-green-500 hover:text-green-700'>
-                                <AiOutlineEdit className='text-2xl' />
+                                <AiOutlineEdit
+                                  className='text-2xl'
+                                  onClick={() => {
+                                    setDataOpt({
+                                      ram: e.ram ? e.ram : '',
+                                      rom: e.rom ? e.rom : '',
+                                      color: e.color ? e.color : '',
+                                      price: e.price ? e.price : '',
+                                      product_option_id: e.product_option_id ? e.product_option_id : 0,
+                                    });
+                                    setModal({
+                                      type: 'edit',
+                                      open: true,
+                                    });
+                                  }}
+                                />
                               </button>
                               <button className='text-red-500 hover:text-red-700'>
-                                <AiOutlineDelete className='text-2xl' />
+                                <AiOutlineDelete
+                                  className='text-2xl'
+                                  onClick={async () => {
+                                    await productsApi.deleteOption(e.product_option_id ? e.product_option_id : 0);
+                                    toast.success('delete option success!');
+                                    refetch();
+                                  }}
+                                />
                               </button>
                             </td>
                           </tr>
@@ -94,6 +301,15 @@ export default function DetailProduct() {
                       })}
                     </tbody>
                   </table>
+                  {modal.open && (
+                    <OptionModal
+                      type={modal.type}
+                      id={product?.id !== undefined ? product.id : 0}
+                      setModal={setModal}
+                      refetch={refetch}
+                      data={modal.type === 'edit' ? data_opt : undefined}
+                    />
+                  )}
                 </div>
               </div>
             </div>

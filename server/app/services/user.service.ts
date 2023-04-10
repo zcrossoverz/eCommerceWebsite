@@ -1,4 +1,4 @@
-import { DeleteResult, UpdateResult } from "typeorm";
+import { DeleteResult } from "typeorm";
 import { AppDataSource } from "../database";
 import { User } from "../entities/user.entity";
 import { BadRequestError, ErrorInterface } from "../utils/error";
@@ -78,7 +78,7 @@ export const getOne = async (
 export const updateOne = async (
   id: number,
   user: UserInterface
-): Promise<ErrorInterface | UpdateResult> => {
+) => {
   const findUser = await userRepository.findOneBy({ id });
   if (!findUser) return BadRequestError("user not found!");
 
@@ -97,7 +97,7 @@ export const updateOne = async (
     user.password = bcryptjs.hashSync(password, 8);
   }
 
-  return await userRepository.update({ id }, user);
+  return (await userRepository.update({ id }, user)).affected ? success() : failed();
 };
 
 export const deleteOne = async (

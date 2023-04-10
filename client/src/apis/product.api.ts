@@ -43,6 +43,27 @@ const productsApi = {
   ) {
     return http.put(`product/${product_id}`, data);
   },
+  async createOption(product_id: number, data: any) {
+    return await http.post(`product_option/${product_id}`, data, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  },
+  async deleteOption(option_id: number) {
+    return await http.delete(`product_option/${option_id}`);
+  },
+  async updateOption(
+    product_option_id: number,
+    data: {
+      ram?: string;
+      rom?: string;
+      color?: string;
+      price?: string;
+    }
+  ) {
+    return http.put(`product_option/${product_option_id}`, data);
+  },
 };
 
 export default productsApi;

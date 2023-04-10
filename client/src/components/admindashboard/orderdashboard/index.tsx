@@ -276,7 +276,7 @@ export default function OrderDashboard() {
                     <div className='flex justify-end'>
                       <Pagination
                         pageSize={Math.ceil(data.data.total / data.data.data_per_page)}
-                        queryConfig={{ limit: '9', path: '/admin/order/' }}
+                        queryConfig={{ page: params.page, limit: params.limit, path: '/admin/order/' }}
                       />
                     </div>
                   </div>
