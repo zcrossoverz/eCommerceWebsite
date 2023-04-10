@@ -205,9 +205,12 @@ export default function DetailProduct() {
         <div className='mt-4 flex flex-col'>
           <div className='overflow-x-auto'>
             <div className='inline-block grid w-full grid-cols-2 gap-4 align-middle'>
-              <div className=' overflow-hidden rounded-xl border bg-white p-4'>
+              <dl className=' overflow-hidden rounded-xl border bg-white p-4'>
                 <h1 className='py-2 text-lg font-semibold'>PRODUCT DETAILS</h1>
-                <div className='pt-1'>ID Product: {product?.id}</div>
+                <div className='pt-1'>
+                  <dt className=''>ID Product:</dt>
+                  <dd className=''>{product?.id}</dd>
+                </div>
                 <div className='pt-1'>Name Product: {product?.name}</div>
                 <div className='pt-1'>Brand: {product?.brand}</div>
                 <div className='h-24 overflow-hidden pt-1'>
@@ -215,7 +218,7 @@ export default function DetailProduct() {
                 </div>
                 <div className='pt-1'>Create At: {dateToString(product?.createAt ? product.createAt : '')}</div>
                 <div className='pt-1'>Update At: {dateToString(product?.updateAt ? product.updateAt : '')}</div>
-              </div>
+              </dl>
               <div className='overflow-hidden rounded-xl border bg-white p-4'>
                 <LineChart />
               </div>
