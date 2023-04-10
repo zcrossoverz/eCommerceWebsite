@@ -11,7 +11,7 @@ export const AnalysisRoutes = (app: Express) => {
     const router = express.Router();
 
     router.get("/brand", [authMiddleware.verifyToken(), authMiddleware.require_admin()], brand.countProduct);
-    router.get(/^\/product_in_warehouse(\?)?(((limit=[0-9])|(page=[0-9]))?(\%26)?){2}$/, [authMiddleware.verifyToken(), authMiddleware.require_admin()], inventory.analysis);
+    router.get(/^\/product_in_warehouse(\?)?(((limit=[0-9])|(page=[0-9])|query=\\w+)?(\%26)?){2}$/, [authMiddleware.verifyToken(), authMiddleware.require_admin()], inventory.analysis);
     router.get("/top_sale", [authMiddleware.verifyToken(), authMiddleware.require_admin()], order.top_sale);
 
     router.get("/overview", analysis.analysOverview);

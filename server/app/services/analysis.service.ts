@@ -19,12 +19,24 @@ const userRepo = AppDataSource.getRepository(User);
 const inventoryTransactionRepo =
   AppDataSource.getRepository(InventoryTransaction);
 
-export const productInWarehouse = async (limit: number, page: number) => {
+export const productInWarehouse = async (
+  limit: number,
+  page: number,
+  search: string | undefined = undefined
+) => {
   const offset = (page - 1) * limit;
+  console.log(search);
+  
   const [data, count] = await productOptionRepo.findAndCount({
     where: {
       warehouse: {
         quantity: MoreThan(0),
+      },
+      product: {
+        name:
+          search !== undefined && search !== "" && search !== null
+            ? ILike(`%${search}%`)
+            : undefined,
       },
     },
     relations: {
@@ -164,77 +176,79 @@ export const top_sale = async () => {
   });
 
   return await Promise.all(
-    products_data.sort((a,b) => a.total_sale - b.total_sale).map(async (e) => {
-      const product = await productRepository.findOne({
-        where: {
-          id: e.product_id 
-        },
-        relations: {
-          brand: true
-        }
-      });
-      if (!product) return BadRequestError("product id error");
-      // console.log(product);
-
-      // return {
-      //   name: product.name,
-      //   product_options: await Promise.all(e.product_options.map(async (el) => {
-      //     const opt = await productOptionRepo.findOne({
-      //       where:{
-
-      //         id: el.product_option_id,
-      //       },
-      //       relations: {
-      //         price: true,
-      //         image: true
-      //       },
-      //       order: {
-      //         price: {
-      //           price: 'ASC'
-      //         }
-      //       }
-      //     });
-      //     return {
-      //       color: opt?.color,
-      //       ram: opt?.ram,
-      //       rom: opt?.rom,
-      //       sale_number: el.sale_number,
-      //       amount: el.amount,
-      //       price: opt?.price.price,
-      //       image: opt?.image.image_url
-      //     };
-      //   })),
-      //   rate: product.rate,
-      //   total_sale: e.total_sale,
-      // };
-
-      const options = await productOptionRepo.findOne({
-        where: {
-          product: {
-            id: product.id
-          }
-        },
-        relations: {
-          price: true,
-          image: true,
-        },
-        order: {
-          price: {
-            price: "ASC",
+    products_data
+      .sort((a, b) => a.total_sale - b.total_sale)
+      .map(async (e) => {
+        const product = await productRepository.findOne({
+          where: {
+            id: e.product_id,
           },
-        },
-      });
+          relations: {
+            brand: true,
+          },
+        });
+        if (!product) return BadRequestError("product id error");
+        // console.log(product);
 
-      return {
-        id: product.id,
-        name: product.name,
-        rate: product.rate,
-        image: options?.image.image_url,
-        price: options?.price.price,
-        brand: product.brand,
-        total_sale: e.total_sale,
-      };
-    })
+        // return {
+        //   name: product.name,
+        //   product_options: await Promise.all(e.product_options.map(async (el) => {
+        //     const opt = await productOptionRepo.findOne({
+        //       where:{
+
+        //         id: el.product_option_id,
+        //       },
+        //       relations: {
+        //         price: true,
+        //         image: true
+        //       },
+        //       order: {
+        //         price: {
+        //           price: 'ASC'
+        //         }
+        //       }
+        //     });
+        //     return {
+        //       color: opt?.color,
+        //       ram: opt?.ram,
+        //       rom: opt?.rom,
+        //       sale_number: el.sale_number,
+        //       amount: el.amount,
+        //       price: opt?.price.price,
+        //       image: opt?.image.image_url
+        //     };
+        //   })),
+        //   rate: product.rate,
+        //   total_sale: e.total_sale,
+        // };
+
+        const options = await productOptionRepo.findOne({
+          where: {
+            product: {
+              id: product.id,
+            },
+          },
+          relations: {
+            price: true,
+            image: true,
+          },
+          order: {
+            price: {
+              price: "ASC",
+            },
+          },
+        });
+
+        return {
+          id: product.id,
+          name: product.name,
+          rate: product.rate,
+          image: options?.image.image_url,
+          price: options?.price.price,
+          brand: product.brand,
+          total_sale: e.total_sale,
+        };
+      })
   );
 };
 
@@ -305,8 +319,8 @@ export const getRevenue = async (value: string, key: string, explicit = 0) => {
     where: {
       createAt: ILike(`${value}%`),
       payment: {
-        is_paid: true
-      }
+        is_paid: true,
+      },
     },
     relations,
   });
