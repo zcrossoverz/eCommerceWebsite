@@ -33,7 +33,7 @@ const analysisApi = {
   },
   getProducts(params: ProductListConfig) {
     return http.get<ResAnalysGetProducts>('/analysis/product_in_warehouse', {
-      params,
+      params: params,
     });
   },
 };

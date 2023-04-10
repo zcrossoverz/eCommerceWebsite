@@ -4,26 +4,62 @@ import analysisApi from 'src/apis/analysis.api';
 import { ProductListConfig } from 'src/types/product.type';
 import useQueryParams from 'src/hooks/useQueryParams';
 import Pagination from 'src/components/paginate';
+import { useEffect, useState } from 'react';
+import { isAxiosErr } from 'src/utils/error';
+import { toast } from 'react-toastify';
+import { createSearchParams, useNavigate } from 'react-router-dom';
 
 export default function InventoryDashboard() {
-  const query = useQueryParams();
-  const queryParams: ProductListConfig = {
-    page: query.page ? query.page : '1',
-    limit: query.limit ? query.limit : '10',
-  };
+  const searchParams = useQueryParams();
+  const navigate = useNavigate();
+  const [search, setSearch] = useState<string>();
+  const [queryParams, setQueryParams] = useState<ProductListConfig>({
+    page: searchParams.page ? searchParams.page : '1',
+    limit: searchParams.limit ? searchParams.limit : '10',
+    query: searchParams.query ? searchParams.query : '',
+  });
+  useEffect(() => {
+    setQueryParams({
+      page: searchParams.page || '1',
+      limit: searchParams.limit || '10',
+      query: searchParams.query || '',
+    });
+  }, [searchParams.page, searchParams.limit, searchParams.query]);
   const { data } = useQuery({
     queryKey: ['AnalysProductOpt', queryParams],
     queryFn: () => analysisApi.getProducts(queryParams),
     retry: 1,
     refetchOnWindowFocus: false,
+    onError: (err) => {
+      if (
+        isAxiosErr<{
+          error: string;
+        }>(err)
+      ) {
+        if (err.response?.data.error === 'warehouse empty')
+          toast.error('Không có sản phẩm trong kho', { autoClose: 2000 });
+        setQueryParams({
+          page: '1',
+          limit: '10',
+          query: queryParams.search,
+        });
+      }
+    },
   });
+
   return (
     <div>
       <div>
         <LineChart inventory />
       </div>
       <div className='mt-8'>
-        <form className='max-w-[14rem]'>
+        <form
+          className='max-w-[14rem]'
+          onSubmit={(e) => {
+            e.preventDefault();
+            navigate({ search: createSearchParams({ ...queryParams, query: search ? search : '' }).toString() });
+          }}
+        >
           <label htmlFor='default-search' className='sr-only mb-2 text-sm font-medium text-gray-900 '>
             Search
           </label>
@@ -31,7 +67,7 @@ export default function InventoryDashboard() {
             <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3'>
               <svg
                 aria-hidden='true'
-                className='h-5 w-5 text-gray-500 '
+                className='h-5 w-5 text-cyan-500 '
                 fill='none'
                 stroke='currentColor'
                 viewBox='0 0 24 24'
@@ -48,13 +84,14 @@ export default function InventoryDashboard() {
             <input
               type='search'
               id='default-search'
-              className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2 pl-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 '
+              className='block w-full rounded-lg border border-cyan-600 bg-gray-50 p-2 pl-10 text-sm text-gray-900 '
               placeholder='Search'
-              required
+              value={search || ''}
+              onChange={(e) => setSearch(e.target.value)}
             />
             <button
               type='submit'
-              className='absolute bottom-1.5 right-2 rounded-md bg-blue-700 px-2 py-1 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none'
+              className='absolute bottom-1.5 right-2 rounded-md bg-cyan-600 px-2 py-1 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none'
             >
               Search
             </button>
@@ -103,7 +140,7 @@ export default function InventoryDashboard() {
         </div>
         <Pagination
           pageSize={data?.data.last_page ? data.data.last_page : 1}
-          queryConfig={{ ...queryParams, path: '/admin/inventory' }}
+          queryConfig={{ page: queryParams.page, limit: queryParams.limit, path: '/admin/inventory' }}
         />
       </div>
     </div>

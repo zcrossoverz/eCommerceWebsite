@@ -57,6 +57,7 @@ export interface ProductListConfig {
   price_max?: string;
   rate?: string;
   search?: string;
+  query?: string;
 }
 export type Feedback = {
   product_id: number;
