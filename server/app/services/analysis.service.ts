@@ -25,7 +25,6 @@ export const productInWarehouse = async (
   search: string | undefined = undefined
 ) => {
   const offset = (page - 1) * limit;
-  console.log(search);
   
   const [data, count] = await productOptionRepo.findAndCount({
     where: {

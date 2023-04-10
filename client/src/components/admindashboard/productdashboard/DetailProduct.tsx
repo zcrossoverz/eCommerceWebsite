@@ -71,7 +71,7 @@ const OptionModal = ({
   };
 
   return (
-    <div className='z-100 fixed inset-0 top-1/2 left-1/2 -translate-x-1/3 -translate-y-3/4'>
+    <div className='z-100 fixed inset-0 -top-80 left-1/3 -translate-x-1/3'>
       <div className='relative h-full w-full max-w-2xl md:h-auto'>
         <div className='relative rounded-lg bg-white shadow-xl'>
           <div className='flex items-start justify-between rounded-t border-b p-4'>
@@ -205,27 +205,37 @@ export default function DetailProduct() {
         <div className='mt-4 flex flex-col'>
           <div className='overflow-x-auto'>
             <div className='inline-block grid w-full grid-cols-2 gap-4 align-middle'>
-              <dl className=' overflow-hidden rounded-xl border bg-white p-4'>
+              <div className=' overflow-hidden rounded-xl border bg-white p-4 shadow-lg'>
                 <h1 className='py-2 text-lg font-semibold'>PRODUCT DETAILS</h1>
-                <div className='pt-1'>
-                  <dt className=''>ID Product:</dt>
-                  <dd className=''>{product?.id}</dd>
+                <div className='grid grid-cols-4 pt-1'>
+                  <p className='col-span-1'>ID Product</p> <p className='col-span-3'>{product?.id}</p>
                 </div>
-                <div className='pt-1'>Name Product: {product?.name}</div>
-                <div className='pt-1'>Brand: {product?.brand}</div>
-                <div className='h-24 overflow-hidden pt-1'>
-                  Description: <span className='overflow-ellipsis line-clamp-3'>{product?.description}</span>
+                <div className='grid grid-cols-4 pt-1'>
+                  <p className='col-span-1'>Name Product</p> <p className='col-span-3'>{product?.name}</p>
                 </div>
-                <div className='pt-1'>Create At: {dateToString(product?.createAt ? product.createAt : '')}</div>
-                <div className='pt-1'>Update At: {dateToString(product?.updateAt ? product.updateAt : '')}</div>
-              </dl>
-              <div className='overflow-hidden rounded-xl border bg-white p-4'>
+                <div className='grid grid-cols-4 pt-1'>
+                  <p className='col-span-1'>Brand</p> <p className='col-span-3'>{product?.brand}</p>
+                </div>
+                <div className='grid h-24 grid-cols-4 overflow-hidden pt-1'>
+                  <p className='col-span-1'>Description</p>{' '}
+                  <span className='col-span-3 overflow-ellipsis  line-clamp-4'>{product?.description}</span>
+                </div>
+                <div className='grid grid-cols-4 pt-1'>
+                  <p className='col-span-1'>Create At</p>{' '}
+                  <p className='col-span-3'>{dateToString(product?.createAt ? product.createAt : '')}</p>
+                </div>
+                <div className='grid grid-cols-4 pt-1'>
+                  <p className='col-span-1'>Update At</p>{' '}
+                  <p className='col-span-3'>{dateToString(product?.updateAt ? product.updateAt : '')}</p>
+                </div>
+              </div>
+              <div className='overflow-hidden rounded-xl border bg-white p-4 shadow-lg'>
                 <LineChart />
               </div>
             </div>
 
-            <div className='mt-4 inline-block w-full gap-4 align-middle'>
-              <div className='rounded-xl bg-white p-4'>
+            <div className='mt-4 mb-4 inline-block w-full gap-4 align-middle'>
+              <div className='rounded-xl bg-white p-4 drop-shadow-lg'>
                 <div className='grid grid-cols-2'>
                   <h1 className='py-2 text-lg font-semibold'>PRODUCT OPTIONS</h1>
                   <div className='flex justify-end'>
