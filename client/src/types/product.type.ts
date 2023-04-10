@@ -99,3 +99,20 @@ export type ProductData = {
   brand_id: number;
   color: string;
 };
+export type ResAnalysGetProducts = {
+  current_page: number;
+  prev_page: number | null;
+  next_page: number | null;
+  last_page: number;
+  data_per_page: number;
+  total: number;
+  data: {
+    product_option_id: number;
+    quantity: number;
+    images: string;
+    name: string;
+    ram: string;
+    rom: string;
+    color: string;
+  }[];
+};
