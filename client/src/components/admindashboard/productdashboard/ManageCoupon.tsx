@@ -201,7 +201,7 @@ export default function ManageCoupon() {
                 )}
 
                 {data?.data && data.data.length > 0 && (
-                  <table className='min-w-full divide-y divide-gray-200 bg-white'>
+                  <table className='min-w-full divide-y divide-gray-200 bg-white shadow-lg'>
                     <thead className='bg-pink-400/20'>
                       <tr>
                         <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>

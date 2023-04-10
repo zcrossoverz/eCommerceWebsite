@@ -43,6 +43,7 @@ export const productInWarehouse = async (
       warehouse: true,
       image: true,
       product: true,
+      price: true
     },
     take: limit,
     skip: offset,
@@ -74,6 +75,7 @@ export const productInWarehouse = async (
             ram: e.ram,
             rom: e.rom,
             color: e.color,
+            price: e.price.price
           };
         }),
       }

@@ -202,7 +202,7 @@ export default function ManageBrand() {
 
                 {data?.data && data.data.length > 0 && (
                   <div>
-                    <table className='min-w-full divide-y divide-gray-200 bg-white'>
+                    <table className='min-w-full divide-y divide-gray-200 bg-white shadow-lg'>
                       <thead className='bg-pink-400/20'>
                         <tr>
                           <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
@@ -263,9 +263,9 @@ export default function ManageBrand() {
                         })}
                       </tbody>
                     </table>
-                    <div className='flex justify-end'>
+                    {/* <div className='flex justify-end'>
                       <Pagination pageSize={Math.ceil(1)} queryConfig={{ limit: '2', path: '/admin/brand/' }} />
-                    </div>
+                    </div> */}
                   </div>
                 )}
               </div>
