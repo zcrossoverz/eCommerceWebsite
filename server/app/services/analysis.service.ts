@@ -25,7 +25,6 @@ export const productInWarehouse = async (
   search: string | undefined = undefined
 ) => {
   const offset = (page - 1) * limit;
-  console.log(search);
   
   const [data, count] = await productOptionRepo.findAndCount({
     where: {
@@ -58,7 +57,7 @@ export const productInWarehouse = async (
   const prev_page = page - 1 < 1 ? null : page - 1;
   const next_page = page + 1 > last_page ? null : page + 1;
 
-  return count
+  return count && data.length > 0
     ? {
         current_page: page,
         prev_page,
@@ -79,7 +78,7 @@ export const productInWarehouse = async (
           };
         }),
       }
-    : BadRequestError("warehouse empty");
+    : BadRequestError("not found product");
 };
 
 export const countProduct = async () => {
