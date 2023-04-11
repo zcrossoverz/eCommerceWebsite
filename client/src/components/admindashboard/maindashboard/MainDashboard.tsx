@@ -105,7 +105,7 @@ function MainDashboard() {
                 <tbody>
                   {data_product_sale.data?.data
                     .sort((a: any, b: any) => b.total_sale - a.total_sale)
-                    .map((e: any, i: string) => (
+                    .map((e: any, i: number) => (
                       <tr key={i.toString()}>
                         <td className='px-10 text-center'>{(i + 1).toString()}</td>
                         <td className='px-10 text-left'>{e.name}</td>
