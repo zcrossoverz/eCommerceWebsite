@@ -36,5 +36,6 @@ export interface ResGetOneInboundNote {
     ram: string;
     rom: string;
     color: string;
+    image: string;
   }[];
 }

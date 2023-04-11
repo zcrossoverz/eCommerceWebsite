@@ -204,7 +204,7 @@ export default function DetailProduct() {
       <div>
         <div className='mt-4 flex flex-col'>
           <div className='overflow-x-auto'>
-            <div className='inline-block grid w-full grid-cols-2 gap-4 align-middle'>
+            <div className='grid w-full grid-cols-2 gap-4 align-middle'>
               <div className=' overflow-hidden rounded-xl border bg-white p-4 shadow-lg'>
                 <h1 className='py-2 text-lg font-semibold'>PRODUCT DETAILS</h1>
                 <div className='grid grid-cols-4 pt-1'>
