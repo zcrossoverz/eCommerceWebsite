@@ -64,6 +64,15 @@ const productsApi = {
   ) {
     return http.put(`product_option/${product_option_id}`, data);
   },
+  async createSpec(product_id: number, key: string, value: string) {
+    return await http.post(`specification/${product_id}`, [{ key, value }]);
+  },
+  async deleteSpec(spec_id: number) {
+    return await http.delete(`specification/${spec_id}`);
+  },
+  async updateOneSpec(spec_id: number, value: string) {
+    return await http.put(`specification/${spec_id}`, { value });
+  },
 };
 
 export default productsApi;

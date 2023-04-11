@@ -6,52 +6,7 @@ import { useEffect, useState } from 'react';
 import productsApi from 'src/apis/product.api';
 import { toast } from 'react-toastify';
 import HelmetSale from 'src/components/Helmet';
-
-const SpecModal = () => {
-  return (
-    <div className='z-100 fixed inset-0 top-0 left-1/3 -translate-x-1/3 -translate-y-3/4'>
-      <div className='relative h-full w-full max-w-2xl md:h-auto'>
-        <div className='relative rounded-lg bg-white shadow-xl'>
-          <div className='flex items-start justify-between rounded-t border-b p-4'>
-            <h3 className='text-xl font-semibold text-gray-900'>adsf</h3>
-            <button className='ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900'>
-              <svg
-                aria-hidden='true'
-                className='h-5 w-5'
-                fill='currentColor'
-                viewBox='0 0 20 20'
-                xmlns='http://www.w3.org/2000/svg'
-              >
-                <path d='M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z'></path>
-              </svg>
-              <span className='sr-only'>Close modal</span>
-            </button>
-          </div>
-
-          <div className='space-y-6 p-6'>
-            <p className='text-base leading-relaxed text-gray-500'>
-              <p>Name: </p>
-              <input className='w-full rounded-xl border border-gray-400 px-2 py-2' />
-            </p>
-            <p className='text-base leading-relaxed text-gray-500'>
-              <p>Description:</p>
-              <textarea className='w-full rounded-xl border border-gray-400 px-2 py-6' />
-            </p>
-          </div>
-
-          <div className='flex items-center space-x-2 rounded-b border-t border-gray-200 p-6'>
-            <button className='rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 '>
-              Confirm
-            </button>
-            <button className='rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300'>
-              Cancel
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
+import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
 
 export default function ProductForm() {
   const navigate = useNavigate();
@@ -68,6 +23,9 @@ export default function ProductForm() {
   const [price, setPrice] = useState('');
   const [specs, setSpecs] = useState<{ key: string; value: string }[]>([]);
   const [specModal, openSpecModal] = useState(false);
+  const [keySpec, setKeySpec] = useState('');
+  const [valueSpec, setValueSpec] = useState('');
+  const [refetch, _refetch] = useState(0);
 
   useEffect(() => {
     if (location.state.type === 'edit') {
@@ -81,7 +39,7 @@ export default function ProductForm() {
           setSpecs(data.specs);
         });
     }
-  }, []);
+  }, [refetch]);
 
   const createProduct = async () => {
     if (!image) {
@@ -120,7 +78,6 @@ export default function ProductForm() {
         title={`Admin Dashboard | ${location.state.type === 'create' ? 'Create Product' : 'Update Product'}`}
       ></HelmetSale>
       <BreadCrumb path={['Product', `${location.state.type === 'create' ? 'Create' : 'Update'} Product`]} />
-      <SpecModal />
       <div>
         <div className='mt-4 flex flex-col '>
           <div className='overflow-x-auto drop-shadow-lg'>
@@ -261,7 +218,13 @@ export default function ProductForm() {
                                   key={i.toString()}
                                 >
                                   <div className='col-span-1'>{e.key}</div>
-                                  <div className='col-span-3'>{e.value}</div>
+                                  <div className='col-span-2'>{e.value}</div>
+                                  <div className='col-span-1 mr-4 flex justify-end'>
+                                    <AiOutlineEdit className='mr-1 text-xl text-green-400' />
+                                    <AiOutlineDelete className='text-xl text-red-400' onClick={async () => {
+                                      // await productsApi.deleteSpec()
+                                    }} />
+                                  </div>
                                 </div>
                               );
                             })
@@ -276,6 +239,68 @@ export default function ProductForm() {
                         </button>
                       </div>
                     </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+          {specModal && (
+            <div className='z-100 fixed inset-0 top-1/2 left-1/2 -translate-x-1/3 -translate-y-3/4'>
+              <div className='relative h-full w-full max-w-2xl md:h-auto'>
+                <div className='relative rounded-lg bg-white shadow-xl'>
+                  <div className='flex items-start justify-between rounded-t border-b p-4'>
+                    <h3 className='text-xl font-semibold text-gray-900'>Add New Specification</h3>
+                    <button
+                      onClick={() => openSpecModal(false)}
+                      className='ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900'
+                    >
+                      <svg
+                        aria-hidden='true'
+                        className='h-5 w-5'
+                        fill='currentColor'
+                        viewBox='0 0 20 20'
+                        xmlns='http://www.w3.org/2000/svg'
+                      >
+                        <path d='M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z'></path>
+                      </svg>
+                      <span className='sr-only'>Close modal</span>
+                    </button>
+                  </div>
+
+                  <div className='space-y-6 p-6'>
+                    <p className='text-base leading-relaxed text-gray-500'>
+                      <p>Key: </p>
+                      <input
+                        className='w-full rounded-xl border border-gray-400 px-2 py-2'
+                        onChange={(e) => setKeySpec(e.target.value)}
+                      />
+                    </p>
+                    <p className='text-base leading-relaxed text-gray-500'>
+                      <p>Value:</p>
+                      <input
+                        className='w-full rounded-xl border border-gray-400 px-2 py-2'
+                        onChange={(e) => setValueSpec(e.target.value)}
+                      />
+                    </p>
+                  </div>
+
+                  <div className='flex items-center space-x-2 rounded-b border-t border-gray-200 p-6'>
+                    <button
+                      className='rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 '
+                      onClick={async () => {
+                        await productsApi.createSpec(location.state.id, keySpec, valueSpec);
+                        toast.success('create specification for product success!');
+                        _refetch(refetch + 1);
+                      }}
+                    >
+                      Confirm
+                    </button>
+                    <button
+                      onClick={() => openSpecModal(false)}
+                      className='rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300'
+                    >
+                      Cancel
+                    </button>
                   </div>
                 </div>
               </div>
