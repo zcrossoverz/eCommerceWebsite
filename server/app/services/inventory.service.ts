@@ -103,7 +103,17 @@ export const createWarehouseInboundNote = async (data: dataInboundNote[]) => {
       status: EnumInventoryInboundStatus.PENDING,
     })
   );
-  data.forEach(async (e) => {
+
+
+  data.reduce((acc, cur) => {
+    const existingData = acc.find(data => data.product_option_id === cur.product_option_id);
+    if (existingData) {
+      existingData.quantity += cur.quantity;
+    } else {
+      acc.push(cur);
+    }
+    return acc;
+  }, [] as dataInboundNote[]).forEach(async (e) => {
     const product = await productRepo.findOne({
       where: {
         id: e.product_option_id 
@@ -136,6 +146,7 @@ export const getInboundNote = async (id: number) => {
       orderItems: {
         product_option: {
           product: true,
+          image: true
         },
       },
     },
@@ -152,6 +163,7 @@ export const getInboundNote = async (id: number) => {
               ram: e.product_option.ram,
               rom: e.product_option.rom,
               color: e.product_option.rom,
+              image: e.product_option.image.image_url
             };
           })
         } : BadRequestError("inventory inbound note not found");

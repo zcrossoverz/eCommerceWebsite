@@ -71,7 +71,7 @@ const OptionModal = ({
   };
 
   return (
-    <div className='z-100 fixed inset-0 -top-80 left-1/3 -translate-x-1/3'>
+    <div className='z-100 fixed inset-0 -top-80 left-1/3 -translate-x-1/3 -translate-y-1'>
       <div className='relative h-full w-full max-w-2xl md:h-auto'>
         <div className='relative rounded-lg bg-white shadow-xl'>
           <div className='flex items-start justify-between rounded-t border-b p-4'>
