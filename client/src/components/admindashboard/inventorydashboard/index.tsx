@@ -8,41 +8,84 @@ import { useEffect, useState } from 'react';
 import { isAxiosErr } from 'src/utils/error';
 import { toast } from 'react-toastify';
 import { createSearchParams, useNavigate } from 'react-router-dom';
-
+import convertDate from 'src/utils/convertDate';
+import { AiOutlineDelete, AiOutlineFileSearch } from 'react-icons/ai';
+import inboundNoteApi from 'src/apis/inboundnote.api';
+enum Mode {
+  'queryProduct',
+  'queryInboundNote',
+}
 export default function InventoryDashboard() {
   const searchParams = useQueryParams();
   const navigate = useNavigate();
   const [search, setSearch] = useState<string>();
-  const [queryParams, setQueryParams] = useState<ProductListConfig>({
+  const [queryParams, setQueryParams] = useState<ProductListConfig & { mode?: string }>({
     page: searchParams.page ? searchParams.page : '1',
     limit: searchParams.limit ? searchParams.limit : '10',
     query: searchParams.query ? searchParams.query : '',
+    mode: Mode[0],
+  });
+  const [queryParamsInbound, setQueryParamsInbound] = useState<ProductListConfig & { mode?: string }>({
+    page: searchParams.page ? searchParams.page : '1',
+    limit: searchParams.limit ? searchParams.limit : '10',
+    query: searchParams.query ? searchParams.query : '',
+    mode: Mode[1],
   });
   useEffect(() => {
-    setQueryParams({
-      page: searchParams.page || '1',
-      limit: searchParams.limit || '10',
-      query: searchParams.query || '',
-    });
-  }, [searchParams.page, searchParams.limit, searchParams.query]);
+    if (searchParams.mode === Mode[0]) {
+      setQueryParams({
+        page: searchParams.page || '1',
+        limit: searchParams.limit || '10',
+        query: searchParams.query || '',
+        mode: searchParams.mode || Mode[0],
+      });
+    }
+    if (searchParams.mode === Mode[1]) {
+      setQueryParamsInbound({
+        page: searchParams.page || '1',
+        limit: searchParams.limit || '10',
+        query: searchParams.query || '',
+        mode: searchParams.mode || Mode[1],
+      });
+    }
+  }, [searchParams.page, searchParams.limit, searchParams.query, searchParams.mode]);
   const { data } = useQuery({
     queryKey: ['AnalysProductOpt', queryParams],
     queryFn: () => analysisApi.getProducts(queryParams),
     retry: 1,
     refetchOnWindowFocus: false,
+    onSuccess() {
+      setSearch('');
+    },
     onError: (err) => {
       if (
         isAxiosErr<{
           error: string;
         }>(err)
       ) {
-        if (err.response?.data.error === 'warehouse empty')
-          toast.error('Không có sản phẩm trong kho', { autoClose: 2000 });
-        setQueryParams({
-          page: '1',
-          limit: '10',
-          query: queryParams.search,
-        });
+        if (err.response?.data.error === 'not found product') {
+          navigate({ search: createSearchParams({ page: '1', limit: '10', query: search ? search : '' }).toString() });
+        }
+      }
+    },
+  });
+  const { data: inboundNote } = useQuery({
+    queryKey: ['getInboundNote', queryParamsInbound],
+    queryFn: () => inboundNoteApi.getAllInboundNote(queryParamsInbound),
+    retry: 1,
+    refetchOnWindowFocus: false,
+    onSuccess() {
+      setSearch('');
+    },
+    onError: (err) => {
+      if (
+        isAxiosErr<{
+          error: string;
+        }>(err)
+      ) {
+        if (err.response?.data.error === 'not found product') {
+          navigate({ search: createSearchParams({ page: '1', limit: '10', query: search ? search : '' }).toString() });
+        }
       }
     },
   });
@@ -140,9 +183,62 @@ export default function InventoryDashboard() {
         </div>
         <Pagination
           pageSize={data?.data.last_page ? data.data.last_page : 1}
-          queryConfig={{ page: queryParams.page, limit: queryParams.limit, path: '/admin/inventory' }}
+          queryConfig={{ ...queryParams, path: '/admin/inventory' }}
         />
       </div>
+      {/* manage inbound note */}
+      <section>
+        <h2>Quản lý phiếu nhập kho</h2>
+        <div className='relative mt-1 overflow-x-auto rounded-lg border border-gray-200 shadow-md'>
+          <table className='w-full text-left text-sm text-gray-500 '>
+            <thead className='bg-emerald-500 text-base uppercase text-white'>
+              <tr>
+                <th scope='col' className='px-6 py-6'>
+                  tên phiếu
+                </th>
+                <th scope='col' className='px-6 py-6'>
+                  Tình trạng
+                </th>
+                <th scope='col' className='px-6 py-6'>
+                  Ngày nhập
+                </th>
+                <th scope='col' className='px-6 py-6'>
+                  Thao tác
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {inboundNote?.data &&
+                inboundNote.data.data &&
+                inboundNote.data.data.map((ib) => (
+                  <tr key={ib.id} className='border-b bg-white'>
+                    <th scope='row' className='whitespace-nowrap px-6 py-4 font-medium text-gray-900'>
+                      Phiếu số #{ib.id}
+                    </th>
+                    <td className='px-6 py-4'>{ib.status}</td>
+                    <td className='px-6 py-4'>{convertDate(ib.create_at)}</td>
+                    <td className='px-6 py-4'>
+                      <button>
+                        <AiOutlineDelete size={24} className='text-red-500' />
+                      </button>
+                      <button
+                        onClick={() => {
+                          navigate(`inboundNote/${ib.id}`);
+                        }}
+                      >
+                        <AiOutlineFileSearch size={24} className='ml-4 text-green-500' />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+        <Pagination
+          pageSize={inboundNote?.data.last_page ? inboundNote.data.last_page : 1}
+          queryConfig={{ ...queryParamsInbound, path: '/admin/inventory' }}
+        />
+      </section>
     </div>
   );
 }

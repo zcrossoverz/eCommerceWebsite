@@ -8,6 +8,7 @@ interface Props {
   pageSize: number;
   queryConfig: ProductListConfig & {
     path?: string;
+    mode?: string;
   };
 }
 const RANGE = 2;
