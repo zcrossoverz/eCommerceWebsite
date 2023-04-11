@@ -146,6 +146,7 @@ export const getInboundNote = async (id: number) => {
       orderItems: {
         product_option: {
           product: true,
+          image: true
         },
       },
     },
@@ -162,6 +163,7 @@ export const getInboundNote = async (id: number) => {
               ram: e.product_option.ram,
               rom: e.product_option.rom,
               color: e.product_option.rom,
+              image: e.product_option.image.image_url
             };
           })
         } : BadRequestError("inventory inbound note not found");
