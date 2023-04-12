@@ -223,8 +223,8 @@ export const getOneById = async (id: number) => {
         }),
         specs: product.specifications.map((e) => {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { id, ...rest } = e;
-          return { ...rest };
+          // const { id, ...rest } = e;
+          return { ...e };
         }),
         images: product.images.filter((e) => e.type === EnumTypeImage.desc),
         product_options: product.productOptions.map((e) => {

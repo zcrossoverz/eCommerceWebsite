@@ -1,15 +1,16 @@
 import HelmetSale from 'src/components/Helmet/HelmetSEO';
 import BreadCrumb from '../breadcrumb';
 import Datepicker from 'react-tailwindcss-datepicker';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import { useQuery } from '@tanstack/react-query';
 import analysisApi from 'src/apis/analysis.api';
 
 export default function ReportDashboard() {
+  const date_now = new Date();
   const [value, setValue] = useState({
-    startDate: '2023-04-11',
-    endDate: '2023-04-11',
+    startDate: `${date_now.getFullYear()}-${date_now.getMonth()+1}-${date_now.getDate()}`,
+    endDate: `${date_now.getFullYear()}-${date_now.getMonth()+1}-${date_now.getDate()}`,
   });
 
   const revenue_data = useQuery(['get_revenue_report', value], () =>
