@@ -30,3 +30,9 @@ export const getFeedbackByProduct = async (req: Request, res: Response, next: Ne
     const rs = await feedbackServices.getFeedbackByProduct(Number(product_id));
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
 }
+
+export const getAllFeedback = async (req: Request, res: Response, next: NextFunction) => {
+    const rs = await feedbackServices.getAllFeedback();
+    return isError(rs) ? next(err(rs, res)) : res.json(rs);
+
+}

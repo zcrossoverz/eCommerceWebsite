@@ -18,6 +18,8 @@ export const AnalysisRoutes = (app: Express) => {
     router.get("/prices/:product_option_id", product_option.analysisPrices);
 
     router.get("/sales", analysis.analysisSale);
+    router.post("/report_revenue", analysis.reportRevenue);
+    router.post("/report_inventory", analysis.reportInventory);
 
     app.use("/api/analysis", router);
 }

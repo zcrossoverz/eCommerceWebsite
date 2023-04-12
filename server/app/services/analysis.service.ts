@@ -25,7 +25,7 @@ export const productInWarehouse = async (
   search: string | undefined = undefined
 ) => {
   const offset = (page - 1) * limit;
-  
+
   const [data, count] = await productOptionRepo.findAndCount({
     where: {
       warehouse: {
@@ -42,7 +42,7 @@ export const productInWarehouse = async (
       warehouse: true,
       image: true,
       product: true,
-      price: true
+      price: true,
     },
     take: limit,
     skip: offset,
@@ -74,7 +74,7 @@ export const productInWarehouse = async (
             ram: e.ram,
             rom: e.rom,
             color: e.color,
-            price: e.price.price
+            price: e.price.price,
           };
         }),
       }
@@ -418,3 +418,109 @@ export const analysisSale = async () => {
 
   return data.sort((a, b) => a._id - b._id);
 };
+
+export const reportRevenue = async (startDate: string, endDate: string) => {
+  const dates = [];
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const timeDiff = end.getTime() - start.getTime(); 
+  const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24)); 
+  for (let i = 0; i <= daysDiff; i++) {
+    const date = new Date(start.getTime() + i * 24 * 60 * 60 * 1000);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const formattedDate = `${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`; 
+    dates.push(formattedDate);
+  }
+  
+
+  interface revenue_interface {
+    id: number;
+    date: string;
+    product_sale: number;
+    revenue: number;
+  }
+  const dataz = [] as revenue_interface[];
+  await Promise.all(
+    dates.map(async (e, i) => {
+      const data = await orderRepo.find({
+        where: {
+          createAt: ILike(`_____${e}%`),
+          payment: {
+            is_paid: true,
+          },
+        },
+        relations: {
+          orderItems: {
+            product_option: true,
+          },
+          payment: true,
+        },
+      });
+      const data_sale = {
+        revenue: 0,
+        product_sale: 0,
+      };
+      data.map(el => {
+        data_sale.revenue += Number(el.payment.amount);
+        el.orderItems.map(elm => {
+          data_sale.product_sale += elm.quantity;
+        });
+      });
+      dataz.push({
+        id: i,
+        date: e,
+        ...data_sale
+      });
+    })
+  );
+
+  return dataz.sort((a, b) => a.id - b.id);
+};
+
+export const reportInventory = async (startDate: string, endDate: string) => {
+  const dates = [];
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const timeDiff = end.getTime() - start.getTime(); 
+  const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24)); 
+  for (let i = 0; i <= daysDiff; i++) {
+    const date = new Date(start.getTime() + i * 24 * 60 * 60 * 1000);
+    const month = date.getMonth() + 1;
+    const day = date.getDate();
+    const formattedDate = `${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`; 
+    dates.push(formattedDate);
+  }
+  interface inventory_interface {
+    id: number;
+    date: string;
+    in: number;
+    out: number;
+  }
+  const _data = [] as inventory_interface[];
+  await Promise.all(dates.map(async (e,i) => {
+    const inventoryTransactionRepo = AppDataSource.getRepository(InventoryTransaction);
+    const transactions = await inventoryTransactionRepo.find({
+      where: {
+        date: ILike(`_____${e}%`)
+      },
+      relations: {
+        product_option: true
+      }
+    });
+    const data = {
+      in: 0,
+      out: 0
+    }
+    transactions.map(el => {
+      if(el.type === EnumInventoryTransactionType.IN) data.in += el.quantity;
+      if(el.type === EnumInventoryTransactionType.OUT) data.out += el.quantity;
+    });
+    _data.push({
+      id: i,
+      date: e,
+      ...data
+    });
+  }));
+  return _data.sort((a,b) => a.id - b.id);
+}
