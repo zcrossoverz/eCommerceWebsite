@@ -31,6 +31,12 @@ const analysisApi = {
   saleSatistic() {
     return http.get(`${baseURL}/sales`);
   },
+  reportRevenue(startDate: string, endDate: string) {
+    return http.post(`analysis/report_revenue`, { startDate, endDate });
+  },
+  reportInventory(startDate: string, endDate: string) {
+    return http.post(`analysis/report_inventory`, { startDate, endDate });
+  },
   getProducts(params: ProductListConfig) {
     return http.get<ResAnalysGetProducts>('/analysis/product_in_warehouse', {
       params: params,

@@ -128,3 +128,17 @@ export const syncRate = async (product_id: number) => {
     ? success()
     : failed();
 };
+
+export const getAllFeedback = async () => {
+  const feedback = await feedbackRepo.find({
+    order: {
+      id: 'DESC'
+    },
+    take: 5,
+    relations: {
+      user: true,
+      product: true
+    }
+  });
+  return feedback.length ? feedback : [];
+}

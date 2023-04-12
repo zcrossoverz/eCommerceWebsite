@@ -260,8 +260,8 @@ function CreateInboundNote() {
             selectedArr.map((prod, i) => (
               <div key={prod.product_option_id} className='mt-2 flex cursor-pointer items-center bg-slate-50'>
                 <img src={`${baseURL}/${prod.images}`} className='max-h-[3rem] object-cover' alt='' />
-                <div className='flex flex-grow flex-col'>
-                  <span>{`${prod.name} - ${prod.ram}/${prod.rom} - ${prod.color}`}</span>
+                <div className='ml-2 flex flex-grow flex-col'>
+                  <span className='text-xs md:text-base'>{`${prod.name} - ${prod.ram}/${prod.rom} - ${prod.color}`}</span>
                   <button
                     onClick={() => handleDelete(prod.product_option_id)}
                     className='inline-block text-start text-xs text-orange-400 hover:text-orange-600'
@@ -269,7 +269,7 @@ function CreateInboundNote() {
                     Xóa
                   </button>
                 </div>
-                <div className='flex items-center'>
+                <div className='flex items-center pr-2'>
                   {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
                   <span
                     className='rounded-[4px] bg-green-400 px-1.5 py-0.5 duration-200 hover:bg-green-300'
