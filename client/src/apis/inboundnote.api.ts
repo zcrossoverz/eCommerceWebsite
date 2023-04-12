@@ -1,3 +1,5 @@
+import { InboundNote } from 'src/types/inventory.type';
+import { ResCreateInboundNote } from 'src/types/inventory.type';
 import { ResGetAllInboundNote, ResGetOneInboundNote } from 'src/types/inventory.type';
 import { ProductListConfig } from 'src/types/product.type';
 import http from 'src/utils/http';
@@ -15,6 +17,9 @@ const inboundNoteApi = {
     return http.post<{
       message: string;
     }>(`/inventory/inbound_note/${id}`, { accept });
+  },
+  createInboundNote(body: InboundNote) {
+    return http.post<ResCreateInboundNote>('/inventory/create_inbound_note', body);
   },
 };
 export default inboundNoteApi;

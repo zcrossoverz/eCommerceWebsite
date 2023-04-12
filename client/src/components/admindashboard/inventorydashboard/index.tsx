@@ -84,8 +84,8 @@ export default function InventoryDashboard() {
           error: string;
         }>(err)
       ) {
-        if (err.response?.data.error === 'not found product') {
-          navigate({ search: createSearchParams({ page: '1', limit: '10', query: search ? search : '' }).toString() });
+        if (err.response?.data.error === 'inbound note empty') {
+          navigate({ search: createSearchParams({ page: '1', limit: '10' }).toString() });
         }
       }
     },
@@ -103,9 +103,6 @@ export default function InventoryDashboard() {
   };
   return (
     <div>
-      <div>
-        <LineChart inventory />
-      </div>
       <div className='mt-8'>
         <form
           className='max-w-[14rem]'
@@ -270,6 +267,9 @@ export default function InventoryDashboard() {
           queryConfig={{ ...queryParamsInbound, path: '/admin/inventory' }}
         />
       </section>
+      <div>
+        <LineChart inventory />
+      </div>
     </div>
   );
 }

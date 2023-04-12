@@ -7,6 +7,9 @@ import { produce } from 'immer';
 import { HiMinus, HiPlus } from 'react-icons/hi';
 import { toast } from 'react-toastify';
 import { isNumber } from 'lodash';
+import { InboundNote } from 'src/types/inventory.type';
+import { useMutation } from '@tanstack/react-query';
+import inboundNoteApi from 'src/apis/inboundnote.api';
 interface ProductData {
   product_option_id: number;
   quantity: number;
@@ -29,7 +32,10 @@ function CreateInboundNote() {
   const stateCreateInboundNote = useMemo(() => {
     return location.state as LocationState;
   }, [location]);
-
+  const createInboundNoteMutation = useMutation({
+    mutationFn: (body: InboundNote) => inboundNoteApi.createInboundNote(body),
+    retry: 1,
+  });
   const [selected, setSelected] = useState<ProductData>(stateCreateInboundNote.products[0]);
   const [selectedArr, setSelectedArr] = useState<ProductData[]>([]);
   const [mode, setMode] = useState<ModeCreateInboundNote>();
@@ -149,13 +155,30 @@ function CreateInboundNote() {
       return;
     });
   };
+  const handleCreateInboundNote = () => {
+    if (selectedQuantity.length) {
+      const body: InboundNote = {
+        data: selectedQuantity.map((e) => ({
+          product_option_id: e.id,
+          quantity: Number(e.quantity) ? Number(e.quantity) : 1,
+        })),
+      };
+      createInboundNoteMutation.mutate(body, {
+        onSuccess() {
+          toast.success('Tạo phiếu thành công', { autoClose: 2000 });
+          setSelectedArr([]);
+          setSelectedQuantity([]);
+        },
+      });
+    }
+  };
   return (
     <section className='flex min-h-full flex-col items-center justify-start bg-white'>
-      <header className='flex w-1/2 items-center border-b p-2'>
+      <header className='flex w-full items-center border-b p-2 lg:w-1/2'>
         <aside className='mr-2 w-full'>
           <Combobox value={selected} onChange={setSelected}>
             <div className='relative mt-1'>
-              <div className='relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm'>
+              <div className='relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left  focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm'>
                 <Combobox.Input
                   className='w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0'
                   displayValue={(product: ProductData) =>
@@ -182,7 +205,7 @@ function CreateInboundNote() {
                       <Combobox.Option
                         key={product.product_option_id}
                         className={({ active }) =>
-                          `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                          `relative cursor-default select-none py-2 pl-2 pr-4 text-xs lg:pl-10 lg:text-base ${
                             active ? 'bg-teal-600 text-white' : 'text-gray-900'
                           }`
                         }
@@ -222,7 +245,7 @@ function CreateInboundNote() {
             onClick={() => {
               handleAddSelected(selected.product_option_id);
             }}
-            className='rounded-md bg-emerald-500 px-4 py-2 text-white shadow-sm hover:bg-emerald-600'
+            className='rounded-md bg-emerald-500 px-2 py-2 text-xs text-white shadow-sm hover:bg-emerald-600 md:px-4'
           >
             Thêm
           </button>
@@ -284,7 +307,10 @@ function CreateInboundNote() {
               </div>
             ))}
           {selectedArr.length !== 0 && (
-            <button className='mt-2 rounded-md bg-emerald-500 px-4 py-2 text-white shadow-sm hover:bg-emerald-600'>
+            <button
+              onClick={handleCreateInboundNote}
+              className='mt-2 rounded-md bg-emerald-500 px-4 py-2 text-white shadow-sm hover:bg-emerald-600'
+            >
               Tạo phiếu nhập
             </button>
           )}
