@@ -1,3 +1,4 @@
+import { ProductListConfig, ResAnalysGetProducts } from 'src/types/product.type';
 import http from 'src/utils/http';
 
 const timeout = (ms: number) => {
@@ -30,6 +31,11 @@ const analysisApi = {
   saleSatistic() {
     return http.get(`${baseURL}/sales`);
   },
+  getProducts(params: ProductListConfig) {
+    return http.get<ResAnalysGetProducts>('/analysis/product_in_warehouse', {
+      params: params,
+    });
+   },
   reportRevenue(startDate: string, endDate: string) {
     return http.post(`analysis/report_revenue`, { startDate, endDate });
   },

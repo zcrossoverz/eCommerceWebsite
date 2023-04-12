@@ -57,6 +57,7 @@ export interface ProductListConfig {
   price_max?: string;
   rate?: string;
   search?: string;
+  query?: string;
 }
 export type Feedback = {
   product_id: number;
@@ -98,4 +99,21 @@ export type ProductData = {
   price: string;
   brand_id: number;
   color: string;
+};
+export type ResAnalysGetProducts = {
+  current_page: number;
+  prev_page: number | null;
+  next_page: number | null;
+  last_page: number;
+  data_per_page: number;
+  total: number;
+  data: {
+    product_option_id: number;
+    quantity: number;
+    images: string;
+    name: string;
+    ram: string;
+    rom: string;
+    color: string;
+  }[];
 };
