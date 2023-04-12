@@ -5,6 +5,8 @@ import { useLocation } from 'react-router-dom';
 import { baseURL } from 'src/constants/constants';
 import { produce } from 'immer';
 import { HiMinus, HiPlus } from 'react-icons/hi';
+import { toast } from 'react-toastify';
+import { isNumber } from 'lodash';
 interface ProductData {
   product_option_id: number;
   quantity: number;
@@ -34,7 +36,7 @@ function CreateInboundNote() {
   const [selectedQuantity, setSelectedQuantity] = useState<
     {
       id: number;
-      quantity: number;
+      quantity: number | '';
     }[]
   >([]);
   const [query, setQuery] = useState<string>('');
@@ -43,6 +45,13 @@ function CreateInboundNote() {
       if (ModeCreateInboundNote.add) {
         setSelectedQuantity(
           produce((dr) => {
+            if (
+              dr &&
+              dr[dr.length - 1] &&
+              dr[dr.length - 1].id === selectedArr[selectedArr.length - 1].product_option_id
+            ) {
+              return;
+            }
             dr.push({
               id: selectedArr[selectedArr.length - 1].product_option_id
                 ? selectedArr[selectedArr.length - 1].product_option_id
@@ -61,15 +70,25 @@ function CreateInboundNote() {
       : stateCreateInboundNote.products.filter((product: ProductData) =>
           product.name.toLowerCase().replace(/\s+/g, '').includes(query.toLowerCase().replace(/\s+/g, ''))
         );
-  const handleAddSelected = () => {
+  const handleAddSelected = (id: number) => {
     if (selected) {
       setSelectedArr(
         produce((draft) => {
+          const i = draft.findIndex((it) => it.product_option_id === id);
+          if (i >= 0) {
+            toast.warning('Sản phẩm đã được thêm', { autoClose: 2000 });
+            return;
+          }
           draft.push(selected);
           return draft;
         })
       );
-      setMode(ModeCreateInboundNote.add);
+      setMode((prev) => {
+        if (prev !== ModeCreateInboundNote.add) {
+          return ModeCreateInboundNote.add;
+        }
+        return;
+      });
     }
   };
   const handleIncrease = (id: number) => {
@@ -77,24 +96,34 @@ function CreateInboundNote() {
       produce((draft) => {
         const i = draft.findIndex((it) => it.id === id);
         if (i >= 0) {
-          draft[i].quantity += 1;
+          draft[i].quantity = Number(draft[i].quantity) + 1;
         }
         return draft;
       })
     );
-    setMode(ModeCreateInboundNote.changeQuantity);
+    setMode((prev) => {
+      if (prev !== ModeCreateInboundNote.changeQuantity) {
+        return ModeCreateInboundNote.changeQuantity;
+      }
+      return;
+    });
   };
   const handleDecrease = (id: number) => {
     setSelectedQuantity(
       produce((draft) => {
         const i = draft.findIndex((it) => it.id === id);
-        if (i >= 0 && draft[i].quantity > 1) {
-          draft[i].quantity -= 1;
+        if (i >= 0 && Number(draft[i].quantity) > 1) {
+          draft[i].quantity = Number(draft[i].quantity) - 1;
         }
         return draft;
       })
     );
-    setMode(ModeCreateInboundNote.changeQuantity);
+    setMode((prev) => {
+      if (prev !== ModeCreateInboundNote.changeQuantity) {
+        return ModeCreateInboundNote.changeQuantity;
+      }
+      return;
+    });
   };
   const handleDelete = (id: number) => {
     setSelectedArr(
@@ -107,71 +136,22 @@ function CreateInboundNote() {
     setSelectedQuantity(
       produce((draft) => {
         const i = draft.findIndex((it) => it.id === id);
-        if (i >= 0 && draft[i].quantity >= 1) {
+        if (i >= 0 && Number(draft[i].quantity) >= 1) {
           draft.splice(i, 1);
         }
         return draft;
       })
     );
-    setMode(ModeCreateInboundNote.delete);
+    setMode((prev) => {
+      if (prev !== ModeCreateInboundNote.delete) {
+        return ModeCreateInboundNote.delete;
+      }
+      return;
+    });
   };
   return (
-    <section className='flex items-start'>
-      <header className='min-h-[20rem] w-1/2 border-r border-black p-2'>
-        <h2>Chọn sản phẩm và ấn thêm để thêm sản phẩm</h2>
-        <article className='max-h-[18rem] overflow-y-auto'>
-          {selectedArr &&
-            selectedArr.map((prod, i) => (
-              <div key={prod.product_option_id} className='mt-2 flex cursor-pointer items-center bg-slate-50'>
-                <img src={`${baseURL}/${prod.images}`} className='max-h-[3rem] object-cover' alt='' />
-                <div className='flex flex-grow flex-col'>
-                  <span>{`${prod.name} - ${prod.ram}/${prod.rom} - ${prod.color}`}</span>
-                  <button
-                    onClick={() => handleDelete(prod.product_option_id)}
-                    className='inline-block text-start text-xs text-orange-400 hover:text-orange-600'
-                  >
-                    Xóa
-                  </button>
-                </div>
-                <div className='flex items-center'>
-                  {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-                  <span
-                    className='rounded-[4px] bg-green-400 px-1.5 py-0.5 duration-200 hover:bg-green-300'
-                    onClick={() => handleDecrease(prod.product_option_id)}
-                  >
-                    <HiMinus size={16} />
-                  </span>
-                  <input
-                    type='number'
-                    value={selectedQuantity[i] ? selectedQuantity[i].quantity : 1}
-                    // onChange={(e) => {
-                    //   setQuantity(e.target.value);
-                    // }}
-                    className='mx-1 max-w-[3rem] rounded-md border-2 border-orange-400 text-center focus:outline-none'
-                  />
-                  {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
-                  <span
-                    className='rounded-[4px] bg-green-400 px-1.5 py-0.5 duration-200 hover:bg-green-300'
-                    onClick={() => handleIncrease(prod.product_option_id)}
-                  >
-                    <HiPlus size={16} />
-                  </span>
-                </div>
-              </div>
-            ))}
-          {selectedArr.length !== 0 && (
-            <button
-              onClick={() => {
-                handleAddSelected();
-              }}
-              className='mt-2 rounded-md bg-emerald-500 px-4 py-2 text-white shadow-sm hover:bg-emerald-600'
-            >
-              Tạo phiếu nhập
-            </button>
-          )}
-        </article>
-      </header>
-      <main className='flex w-1/2 items-center p-2'>
+    <section className='flex min-h-full flex-col items-center justify-start bg-white'>
+      <header className='flex w-1/2 items-center border-b p-2'>
         <aside className='mr-2 w-full'>
           <Combobox value={selected} onChange={setSelected}>
             <div className='relative mt-1'>
@@ -240,13 +220,75 @@ function CreateInboundNote() {
         <aside>
           <button
             onClick={() => {
-              handleAddSelected();
+              handleAddSelected(selected.product_option_id);
             }}
             className='rounded-md bg-emerald-500 px-4 py-2 text-white shadow-sm hover:bg-emerald-600'
           >
             Thêm
           </button>
         </aside>
+      </header>
+      <main className='min-h-[20rem] w-full p-2'>
+        <h2 className='text-center text-lg font-semibold text-emerald-400'>
+          Chọn sản phẩm và ấn thêm để thêm sản phẩm
+        </h2>
+        <article className='max-h-[18rem] overflow-y-auto'>
+          {selectedArr &&
+            selectedArr.map((prod, i) => (
+              <div key={prod.product_option_id} className='mt-2 flex cursor-pointer items-center bg-slate-50'>
+                <img src={`${baseURL}/${prod.images}`} className='max-h-[3rem] object-cover' alt='' />
+                <div className='flex flex-grow flex-col'>
+                  <span>{`${prod.name} - ${prod.ram}/${prod.rom} - ${prod.color}`}</span>
+                  <button
+                    onClick={() => handleDelete(prod.product_option_id)}
+                    className='inline-block text-start text-xs text-orange-400 hover:text-orange-600'
+                  >
+                    Xóa
+                  </button>
+                </div>
+                <div className='flex items-center'>
+                  {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+                  <span
+                    className='rounded-[4px] bg-green-400 px-1.5 py-0.5 duration-200 hover:bg-green-300'
+                    onClick={() => handleDecrease(prod.product_option_id)}
+                  >
+                    <HiMinus size={16} />
+                  </span>
+                  <input
+                    type='number'
+                    value={selectedQuantity[i] ? selectedQuantity[i].quantity : 1}
+                    onChange={(e) => {
+                      setSelectedQuantity(
+                        produce((draft) => {
+                          if (isNumber(Number(e.target.value))) {
+                            if (Number(e.target.value) === 0) {
+                              draft[i].quantity = '';
+                            } else {
+                              draft[i].quantity = Number(e.target.value);
+                            }
+                          }
+                          return draft;
+                        })
+                      );
+                    }}
+                    className='mx-1 max-w-[3rem] rounded-md border-2 border-orange-400 text-center focus:outline-none'
+                  />
+                  {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
+                  <span
+                    className='rounded-[4px] bg-green-400 px-1.5 py-0.5 duration-200 hover:bg-green-300'
+                    onClick={() => handleIncrease(prod.product_option_id)}
+                  >
+                    <HiPlus size={16} />
+                  </span>
+                </div>
+              </div>
+            ))}
+          {selectedArr.length !== 0 && (
+            <button className='mt-2 rounded-md bg-emerald-500 px-4 py-2 text-white shadow-sm hover:bg-emerald-600'>
+              Tạo phiếu nhập
+            </button>
+          )}
+        </article>
       </main>
     </section>
   );
