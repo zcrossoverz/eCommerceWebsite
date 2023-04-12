@@ -1,18 +1,15 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import moment from 'moment';
 import { toast } from 'react-toastify';
 import userApi from 'src/apis/user.api';
 import Pagination from 'src/components/paginate';
 import useQueryParams from 'src/hooks/useQueryParams';
 import { ProductListConfig } from 'src/types/product.type';
 import { isAxiosErr } from 'src/utils/error';
-import 'moment/src/locale/vi';
 import convertDate from 'src/utils/convertDate';
 import { AiOutlineDelete, AiOutlineInfoCircle } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import BreadCrumb from '../breadcrumb';
 export default function UserDashboard() {
-  moment.updateLocale('vi', {});
   const query = useQueryParams();
   const queryParams: ProductListConfig = {
     page: query.page ? query.page : '1',
