@@ -35,6 +35,12 @@ const analysisApi = {
     return http.get<ResAnalysGetProducts>('/analysis/product_in_warehouse', {
       params: params,
     });
+   },
+  reportRevenue(startDate: string, endDate: string) {
+    return http.post(`analysis/report_revenue`, { startDate, endDate });
+  },
+  reportInventory(startDate: string, endDate: string) {
+    return http.post(`analysis/report_inventory`, { startDate, endDate });
   },
 };
 
