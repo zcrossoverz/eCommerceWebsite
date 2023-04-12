@@ -27,22 +27,15 @@ enum ModeCreateInboundNote {
 }
 function CreateInboundNote() {
   const [stateCreateInboundNote, setStateCreateInboundNote] = useState<ProductData[]>([]);
-  useQuery({
-    queryKey: ['AnalysProductOpt'],
-    queryFn: () => analysisApi.getProducts({ page: '1', limit: '9999999999' }),
-    retry: 1,
-    refetchOnWindowFocus: false,
-    onSuccess(data) {
-      console.log(data.data.data.length);
-      setStateCreateInboundNote(data.data.data);
-    },
+  const [selected, setSelected] = useState<ProductData>({
+    product_option_id: 0,
+    quantity: 0,
+    images: '',
+    name: '',
+    ram: '',
+    rom: '',
+    color: '',
   });
-
-  const createInboundNoteMutation = useMutation({
-    mutationFn: (body: InboundNote) => inboundNoteApi.createInboundNote(body),
-    retry: 1,
-  });
-  const [selected, setSelected] = useState<ProductData>(stateCreateInboundNote[0]);
   const [selectedArr, setSelectedArr] = useState<ProductData[]>([]);
   const [mode, setMode] = useState<ModeCreateInboundNote>();
   const [selectedQuantity, setSelectedQuantity] = useState<
@@ -52,6 +45,22 @@ function CreateInboundNote() {
     }[]
   >([]);
   const [query, setQuery] = useState<string>('');
+  useQuery({
+    queryKey: ['AnalysProductOpt'],
+    queryFn: () => analysisApi.getProducts({ page: '1', limit: '9999999999' }),
+    retry: 1,
+    refetchOnWindowFocus: false,
+    onSuccess(data) {
+      setStateCreateInboundNote(data.data.data);
+      setSelected(data.data.data[0]);
+    },
+  });
+
+  const createInboundNoteMutation = useMutation({
+    mutationFn: (body: InboundNote) => inboundNoteApi.createInboundNote(body),
+    retry: 1,
+  });
+
   useEffect(() => {
     if (selectedArr.length) {
       if (ModeCreateInboundNote.add) {
