@@ -1,15 +1,15 @@
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Combobox, Transition } from '@headlessui/react';
 import { HiCheck, HiOutlineChevronUpDown } from 'react-icons/hi2';
-import { useLocation } from 'react-router-dom';
 import { baseURL } from 'src/constants/constants';
 import { produce } from 'immer';
 import { HiMinus, HiPlus } from 'react-icons/hi';
 import { toast } from 'react-toastify';
 import { isNumber } from 'lodash';
 import { InboundNote } from 'src/types/inventory.type';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import inboundNoteApi from 'src/apis/inboundnote.api';
+import analysisApi from 'src/apis/analysis.api';
 interface ProductData {
   product_option_id: number;
   quantity: number;
@@ -19,24 +19,23 @@ interface ProductData {
   rom: string;
   color: string;
 }
-interface LocationState {
-  products: ProductData[];
-}
+
 enum ModeCreateInboundNote {
   'changeQuantity',
   'delete',
   'add',
 }
 function CreateInboundNote() {
-  const location = useLocation();
-  const stateCreateInboundNote = useMemo(() => {
-    return location.state as LocationState;
-  }, [location]);
-  const createInboundNoteMutation = useMutation({
-    mutationFn: (body: InboundNote) => inboundNoteApi.createInboundNote(body),
-    retry: 1,
+  const [stateCreateInboundNote, setStateCreateInboundNote] = useState<ProductData[]>([]);
+  const [selected, setSelected] = useState<ProductData>({
+    product_option_id: 0,
+    quantity: 0,
+    images: '',
+    name: '',
+    ram: '',
+    rom: '',
+    color: '',
   });
-  const [selected, setSelected] = useState<ProductData>(stateCreateInboundNote.products[0]);
   const [selectedArr, setSelectedArr] = useState<ProductData[]>([]);
   const [mode, setMode] = useState<ModeCreateInboundNote>();
   const [selectedQuantity, setSelectedQuantity] = useState<
@@ -46,6 +45,22 @@ function CreateInboundNote() {
     }[]
   >([]);
   const [query, setQuery] = useState<string>('');
+  useQuery({
+    queryKey: ['AnalysProductOpt'],
+    queryFn: () => analysisApi.getProducts({ page: '1', limit: '9999999999' }),
+    retry: 1,
+    refetchOnWindowFocus: false,
+    onSuccess(data) {
+      setStateCreateInboundNote(data.data.data);
+      setSelected(data.data.data[0]);
+    },
+  });
+
+  const createInboundNoteMutation = useMutation({
+    mutationFn: (body: InboundNote) => inboundNoteApi.createInboundNote(body),
+    retry: 1,
+  });
+
   useEffect(() => {
     if (selectedArr.length) {
       if (ModeCreateInboundNote.add) {
@@ -72,8 +87,8 @@ function CreateInboundNote() {
   }, [selectedArr, mode]);
   const filteredProducts =
     query === ''
-      ? stateCreateInboundNote.products
-      : stateCreateInboundNote.products.filter((product: ProductData) =>
+      ? stateCreateInboundNote
+      : stateCreateInboundNote.filter((product: ProductData) =>
           product.name.toLowerCase().replace(/\s+/g, '').includes(query.toLowerCase().replace(/\s+/g, ''))
         );
   const handleAddSelected = (id: number) => {
@@ -260,8 +275,8 @@ function CreateInboundNote() {
             selectedArr.map((prod, i) => (
               <div key={prod.product_option_id} className='mt-2 flex cursor-pointer items-center bg-slate-50'>
                 <img src={`${baseURL}/${prod.images}`} className='max-h-[3rem] object-cover' alt='' />
-                <div className='flex flex-grow flex-col'>
-                  <span>{`${prod.name} - ${prod.ram}/${prod.rom} - ${prod.color}`}</span>
+                <div className='ml-2 flex flex-grow flex-col'>
+                  <span className='text-xs md:text-base'>{`${prod.name} - ${prod.ram}/${prod.rom} - ${prod.color}`}</span>
                   <button
                     onClick={() => handleDelete(prod.product_option_id)}
                     className='inline-block text-start text-xs text-orange-400 hover:text-orange-600'
@@ -269,7 +284,7 @@ function CreateInboundNote() {
                     Xóa
                   </button>
                 </div>
-                <div className='flex items-center'>
+                <div className='flex items-center pr-2'>
                   {/* eslint-disable-next-line jsx-a11y/click-events-have-key-events, jsx-a11y/no-static-element-interactions */}
                   <span
                     className='rounded-[4px] bg-green-400 px-1.5 py-0.5 duration-200 hover:bg-green-300'
