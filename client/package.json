@@ -43,6 +43,7 @@
     "react-router-dom": "^6.8.2",
     "react-slick": "^0.29.0",
     "react-tailwindcss-datepicker": "^1.5.1",
+    "react-to-print": "^2.14.12",
     "react-toastify": "^9.1.1",
     "slick-carousel": "^1.8.1",
     "yup": "^1.0.2"

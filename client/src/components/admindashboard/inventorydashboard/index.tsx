@@ -267,8 +267,8 @@ export default function InventoryDashboard() {
           queryConfig={{ ...queryParamsInbound, path: '/admin/inventory' }}
         />
       </section>
-      <div>
-        <LineChart inventory />
+      <div className='mt-4'>
+        <LineChart inventory titleText='Biến động kho' />
       </div>
     </div>
   );

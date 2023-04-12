@@ -32,10 +32,24 @@ const analysisApi = {
     return http.get(`${baseURL}/sales`);
   },
   reportRevenue(startDate: string, endDate: string) {
-    return http.post(`analysis/report_revenue`, { startDate, endDate });
+    return http.post<
+      {
+        id: number;
+        date: string;
+        revenue: number;
+        product_sale: number;
+      }[]
+    >(`analysis/report_revenue`, { startDate, endDate });
   },
   reportInventory(startDate: string, endDate: string) {
-    return http.post(`analysis/report_inventory`, { startDate, endDate });
+    return http.post<
+      {
+        id: number;
+        date: string;
+        in: number;
+        out: number;
+      }[]
+    >(`analysis/report_inventory`, { startDate, endDate });
   },
   getProducts(params: ProductListConfig) {
     return http.get<ResAnalysGetProducts>('/analysis/product_in_warehouse', {
