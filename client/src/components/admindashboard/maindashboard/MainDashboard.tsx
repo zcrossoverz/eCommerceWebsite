@@ -10,6 +10,8 @@ import analysisApi from 'src/apis/analysis.api';
 import productsApi from 'src/apis/product.api';
 import { useState } from 'react';
 import HelmetSEO from 'src/components/Helmet';
+import feedbackApi from 'src/apis/feedback.api';
+import { dateToString } from 'src/utils/convertDate';
 
 type card_props = {
   title: string;
@@ -67,6 +69,9 @@ const Card = (props: card_props) => {
 function MainDashboard() {
   const overview = useQuery(['analysis_overview'], () => analysisApi.analysOverview());
   const data_product_sale = useQuery(['top_sales'], () => analysisApi.topSales());
+  const feedbacks = useQuery(['get_feedbacks'], () => feedbackApi.getAllFeedback());
+
+  console.log(feedbacks);
 
   return (
     <div>
@@ -123,30 +128,16 @@ function MainDashboard() {
           </div>
           <hr className='-ml-6 bg-gray-300' />
           <div className='flex flex-col'>
-            <div className='flex justify-between px-2'>
-              <div className=''>abc vua xyz..... </div>
-              <div className=''> 10:11:20 30/3/2023</div>
-            </div>
-            <div className='flex justify-between px-2'>
-              <div className=''>abc vua xyz..... </div>
-              <div className=''> 10:11:20 30/3/2023</div>
-            </div>
-            <div className='flex justify-between px-2'>
-              <div className=''>abc vua xyz..... </div>
-              <div className=''> 10:11:20 30/3/2023</div>
-            </div>
-            <div className='flex justify-between px-2'>
-              <div className=''>abc vua xyz..... </div>
-              <div className=''> 10:11:20 30/3/2023</div>
-            </div>
-            <div className='flex justify-between px-2'>
-              <div className=''>abc vua xyz..... </div>
-              <div className=''> 10:11:20 30/3/2023</div>
-            </div>
-            <div className='flex justify-between px-2'>
-              <div className=''>abc vua xyz..... </div>
-              <div className=''> 10:11:20 30/3/2023</div>
-            </div>
+            {feedbacks.data?.data.map((e: any, i: number) => {
+              return (
+                <div className='grid grid-cols-3 px-2' key={i.toString()}>
+                  <div className='col-span-2'>
+                    {`${e.user.lastName} rate ${e.rate} star for product ${e.product.name}`}{' '}
+                  </div>
+                  <div className=''>{dateToString(e.create_at)}</div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

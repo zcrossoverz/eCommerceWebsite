@@ -25,7 +25,7 @@ export default function ReportDashboard() {
     <div className='mt-4'>
       <HelmetSale title='Admin Dashboard | Manage Order'></HelmetSale>
       <BreadCrumb path={['Product', 'Report Dashboard']} />
-      <div className='mt-4'>
+      <div className='mt-4 grid grid-cols-2'>
         <div className='w-64'>
           <Datepicker
             value={value}
@@ -38,14 +38,17 @@ export default function ReportDashboard() {
             primaryColor='fuchsia'
           />
         </div>
+        <div className='col-span-1 flex justify-end'>
+          <button className='mr-8 rounded-md bg-blue-400 px-4 py-2'>Export</button>
+        </div>
       </div>
       <div>
-        <div className='mt-2 flex flex-col'>
+        <div className='mt-2 flex flex-col drop-shadow-xl'>
           <div className='overflow-x-auto'>
             <div className='inline-block w-full align-middle'>
               <div className='overflow-hidden'>
                 <div className='grid grid-cols-2 gap-4'>
-                  <div className='rounded-xl border border-gray-200 bg-white p-4'>
+                  <div className='rounded-xl border border-gray-200 bg-white p-4 drop-shadow-xl'>
                     <Line
                       options={{
                         responsive: true,
@@ -80,7 +83,7 @@ export default function ReportDashboard() {
                       }}
                     />
                   </div>
-                  <div className='rounded-xl border border-gray-200 bg-white p-4'>
+                  <div className='rounded-xl border border-gray-200 bg-white p-4 drop-shadow-xl'>
                     <Line
                       options={{
                         responsive: true,

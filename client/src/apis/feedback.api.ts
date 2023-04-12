@@ -17,5 +17,8 @@ const feedbackApi = {
   ) {
     return http.put<{ message: string }>(`/feedback/update/${productId}`, feedback);
   },
+  getAllFeedback() {
+    return http.get(`feedback/get_all`);
+  },
 };
 export default feedbackApi;
