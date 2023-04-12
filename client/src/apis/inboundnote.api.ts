@@ -11,5 +11,10 @@ const inboundNoteApi = {
   getOneById(id: string) {
     return http.get<ResGetOneInboundNote>(`/inventory/inbound_note/${id}`);
   },
+  processInboundNote(id: string, accept: boolean) {
+    return http.post<{
+      message: string;
+    }>(`/inventory/inbound_note/${id}`, { accept });
+  },
 };
 export default inboundNoteApi;

@@ -1,4 +1,5 @@
 import InventoryDashboard from 'src/components/admindashboard/inventorydashboard';
+import CreateInboundNote from 'src/components/admindashboard/inventorydashboard/CreateInboundNote';
 import InboundNoteDetails from 'src/components/admindashboard/inventorydashboard/InboundNoteDetails';
 import MainDashboard from 'src/components/admindashboard/maindashboard/MainDashboard';
 import OrderDashboard from 'src/components/admindashboard/orderdashboard';
@@ -30,6 +31,7 @@ export const dashboard_tab: dashboardTabInterface[] = [
   { name: 'order', component: <DetailOrder />, link: '/order/detail/:order_id' },
   { name: 'inventory', component: <InventoryDashboard />, link: '/inventory' },
   { name: 'inventory', component: <InboundNoteDetails />, link: '/inventory/inboundNote/:id' },
+  { name: 'inventory', component: <CreateInboundNote />, link: '/inventory/inboundNote/create' },
   { name: 'report', component: <ReportDashboard />, link: '/report' },
   { name: 'user', component: <UserDashboard />, link: '/user' },
   { name: 'user', component: <UserDetails />, link: '/user/details/:userId' },

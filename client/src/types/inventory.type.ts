@@ -39,3 +39,9 @@ export interface ResGetOneInboundNote {
     image: string;
   }[];
 }
+export interface InboundNote {
+  data: {
+    product_option_id: number;
+    quantity: number;
+  }[];
+}

@@ -11,6 +11,7 @@ import { createSearchParams, useNavigate } from 'react-router-dom';
 import convertDate from 'src/utils/convertDate';
 import { AiOutlineDelete, AiOutlineFileSearch } from 'react-icons/ai';
 import inboundNoteApi from 'src/apis/inboundnote.api';
+import http from 'src/utils/http';
 enum Mode {
   'queryProduct',
   'queryInboundNote',
@@ -69,7 +70,7 @@ export default function InventoryDashboard() {
       }
     },
   });
-  const { data: inboundNote } = useQuery({
+  const { data: inboundNote, refetch } = useQuery({
     queryKey: ['getInboundNote', queryParamsInbound],
     queryFn: () => inboundNoteApi.getAllInboundNote(queryParamsInbound),
     retry: 1,
@@ -89,7 +90,17 @@ export default function InventoryDashboard() {
       }
     },
   });
-
+  const handleDeleteInboundNote = async (id: number) => {
+    const res = await http.delete<{
+      msg: string;
+    }>(`/inventory/inbound_note/${id}`);
+    if (res.data.msg && res.data.msg === 'success') {
+      await refetch();
+      toast.success('Xóa thành công', { autoClose: 2000 });
+    } else {
+      toast.error('Thất bại', { autoClose: 2000 });
+    }
+  };
   return (
     <div>
       <div>
@@ -188,7 +199,23 @@ export default function InventoryDashboard() {
       </div>
       {/* manage inbound note */}
       <section>
-        <h2>Quản lý phiếu nhập kho</h2>
+        <div className='flex items-center justify-between'>
+          <h2 className='text-lg font-semibold text-emerald-500'>Quản lý phiếu nhập kho</h2>
+          <button
+            type='button'
+            onClick={() => {
+              navigate('inboundNote/create', {
+                state: {
+                  products: data?.data.data ? data.data.data : [],
+                },
+              });
+            }}
+            className='mr-2 mb-2 rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-emerald-700 focus:outline-none'
+          >
+            Thêm phiếu nhập
+          </button>
+        </div>
+
         <div className='relative mt-1 overflow-x-auto rounded-lg border border-gray-200 shadow-md'>
           <table className='w-full text-left text-sm text-gray-500 '>
             <thead className='bg-emerald-500 text-base uppercase text-white'>
@@ -218,7 +245,11 @@ export default function InventoryDashboard() {
                     <td className='px-6 py-4'>{ib.status}</td>
                     <td className='px-6 py-4'>{convertDate(ib.create_at)}</td>
                     <td className='px-6 py-4'>
-                      <button>
+                      <button
+                        onClick={() => {
+                          handleDeleteInboundNote(ib.id);
+                        }}
+                      >
                         <AiOutlineDelete size={24} className='text-red-500' />
                       </button>
                       <button
