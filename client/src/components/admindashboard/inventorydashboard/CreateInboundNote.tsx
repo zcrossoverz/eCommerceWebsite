@@ -1,15 +1,15 @@
-import { Fragment, useEffect, useMemo, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Combobox, Transition } from '@headlessui/react';
 import { HiCheck, HiOutlineChevronUpDown } from 'react-icons/hi2';
-import { useLocation } from 'react-router-dom';
 import { baseURL } from 'src/constants/constants';
 import { produce } from 'immer';
 import { HiMinus, HiPlus } from 'react-icons/hi';
 import { toast } from 'react-toastify';
 import { isNumber } from 'lodash';
 import { InboundNote } from 'src/types/inventory.type';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import inboundNoteApi from 'src/apis/inboundnote.api';
+import analysisApi from 'src/apis/analysis.api';
 interface ProductData {
   product_option_id: number;
   quantity: number;
@@ -19,24 +19,30 @@ interface ProductData {
   rom: string;
   color: string;
 }
-interface LocationState {
-  products: ProductData[];
-}
+
 enum ModeCreateInboundNote {
   'changeQuantity',
   'delete',
   'add',
 }
 function CreateInboundNote() {
-  const location = useLocation();
-  const stateCreateInboundNote = useMemo(() => {
-    return location.state as LocationState;
-  }, [location]);
+  const [stateCreateInboundNote, setStateCreateInboundNote] = useState<ProductData[]>([]);
+  useQuery({
+    queryKey: ['AnalysProductOpt'],
+    queryFn: () => analysisApi.getProducts({ page: '1', limit: '9999999999' }),
+    retry: 1,
+    refetchOnWindowFocus: false,
+    onSuccess(data) {
+      console.log(data.data.data.length);
+      setStateCreateInboundNote(data.data.data);
+    },
+  });
+
   const createInboundNoteMutation = useMutation({
     mutationFn: (body: InboundNote) => inboundNoteApi.createInboundNote(body),
     retry: 1,
   });
-  const [selected, setSelected] = useState<ProductData>(stateCreateInboundNote.products[0]);
+  const [selected, setSelected] = useState<ProductData>(stateCreateInboundNote[0]);
   const [selectedArr, setSelectedArr] = useState<ProductData[]>([]);
   const [mode, setMode] = useState<ModeCreateInboundNote>();
   const [selectedQuantity, setSelectedQuantity] = useState<
@@ -72,8 +78,8 @@ function CreateInboundNote() {
   }, [selectedArr, mode]);
   const filteredProducts =
     query === ''
-      ? stateCreateInboundNote.products
-      : stateCreateInboundNote.products.filter((product: ProductData) =>
+      ? stateCreateInboundNote
+      : stateCreateInboundNote.filter((product: ProductData) =>
           product.name.toLowerCase().replace(/\s+/g, '').includes(query.toLowerCase().replace(/\s+/g, ''))
         );
   const handleAddSelected = (id: number) => {
