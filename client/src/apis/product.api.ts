@@ -73,6 +73,9 @@ const productsApi = {
   async updateOneSpec(spec_id: number, value: string) {
     return await http.put(`specification/${spec_id}`, { value });
   },
+  async trackingProduct(product_id: number) {
+    return await http.get(`analysis/tracking_product/${product_id}`);
+  },
 };
 
 export default productsApi;

@@ -197,6 +197,11 @@ export default function DetailProduct() {
   const product = data?.data;
   const product_options = product?.product_options ? product.product_options : [];
 
+  const productTracking = useQuery(['get_data_tracking_product'], () =>
+    productsApi.trackingProduct(Number(product_id) ? Number(product_id) : 0)
+  );
+  
+
   return (
     <div className='mt-4'>
       <HelmetSale title='Admin Dashboard | Detail Order'></HelmetSale>

@@ -11,6 +11,8 @@ import {
   EnumInventoryTransactionType,
   InventoryTransaction,
 } from "../entities/inventoryTransaction.entity";
+import { Product } from "../entities/product.entity";
+import { PriceHistory } from "../entities/priceHistoty.entity";
 
 const productOptionRepo = AppDataSource.getRepository(ProductOption);
 const orderRepo = AppDataSource.getRepository(Order);
@@ -375,6 +377,7 @@ export const trackingProduct = async (time: string, explicit = 0) => {
   };
 };
 
+
 export const analysisSale = async () => {
   const months: { value: string; key: string }[] = [];
   for (let i = -6; i <= 0; i++) {
@@ -523,4 +526,37 @@ export const reportInventory = async (startDate: string, endDate: string) => {
     });
   }));
   return _data.sort((a,b) => a.id - b.id);
+}
+
+export const productAnalysis = async (product_id: number) => {
+  const productRepo = AppDataSource.getRepository(Product);
+  const product = await productRepo.findOne({
+    where: {
+      id: product_id
+    },
+    relations: {
+      productOptions: {
+        price: {
+          priceHistories: true
+        },
+        inventory_transactions: true
+      }
+    }
+  });
+  if(!product) return BadRequestError('product not found');
+  interface data_return {
+    option_id: number;
+    prices: PriceHistory[],
+    activity: InventoryTransaction[]
+  }
+  const data = [] as data_return[];
+  product.productOptions.map(e => {
+    data.push({
+      option_id: e.id,
+      prices: e.price.priceHistories,
+      activity: e.inventory_transactions
+    })
+  });
+
+  return data;
 }
