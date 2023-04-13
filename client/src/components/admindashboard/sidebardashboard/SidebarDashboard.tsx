@@ -1,6 +1,7 @@
 import { Menu } from '@headlessui/react';
 import { useState } from 'react';
 import { AiFillHome } from 'react-icons/ai';
+import { BiMenuAltRight } from 'react-icons/bi';
 import { BsFillCartFill } from 'react-icons/bs';
 import { FaMoneyCheckAlt } from 'react-icons/fa';
 import { HiChevronDown, HiDocumentReport } from 'react-icons/hi';
@@ -8,7 +9,8 @@ import { HiChevronDown, HiDocumentReport } from 'react-icons/hi';
 import { IconType } from 'react-icons/lib';
 import { MdInventory, MdPeopleAlt } from 'react-icons/md';
 import { useLocation, useNavigate } from 'react-router-dom';
-
+import logo from 'src/assets/logo.svg';
+import useClickOutSide from 'src/hooks/useClickOutSide';
 type PropsButton = {
   name: string;
   Icon: IconType;
@@ -88,29 +90,48 @@ const ButtonNavDropdown = ({ name, Icon, subnav, active }: PropsNavButton) => {
 
 function SidebarDashboard() {
   const location = useLocation().pathname.replace('/admin', '');
+  const [showMenu, setShowMenu] = useState<boolean>(false);
+  const { nodeRef } = useClickOutSide(() => setShowMenu(false));
 
   return (
     <div>
-      <div className='mx-2 flex items-center py-6'>
-        <div className='w-full text-center text-base font-semibold text-white'>Admin Dashboard</div>
+      <div className='mx-2 flex items-center justify-between py-2 lg:py-6'>
+        <h2>
+          <img src={logo} alt='aa' className='max-w-[8rem]' />
+        </h2>
+        <div className='hidden w-full flex-grow text-left text-base font-semibold text-white lg:block lg:text-center'>
+          Admin Dashboard
+        </div>
       </div>
       <hr className='mx-4 border-blue-100/20' />
-      <div className='my-4'>
-        <ButtonNav name={'Home'} Icon={AiFillHome} link='/' active={location === '' || location === '/'} />
-        <ButtonNavDropdown
-          name={'Products'}
-          Icon={BsFillCartFill}
-          subnav={[
-            { title: 'Manage Product', link: '/product' },
-            { title: 'Manage Brand', link: '/brand' },
-            { title: 'Manage Coupon', link: '/coupon' },
-          ]}
-          active={location.includes('/product') || location.includes('/brand') || location.includes('/coupon')}
-        />
-        <ButtonNav name={'Orders'} Icon={FaMoneyCheckAlt} link='/order' active={location.includes('/order')} />
-        <ButtonNav name={'Inventory'} Icon={MdInventory} link='/inventory' active={location.includes('/inventory')} />
-        <ButtonNav name={'Reports'} Icon={HiDocumentReport} link='/report' active={location.includes('/report')} />
-        <ButtonNav name={'Users'} Icon={MdPeopleAlt} link='/user' active={location.includes('/user')} />
+      <div ref={nodeRef}>
+        <button className='fixed top-3 right-4' onClick={() => setShowMenu(!showMenu)}>
+          <BiMenuAltRight className='text-3xl text-white' />
+        </button>
+        {showMenu && (
+          <div className='my-4'>
+            <ButtonNav name={'Home'} Icon={AiFillHome} link='/' active={location === '' || location === '/'} />
+            <ButtonNavDropdown
+              name={'Products'}
+              Icon={BsFillCartFill}
+              subnav={[
+                { title: 'Manage Product', link: '/product' },
+                { title: 'Manage Brand', link: '/brand' },
+                { title: 'Manage Coupon', link: '/coupon' },
+              ]}
+              active={location.includes('/product') || location.includes('/brand') || location.includes('/coupon')}
+            />
+            <ButtonNav name={'Orders'} Icon={FaMoneyCheckAlt} link='/order' active={location.includes('/order')} />
+            <ButtonNav
+              name={'Inventory'}
+              Icon={MdInventory}
+              link='/inventory'
+              active={location.includes('/inventory')}
+            />
+            <ButtonNav name={'Reports'} Icon={HiDocumentReport} link='/report' active={location.includes('/report')} />
+            <ButtonNav name={'Users'} Icon={MdPeopleAlt} link='/user' active={location.includes('/user')} />
+          </div>
+        )}
       </div>
     </div>
   );
