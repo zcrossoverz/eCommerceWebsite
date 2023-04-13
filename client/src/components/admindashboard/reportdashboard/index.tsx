@@ -23,7 +23,7 @@ export default function ReportDashboard() {
   const componentRef = useRef(null);
   return (
     <div className='mt-4 px-2'>
-      <HelmetSale title='Admin Dashboard | Manage Order'></HelmetSale>
+      <HelmetSale title='Báo cáo'></HelmetSale>
       <BreadCrumb path={['Product', 'Report Dashboard']} />
       <div className='mt-4 grid grid-cols-2'>
         <div className='w-64'>

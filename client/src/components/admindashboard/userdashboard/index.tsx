@@ -9,6 +9,7 @@ import convertDate from 'src/utils/convertDate';
 import { AiOutlineDelete, AiOutlineInfoCircle } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import BreadCrumb from '../breadcrumb';
+import HelmetSEO from 'src/components/Helmet';
 export default function UserDashboard() {
   const query = useQueryParams();
   const queryParams: ProductListConfig = {
@@ -49,7 +50,8 @@ export default function UserDashboard() {
     }
   };
   return (
-    <div className=''>
+    <section>
+      <HelmetSEO title='Quản lý người dùng' />
       <BreadCrumb path={['Fstore', 'Admin Dashboard', 'Quản lý người dùng']} />
       <div className='mt-2 overflow-x-auto rounded-lg border border-gray-200 shadow-md'>
         <table className='w-full border-collapse bg-white text-left text-sm text-gray-500'>
@@ -108,6 +110,6 @@ export default function UserDashboard() {
       <div className='flex flex-col justify-end'>
         <Pagination queryConfig={{ ...queryParams, path: '/admin/user' }} pageSize={data?.data.last_page || 1} />
       </div>
-    </div>
+    </section>
   );
 }

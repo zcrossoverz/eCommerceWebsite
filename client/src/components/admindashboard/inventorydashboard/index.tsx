@@ -13,6 +13,7 @@ import { AiOutlineDelete, AiOutlineFileSearch } from 'react-icons/ai';
 import inboundNoteApi from 'src/apis/inboundnote.api';
 import http from 'src/utils/http';
 import BreadCrumb from '../breadcrumb';
+import HelmetSEO from 'src/components/Helmet';
 enum Mode {
   'queryProduct',
   'queryInboundNote',
@@ -105,6 +106,7 @@ export default function InventoryDashboard() {
   return (
     <div className='px-2'>
       <BreadCrumb path={['Fstore', 'Admin', 'Kho']} />
+      <HelmetSEO title='Quản lý kho' />
       <div className='mt-4'>
         <div className='relative'>
           <form

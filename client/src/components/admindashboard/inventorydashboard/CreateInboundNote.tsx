@@ -11,6 +11,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import inboundNoteApi from 'src/apis/inboundnote.api';
 import analysisApi from 'src/apis/analysis.api';
 import BreadCrumb from '../breadcrumb';
+import HelmetSEO from 'src/components/Helmet';
 interface ProductData {
   product_option_id: number;
   quantity: number;
@@ -190,6 +191,7 @@ function CreateInboundNote() {
   };
   return (
     <>
+      <HelmetSEO title='Tạo phiếu nhập' />
       <BreadCrumb path={['Fstore', 'Admin', 'Kho', 'Tạo phiếu']} />
       <section className='mt-2 flex min-h-full flex-col items-center justify-start bg-white'>
         <header className='flex w-full items-center border-b p-2 lg:w-1/2'>

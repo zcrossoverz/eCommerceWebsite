@@ -5,12 +5,14 @@ import { AiFillHome } from 'react-icons/ai';
 import { BiMenuAltRight } from 'react-icons/bi';
 import { BsBack, BsFillCartFill } from 'react-icons/bs';
 import { FaMoneyCheckAlt } from 'react-icons/fa';
+import { IoLanguageSharp } from 'react-icons/io5';
 import { HiChevronDown, HiDocumentReport } from 'react-icons/hi';
 // eslint-disable-next-line import/named
 import { IconType } from 'react-icons/lib';
 import { MdInventory, MdPeopleAlt } from 'react-icons/md';
 import { useLocation, useNavigate } from 'react-router-dom';
 import logo from 'src/assets/logo.svg';
+import Language from 'src/components/language/Language';
 import useClickOutSide from 'src/hooks/useClickOutSide';
 type PropsButton = {
   name: string;
@@ -140,6 +142,12 @@ function SidebarDashboard() {
           <ButtonNav name={'Inventory'} Icon={MdInventory} link='/inventory' active={location.includes('/inventory')} />
           <ButtonNav name={'Reports'} Icon={HiDocumentReport} link='/report' active={location.includes('/report')} />
           <ButtonNav name={'Users'} Icon={MdPeopleAlt} link='/user' active={location.includes('/user')} />
+          <div className={`mx-4 flex w-[calc(100%-2rem)] items-center rounded-md px-4 hover:bg-white/10`}>
+            <IoLanguageSharp className='text-white' />
+            <div className='py-4 px-4 text-left text-white'>
+              <Language />
+            </div>
+          </div>
           <ButtonNav name={'Back'} Icon={BsBack} link='/user' back active={location.includes('/not')} />
         </div>
       </div>
