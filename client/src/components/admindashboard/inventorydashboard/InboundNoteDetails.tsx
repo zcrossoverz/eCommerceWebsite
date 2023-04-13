@@ -6,7 +6,7 @@ import { baseURL } from 'src/constants/constants';
 import convertDate from 'src/utils/convertDate';
 import { isAxiosErr } from 'src/utils/error';
 import BreadCrumb from '../breadcrumb';
-import { InboundNote } from 'src/types/inventory.type';
+import HelmetSEO from 'src/components/Helmet';
 
 function InboundNoteDetails() {
   const params = useParams<{
@@ -19,10 +19,7 @@ function InboundNoteDetails() {
     retry: 1,
     refetchOnWindowFocus: false,
   });
-  const createInboundNoteMutation = useMutation({
-    mutationFn: (body: InboundNote) => inboundNoteApi.createInboundNote(body),
-    retry: 1,
-  });
+
   const updateStatusMutation = useMutation({
     mutationFn: (body: { id: string; accept: boolean }) => inboundNoteApi.processInboundNote(body.id, body.accept),
     retry: 1,
@@ -47,6 +44,7 @@ function InboundNoteDetails() {
 
   return (
     <section>
+      <HelmetSEO title='Chi tiết phiếu nhập' />
       <BreadCrumb path={['Fstore', 'Admin', 'Inventory', 'Inbound Note', 'Phiếu số ' + String(data?.data.id)]} />
       {data?.data && (
         <div>
