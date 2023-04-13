@@ -16,27 +16,29 @@ import analysisApi from 'src/apis/analysis.api';
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
-const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'bottom' as const,
-    },
-    title: {
-      display: true,
-      text: 'Sale Analytics',
-    },
-  },
-};
-
 // const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
 // const data1 = [200, 159, 280, 181, 156, 155, 100];
 // const data2 = [45, 78, 21, 90, 13, 88, 22];
 // const data3 = [100, 89, 93, 122, 109, 111, 156];
 interface Props {
   inventory?: boolean;
+  titleText?: string;
 }
-export const LineChart = ({ inventory }: Props) => {
+export const LineChart = ({ inventory, titleText }: Props) => {
+  const options = useMemo(() => {
+    return {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom' as const,
+        },
+        title: {
+          display: true,
+          text: titleText ? titleText : 'Sale Analytics',
+        },
+      },
+    };
+  }, [titleText]);
   const statistic = useQuery(['get_data_for_linechart'], () => analysisApi.saleSatistic());
   const data = useMemo(() => {
     const data_raw = statistic.data?.data;
