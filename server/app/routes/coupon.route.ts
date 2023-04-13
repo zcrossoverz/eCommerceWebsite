@@ -9,6 +9,7 @@ export const CouponRoutes = (app: Express) => {
     router.post("/apply", [authMiddleware.verifyToken()], coupon.applyCoupon);
     router.post("/clear", [authMiddleware.verifyToken()], coupon.clearCoupon);
     router.get("/get_all", coupon.getAllCoupon);
+    router.delete('/delete/:coupon_id', [authMiddleware.verifyToken(), authMiddleware.require_admin()], coupon.deleteCoupon);
 
     app.use("/api/coupon", router);
 }

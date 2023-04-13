@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import couponApi from 'src/apis/coupon.api';
 import HelmetSEO from 'src/components/Helmet';
 import Datepicker from 'react-tailwindcss-datepicker';
+import { AiOutlineDelete } from 'react-icons/ai';
 
 const CouponModal = ({ refetch, openModal }: { refetch: any; openModal: any }) => {
   const date_now = new Date();
@@ -309,13 +310,13 @@ export default function ManageCoupon() {
                               <td className='whitespace-nowrap px-6 py-4 text-center text-sm font-medium'>
                                 <button
                                   className='text-red-500 hover:text-red-700'
-                                  // onClick={async () => {
-                                  //   await brandApi.delete(e.id);
-                                  //   toast.success('delete success!');
-                                  //   refetch();
-                                  // }}
+                                  onClick={async () => {
+                                    await couponApi.deleteCoupon(e.id ? Number(e.id) : 0);
+                                    toast.success('delete success!');
+                                    refetch();
+                                  }}
                                 >
-                                  Delete
+                                  <AiOutlineDelete className='text-2xl' />
                                 </button>
                               </td>
                             </tr>
