@@ -1,6 +1,10 @@
-import { InboundNote } from 'src/types/inventory.type';
-import { ResCreateInboundNote } from 'src/types/inventory.type';
-import { ResGetAllInboundNote, ResGetOneInboundNote } from 'src/types/inventory.type';
+import {
+  InboundNote,
+  ResGetAllInboundNote,
+  ResCreateInboundNote,
+  ResGetOneInboundNote,
+} from 'src/types/inventory.type';
+
 import { ProductListConfig } from 'src/types/product.type';
 import http from 'src/utils/http';
 

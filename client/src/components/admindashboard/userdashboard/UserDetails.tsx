@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import userApi from 'src/apis/user.api';
 import convertDate from 'src/utils/convertDate';
 import BreadCrumb from '../breadcrumb';
+import HelmetSEO from 'src/components/Helmet';
 
 function UserDetails() {
   const params = useParams<{
@@ -47,7 +48,8 @@ function UserDetails() {
   };
   return (
     <>
-      <BreadCrumb path={['Fstore', 'Admin Dashboard', 'Quản lý người dùng', 'Chi tiết người dùng']} />
+      <HelmetSEO title='Chi tiết người dùng' />
+      <BreadCrumb path={['Fstore', '...', 'Quản lý người dùng', 'Chi tiết người dùng']} />
       <div className='mt-2 max-w-2xl overflow-hidden bg-white shadow sm:rounded-lg'>
         <div className='px-4 py-5 sm:px-6'>
           <h3 className='text-lg font-medium leading-6 text-gray-900'>Dữ liệu của người dùng</h3>

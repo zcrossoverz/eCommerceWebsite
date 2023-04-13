@@ -1,10 +1,12 @@
 import HelmetSale from 'src/components/Helmet/HelmetSEO';
 import BreadCrumb from '../breadcrumb';
 import Datepicker from 'react-tailwindcss-datepicker';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Line } from 'react-chartjs-2';
 import { useQuery } from '@tanstack/react-query';
 import analysisApi from 'src/apis/analysis.api';
+import ReactToPrint from 'react-to-print';
+import ContentPrint from './ContentPrint';
 
 export default function ReportDashboard() {
   const date_now = new Date();
@@ -20,14 +22,16 @@ export default function ReportDashboard() {
     analysisApi.reportInventory(value.startDate, value.endDate)
   );
 
+  const componentRef = useRef(null);
 
   return (
-    <div className='mt-4'>
-      <HelmetSale title='Admin Dashboard | Manage Order'></HelmetSale>
+    <div className='mt-4 px-2'>
+      <HelmetSale title='Báo cáo'></HelmetSale>
       <BreadCrumb path={['Product', 'Report Dashboard']} />
       <div className='mt-4 grid grid-cols-2'>
         <div className='w-64'>
           <Datepicker
+            i18n='vi'
             value={value}
             onChange={(e) => {
               setValue({
@@ -39,7 +43,14 @@ export default function ReportDashboard() {
           />
         </div>
         <div className='col-span-1 flex justify-end'>
-          <button className='mr-8 rounded-md bg-blue-400 px-4 py-2'>Export</button>
+          <ReactToPrint
+            trigger={() => (
+              <button className=' rounded-md bg-blue-400 px-2 py-1 text-xs lg:mr-8 lg:px-4 lg:py-2 lg:text-sm'>
+                In báo cáo
+              </button>
+            )}
+            content={() => componentRef.current}
+          />
         </div>
       </div>
       <div>
@@ -48,7 +59,7 @@ export default function ReportDashboard() {
             <div className='inline-block w-full align-middle'>
               <div className='overflow-hidden'>
                 <div className='grid grid-cols-2 gap-4'>
-                  <div className='rounded-xl border border-gray-200 bg-white p-4 drop-shadow-xl'>
+                  <div className='col-span-2 rounded-xl border border-gray-200 bg-white p-4 drop-shadow-xl lg:col-span-1'>
                     <Line
                       options={{
                         responsive: true,
@@ -63,18 +74,18 @@ export default function ReportDashboard() {
                         },
                       }}
                       data={{
-                        labels: revenue_data.data?.data.map((e: any) => e.date),
+                        labels: revenue_data.data?.data.map((e) => e.date),
                         datasets: [
                           {
                             label: 'product sale',
-                            data: revenue_data.data?.data.map((e: any) => e.product_sale),
+                            data: revenue_data.data?.data.map((e) => e.product_sale),
                             borderColor: 'rgb(255, 99, 132)',
                             backgroundColor: 'rgba(255, 99, 132, 0.5)',
                             tension: 0.1,
                           },
                           {
                             label: 'revenue (million vnd)',
-                            data: revenue_data.data?.data.map((e: any) => e.revenue / 1_000_000),
+                            data: revenue_data.data?.data.map((e) => e.revenue / 1_000_000),
                             borderColor: 'rgb(53, 162, 235)',
                             backgroundColor: 'rgba(53, 162, 235, 0.5)',
                             tension: 0.1,
@@ -83,7 +94,7 @@ export default function ReportDashboard() {
                       }}
                     />
                   </div>
-                  <div className='rounded-xl border border-gray-200 bg-white p-4 drop-shadow-xl'>
+                  <div className='col-span-2 rounded-xl border border-gray-200 bg-white p-4 drop-shadow-xl lg:col-span-1'>
                     <Line
                       options={{
                         responsive: true,
@@ -98,18 +109,18 @@ export default function ReportDashboard() {
                         },
                       }}
                       data={{
-                        labels: inventory_data.data?.data.map((e: any) => e.date),
+                        labels: inventory_data.data?.data.map((e) => e.date),
                         datasets: [
                           {
                             label: 'in (item)',
-                            data: inventory_data.data?.data.map((e: any) => e.in),
+                            data: inventory_data.data?.data.map((e) => e.in),
                             borderColor: 'rgb(66, 245, 78)',
                             backgroundColor: 'rgba(66, 245, 78, 0.5)',
                             tension: 0.1,
                           },
                           {
                             label: 'out (item)',
-                            data: inventory_data.data?.data.map((e: any) => e.out),
+                            data: inventory_data.data?.data.map((e) => e.out),
                             borderColor: 'rgb(252, 169, 3)',
                             backgroundColor: 'rgba(252, 169, 3, 0.5)',
                             tension: 0.1,
@@ -124,6 +135,13 @@ export default function ReportDashboard() {
           </div>
         </div>
       </div>
+      <footer className='mt-4'>
+        <ContentPrint
+          inventorySale={inventory_data.data?.data ? inventory_data.data.data : []}
+          revenue={revenue_data.data?.data ? revenue_data.data.data : []}
+          ref={componentRef}
+        />
+      </footer>
     </div>
   );
 }

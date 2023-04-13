@@ -74,7 +74,7 @@ export default function OrderDashboard() {
 
   return (
     <div className='mt-4'>
-      <HelmetSale title='Admin Dashboard | Manage Order'></HelmetSale>
+      <HelmetSale title='Quản lý đơn hàng'></HelmetSale>
       <BreadCrumb path={['Product', 'Order Dashboard']} />
       <div className='mt-4 grid grid-cols-6 gap-4'>
         <div className='col-span-2 mr-4'>

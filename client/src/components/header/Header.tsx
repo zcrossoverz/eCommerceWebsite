@@ -16,7 +16,7 @@ import useClickOutSide from 'src/hooks/useClickOutSide';
 import { GrUserAdmin } from 'react-icons/gr';
 import { useDispatch, useSelector } from 'react-redux';
 import logo from 'src/assets/logo.svg';
-import Language from '../language/Language';
+import Language from 'src/components/language/Language';
 import { useTranslation } from 'react-i18next';
 import { MdLanguage } from 'react-icons/md';
 import { IoMdNotificationsOutline } from 'react-icons/io';
