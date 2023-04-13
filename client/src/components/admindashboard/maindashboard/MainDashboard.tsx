@@ -10,7 +10,6 @@ import HelmetSEO from 'src/components/Helmet';
 import feedbackApi from 'src/apis/feedback.api';
 import { dateToString } from 'src/utils/convertDate';
 import { baseURL } from 'src/constants/constants';
-
 type card_props = {
   title: string;
   value: string;
