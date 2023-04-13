@@ -30,5 +30,8 @@ const couponApi = {
       length: 8,
     });
   },
+  deleteCoupon(id: number) {
+    return http.delete(`coupon/delete/${id}`);
+  },
 };
 export default couponApi;

@@ -263,3 +263,7 @@ export const getAllCoupon = async () => {
       };
     });
 };
+
+export const deleteCoupon = async (coupon_id: number) => {
+  return (await couponRepo.delete({ id : coupon_id })).affected ? success() : failed()
+}

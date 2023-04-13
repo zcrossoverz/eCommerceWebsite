@@ -80,7 +80,7 @@ export default function ManageProduct() {
             </option>
           </select>
         </div>
-        <div className='col-span-1 col-end-7'>
+        <div className='col-span-1 col-end-6 md:col-end-7'>
           <button
             className='rounded-xl bg-blue-900 py-3 px-8 text-gray-400 hover:bg-blue-600 hover:text-white hover:shadow-primary hover:shadow-lg'
             onClick={() =>

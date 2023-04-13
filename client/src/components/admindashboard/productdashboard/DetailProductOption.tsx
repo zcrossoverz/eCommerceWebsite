@@ -3,7 +3,7 @@ import BreadCrumb from '../breadcrumb';
 import { useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import productsApi from 'src/apis/product.api';
-import { Bar, Line } from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 
 export default function DetailProductOption() {
   const { product_option_id } = useParams();
@@ -17,7 +17,7 @@ export default function DetailProductOption() {
       <HelmetSale title='Admin Dashboard | Product Option Detail'></HelmetSale>
       <BreadCrumb path={['Product', 'Product Dashboard', 'Detail', 'Product Option']} />
       <div className='mt-4'>
-        <div className='grid grid-cols-2 gap-4'>
+        <div className='grid md:grid-cols-2 gap-4'>
           <div className='rounded-xl border border-gray-200 bg-white p-4 drop-shadow-xl'>
             <Line
               options={{
@@ -40,7 +40,7 @@ export default function DetailProductOption() {
                 }),
                 datasets: [
                   {
-                    label: 'product sale',
+                    label: 'price (million vnd)',
                     data: product_tracking.data?.data.prices.map((e: any) => e.new_price),
                     borderColor: 'rgb(255, 99, 132)',
                     backgroundColor: 'rgba(255, 99, 132, 0.5)',
@@ -51,44 +51,43 @@ export default function DetailProductOption() {
             />
           </div>
           <div className='rounded-xl border border-gray-200 bg-white p-4 drop-shadow-xl'>
-            {/* <Bar
+            <Line
               options={{
+                responsive: true,
                 plugins: {
+                  legend: {
+                    position: 'bottom' as const,
+                  },
                   title: {
                     display: true,
-                    text: 'Inventory tracking',
-                  },
-                },
-                responsive: true,
-                interaction: {
-                  intersect: false,
-                },
-                scales: {
-                  x: {
-                    stacked: true,
-                  },
-                  y: {
-                    stacked: true,
+                    text: 'Tracking Price',
                   },
                 },
               }}
               data={{
-                labels: ['abc', 'sdf', 'sdf', 'ffs', 'ers'],
+                labels: product_tracking.data?.data.transactions.map((e: any) => {
+                  const date = new Date(e.date);
+                  date.toLocaleString('vn-VI', { timeZone: 'Asia/Ho_Chi_Minh' });
+                  return `${date.getHours()}:${date.getMinutes()} ${date.getDate()}/${date.getMonth() + 1}`;
+                }),
                 datasets: [
                   {
-                    label: 'data 1',
-                    data: [12, 34, 23, 12, 13],
-                    backgroundColor: 'blue',
-                    stack: 'Stack 0',
-                  },{
-                    label: 'data 2',
-                    data: [32, 11, 16, 13, 20],
-                    stack: 'Stack 0',
-                    backgroundColor: 'red',
+                    label: 'in (items)',
+                    data: product_tracking.data?.data.transactions.map((e: any) => (e.type === 0 ? e.quantity : 0)),
+                    borderColor: 'rgb(250, 235, 102)',
+                    backgroundColor: 'rgba(250, 235, 102, 0.5)',
+                    tension: 0.1,
+                  },
+                  {
+                    label: 'out (items)',
+                    data: product_tracking.data?.data.transactions.map((e: any) => (e.type === 1 ? e.quantity : 0)),
+                    borderColor: 'rgb(36, 227, 106)',
+                    backgroundColor: 'rgba(36, 227, 106, 0.5)',
+                    tension: 0.1,
                   },
                 ],
               }}
-            /> */}
+            />
           </div>
         </div>
       </div>
