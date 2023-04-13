@@ -423,16 +423,17 @@ export const reportRevenue = async (startDate: string, endDate: string) => {
   const dates = [];
   const start = new Date(startDate);
   const end = new Date(endDate);
-  const timeDiff = end.getTime() - start.getTime(); 
-  const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24)); 
+  const timeDiff = end.getTime() - start.getTime();
+  const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
   for (let i = 0; i <= daysDiff; i++) {
     const date = new Date(start.getTime() + i * 24 * 60 * 60 * 1000);
     const month = date.getMonth() + 1;
     const day = date.getDate();
-    const formattedDate = `${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`; 
+    const formattedDate = `${month.toString().padStart(2, "0")}-${day
+      .toString()
+      .padStart(2, "0")}`;
     dates.push(formattedDate);
   }
-  
 
   interface revenue_interface {
     id: number;
@@ -461,16 +462,16 @@ export const reportRevenue = async (startDate: string, endDate: string) => {
         revenue: 0,
         product_sale: 0,
       };
-      data.map(el => {
+      data.map((el) => {
         data_sale.revenue += Number(el.payment.amount);
-        el.orderItems.map(elm => {
+        el.orderItems.map((elm) => {
           data_sale.product_sale += elm.quantity;
         });
       });
       dataz.push({
         id: i,
         date: e,
-        ...data_sale
+        ...data_sale,
       });
     })
   );
@@ -482,13 +483,15 @@ export const reportInventory = async (startDate: string, endDate: string) => {
   const dates = [];
   const start = new Date(startDate);
   const end = new Date(endDate);
-  const timeDiff = end.getTime() - start.getTime(); 
-  const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24)); 
+  const timeDiff = end.getTime() - start.getTime();
+  const daysDiff = Math.floor(timeDiff / (1000 * 3600 * 24));
   for (let i = 0; i <= daysDiff; i++) {
     const date = new Date(start.getTime() + i * 24 * 60 * 60 * 1000);
     const month = date.getMonth() + 1;
     const day = date.getDate();
-    const formattedDate = `${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`; 
+    const formattedDate = `${month.toString().padStart(2, "0")}-${day
+      .toString()
+      .padStart(2, "0")}`;
     dates.push(formattedDate);
   }
   interface inventory_interface {
@@ -498,29 +501,56 @@ export const reportInventory = async (startDate: string, endDate: string) => {
     out: number;
   }
   const _data = [] as inventory_interface[];
-  await Promise.all(dates.map(async (e,i) => {
-    const inventoryTransactionRepo = AppDataSource.getRepository(InventoryTransaction);
-    const transactions = await inventoryTransactionRepo.find({
-      where: {
-        date: ILike(`_____${e}%`)
+  await Promise.all(
+    dates.map(async (e, i) => {
+      const inventoryTransactionRepo =
+        AppDataSource.getRepository(InventoryTransaction);
+      const transactions = await inventoryTransactionRepo.find({
+        where: {
+          date: ILike(`_____${e}%`),
+        },
+        relations: {
+          product_option: true,
+        },
+      });
+      const data = {
+        in: 0,
+        out: 0,
+      };
+      transactions.map((el) => {
+        if (el.type === EnumInventoryTransactionType.IN) data.in += el.quantity;
+        if (el.type === EnumInventoryTransactionType.OUT)
+          data.out += el.quantity;
+      });
+      _data.push({
+        id: i,
+        date: e,
+        ...data,
+      });
+    })
+  );
+  return _data.sort((a, b) => a.id - b.id);
+};
+
+export const productAnalysis = async (product_option_id: number) => {
+  const productRepo = AppDataSource.getRepository(ProductOption);
+  const product = await productRepo.findOne({
+    where: {
+      id: product_option_id,
+    },
+    relations: {
+      product: true,
+      price: {
+        priceHistories: true,
       },
-      relations: {
-        product_option: true
-      }
-    });
-    const data = {
-      in: 0,
-      out: 0
-    }
-    transactions.map(el => {
-      if(el.type === EnumInventoryTransactionType.IN) data.in += el.quantity;
-      if(el.type === EnumInventoryTransactionType.OUT) data.out += el.quantity;
-    });
-    _data.push({
-      id: i,
-      date: e,
-      ...data
-    });
-  }));
-  return _data.sort((a,b) => a.id - b.id);
-}
+      inventory_transactions: true,
+    },
+  });
+  if (!product) return BadRequestError("product not found");
+
+  return {
+    name: product.product.name,
+    prices: product.price.priceHistories,
+    transactions: product.inventory_transactions,
+  };
+};

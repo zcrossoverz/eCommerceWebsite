@@ -17,6 +17,7 @@ export interface Product {
     create_at: string;
   }[];
   specs: {
+    id: number;
     key: string;
     value: string;
   }[];

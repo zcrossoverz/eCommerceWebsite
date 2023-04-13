@@ -2,7 +2,6 @@
 import { AiFillBank } from 'react-icons/ai';
 import { BsPeopleFill } from 'react-icons/bs';
 import { FaCartPlus, FaFileSignature } from 'react-icons/fa';
-
 import { PieChart } from './chart/PieChart';
 import { LineChart } from './chart/LineChart';
 import { useQueries, useQuery } from '@tanstack/react-query';
@@ -12,7 +11,9 @@ import { useState } from 'react';
 import HelmetSEO from 'src/components/Helmet';
 import feedbackApi from 'src/apis/feedback.api';
 import { dateToString } from 'src/utils/convertDate';
+import { baseURL } from 'src/constants/constants';
 import Languege from 'src/components/language/Language';
+
 
 type card_props = {
   title: string;
@@ -71,6 +72,7 @@ function MainDashboard() {
   const overview = useQuery(['analysis_overview'], () => analysisApi.analysOverview());
   const data_product_sale = useQuery(['top_sales'], () => analysisApi.topSales());
   const feedbacks = useQuery(['get_feedbacks'], () => feedbackApi.getAllFeedback());
+
   return (
     <div>
       <HelmetSEO title='Admin'></HelmetSEO>
@@ -102,6 +104,7 @@ function MainDashboard() {
                 <thead>
                   <tr>
                     <th>#</th>
+                    <th>Image</th>
                     <th>Name</th>
                     <th>Number sold</th>
                   </tr>
@@ -112,6 +115,9 @@ function MainDashboard() {
                     .map((e: any, i: number) => (
                       <tr key={i.toString()}>
                         <td className='px-10 text-center'>{(i + 1).toString()}</td>
+                        <td className='px-10 text-center'>
+                          <img src={`${baseURL}/${e.image}`} alt='' className='h-30 w-32' />
+                        </td>
                         <td className='px-10 text-left'>{e.name}</td>
                         <td className='px-10 text-center'>{e.total_sale}</td>
                       </tr>
@@ -123,17 +129,18 @@ function MainDashboard() {
         </div>
         <div className='col-span-2 rounded-xl bg-white p-8 shadow-lg'>
           <div className=' -mt-6 -ml-4'>
-            <div className='text-xl font-semibold leading-loose'>Recent activity</div>
+            <div className='text-xl font-semibold leading-loose'>Recently feedbacks</div>
           </div>
           <hr className='-ml-6 bg-gray-300' />
-          <div className='flex flex-col'>
+          <div className='mb-4 flex flex-col'>
             {feedbacks.data?.data.map((e: any, i: number) => {
               return (
-                <div className='grid grid-cols-3 px-2' key={i.toString()}>
+                <div className='grid grid-cols-3 px-2 py-2' key={i.toString()}>
                   <div className='col-span-2'>
-                    {`${e.user.lastName} rate ${e.rate} star for product ${e.product.name}`}{' '}
+                    {`${e.user.firstName} ${e.user.lastName} rate ${e.rate} star for product ${e.product.name}`}{' '}
                   </div>
                   <div className=''>{dateToString(e.create_at)}</div>
+                  <hr className='bg-gray-800' />
                 </div>
               );
             })}

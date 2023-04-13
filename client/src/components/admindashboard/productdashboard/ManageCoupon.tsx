@@ -2,40 +2,46 @@
 import { useQuery } from '@tanstack/react-query';
 import BreadCrumb from '../breadcrumb';
 import { JSXElementConstructor, Key, ReactElement, ReactFragment, ReactPortal, useState } from 'react';
-import brandApi from 'src/apis/brand.api';
-import { useDispatch, useSelector } from 'react-redux';
-import { popup, selectCurrentModal } from 'src/slices/modal.slice';
 import { toast } from 'react-toastify';
 import couponApi from 'src/apis/coupon.api';
 import HelmetSEO from 'src/components/Helmet';
+import Datepicker from 'react-tailwindcss-datepicker';
 
-const BrandModal = ({
-  refetch,
-  nameDefault,
-  descriptionDefault,
-  type,
-  id,
-}: {
-  refetch: any;
-  nameDefault: string;
-  descriptionDefault: string;
-  type: string;
-  id?: number;
-}) => {
-  const dispatch = useDispatch();
-  const [name, setName] = useState(nameDefault);
-  const [description, setDescription] = useState(descriptionDefault);
+const CouponModal = ({ refetch, openModal }: { refetch: any; openModal: any }) => {
+  const date_now = new Date();
+  const [date, setDate] = useState({
+    startDate: `${date_now.getFullYear()}-${date_now.getMonth() + 1}-${date_now.getDate()}`,
+    endDate: `${date_now.getFullYear()}-${date_now.getMonth() + 1}-${date_now.getDate()}`,
+  });
+
+  const [number, setNumber] = useState(0);
+  const [type, setType] = useState('PERCENT');
+  const [value, setValue] = useState(0);
+
+  const create = async () => {
+    const start_date = new Date(date.startDate);
+    const end_date = new Date(date.endDate);
+    await couponApi.createCoupon(
+      number,
+      value,
+      type,
+      `${start_date.getMonth() + 1}/${start_date.getDate()}/${start_date.getFullYear()}`,
+      `${end_date.getMonth() + 1}/${end_date.getDate()}/${end_date.getFullYear()}`
+    );
+    toast.success('create coupon success');
+    openModal(false);
+    refetch();
+  };
+
   return (
     <div className='z-100 fixed inset-0 top-1/2 left-1/2 -translate-x-1/3 -translate-y-3/4'>
       <div className='relative h-full w-full max-w-2xl md:h-auto'>
         <div className='relative rounded-lg bg-white shadow-xl'>
           <div className='flex items-start justify-between rounded-t border-b p-4'>
-            <h3 className='text-xl font-semibold text-gray-900'>
-              {type === 'create' ? 'Create New Brand' : 'Edit Brand'}
-            </h3>
+            <h3 className='text-xl font-semibold text-gray-900'>CREATE NEW COUPON</h3>
             <button
+              onClick={() => openModal(false)}
               className='ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900'
-              onClick={() => dispatch(popup(''))}
             >
               <svg
                 aria-hidden='true'
@@ -52,46 +58,56 @@ const BrandModal = ({
 
           <div className='space-y-6 p-6'>
             <p className='text-base leading-relaxed text-gray-500'>
-              <p>Name: </p>
+              <p>Number: </p>
               <input
                 className='w-full rounded-xl border border-gray-400 px-2 py-2'
-                defaultValue={name}
-                onChange={(e) => setName(e.target.value)}
+                type='number'
+                onChange={(e) => setNumber(Number(e.target.value))}
               />
             </p>
             <p className='text-base leading-relaxed text-gray-500'>
-              <p>Description:</p>
-              <textarea
-                className='w-full rounded-xl border border-gray-400 px-2 py-6'
-                defaultValue={description}
-                onChange={(e) => setDescription(e.target.value)}
+              <p>Type:</p>
+              <select
+                className='w-full rounded-xl border border-gray-400 px-2 py-2'
+                onChange={(e) => setType(e.target.value)}
+              >
+                <option value='PERCENT'>PERCENT</option>
+                <option value='AMOUNT'>AMOUNT</option>
+              </select>
+            </p>
+            <p className='text-base leading-relaxed text-gray-500'>
+              <p>Value:</p>
+              <input
+                className='w-full rounded-xl border border-gray-400 px-2 py-2'
+                type='number'
+                onChange={(e) => setValue(Number(e.target.value))}
+              />
+            </p>
+            <p className='text-base leading-relaxed text-gray-500'>
+              <p>Expiry date:</p>
+              <Datepicker
+                value={date}
+                onChange={(e) => {
+                  setDate({
+                    startDate: e?.startDate?.toString() ? e.startDate?.toString() : '',
+                    endDate: e?.endDate?.toString() ? e.endDate?.toString() : '',
+                  });
+                }}
+                primaryColor='teal'
               />
             </p>
           </div>
 
           <div className='flex items-center space-x-2 rounded-b border-t border-gray-200 p-6'>
             <button
+              onClick={create}
               className='rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 '
-              onClick={async () => {
-                if (type === 'create') {
-                  const rs = await brandApi.createBrand(name, description);
-                  if (rs.status === 200) toast.success('create brand success!');
-                  else toast.error('create brand failed!');
-                }
-                if (type === 'edit') {
-                  const rs = await brandApi.update(Number(id), name, description);
-                  if (rs.status === 200) toast.success('edit brand success!');
-                  else toast.error('create brand failed!');
-                }
-                refetch();
-                dispatch(popup(''));
-              }}
             >
               Confirm
             </button>
             <button
-              className='rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300'
-              onClick={() => dispatch(popup(''))}
+              onClick={() => openModal(false)}
+              className='rounded-lg border border-gray-500 bg-white px-5 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300'
             >
               Cancel
             </button>
@@ -104,13 +120,12 @@ const BrandModal = ({
 
 export default function ManageCoupon() {
   const [params, setParams] = useState({
-    limit: '10',
+    limit: '20',
     page: '1',
     search: '',
   });
 
-  const currentModal = useSelector(selectCurrentModal);
-  const dispatch = useDispatch();
+  const [modalOpen, setModalOpen] = useState(false);
 
   const { data, isLoading, refetch } = useQuery(['get_all_coupons'], () => couponApi.getAllCoupon());
 
@@ -149,32 +164,14 @@ export default function ManageCoupon() {
         <div className='col-span-1 col-end-7'>
           <button
             className='rounded-xl bg-blue-900 py-3 px-8 text-gray-400 hover:bg-blue-600 hover:text-white hover:shadow-primary hover:shadow-lg'
-            // onClick={() =>
-            //   dispatch(
-            //     popup({
-            //       name: 'create',
-            //     })
-            //   )
-            // }
+            onClick={() => setModalOpen(true)}
           >
             CREATE
           </button>
         </div>
       </div>
       <div>
-        {currentModal.open &&
-          ((currentModal.name === 'create' && (
-            <BrandModal refetch={() => refetch()} nameDefault='' descriptionDefault='' type='create' />
-          )) ||
-            (currentModal.name === 'edit' && (
-              <BrandModal
-                refetch={() => refetch()}
-                nameDefault={currentModal.nameDefault}
-                descriptionDefault={currentModal.descriptionDefault}
-                type='edit'
-                id={currentModal.id}
-              />
-            )))}
+        {modalOpen && <CouponModal refetch={refetch} openModal={setModalOpen} />}
         <div className='mt-4 flex flex-col'>
           <div className='overflow-x-auto'>
             <div className='inline-block w-full align-middle'>

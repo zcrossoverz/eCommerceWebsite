@@ -9,9 +9,10 @@ import ReactToPrint from 'react-to-print';
 import ContentPrint from './ContentPrint';
 
 export default function ReportDashboard() {
+  const date_now = new Date();
   const [value, setValue] = useState({
-    startDate: '2023-04-11',
-    endDate: '2023-04-11',
+    startDate: `${date_now.getFullYear()}-${date_now.getMonth()+1}-${date_now.getDate()}`,
+    endDate: `${date_now.getFullYear()}-${date_now.getMonth()+1}-${date_now.getDate()}`,
   });
 
   const revenue_data = useQuery(['get_revenue_report', value], () =>
@@ -20,7 +21,9 @@ export default function ReportDashboard() {
   const inventory_data = useQuery(['get_inventory_report', value], () =>
     analysisApi.reportInventory(value.startDate, value.endDate)
   );
+
   const componentRef = useRef(null);
+
   return (
     <div className='mt-4 px-2'>
       <HelmetSale title='Báo cáo'></HelmetSale>
