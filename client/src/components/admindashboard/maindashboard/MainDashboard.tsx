@@ -5,14 +5,12 @@ import { FaCartPlus, FaFileSignature } from 'react-icons/fa';
 
 import { PieChart } from './chart/PieChart';
 import { LineChart } from './chart/LineChart';
-import { useQueries, useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import analysisApi from 'src/apis/analysis.api';
 import productsApi from 'src/apis/product.api';
-import { useState } from 'react';
 import HelmetSEO from 'src/components/Helmet';
 import feedbackApi from 'src/apis/feedback.api';
 import { dateToString } from 'src/utils/convertDate';
-import Languege from 'src/components/language/Language';
 
 type card_props = {
   title: string;
@@ -74,7 +72,6 @@ function MainDashboard() {
   return (
     <div>
       <HelmetSEO title='Admin'></HelmetSEO>
-      <Languege />
       <div className='grid md:grid-cols-2 lg:grid-cols-4'>
         <Card title='Total Products' value={overview.data?.data.countProducts} icon={0} />
         <Card title='Total Orders' value={overview.data?.data.countOrders} icon={2} />

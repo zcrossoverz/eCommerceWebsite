@@ -7,7 +7,7 @@ import { Route, Routes } from 'react-router';
 function AdminDashboard() {
   return (
     <div className='z-1 flex min-h-screen gap-2 bg-blue-50/50 lg:p-4'>
-      <div className='fixed left-0 top-0 z-50 w-full bg-sidebar_dashboard lg:top-4 lg:left-2 lg:h-[calc(100vh-32px)] lg:w-72 lg:rounded-xl'>
+      <div className='fixed left-0 top-0 z-50 w-full overflow-y-auto bg-sidebar_dashboard lg:top-4 lg:left-2 lg:h-[calc(100vh-32px)] lg:w-72 lg:rounded-xl'>
         <SidebarDashboard />
       </div>
       <div className='mt-[4rem] w-screen lg:-mt-2 lg:ml-80'>

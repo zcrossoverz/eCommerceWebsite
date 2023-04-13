@@ -42,7 +42,7 @@ export default function ReportDashboard() {
         <div className='col-span-1 flex justify-end'>
           <ReactToPrint
             trigger={() => (
-              <button className=' rounded-md bg-blue-400 px-2 py-1 text-xs lg:mr-8 lg:px-4 lg:py-2 lg:text-sm'>
+              <button className=' rounded-md bg-blue-400 px-2 py-1 text-xs hover:bg-blue-500 lg:mr-8 lg:px-4 lg:py-2 lg:text-sm'>
                 In báo cáo
               </button>
             )}
