@@ -20,7 +20,6 @@ export default function ReportDashboard() {
     analysisApi.reportInventory(value.startDate, value.endDate)
   );
 
-  console.log(revenue_data, inventory_data);
 
   return (
     <div className='mt-4'>
