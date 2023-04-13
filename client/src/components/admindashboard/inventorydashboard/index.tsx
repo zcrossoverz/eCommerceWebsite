@@ -12,6 +12,7 @@ import convertDate from 'src/utils/convertDate';
 import { AiOutlineDelete, AiOutlineFileSearch } from 'react-icons/ai';
 import inboundNoteApi from 'src/apis/inboundnote.api';
 import http from 'src/utils/http';
+import BreadCrumb from '../breadcrumb';
 enum Mode {
   'queryProduct',
   'queryInboundNote',
@@ -103,91 +104,94 @@ export default function InventoryDashboard() {
   };
   return (
     <div>
-      <div className='mt-8'>
-        <form
-          className='max-w-[14rem]'
-          onSubmit={(e) => {
-            e.preventDefault();
-            navigate({ search: createSearchParams({ ...queryParams, query: search ? search : '' }).toString() });
-          }}
-        >
-          <label htmlFor='default-search' className='sr-only mb-2 text-sm font-medium text-gray-900 '>
-            Search
-          </label>
-          <div className='relative'>
-            <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3'>
-              <svg
-                aria-hidden='true'
-                className='h-5 w-5 text-cyan-500 '
-                fill='none'
-                stroke='currentColor'
-                viewBox='0 0 24 24'
-                xmlns='http://www.w3.org/2000/svg'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  strokeWidth={2}
-                  d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
-                />
-              </svg>
-            </div>
-            <input
-              type='search'
-              id='default-search'
-              className='block w-full rounded-lg border border-cyan-600 bg-gray-50 p-2 pl-10 text-sm text-gray-900 '
-              placeholder='Search'
-              value={search || ''}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-            <button
-              type='submit'
-              className='absolute bottom-1.5 right-2 rounded-md bg-cyan-600 px-2 py-1 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none'
-            >
+      <BreadCrumb path={['Fstore', 'Admin', 'Kho']} />
+      <div className='mt-4'>
+        <div className='relative'>
+          <form
+            className='max-w-[14rem]'
+            onSubmit={(e) => {
+              e.preventDefault();
+              navigate({ search: createSearchParams({ ...queryParams, query: search ? search : '' }).toString() });
+            }}
+          >
+            <label htmlFor='default-search' className='sr-only mb-2 text-sm font-medium text-gray-900 '>
               Search
-            </button>
-          </div>
-        </form>
-        <div className='relative mt-1 rounded-lg border border-gray-200 shadow-md'>
-          <span className='rounded-lg bg-cyan-500 px-2 py-4 text-xl font-semibold uppercase text-white shadow-sm md:absolute md:left-1/2 md:-top-10 md:-translate-x-1/2'>
+            </label>
+            <div className='relative mb-2 '>
+              <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3'>
+                <svg
+                  aria-hidden='true'
+                  className='h-5 w-5 text-cyan-500 '
+                  fill='none'
+                  stroke='currentColor'
+                  viewBox='0 0 24 24'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <path
+                    strokeLinecap='round'
+                    strokeLinejoin='round'
+                    strokeWidth={2}
+                    d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'
+                  />
+                </svg>
+              </div>
+              <input
+                type='search'
+                id='default-search'
+                className='block w-full rounded-lg border border-cyan-600 bg-gray-50 p-2 pl-10 text-sm text-gray-900 '
+                placeholder='Search'
+                value={search || ''}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+              <button
+                type='submit'
+                className='absolute bottom-1.5 right-2 rounded-md bg-cyan-600 px-2 py-1 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none'
+              >
+                Search
+              </button>
+            </div>
+          </form>
+          <span className='relative z-10 inline-block rounded-lg bg-cyan-500 px-2 py-4 text-sm font-semibold uppercase text-white shadow-sm md:absolute md:left-1/2 md:-top-1 md:-translate-x-1/2 md:text-xl'>
             Tổng sản phẩm trong kho: {data?.data.total}
           </span>
-          <table className='w-full text-left text-sm text-gray-500 '>
-            <thead className='bg-cyan-400 text-xs uppercase text-gray-700'>
-              <tr>
-                <th scope='col' className='px-6 py-6'>
-                  Product name
-                </th>
-                <th scope='col' className='px-6 py-6'>
-                  Color
-                </th>
-                <th scope='col' className='px-6 py-6'>
-                  RAM
-                </th>
-                <th scope='col' className='px-6 py-6'>
-                  ROM
-                </th>
-                <th scope='col' className='px-6 py-6'>
-                  Quantity
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {data?.data &&
-                data.data.data &&
-                data.data.data.map((product) => (
-                  <tr key={product.product_option_id} className='border-b bg-white'>
-                    <th scope='row' className='whitespace-nowrap px-6 py-4 font-medium text-gray-900'>
-                      {product.name}
-                    </th>
-                    <td className='px-6 py-4'>{product.color}</td>
-                    <td className='px-6 py-4'>{product.ram}</td>
-                    <td className='px-6 py-4'>{product.rom}</td>
-                    <td className='px-6 py-4'>{product.quantity}</td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
+          <div className='relative mt-1 overflow-auto rounded-lg border border-gray-200 shadow-md'>
+            <table className='w-full text-left text-sm text-gray-500 '>
+              <thead className='bg-cyan-400 text-xs uppercase text-gray-700'>
+                <tr>
+                  <th scope='col' className='px-6 py-6'>
+                    Tên
+                  </th>
+                  <th scope='col' className='px-6 py-6'>
+                    Màu
+                  </th>
+                  <th scope='col' className='px-6 py-6'>
+                    RAM
+                  </th>
+                  <th scope='col' className='px-6 py-6'>
+                    ROM
+                  </th>
+                  <th scope='col' className='px-6 py-6'>
+                    Số lượng
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {data?.data &&
+                  data.data.data &&
+                  data.data.data.map((product) => (
+                    <tr key={product.product_option_id} className='border-b bg-white'>
+                      <th scope='row' className='whitespace-nowrap px-6 py-4 font-medium text-gray-900'>
+                        {product.name}
+                      </th>
+                      <td className='px-6 py-4'>{product.color}</td>
+                      <td className='px-6 py-4'>{product.ram}</td>
+                      <td className='px-6 py-4'>{product.rom}</td>
+                      <td className='px-6 py-4'>{product.quantity}</td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </div>
         </div>
         <Pagination
           pageSize={data?.data.last_page ? data.data.last_page : 1}
@@ -195,9 +199,9 @@ export default function InventoryDashboard() {
         />
       </div>
       {/* manage inbound note */}
-      <section>
+      <section className='relative mt-2'>
         <div className='flex items-center justify-between'>
-          <h2 className='text-lg font-semibold text-emerald-500'>Quản lý phiếu nhập kho</h2>
+          <h2 className='text-sm font-semibold text-emerald-500 lg:text-lg'>Quản lý phiếu nhập kho</h2>
           <button
             type='button'
             onClick={() => {
@@ -215,7 +219,7 @@ export default function InventoryDashboard() {
 
         <div className='relative mt-1 overflow-x-auto rounded-lg border border-gray-200 shadow-md'>
           <table className='w-full text-left text-sm text-gray-500 '>
-            <thead className='bg-emerald-500 text-base uppercase text-white'>
+            <thead className='bg-emerald-500 text-sm uppercase text-white lg:text-base'>
               <tr>
                 <th scope='col' className='px-6 py-6'>
                   tên phiếu
@@ -254,7 +258,7 @@ export default function InventoryDashboard() {
                           navigate(`inboundNote/${ib.id}`);
                         }}
                       >
-                        <AiOutlineFileSearch size={24} className='ml-4 text-green-500' />
+                        <AiOutlineFileSearch size={24} className='text-green-500 md:ml-4' />
                       </button>
                     </td>
                   </tr>
