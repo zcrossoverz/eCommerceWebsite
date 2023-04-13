@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 import productsApi from 'src/apis/product.api';
 import { dateToString } from 'src/utils/convertDate';
 import { LineChart } from '../maindashboard/chart/LineChart';
-import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
+import { AiOutlineDelete, AiOutlineEdit, AiOutlineFileSearch } from 'react-icons/ai';
 import { baseURL } from 'src/constants/constants';
 import { Dispatch, SetStateAction, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -209,7 +209,7 @@ export default function DetailProduct() {
       <div>
         <div className='mt-4 flex flex-col'>
           <div className='overflow-x-auto'>
-            <div className='grid w-full grid-cols-2 gap-4 align-middle'>
+            <div className='grid w-full gap-4 align-middle'>
               <div className=' overflow-hidden rounded-xl border bg-white p-4 shadow-lg'>
                 <h1 className='py-2 text-lg font-semibold'>{t('detailproduct.productdetails')}</h1>
                 <div className='grid grid-cols-4 pt-1'>
@@ -235,9 +235,6 @@ export default function DetailProduct() {
                   <p className='col-span-1'>{t('detailproduct.updateat')}</p>{' '}
                   <p className='col-span-3'>{dateToString(product?.updateAt ? product.updateAt : '')}</p>
                 </div>
-              </div>
-              <div className='overflow-hidden rounded-xl border bg-white p-4 shadow-lg'>
-                <LineChart />
               </div>
             </div>
 
@@ -287,33 +284,39 @@ export default function DetailProduct() {
                             <td className='px-6 py-4'>{`${e.ram}/${e.rom} - ${e.color}`}</td>
                             <td className='px-6 py-4'>{formatPrice(Number(e.price) ? Number(e.price) : 0)}</td>
                             <td className='px-6 py-4 text-center'>
-                              <button className='pr-1 text-green-500 hover:text-green-700'>
-                                <AiOutlineEdit
+                              <button className='pr-1 text-blue-500 hover:text-blue-700'>
+                                <AiOutlineFileSearch
                                   className='text-2xl'
-                                  onClick={() => {
-                                    setDataOpt({
-                                      ram: e.ram ? e.ram : '',
-                                      rom: e.rom ? e.rom : '',
-                                      color: e.color ? e.color : '',
-                                      price: e.price ? e.price : '',
-                                      product_option_id: e.product_option_id ? e.product_option_id : 0,
-                                    });
-                                    setModal({
-                                      type: 'edit',
-                                      open: true,
-                                    });
-                                  }}
+                                  onClick={() => navigate(`../product/detail/option/${e.product_option_id}`)}
                                 />
                               </button>
-                              <button className='text-red-500 hover:text-red-700'>
-                                <AiOutlineDelete
-                                  className='text-2xl'
-                                  onClick={async () => {
-                                    await productsApi.deleteOption(e.product_option_id ? e.product_option_id : 0);
-                                    toast.success('delete option success!');
-                                    refetch();
-                                  }}
-                                />
+                              <button
+                                className='pr-1 text-green-500 hover:text-green-700'
+                                onClick={() => {
+                                  setDataOpt({
+                                    ram: e.ram ? e.ram : '',
+                                    rom: e.rom ? e.rom : '',
+                                    color: e.color ? e.color : '',
+                                    price: e.price ? e.price : '',
+                                    product_option_id: e.product_option_id ? e.product_option_id : 0,
+                                  });
+                                  setModal({
+                                    type: 'edit',
+                                    open: true,
+                                  });
+                                }}
+                              >
+                                <AiOutlineEdit className='text-2xl' />
+                              </button>
+                              <button
+                                className='text-red-500 hover:text-red-700'
+                                onClick={async () => {
+                                  await productsApi.deleteOption(e.product_option_id ? e.product_option_id : 0);
+                                  toast.success('delete option success!');
+                                  refetch();
+                                }}
+                              >
+                                <AiOutlineDelete className='text-2xl' />
                               </button>
                             </td>
                           </tr>

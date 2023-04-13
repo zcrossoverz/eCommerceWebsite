@@ -10,6 +10,7 @@ import { BadRequestError } from "../utils/error";
 import { failed, success } from "../utils/response";
 import { ProductOptionInterface } from "./productOption.service";
 import { EnumWorkQueueType, WorkQueue } from "../entities/workQueue.entity";
+import { PriceHistory } from "../entities/priceHistoty.entity";
 
 interface ProductInterface {
   name: string;
@@ -135,6 +136,12 @@ export const create = async (
           price: 1_000_000,
         });
     const newPrice = await priceRepo.save(tempPrice);
+    const priceHistoryRepo = AppDataSource.getRepository(PriceHistory);
+    await priceHistoryRepo.save(priceHistoryRepo.create({
+      old_price: price,
+      new_price: price,
+      price: newPrice
+    }));
 
     // init warehouse stock
     const warehouseRepo = AppDataSource.getRepository(Warehouse);
@@ -223,8 +230,8 @@ export const getOneById = async (id: number) => {
         }),
         specs: product.specifications.map((e) => {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          const { id, ...rest } = e;
-          return { ...rest };
+          // const { id, ...rest } = e;
+          return { ...e };
         }),
         images: product.images.filter((e) => e.type === EnumTypeImage.desc),
         product_options: product.productOptions.map((e) => {

@@ -49,7 +49,7 @@ function UserDetails() {
     }
   };
   return (
-    <>
+    <section>
       <HelmetSEO title={t('user.userdetail')} />
       <BreadCrumb path={['Fstore', '...', t('user.manage users'), t('user.userdetail')]} />
       <div className='mt-2 max-w-2xl overflow-hidden bg-white shadow sm:rounded-lg'>
@@ -109,7 +109,7 @@ function UserDetails() {
           </dl>
         </div>
       </div>
-    </>
+    </section>
   );
 }
 export default UserDetails;

@@ -149,7 +149,7 @@ export default function ManageBrand() {
             </option>
           </select>
         </div>
-        <div className='col-span-1 col-end-7'>
+        <div className='col-span-1 col-end-6 md:col-end-7'>
           <button
             className='rounded-xl bg-blue-900 py-3 px-8 text-gray-400 hover:bg-blue-600 hover:text-white hover:shadow-primary hover:shadow-lg'
             onClick={() =>
@@ -204,8 +204,8 @@ export default function ManageBrand() {
                 )}
 
                 {data?.data && data.data.length > 0 && (
-                  <div>
-                    <table className='min-w-full divide-y divide-gray-200 bg-white shadow-lg'>
+                  <div className='mt-4 overflow-x-auto'>
+                    <table className='table-fixed divide-y divide-gray-200 bg-white shadow-lg md:w-full'>
                       <thead className='bg-pink-400/20'>
                         <tr>
                           <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>

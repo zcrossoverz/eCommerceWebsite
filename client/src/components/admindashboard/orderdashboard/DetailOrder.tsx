@@ -6,11 +6,18 @@ import HelmetSale from 'src/components/Helmet';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
+import { useRef } from 'react';
+import { PrintOrder } from './PrintOrder';
+import { useReactToPrint } from 'react-to-print';
 
 export default function DetailOrder() {
   const { t } = useTranslation('addashboard');
   const { order_id } = useParams();
   const navigate = useNavigate();
+  const printRef = useRef(null);
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+  });
   if (!Number(order_id)) navigate('/admin/order');
   const { data, refetch } = useQuery(['get_order_details'], () => orderApi.getOneOrder(Number(order_id)));
 
@@ -29,6 +36,18 @@ export default function DetailOrder() {
       <BreadCrumb path={['Product', 'Order Dashboard', 'Detail']} />
       <div>
         <div className='mt-4 flex flex-col'>
+          <div className='hidden'>
+            <PrintOrder
+              ref={printRef}
+              id={Number(order?.order_id) ? Number(order?.order_id) : 0}
+              name={`${order?.user.firstName} ${order?.user.lastName}`}
+              date={` ${('0' + day).slice(-2)}/${('0' + month).slice(-2)}/${year} ${hours}:${minutes}:${seconds}`}
+              method_payment={order?.payment.method ? order?.payment.method : ''}
+              order_items={order?.order_items ? order?.order_items : []}
+              discount={Number(order?.payment.discount) ? Number(order?.payment.discount) : 0}
+              total={Number(order?.payment.amount) ? Number(order?.payment.amount) : 0}
+            />
+          </div>
           <div className='overflow-x-auto'>
             <div className='inline-block w-full align-middle'>
               <div className='overflow-hidden rounded-xl border bg-white p-4'>
@@ -81,8 +100,11 @@ export default function DetailOrder() {
                       </button>
                     )}
                     {order?.status === 'COMPLETED' && (
-                      <button className='mx-4 rounded-md border border-gray-300 bg-purple-500 px-8 text-white'>
-                        {t('orders.print')}
+                      <button
+                        className='mx-4 rounded-md border border-gray-300 bg-purple-500 px-8 text-white'
+                        onClick={handlePrint}
+                      >
+                        PRINT RECEIPT
                       </button>
                     )}
                     {order?.status === 'RETURNED' && (

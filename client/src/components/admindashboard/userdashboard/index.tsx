@@ -52,7 +52,7 @@ export default function UserDashboard() {
     }
   };
   return (
-    <section>
+    <section className='px-2'>
       <HelmetSEO title={t('user.manage users')} />
       <BreadCrumb path={['Fstore', t('user.addashboard'), t('user.manage users')]} />
       <div className='mt-2 overflow-x-auto rounded-lg border border-gray-200 shadow-md'>

@@ -35,10 +35,16 @@ export const create = async (
 
     // price
     const priceRepo = AppDataSource.getRepository(Price);
+    const priceHistoryRepo = AppDataSource.getRepository(PriceHistory);
     const tempPrice = priceRepo.create({
       price: price,
     });
     const new_price = await priceRepo.save(tempPrice);
+    await priceHistoryRepo.save(priceHistoryRepo.create({
+      old_price: price,
+      new_price: price,
+      price: new_price
+    }));
 
     const warehouseRepo = AppDataSource.getRepository(Warehouse);
     const imageRepo = AppDataSource.getRepository(Image);
@@ -78,6 +84,12 @@ export const updateOne = async (id: number, data: ProductOptionInterface) => {
   let price_update = 0;
   if (price) {
     const priceRepo = AppDataSource.getRepository(Price);
+    const priceHistoty = AppDataSource.getRepository(PriceHistory);
+    await priceHistoty.save(priceHistoty.create({
+      old_price: option.price.price,
+      new_price: price,
+      price: option.price
+    }));
     await priceRepo.update({ id: option.price.id }, { price: (price) });
     price_update = 1;
   }

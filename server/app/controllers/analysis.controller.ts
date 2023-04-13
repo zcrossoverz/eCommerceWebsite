@@ -19,3 +19,8 @@ export const reportInventory = async (req: Request, res: Response) => {
     const { startDate, endDate } = req.body;
     return res.json(await analysisServices.reportInventory(startDate, endDate));
 }
+
+export const productTracking = async (req: Request, res: Response) => {
+    const { product_id } = req.params;
+    return res.json(await analysisServices.productAnalysis(Number(product_id)));
+}

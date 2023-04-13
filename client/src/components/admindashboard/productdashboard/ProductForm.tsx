@@ -22,10 +22,12 @@ export default function ProductForm() {
   const [rom, setRom] = useState('');
   const [color, setColor] = useState('');
   const [price, setPrice] = useState('');
-  const [specs, setSpecs] = useState<{ key: string; value: string }[]>([]);
+  const [specs, setSpecs] = useState<{ key: string; value: string; id: number }[]>([]);
   const [specModal, openSpecModal] = useState(false);
   const [keySpec, setKeySpec] = useState('');
+  const [specId, setIdSpec] = useState(-1);
   const [valueSpec, setValueSpec] = useState('');
+  const [specModalType, setSpecModalType] = useState('create');
   const [refetch, _refetch] = useState(0);
 
   useEffect(() => {
@@ -222,11 +224,22 @@ export default function ProductForm() {
                                   <div className='col-span-1'>{e.key}</div>
                                   <div className='col-span-2'>{e.value}</div>
                                   <div className='col-span-1 mr-4 flex justify-end'>
-                                    <AiOutlineEdit className='mr-1 text-xl text-green-400' />
+                                    <AiOutlineEdit
+                                      className='mr-1 text-xl text-green-400'
+                                      onClick={() => {
+                                        setSpecModalType('edit');
+                                        setIdSpec(e.id);
+                                        openSpecModal(true);
+                                        setKeySpec(e.key);
+                                        setValueSpec(e.value);
+                                      }}
+                                    />
                                     <AiOutlineDelete
                                       className='text-xl text-red-400'
                                       onClick={async () => {
-                                        // await productsApi.deleteSpec()
+                                        await productsApi.deleteSpec(e.id);
+                                        toast.success('delete specification success!');
+                                        _refetch(refetch + 1);
                                       }}
                                     />
                                   </div>
@@ -238,7 +251,10 @@ export default function ProductForm() {
                       <div className='flex items-start justify-end'>
                         <button
                           className='rounded-md bg-red-400 px-4 py-2 text-white shadow-lg'
-                          onClick={() => openSpecModal(true)}
+                          onClick={() => {
+                            setSpecModalType('create');
+                            openSpecModal(true);
+                          }}
                         >
                           {t('detailproduct.addnew')}
                         </button>
@@ -254,9 +270,15 @@ export default function ProductForm() {
               <div className='relative h-full w-full max-w-2xl md:h-auto'>
                 <div className='relative rounded-lg bg-white shadow-xl'>
                   <div className='flex items-start justify-between rounded-t border-b p-4'>
-                    <h3 className='text-xl font-semibold text-gray-900'>{t('detailproduct.addnewspecification')}</h3>
+                    <h3 className='text-xl font-semibold text-gray-900'>
+                      {specModalType === 'create' ? 'Add New Specification' : 'Edit Specification'}
+                    </h3>
                     <button
-                      onClick={() => openSpecModal(false)}
+                      onClick={() => {
+                        openSpecModal(false);
+                        setKeySpec('');
+                        setValueSpec('');
+                      }}
                       className='ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900'
                     >
                       <svg
@@ -278,6 +300,8 @@ export default function ProductForm() {
                       <input
                         className='w-full rounded-xl border border-gray-400 px-2 py-2'
                         onChange={(e) => setKeySpec(e.target.value)}
+                        value={keySpec}
+                        disabled={specModalType === 'edit' ? true : false}
                       />
                     </p>
                     <p className='text-base leading-relaxed text-gray-500'>
@@ -285,6 +309,7 @@ export default function ProductForm() {
                       <input
                         className='w-full rounded-xl border border-gray-400 px-2 py-2'
                         onChange={(e) => setValueSpec(e.target.value)}
+                        value={valueSpec}
                       />
                     </p>
                   </div>
@@ -293,15 +318,27 @@ export default function ProductForm() {
                     <button
                       className='rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 '
                       onClick={async () => {
-                        await productsApi.createSpec(location.state.id, keySpec, valueSpec);
-                        toast.success('create specification for product success!');
+                        if (specModalType === 'create') {
+                          await productsApi.createSpec(location.state.id, keySpec, valueSpec);
+                          toast.success('create specification for product success!');
+                        }
+                        if (specModalType === 'edit') {
+                          await productsApi.updateOneSpec(specId, valueSpec);
+                          toast.success('edit specification for product success!');
+                        }
+                        setValueSpec('');
+                        setKeySpec('');
                         _refetch(refetch + 1);
                       }}
                     >
                       {t('product.confirm')}
                     </button>
                     <button
-                      onClick={() => openSpecModal(false)}
+                      onClick={() => {
+                        openSpecModal(false);
+                        setKeySpec('');
+                        setValueSpec('');
+                      }}
                       className='rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300'
                     >
                       {t('product.cancel')}
