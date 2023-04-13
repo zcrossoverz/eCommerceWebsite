@@ -28,3 +28,9 @@ export const getAllCoupon = async (req: Request, res: Response, next: NextFuncti
     const rs = await couponServices.getAllCoupon();
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
 }
+
+export const deleteCoupon = async (req: Request, res: Response, next: NextFunction) => {
+    const { coupon_id } = req.params;
+    const rs = await couponServices.deleteCoupon(Number(coupon_id));
+    return isError(rs) ? next(err(rs, res)) : res.json(rs);
+}
