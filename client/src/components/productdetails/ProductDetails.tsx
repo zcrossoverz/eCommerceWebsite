@@ -18,19 +18,39 @@ import { RootState } from 'src/store';
 import path from 'src/constants/path';
 import { baseURL } from 'src/constants/constants';
 import BreadCrumb from '../admindashboard/breadcrumb';
-import HelmetSale from '../Helmet';
 import { nanoid } from '@reduxjs/toolkit';
 import Loading from '../loading';
 import { useTranslation } from 'react-i18next';
-import Reviews from './reviews';
-import Star from '../star';
+import Comments from './comments';
+import feedbackApi from 'src/apis/feedback.api';
+import { ResGetFeedback } from 'src/types/product.type';
+import HelmetSEO from '../Helmet';
 function ProductDetails() {
+  const rating = useSelector((state: RootState) => state.productReducer.rating);
+  const userInfo = useSelector((state: RootState) => state.userReducer.userInfo);
+
   const { t } = useTranslation('productdetail');
   const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { data: product, isLoading } = useQuery({
+
+  const [canRate, setCanRate] = useState<{
+    success: boolean;
+    isRated: boolean;
+  }>({
+    success: false,
+    isRated: false,
+  });
+  const [feedback, setFeedback] = useState<ResGetFeedback>();
+  const [loadMore, setLoadmore] = useState<boolean>(false);
+  const [optionSelected, setOptionSelected] = useState<OptionProduct>();
+  const [quantity, setQuantity] = useState<number | string>('');
+  const {
+    data: product,
+    isLoading,
+    refetch: refetchUser,
+  } = useQuery({
     queryKey: [
       'product',
       {
@@ -38,9 +58,7 @@ function ProductDetails() {
       },
     ],
     queryFn: () => productsApi.getProductDetail(id as string),
-    // onSuccess: (data) => {
-    //   // console.log(data);
-    // },
+
     onError: (err) => {
       if (
         isAxiosErr<{
@@ -61,11 +79,28 @@ function ProductDetails() {
     },
     retry: 0,
   });
-  const [loadMore, setLoadmore] = useState<boolean>(false);
-  const [optionSelected, setOptionSelected] = useState<OptionProduct>();
-  const [quantity, setQuantity] = useState<number | string>('');
+  const { refetch: refetchCanRate } = useQuery({
+    queryKey: ['canRate', product?.data.id],
+    queryFn: () => productsApi.canRate(Number(product?.data.id)),
+    enabled: Boolean(product?.data.id && userInfo.id),
+    onSuccess: (data) => {
+      setCanRate({ success: data.data.can_rate, isRated: data.data.is_done });
+    },
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+  const { refetch: refetchGetFeed, isLoading: isLoadFeed } = useQuery({
+    queryKey: ['getFeedback', product?.data.id],
+    queryFn: () => feedbackApi.getFeedback(Number(product?.data.id)),
+    enabled: Boolean(product?.data.id),
+    onSuccess: (data) => {
+      setFeedback(data.data);
+    },
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
   const decreaseQuantity = () => {
-    if (quantity && Number(quantity) >= 2) {
+    if (Number(quantity) && Number(quantity) >= 2) {
       setQuantity(Number(quantity) - 1);
     }
   };
@@ -87,7 +122,6 @@ function ProductDetails() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [quantity]);
 
-  const userInfo = useSelector((state: RootState) => state.userReducer.userInfo);
   const handleAddToCart = () => {
     if (!userInfo.role) {
       toast.warning(t('productdetail.please login'));
@@ -125,7 +159,7 @@ function ProductDetails() {
   };
   return (
     <>
-      <HelmetSale title={product?.data.name as string}></HelmetSale>
+      <HelmetSEO title={product?.data.name as string}></HelmetSEO>
       <div className='mx-auto max-w-7xl md:px-4'>
         <div className='hidden md:block'>
           <BreadCrumb
@@ -314,18 +348,22 @@ function ProductDetails() {
           </div>
         )}
       </div>
-      {/* desc */}
-      {!isLoading && (
-        <div className='mx-auto mt-4 p-4 shadow-md lg:w-[80%]'>
-          <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>Chi tiết cấu hình của sản phẩm</h3>
-          <p className='mx-auto w-[96%] break-words px-4 py-2'></p>
-        </div>
-      )}
-      {/* Reviews */}
-      <div className='mx-auto mt-4 p-4 shadow-md lg:w-[80%]'>
-        <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>{t('productdetail.product reviews')}</h3>
 
-        <Reviews />
+      {/* Reviews */}
+      <div className='mx-auto mt-4 shadow-md lg:w-[80%]'>
+        {/* <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>{t('productdetail.product reviews')}</h3> */}
+        <Comments
+          feedbackOfProduct={feedback}
+          productId={product?.data.id}
+          numFeedback={product?.data.feedback.length}
+          userId={userInfo.id || 0}
+          rating={rating}
+          canRate={canRate}
+          refetchGetFeed={refetchGetFeed}
+          refetchUser={refetchUser}
+          refetchCanRate={refetchCanRate}
+          isLoadFeed={isLoadFeed}
+        />
       </div>
     </>
   );

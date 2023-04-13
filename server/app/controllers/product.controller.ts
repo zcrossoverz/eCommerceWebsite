@@ -16,13 +16,15 @@ export const getAll = async (
     price_max,
     rate,
     search,
+    order = "newest",
   } = req.query;
   if (!brand_id && !price_max && !price_min && !rate) {
     const rs = await productServices.getAll(
       Number(limit),
       Number(page),
       null,
-      search && String(search)
+      search && String(search),
+      String(order)
     );
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
   } else {
@@ -37,7 +39,8 @@ export const getAll = async (
         },
         rate: rate ? Number(rate) : undefined,
       },
-      search && String(search)
+      search && String(search),
+      String(order)
     );
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
   }
@@ -78,8 +81,8 @@ export const update = async (
   next: NextFunction
 ) => {
   const { id } = req.params;
-  const { name, description } = req.body;
-  const rs = await productServices.update(Number(id), { name, description });
+  const { name, description, brand_id = -1 } = req.body;
+  const rs = await productServices.update(Number(id), { name, description }, brand_id);
   return isError(rs) ? next(err(rs, res)) : res.json(rs);
 };
 
@@ -103,6 +106,20 @@ export const addImages = async (
   const rs = await productServices.addImages(
     Number(id),
     files.map((e) => e.path.replace("public\\", ""))
+  );
+  return isError(rs) ? next(err(rs, res)) : res.json(rs);
+};
+
+export const canRate = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  if (!req.user) return next(err(BadRequestError("error"), res));
+  const { product_id } = req.params;
+  const rs = await productServices.canRate(
+    Number(product_id),
+    req.user.user_id
   );
   return isError(rs) ? next(err(rs, res)) : res.json(rs);
 };

@@ -3,33 +3,60 @@ import { BsSearch, BsTelephoneForward } from 'react-icons/bs';
 import { GoDiffRenamed } from 'react-icons/go';
 import classNames from 'classnames';
 import { FiSettings } from 'react-icons/fi';
-import { BiHelpCircle, BiLogIn, BiShoppingBag } from 'react-icons/bi';
+import { BiLogIn, BiShoppingBag } from 'react-icons/bi';
 import { Link, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AppContext } from 'src/contexts/app.context';
-import { clearAccessToken, getAccessToken } from 'src/utils/auth';
-import jwtDecode from 'jwt-decode';
-import { UserInfo } from 'src/types/user.type';
+import { clearAccessToken } from 'src/utils/auth';
+import userApi from 'src/apis/user.api';
 import path from 'src/constants/path';
 import { RiUserSettingsLine } from 'react-icons/ri';
 import Cart from '../popover/CartPopover';
 import useClickOutSide from 'src/hooks/useClickOutSide';
 import { GrUserAdmin } from 'react-icons/gr';
-import { useDispatch } from 'react-redux';
-import { setUserInfor } from 'src/slices/user.slice';
+import { useDispatch, useSelector } from 'react-redux';
 import logo from 'src/assets/logo.svg';
-import Language from '../language/Language';
+import Language from 'src/components/language/Language';
 import { useTranslation } from 'react-i18next';
 import { MdLanguage } from 'react-icons/md';
+import { IoMdNotificationsOutline } from 'react-icons/io';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import notiApi from 'src/apis/noti.api';
+import { ResNoti } from 'src/types/noti.type';
+import { RootState } from 'src/store';
+import { logoutCart } from 'src/slices/cart.slice';
+import { reset } from 'src/slices/user.slice';
 
 function Header() {
+  const queryClient = useQueryClient();
   const { t } = useTranslation();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { isAuth, setIsAuth } = useContext(AppContext);
   const [showMenuUser, setShowMenuUser] = useState<boolean>(false);
-  const [userInfo, setUserInfo] = useState<UserInfo>();
+  const [showNotify, setShowNotify] = useState<boolean>(false);
+  const userInfo = useSelector((state: RootState) => state.userReducer.userInfo);
   const [searchProduct, setSearchProduct] = useState<string>('');
   const [scrolled, setScrolled] = useState<boolean>(false);
+  const [noti, setNoti] = useState<ResNoti>();
+  const { data: user, refetch: refetchUser } = useQuery({
+    queryKey: ['user'],
+    queryFn: () => userApi.getUserByid(userInfo.id as number),
+    enabled: isAuth,
+    retry: 1,
+    refetchOnWindowFocus: false,
+  });
+  const { refetch } = useQuery({
+    queryKey: ['noti'],
+    queryFn: () => notiApi.getUnreadNoti(userInfo?.id || 0),
+    onSuccess: (data) => {
+      setNoti(data.data);
+      refetchUser();
+    },
+    retry: 1,
+    enabled: false,
+    refetchOnWindowFocus: false,
+  });
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -45,32 +72,12 @@ function Header() {
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
-  const dispath = useDispatch();
-  useEffect(() => {
-    const token = getAccessToken();
-    if (token) {
-      const user = jwtDecode<{
-        firstName: string;
-        lastName: string;
-        user_id: number;
-        iat: string;
-        role: string;
-      }>(token);
-      const userFinal: UserInfo = {
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role,
-        id: user.user_id,
-      };
-      setUserInfo(userFinal);
-      dispath(setUserInfor(userFinal));
-    } else {
-      setUserInfo(undefined);
-    }
-  }, [isAuth, dispath]);
 
   const { nodeRef } = useClickOutSide(() => {
     setShowMenuUser(false);
+  });
+  const { nodeRef: notiRef } = useClickOutSide(() => {
+    setShowNotify(false);
   });
   const handleChangeSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchProduct(e.target.value);
@@ -82,7 +89,14 @@ function Header() {
       search: `?search=${searchProduct}`,
     });
   };
-
+  const handleLogout = () => {
+    setIsAuth(false);
+    clearAccessToken();
+    dispatch(logoutCart([]));
+    dispatch(reset());
+    queryClient.removeQueries();
+    navigate('/');
+  };
   return (
     <AnimatePresence>
       <motion.header
@@ -137,8 +151,57 @@ function Header() {
               <MdLanguage className='mr-1 mt-0.5 text-lg text-gray-700 lg:text-white' />
               <Language />
             </div>
-            {/* cart */}
             <div className='flex items-center justify-between lg:min-w-[8rem]'>
+              {/* notify */}
+              <div className='relative' ref={notiRef}>
+                <button
+                  className='flex h-10 w-10 items-center justify-center rounded-[50%] duration-300 focus:outline-none'
+                  onClick={() => {
+                    setShowNotify(!showNotify);
+                    refetch();
+                  }}
+                >
+                  {user?.data && user.data.unread_message > 0 && (
+                    <span className='absolute top-0 right-0.5 flex items-center justify-center rounded-md bg-white px-1.5 text-xs text-orange-600'>
+                      {user.data.unread_message}
+                    </span>
+                  )}
+                  <IoMdNotificationsOutline className='text-2xl text-white' />
+                </button>
+                {showNotify && (
+                  <motion.div
+                    className={classNames(
+                      'fixed top-14 right-0.5 w-[full] rounded-lg bg-white px-4 py-1 shadow-md md:absolute md:w-[360px]'
+                    )}
+                    initial={{ opacity: 0, transform: 'scale(0)' }}
+                    animate={{ opacity: 1, transform: 'scale(1)' }}
+                    exit={{ opacity: 0, transform: 'scale(0)' }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {/* triangle up */}
+                    <div className='absolute -top-[12px] right-2 hidden h-0 w-0 border-l-[10px] border-b-[15px] border-r-[10px] border-l-transparent border-b-white border-r-transparent md:block'></div>
+                    <ul className='flex max-h-[340px] flex-col overflow-auto pb-2'>
+                      {!noti?.data.length && (
+                        <div className='flex h-full w-full flex-col items-center justify-center'>
+                          <img
+                            className='h-24'
+                            alt='img'
+                            src='https://cdn.dribbble.com/users/1373705/screenshots/6457914/no_notification_yiran.png?compress=1&resize=400x300&vertical=top'
+                          />
+                          <span className='text-black'>Không có thông báo mới nào!</span>
+                        </div>
+                      )}
+                      {noti?.data.length &&
+                        noti?.data.map((notiItem) => (
+                          <li key={notiItem.id} className='nav-item mt-4 border-b pb-2'>
+                            <p className='text-justify text-xs text-gray-400 md:text-sm'>{notiItem.content}</p>
+                          </li>
+                        ))}
+                    </ul>
+                  </motion.div>
+                )}
+              </div>
+              {/* cart */}
               <Cart />
               {/* user setting */}
               <div className='relative flex' ref={nodeRef}>
@@ -147,15 +210,17 @@ function Header() {
                     setShowMenuUser(!showMenuUser);
                   }}
                   type='button'
-                  className='group ml-1 flex h-10 w-10 items-center justify-center rounded-[50%] duration-300 focus:outline-none'
+                  className='group flex h-10 w-10 items-center justify-center rounded-[50%] duration-300 focus:outline-none'
                 >
                   <RiUserSettingsLine className='mt-0.5 text-2xl text-white' />
                 </button>
-                {/* menu user */}
 
+                {/* menu user */}
                 {showMenuUser && (
                   <motion.div
-                    className={classNames('absolute top-14 right-0 w-[300px] rounded-lg bg-white px-4 py-1 shadow-md ')}
+                    className={classNames(
+                      'absolute top-14 right-0 z-20 w-[300px] rounded-lg bg-white px-4 py-1 shadow-md '
+                    )}
                     initial={{ opacity: 0, transform: 'scale(0)' }}
                     animate={{ opacity: 1, transform: 'scale(1)' }}
                     exit={{ opacity: 0, transform: 'scale(0)' }}
@@ -175,11 +240,11 @@ function Header() {
                         <li className='nav-item mt-4'>
                           <Link to='/admin' className='flex items-center'>
                             <GrUserAdmin className='mr-4 text-lg' />
-                            <span>Admin Dashboard</span>
+                            <span>Admin</span>
                           </Link>
                         </li>
                       )}
-                      <li className='nav-item mt-4'>
+                      <li className='nav-item mt-2'>
                         <Link to='/profile' className='flex items-center'>
                           <FiSettings className='mr-4 text-lg' />
                           <span>{t('header.my account')}</span>
@@ -191,12 +256,7 @@ function Header() {
                           <span>{t('header.my order')}</span>
                         </Link>
                       </li>
-                      <li className='nav-item mt-2'>
-                        <Link to='/user' className='flex items-center'>
-                          <BiHelpCircle className='mr-4 text-xl' />
-                          <span>{t('header.help')}</span>
-                        </Link>
-                      </li>
+
                       <li className='nav-item mt-2 block lg:hidden'>
                         <div className='flex items-center'>
                           <MdLanguage className='mr-4 text-xl text-gray-700' />
@@ -207,17 +267,15 @@ function Header() {
                       <li className='nav-item mt-2'>
                         {isAuth && (
                           // eslint-disable-next-line jsx-a11y/no-static-element-interactions, jsx-a11y/click-events-have-key-events
-                          <span
+                          <button
                             onClick={() => {
-                              setIsAuth(false);
-                              clearAccessToken();
-                              dispath(setUserInfor({ firstName: '', lastName: '', role: '', id: 0 }));
+                              handleLogout();
                             }}
                             className='flex items-center'
                           >
                             <BiLogIn className='mr-4 text-xl' />
                             <span>{t('header.logout')}</span>
-                          </span>
+                          </button>
                         )}
                         {!isAuth && (
                           <Link to='/login' className='flex items-center'>

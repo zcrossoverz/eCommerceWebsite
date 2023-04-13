@@ -4,6 +4,7 @@ import userReducer from './slices/user.slice';
 import cartReducer from './slices/cart.slice';
 import navigationReducer from './slices/navigation.slice';
 import modalReducer from './slices/modal.slice';
+import productReducer from './slices/product.slice';
 // ...
 
 export const store = configureStore({
@@ -12,6 +13,7 @@ export const store = configureStore({
     cartReducer,
     navigationReducer,
     modalReducer,
+    productReducer,
   },
 });
 

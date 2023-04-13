@@ -9,6 +9,11 @@ import { useQueries, useQuery } from '@tanstack/react-query';
 import analysisApi from 'src/apis/analysis.api';
 import productsApi from 'src/apis/product.api';
 import { useState } from 'react';
+import HelmetSEO from 'src/components/Helmet';
+import feedbackApi from 'src/apis/feedback.api';
+import { dateToString } from 'src/utils/convertDate';
+import Languege from 'src/components/language/Language';
+import { useTranslation } from 'react-i18next';
 
 type card_props = {
   title: string;
@@ -64,60 +69,77 @@ const Card = (props: card_props) => {
 };
 
 function MainDashboard() {
+  const { t } = useTranslation('addashboard');
   const overview = useQuery(['analysis_overview'], () => analysisApi.analysOverview());
   const data_product_sale = useQuery(['top_sales'], () => analysisApi.topSales());
-
-
-  // const product_sale = useQueries({
-  //   queries: data_product_sale.map(
-  //     (e: {
-  //       product_id: number;
-  //       product_options: { product_option_id: number; sale_number: number; amount: number }[];
-  //     }) => {
-  //       return {
-  //         queryKey: ['get_product', e.product_id],
-  //         queryFn: () => productsApi.getProductDetail(`${e.product_id}`),
-  //       };
-  //     }
-  //   ),
-  // });
-
-  // console.log(product_sale);
-
+  const feedbacks = useQuery(['get_feedbacks'], () => feedbackApi.getAllFeedback());
   return (
     <div>
+      <HelmetSEO title='Admin'></HelmetSEO>
+      <Languege />
       <div className='grid md:grid-cols-2 lg:grid-cols-4'>
-        <Card title='Total Products' value={overview.data?.data.countProducts} icon={0} />
-        <Card title='Total Orders' value={overview.data?.data.countOrders} icon={2} />
-        <Card title='Total Brands' value={overview.data?.data.countBrands} icon={1} />
-        <Card title='Total Users' value={overview.data?.data.countBrands} icon={3} />
+        <Card title={t('maindashboard.total products')} value={overview.data?.data.countProducts} icon={0} />
+        <Card title={t('maindashboard.total orders')} value={overview.data?.data.countOrders} icon={2} />
+        <Card title={t('maindashboard.total brands')} value={overview.data?.data.countBrands} icon={1} />
+        <Card title={t('maindashboard.total users')} value={overview.data?.data.countUsers} icon={3} />
       </div>
-      <div className='mt-2 grid grid-flow-col grid-cols-3 gap-8'>
-        <div className='col-span-2 -ml-1 mr-2 rounded-xl rounded-xl bg-white bg-white p-9 p-2 shadow-lg'>
+      <div className='mt-2 grid grid-flow-col grid-cols-3 gap-4'>
+        <div className='col-span-2 -ml-1 mr-1 rounded-xl bg-white p-2 shadow-lg'>
           <LineChart />
         </div>
-        <div className='flex rounded-xl rounded-xl bg-white p-8 shadow-lg'>
+        <div className='flex rounded-xl bg-white p-8 shadow-lg'>
           <PieChart />
         </div>
       </div>
 
-      <div className='mt-4 -ml-1 grid grid-flow-col grid-cols-4 gap-8'>
+      <div className='mt-4 -ml-1 grid grid-flow-col grid-cols-4 gap-4'>
         <div className='col-span-2 rounded-xl bg-white p-8 shadow-lg'>
           <div className=' -mt-6 -ml-4'>
-            <div className='text-xl font-semibold leading-loose'>Top Sales</div>
+            <div className='text-xl font-semibold leading-loose'>{t('maindashboard.topsales')}</div>
           </div>
           <hr className='-ml-6 bg-gray-300' />
           <div>
-            {data_product_sale.data?.data.map((e: any, i: string) => (
-              <div key={i.toString()}>{e.name}</div>
-            ))}
+            <div>
+              <table className='table-fixed'>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>{t('maindashboard.name')}</th>
+                    <th>{t('maindashboard.numbersold')}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {data_product_sale.data?.data
+                    .sort((a: any, b: any) => b.total_sale - a.total_sale)
+                    .map((e: any, i: number) => (
+                      <tr key={i.toString()}>
+                        <td className='px-10 text-center'>{(i + 1).toString()}</td>
+                        <td className='px-10 text-left'>{e.name}</td>
+                        <td className='px-10 text-center'>{e.total_sale}</td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
         <div className='col-span-2 rounded-xl bg-white p-8 shadow-lg'>
           <div className=' -mt-6 -ml-4'>
-            <div className='text-xl font-semibold leading-loose'>Recent activity</div>
+            <div className='text-xl font-semibold leading-loose'>{t('maindashboard.recentactivity')}</div>
           </div>
           <hr className='-ml-6 bg-gray-300' />
+          <div className='flex flex-col'>
+            {feedbacks.data?.data.map((e: any, i: number) => {
+              return (
+                <div className='grid grid-cols-3 px-2' key={i.toString()}>
+                  <div className='col-span-2'>
+                    {`${e.user.lastName} rate ${e.rate} star for product ${e.product.name}`}{' '}
+                  </div>
+                  <div className=''>{dateToString(e.create_at)}</div>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>

@@ -2,8 +2,8 @@
   "file": {
     "my profile": "My Profile",
     "manage your profile information": "Manage your profile information",
-    "first and last name": "First and last name",
-    "phone number": "Phone number",
+    "first and last name": "Full name",
+    "phone number": "Phone",
     "the phone number has not been updated": "The phone number has not been updated",
     "update profile": "Update profile"
   }

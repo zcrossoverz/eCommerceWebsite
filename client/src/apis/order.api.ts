@@ -39,6 +39,27 @@ const orderApi = {
       params,
     });
   },
+  getAllOrders(params?: orderQueryConfig) {
+    return http.get<ResGetAllOrder>(`order/get_all`, {
+      params,
+    });
+  },
+  getAll(params?: {
+    limit?: string;
+    page?: string;
+    order?: string;
+    status?: number;
+    method?: number;
+    paid?: number;
+    search?: string;
+  }) {
+    return http.get<ResGetAllOrder>(`order/get_all`, {
+      params,
+    });
+  },
+  deleteOrder(id: number) {
+    return http.delete(`order/${id}`);
+  },
 };
 
 export default orderApi;

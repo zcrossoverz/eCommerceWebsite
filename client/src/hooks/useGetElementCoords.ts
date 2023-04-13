@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Coords } from '../types/global';
 function handleSetElementCoords(node: HTMLElement, callback: (item: Coords) => void) {
-  const clientRect = node.parentElement
-    ? (node.parentElement.getBoundingClientRect() as DOMRect)
-    : (node.getBoundingClientRect() as DOMRect);
+  const clientRect = node.getBoundingClientRect() as DOMRect;
   callback({
     x: clientRect.left,
     y: clientRect.top + window?.scrollY,
@@ -20,7 +18,7 @@ export default function useGetElementCoords() {
     height: 0,
   });
   const handleGetElementCoords = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    handleSetElementCoords(e.target as HTMLElement, setCoords);
+    handleSetElementCoords(e.currentTarget as HTMLElement, setCoords);
   };
   useEffect(() => {
     function handleElementResize() {

@@ -1,3 +1,5 @@
+import { User } from './user.type';
+
 export interface Product {
   id: number;
   name: string;
@@ -6,7 +8,14 @@ export interface Product {
   updateAt: string;
   brand: string;
   brand_description: string;
+  brand_id?: number;
   rate: number;
+  feedback: {
+    id: number;
+    rate: number;
+    comment: string;
+    create_at: string;
+  }[];
   specs: {
     key: string;
     value: string;
@@ -48,4 +57,63 @@ export interface ProductListConfig {
   price_max?: string;
   rate?: string;
   search?: string;
+  query?: string;
 }
+export type Feedback = {
+  product_id: number;
+  user_id: number;
+  rate: number;
+  comment: string;
+};
+export type ResFeedback = {
+  rate: number;
+  comment: string;
+  product: {
+    id: 1;
+    name: string;
+    createAt: string;
+    updateAt: string;
+    rate: string;
+  };
+  user: User;
+  id: number;
+  create_at: string;
+};
+export type ResGetFeedback = {
+  rate: number;
+  data: {
+    id: number;
+    rate: number;
+    comment: string;
+    create_at: string;
+    user: User;
+  }[];
+};
+
+export type ProductData = {
+  name: string;
+  image?: File;
+  description: string;
+  ram: string;
+  rom: string;
+  price: string;
+  brand_id: number;
+  color: string;
+};
+export type ResAnalysGetProducts = {
+  current_page: number;
+  prev_page: number | null;
+  next_page: number | null;
+  last_page: number;
+  data_per_page: number;
+  total: number;
+  data: {
+    product_option_id: number;
+    quantity: number;
+    images: string;
+    name: string;
+    ram: string;
+    rom: string;
+    color: string;
+  }[];
+};

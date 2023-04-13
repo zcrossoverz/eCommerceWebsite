@@ -13,9 +13,9 @@ export const createFeedback =  async (req: Request, res: Response, next: NextFun
 }
 
 export const updateFeedback = async (req: Request, res: Response, next: NextFunction) => {
-    const { feedback_id } = req.params;
+    const { product_id } = req.params;
     const { rate, comment } = req.body;
-    const rs = await feedbackServices.updateFeedback(Number(feedback_id), { rate, comment });
+    const rs = await feedbackServices.updateFeedback(Number(product_id), Number(req.user?.user_id), { rate, comment });
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
 }
 
@@ -29,4 +29,10 @@ export const getFeedbackByProduct = async (req: Request, res: Response, next: Ne
     const { product_id } = req.params;
     const rs = await feedbackServices.getFeedbackByProduct(Number(product_id));
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
+}
+
+export const getAllFeedback = async (req: Request, res: Response, next: NextFunction) => {
+    const rs = await feedbackServices.getAllFeedback();
+    return isError(rs) ? next(err(rs, res)) : res.json(rs);
+
 }

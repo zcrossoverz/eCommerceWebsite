@@ -23,7 +23,14 @@ import CheckoutLayout from './layouts/checkoutlayout';
 import Checkout from './pages/checkout';
 import MyOrderLayout from './layouts/myorderlayout/MyOrderLayout';
 import MyOrder from './pages/myorder';
+import Discount from './components/discount';
+import TopProducts from './components/topsale';
+import { useEffect } from 'react';
 function App() {
+  useEffect(() => {
+    localStorage.theme = 'light';
+  }, []);
+
   return (
     <div>
       <Routes>
@@ -34,6 +41,8 @@ function App() {
             <MainLayout>
               <Banner />
               <ProductList />
+              <Discount />
+              <TopProducts />
             </MainLayout>
           }
         />

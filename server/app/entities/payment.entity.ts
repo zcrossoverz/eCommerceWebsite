@@ -3,7 +3,8 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 export enum EnumPaymentMethod {
     CASH_ON_DELIVERY, // Payment made in cash at the time of delivery.
     PAYPAL, // Purchase via MOMO payment gateway.
-    NOT_SET
+    NOT_SET,
+    RETURNED
 }
 
 @Entity("payments")

@@ -26,6 +26,6 @@ export class InventoryInboundNote {
     orderItems!: OrderItem[];
 
     @CreateDateColumn()
-    create_at!: Date;
+    create_at!: string;
 
 }

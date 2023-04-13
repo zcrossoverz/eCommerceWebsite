@@ -38,7 +38,7 @@ export const locales = {
   vi: 'Tiếng Việt',
 };
 
-const resources = {
+export const resources = {
   en: {
     home: HOME_EN,
     address: ADDRESS_EN,
@@ -46,7 +46,7 @@ const resources = {
     password: PASSWORD_EN,
     security: SECURITY_EN,
     profileUser: PROFILEUSER_EN,
-    cartuser: CARTUSER_EN,
+    cartUser: CARTUSER_EN,
     cartpopover: CARTPOPOVER_EN,
     myorder: MYORDER_EN,
     productdetail: PRODUCTDETAIL_EN,
@@ -64,7 +64,7 @@ const resources = {
     password: PASSWORD_VN,
     security: SECURITY_VN,
     profileUser: PROFILEUSER_VN,
-    cartuser: CARTUSER_VN,
+    cartUser: CARTUSER_VN,
     cartpopover: CARTPOPOVER_VN,
     myorder: MYORDER_VN,
     productdetail: PRODUCTDETAIL_VN,
@@ -86,7 +86,7 @@ i18n.use(initReactI18next).init({
     'password',
     'security',
     'profileUser',
-    'cartuser',
+    'cartUser',
     'cartpopover',
     'myorder',
     'productdetail',

@@ -6,8 +6,9 @@ import { ProductListConfig } from 'src/types/product.type';
 
 interface Props {
   pageSize: number;
-  queryConfig: {
-    [key in keyof ProductListConfig]: string;
+  queryConfig: ProductListConfig & {
+    path?: string;
+    mode?: string;
   };
 }
 const RANGE = 2;
@@ -57,7 +58,7 @@ function Pagination({ pageSize, queryConfig }: Props) {
         return (
           <Link
             to={{
-              pathname: path.home,
+              pathname: queryConfig.path ? queryConfig.path : path.home,
               search: createSearchParams({
                 ...queryConfig,
                 page: pageNumber.toString(),
@@ -86,7 +87,7 @@ function Pagination({ pageSize, queryConfig }: Props) {
       ) : (
         <Link
           to={{
-            pathname: path.home,
+            pathname: queryConfig.path ? queryConfig.path : path.home,
             search: createSearchParams({
               ...queryConfig,
               page: (page - 1).toString(),
@@ -106,7 +107,7 @@ function Pagination({ pageSize, queryConfig }: Props) {
       ) : (
         <Link
           to={{
-            pathname: path.home,
+            pathname: queryConfig.path ? queryConfig.path : path.home,
             search: createSearchParams({
               ...queryConfig,
               page: (page + 1).toString(),

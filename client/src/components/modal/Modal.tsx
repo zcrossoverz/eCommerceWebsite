@@ -114,14 +114,14 @@ function Modal({ setShowModal, infoData, refetchAddress }: Props) {
             <button
               type='button'
               onClick={handleBack}
-              className='w-full rounded-lg bg-slate-200 px-5 py-2.5 text-center text-sm font-medium text-black duration-200 hover:bg-orange-200 focus:outline-none focus:ring-4 focus:ring-blue-300 sm:w-auto'
+              className=' rounded-lg bg-slate-200 px-5 py-2.5 text-center text-sm font-medium text-black duration-200 hover:bg-orange-200 focus:outline-none focus:ring-4 focus:ring-blue-300'
             >
               Trở lại
             </button>
             <button
               type='submit'
               onClick={onSubmit}
-              className='ml-4 w-full rounded-lg bg-orange-500 px-5 py-2.5 text-center text-sm font-medium text-white duration-200 hover:bg-orange-600 focus:outline-none focus:ring-4 focus:ring-blue-300 sm:w-auto'
+              className='ml-4 mt-2 rounded-lg bg-orange-500 px-5 py-2.5 text-center text-sm font-medium text-white duration-200 hover:bg-orange-600 focus:outline-none focus:ring-4 focus:ring-blue-300 md:mt-0'
             >
               Cập nhật
             </button>

@@ -50,7 +50,7 @@ export const getAllInboundNote = async (req: Request, res: Response, next: NextF
 };
 
 export const analysis = async (req: Request, res: Response, next: NextFunction) => {
-    const { limit = 10, page = 1 } = req.query;
-    const rs = await analysServices.productInWarehouse(Number(limit), Number(page));
+    const { limit = 10, page = 1, query } = req.query;
+    const rs = await analysServices.productInWarehouse(Number(limit), Number(page), query !== undefined ? String(query) : undefined);
     return isError(rs) ? next(err(rs, res)) : res.json(rs);
 };

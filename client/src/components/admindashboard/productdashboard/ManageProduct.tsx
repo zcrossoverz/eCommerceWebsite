@@ -1,43 +1,99 @@
 import { useQuery } from '@tanstack/react-query';
 import BreadCrumb from '../breadcrumb';
 import productsApi from 'src/apis/product.api';
-import { useState } from 'react';
+import Pagination from 'src/components/paginate';
+import useQueryParams from 'src/hooks/useQueryParams';
+import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { AiOutlineDelete, AiOutlineEdit, AiOutlineFileSearch } from 'react-icons/ai';
+import HelmetSEO from 'src/components/Helmet';
+import { useTranslation } from 'react-i18next';
 
 export default function ManageProduct() {
+  const { t } = useTranslation('addashboard');
+  const [search, setSearch] = useState('');
+  const query = useQueryParams();
+  const [filterOrder, setFilterOrder] = useState('newest');
   const [params, setParams] = useState({
-    limit: '10',
     page: '1',
+    limit: '9',
+    search: '',
+    order: 'newest',
   });
-  const { data, isLoading } = useQuery(['products', params], () => productsApi.getProductsList(params));
+  useEffect(() => {
+    setParams({
+      limit: '9',
+      page: '1',
+      search,
+      order: 'newest',
+    });
+  }, [search]);
+  useEffect(() => {
+    setParams({
+      ...params,
+      order: filterOrder,
+    });
+  }, [filterOrder]);
+  useEffect(() => {
+    setParams({
+      ...params,
+      page: `${query.page}`,
+    });
+  }, [query.page]);
+
+  const { data, isLoading, refetch } = useQuery(
+    ['products', params],
+    () =>
+      productsApi.getProductsList({
+        ...params,
+        page: params.page !== undefined ? params.page : '1',
+      }),
+    {
+      retry: false,
+    }
+  );
+  const navigate = useNavigate();
 
   return (
     <div className='mt-4'>
-      <BreadCrumb path={['Product', 'Manage Product']} />
+      <HelmetSEO title={t('maindashboard.manage product')}></HelmetSEO>
+      <BreadCrumb path={[t('maindashboard.products'), t('maindashboard.manage product')]} />
       <div className='mt-4 grid grid-cols-6'>
         <div className='col-span-2 mr-4'>
           <input
             className='w-full appearance-none rounded-lg border-2 border-gray-50 bg-gray-50 py-3 px-4 leading-tight text-gray-700 focus:border-purple-500 focus:bg-white focus:shadow-md focus:shadow-purple-300 focus:outline-none'
             id='inline-full-name'
             type='text'
-            placeholder='search'
+            placeholder={t('product.search')}
+            onChange={(e) => setSearch(e.target.value)}
           />
         </div>
         <div className='col-span-1'>
-          <select className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-500 focus:shadow-lg focus:shadow-blue-300 focus:ring-blue-500'>
-            <option className='mt-1' selected>
-              Sort by
+          <select
+            className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-500 focus:shadow-lg focus:shadow-blue-300 focus:ring-blue-500'
+            onChange={(e) => setFilterOrder(e.target.value)}
+          >
+            <option className='mt-1' value='newest' defaultChecked={true}>
+              {t('orders.newest')}
             </option>
-            <option className='mt-1' value='sale'>
-              sale
-            </option>
-            <option className='mt-1' value='stock'>
-              stock
+            <option className='mt-1' value='oldest'>
+              {t('orders.oldest')}
             </option>
           </select>
         </div>
         <div className='col-span-1 col-end-7'>
-          <button className='rounded-xl bg-blue-900 py-3 px-8 text-gray-400 hover:bg-blue-600 hover:text-white hover:shadow-primary hover:shadow-lg'>
-            CREATE
+          <button
+            className='rounded-xl bg-blue-900 py-3 px-8 text-gray-400 hover:bg-blue-600 hover:text-white hover:shadow-primary hover:shadow-lg'
+            onClick={() =>
+              navigate('./form', {
+                state: {
+                  type: 'create',
+                },
+              })
+            }
+          >
+            {t('product.create')}
           </button>
         </div>
       </div>
@@ -45,7 +101,7 @@ export default function ManageProduct() {
         <div className='mt-4 flex flex-col'>
           <div className='overflow-x-auto'>
             <div className='inline-block w-full align-middle'>
-              <div className='overflow-hidden rounded-xl border'>
+              <div className='h-full overflow-hidden rounded-xl border'>
                 {isLoading && (
                   <div className='grid h-80 place-items-center'>
                     <svg
@@ -67,44 +123,74 @@ export default function ManageProduct() {
                   </div>
                 )}
                 {data?.data && (
-                  <table className='min-w-full divide-y divide-gray-200 bg-white'>
-                    <thead className='bg-pink-400/20'>
-                      <tr>
-                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          ID
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          Name
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          Brand
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-right text-xs font-bold uppercase text-gray-500 '>
-                          Edit
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-right text-xs font-bold uppercase text-gray-500 '>
-                          Delete
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className='divide-y divide-gray-200'>
-                      {data?.data.data.map((e, i) => {
-                        return (
-                          <tr key={i.toString()}>
-                            <td className='whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800'>{e.id}</td>
-                            <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.name}</td>
-                            <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.brand}</td>
-                            <td className='whitespace-nowrap px-6 py-4 text-right text-sm font-medium'>
-                              <div className='text-green-500 hover:text-green-700'>Edit</div>
-                            </td>
-                            <td className='whitespace-nowrap px-6 py-4 text-right text-sm font-medium'>
-                              <div className='text-red-500 hover:text-red-700'>Delete</div>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+                  <div>
+                    <table className='min-w-full divide-y divide-gray-200 bg-white shadow-md'>
+                      <thead className='bg-pink-400/20'>
+                        <tr>
+                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                            ID
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                            {t('product.name')}
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                            {t('product.brand')}
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-right text-xs font-bold uppercase text-gray-500 '>
+                            <p className='mr-4'>{t('product.actions')}</p>
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className='divide-y divide-gray-200'>
+                        {data?.data.data.map((e, i) => {
+                          return (
+                            <tr key={i.toString()}>
+                              <td className='whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800'>{e.id}</td>
+                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.name}</td>
+                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.brand}</td>
+                              <td className='whitespace-nowrap px-6 py-4 text-right text-sm font-medium'>
+                                <button className='px-1 text-blue-500 hover:text-blue-700'>
+                                  <AiOutlineFileSearch
+                                    className='text-2xl'
+                                    onClick={() => navigate(`./detail/${e.id}`)}
+                                  />
+                                </button>
+                                <button className='px-1 text-green-400 hover:text-green-600'>
+                                  <AiOutlineEdit
+                                    className='text-2xl'
+                                    onClick={() => {
+                                      navigate('./form', {
+                                        state: {
+                                          type: 'edit',
+                                          id: e.id,
+                                        },
+                                      });
+                                    }}
+                                  />
+                                </button>
+                                <button
+                                  onClick={async () => {
+                                    await productsApi.deleteProduct(e.id);
+                                    toast.success('delete success!');
+                                    refetch();
+                                  }}
+                                  className='text-red-500 hover:text-red-700'
+                                >
+                                  <AiOutlineDelete className='text-2xl' />
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                    <div className='flex justify-end pb-4'>
+                      <Pagination
+                        pageSize={Math.ceil(data.data.total / data.data.data_per_page)}
+                        queryConfig={{ limit: params.limit, page: params.page, path: '/admin/product/' }}
+                      />
+                    </div>
+                  </div>
                 )}
               </div>
             </div>

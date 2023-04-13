@@ -5,6 +5,10 @@ import brandApi from 'src/apis/brand.api';
 import { useDispatch, useSelector } from 'react-redux';
 import { popup, selectCurrentModal } from 'src/slices/modal.slice';
 import { toast } from 'react-toastify';
+import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
+import HelmetSEO from 'src/components/Helmet';
+import Pagination from 'src/components/paginate';
+import { useTranslation } from 'react-i18next';
 
 const BrandModal = ({
   refetch,
@@ -22,13 +26,14 @@ const BrandModal = ({
   const dispatch = useDispatch();
   const [name, setName] = useState(nameDefault);
   const [description, setDescription] = useState(descriptionDefault);
+  const { t } = useTranslation('addashboard');
   return (
     <div className='z-100 fixed inset-0 top-1/2 left-1/2 -translate-x-1/3 -translate-y-3/4'>
       <div className='relative h-full w-full max-w-2xl md:h-auto'>
         <div className='relative rounded-lg bg-white shadow-xl'>
           <div className='flex items-start justify-between rounded-t border-b p-4'>
             <h3 className='text-xl font-semibold text-gray-900'>
-              {type === 'create' ? 'Create New Brand' : 'Edit Brand'}
+              {type === t('product.create') ? t('product.newcreate') : t('product.editbrand')}
             </h3>
             <button
               className='ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900'
@@ -43,13 +48,13 @@ const BrandModal = ({
               >
                 <path d='M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z'></path>
               </svg>
-              <span className='sr-only'>Close modal</span>
+              <span className='sr-only'>{t('product.close modal')}</span>
             </button>
           </div>
 
           <div className='space-y-6 p-6'>
             <p className='text-base leading-relaxed text-gray-500'>
-              <p>Name: </p>
+              <p>{t('product.name')}: </p>
               <input
                 className='w-full rounded-xl border border-gray-400 px-2 py-2'
                 defaultValue={name}
@@ -57,7 +62,7 @@ const BrandModal = ({
               />
             </p>
             <p className='text-base leading-relaxed text-gray-500'>
-              <p>Description:</p>
+              <p>{t('product.description')}:</p>
               <textarea
                 className='w-full rounded-xl border border-gray-400 px-2 py-6'
                 defaultValue={description}
@@ -84,13 +89,13 @@ const BrandModal = ({
                 dispatch(popup(''));
               }}
             >
-              Confirm
+              {t('product.confirm')}
             </button>
             <button
               className='rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300'
               onClick={() => dispatch(popup(''))}
             >
-              Cancel
+              {t('product.cancel')}
             </button>
           </div>
         </div>
@@ -100,8 +105,9 @@ const BrandModal = ({
 };
 
 export default function ManageBrand() {
+  const { t } = useTranslation('addashboard');
   const [params, setParams] = useState({
-    limit: '10',
+    limit: '2',
     page: '1',
     search: '',
   });
@@ -113,14 +119,15 @@ export default function ManageBrand() {
 
   return (
     <div className='mt-4'>
-      <BreadCrumb path={['Product', 'Manage Brand']} />
+      <HelmetSEO title={t('maindashboard.manage brand')}></HelmetSEO>
+      <BreadCrumb path={[t('maindashboard.products'), t('maindashboard.manage brand')]} />
       <div className='mt-4 grid grid-cols-6'>
         <div className='col-span-2 mr-4'>
           <input
             className='w-full appearance-none rounded-lg border-2 border-gray-50 bg-gray-50 py-3 px-4 leading-tight text-gray-700 focus:border-purple-500 focus:bg-white focus:shadow-md focus:shadow-purple-300 focus:outline-none'
             id='inline-full-name'
             type='text'
-            placeholder='search'
+            placeholder={t('product.search') || 'search'}
             onChange={(e) =>
               setParams({
                 ...params,
@@ -131,14 +138,14 @@ export default function ManageBrand() {
         </div>
         <div className='col-span-1'>
           <select className='block hidden w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-500 focus:shadow-lg focus:shadow-blue-300 focus:ring-blue-500'>
-            <option className='mt-1' selected>
-              Sort by
+            <option className='mt-1' value='default'>
+              {t('product.sort by')}
             </option>
             <option className='mt-1' value='sale'>
-              sale
+              {t('product.sale')}
             </option>
             <option className='mt-1' value='stock'>
-              stock
+              {t('product.stock')}
             </option>
           </select>
         </div>
@@ -153,7 +160,7 @@ export default function ManageBrand() {
               )
             }
           >
-            CREATE
+            {t('product.create')}
           </button>
         </div>
       </div>
@@ -197,67 +204,72 @@ export default function ManageBrand() {
                 )}
 
                 {data?.data && data.data.length > 0 && (
-                  <table className='min-w-full divide-y divide-gray-200 bg-white'>
-                    <thead className='bg-pink-400/20'>
-                      <tr>
-                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          ID
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          Name
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          Description
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-right text-xs font-bold uppercase text-gray-500 '>
-                          Edit
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-right text-xs font-bold uppercase text-gray-500 '>
-                          Delete
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className='divide-y divide-gray-200'>
-                      {data?.data.map((e, i) => {
-                        return (
-                          <tr key={i.toString()}>
-                            <td className='whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800'>{e.id}</td>
-                            <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.name}</td>
-                            <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.description}</td>
-                            <td className='whitespace-nowrap px-6 py-4 text-right text-sm font-medium'>
-                              <button
-                                className='text-green-500 hover:text-green-700'
-                                onClick={() => {
-                                  dispatch(
-                                    popup({
-                                      name: 'edit',
-                                      nameDefault: e.name,
-                                      descriptionDefault: e.description,
-                                      id: e.id,
-                                    })
-                                  );
-                                }}
-                              >
-                                Edit
-                              </button>
-                            </td>
-                            <td className='whitespace-nowrap px-6 py-4 text-right text-sm font-medium'>
-                              <button
-                                className='text-red-500 hover:text-red-700'
-                                onClick={async () => {
-                                  await brandApi.delete(e.id);
-                                  toast.success('delete success!');
-                                  refetch();
-                                }}
-                              >
-                                Delete
-                              </button>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+                  <div>
+                    <table className='min-w-full divide-y divide-gray-200 bg-white shadow-lg'>
+                      <thead className='bg-pink-400/20'>
+                        <tr>
+                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                            ID
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                            {t('product.name')}
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                            {t('product.description')}
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-right text-xs font-bold uppercase text-gray-500 '>
+                            {t('product.edit')}
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-right text-xs font-bold uppercase text-gray-500 '>
+                            {t('product.delete')}
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className='divide-y divide-gray-200'>
+                        {data?.data.map((e, i) => {
+                          return (
+                            <tr key={i.toString()}>
+                              <td className='whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800'>{e.id}</td>
+                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.name}</td>
+                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.description}</td>
+                              <td className='whitespace-nowrap px-6 py-4 text-right text-sm font-medium'>
+                                <button
+                                  className='text-green-500 hover:text-green-700'
+                                  onClick={() => {
+                                    dispatch(
+                                      popup({
+                                        name: 'edit',
+                                        nameDefault: e.name,
+                                        descriptionDefault: e.description,
+                                        id: e.id,
+                                      })
+                                    );
+                                  }}
+                                >
+                                  <AiOutlineEdit className='text-2xl' />
+                                </button>
+                              </td>
+                              <td className='whitespace-nowrap px-6 py-4 text-right text-sm font-medium'>
+                                <button
+                                  className='text-red-500 hover:text-red-700'
+                                  onClick={async () => {
+                                    await brandApi.delete(e.id);
+                                    toast.success('delete success!');
+                                    refetch();
+                                  }}
+                                >
+                                  <AiOutlineDelete className='text-2xl' />
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                    {/* <div className='flex justify-end'>
+                      <Pagination pageSize={Math.ceil(1)} queryConfig={{ limit: '2', path: '/admin/brand/' }} />
+                    </div> */}
+                  </div>
                 )}
               </div>
             </div>

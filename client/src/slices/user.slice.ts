@@ -7,29 +7,27 @@ interface UserState {
   userInfo: UserInfo;
 }
 
-const initialState: UserState = {
-  userInfo: {
-    firstName: '',
-    lastName: '',
-    role: '',
-  },
-};
-const token = getAccessToken();
-if (token) {
-  const user = jwtDecode<{
-    firstName: string;
-    lastName: string;
-    user_id: number;
-    iat: string;
-    role: string;
-  }>(token);
-  initialState.userInfo = {
-    firstName: user.firstName,
-    lastName: user.lastName,
-    role: user.role,
-    id: user.user_id,
-  };
+function init() {
+  const token = getAccessToken();
+  if (token) {
+    const user = jwtDecode<{
+      firstName: string;
+      lastName: string;
+      user_id: number;
+      iat: string;
+      role: string;
+    }>(token);
+    return {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: user.role,
+      id: user.user_id,
+    };
+  }
 }
+const initialState: UserState = {
+  userInfo: (init() as UserInfo) || {},
+};
 const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -37,8 +35,11 @@ const userSlice = createSlice({
     setUserInfor: (state, action: PayloadAction<UserInfo>) => {
       state.userInfo = action.payload;
     },
+    reset: (state) => {
+      state.userInfo = (init() as UserInfo) || {};
+    },
   },
 });
-export const { setUserInfor } = userSlice.actions;
+export const { setUserInfor, reset } = userSlice.actions;
 
 export default userSlice.reducer;
