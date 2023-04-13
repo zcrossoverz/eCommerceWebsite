@@ -17,7 +17,7 @@ export default function DetailProductOption() {
       <HelmetSale title='Admin Dashboard | Product Option Detail'></HelmetSale>
       <BreadCrumb path={['Product', 'Product Dashboard', 'Detail', 'Product Option']} />
       <div className='mt-4'>
-        <div className='grid grid-cols-2 gap-4'>
+        <div className='grid md:grid-cols-2 gap-4'>
           <div className='rounded-xl border border-gray-200 bg-white p-4 drop-shadow-xl'>
             <Line
               options={{
