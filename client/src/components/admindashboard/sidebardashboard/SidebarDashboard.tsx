@@ -142,10 +142,10 @@ function SidebarDashboard() {
           <ButtonNav name={'Inventory'} Icon={MdInventory} link='/inventory' active={location.includes('/inventory')} />
           <ButtonNav name={'Reports'} Icon={HiDocumentReport} link='/report' active={location.includes('/report')} />
           <ButtonNav name={'Users'} Icon={MdPeopleAlt} link='/user' active={location.includes('/user')} />
-          <div className={`mx-4 flex w-[calc(100%-2rem)] items-center rounded-md px-4 hover:bg-white/10`}>
+          <div className={`mx-4 flex w-[calc(100%-2rem)] items-center rounded-md px-4`}>
             <IoLanguageSharp className='text-white' />
             <div className='py-4 px-4 text-left text-white'>
-              <Language />
+              <Language textColor='text-white' />
             </div>
           </div>
           <ButtonNav name={'Back'} Icon={BsBack} link='/user' back active={location.includes('/not')} />
