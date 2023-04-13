@@ -22,6 +22,8 @@ import HelmetSale from '../Helmet';
 import { nanoid } from '@reduxjs/toolkit';
 import Loading from '../loading';
 import { useTranslation } from 'react-i18next';
+import Reviews from './reviews';
+import Star from '../star';
 function ProductDetails() {
   const { t } = useTranslation('productdetail');
   const { id } = useParams<{ id: string }>();
@@ -63,12 +65,12 @@ function ProductDetails() {
   const [optionSelected, setOptionSelected] = useState<OptionProduct>();
   const [quantity, setQuantity] = useState<number | string>('');
   const decreaseQuantity = () => {
-    if (quantity && quantity >= 2) {
+    if (quantity && Number(quantity) >= 2) {
       setQuantity(Number(quantity) - 1);
     }
   };
   const increaseQuantity = () => {
-    if (quantity <= Number(optionSelected?.quantity)) {
+    if (Number(quantity) <= Number(optionSelected?.quantity)) {
       setQuantity((prev) => {
         return Number(prev) + 1;
       });
@@ -322,6 +324,8 @@ function ProductDetails() {
       {/* Reviews */}
       <div className='mx-auto mt-4 p-4 shadow-md lg:w-[80%]'>
         <h3 className='mx-auto w-[96%] bg-[#fafafa] px-4 py-2'>{t('productdetail.product reviews')}</h3>
+
+        <Reviews />
       </div>
     </>
   );
