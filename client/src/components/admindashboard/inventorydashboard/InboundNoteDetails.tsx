@@ -7,8 +7,10 @@ import convertDate from 'src/utils/convertDate';
 import { isAxiosErr } from 'src/utils/error';
 import BreadCrumb from '../breadcrumb';
 import HelmetSEO from 'src/components/Helmet';
+import { useTranslation } from 'react-i18next';
 
 function InboundNoteDetails() {
+  const { t } = useTranslation('addashboard');
   const params = useParams<{
     id: string;
   }>();
@@ -24,7 +26,7 @@ function InboundNoteDetails() {
     mutationFn: (body: { id: string; accept: boolean }) => inboundNoteApi.processInboundNote(body.id, body.accept),
     retry: 1,
     onSuccess() {
-      toast.success('Cập nhật tình trạng đơn hàng thành công!', { autoClose: 2000 });
+      toast.success(t('inventory.updatesuccess'), { autoClose: 2000 });
       refetch();
     },
     onError(err) {
@@ -44,28 +46,38 @@ function InboundNoteDetails() {
 
   return (
     <section>
-      <HelmetSEO title='Chi tiết phiếu nhập' />
-      <BreadCrumb path={['Fstore', 'Admin', 'Inventory', 'Inbound Note', 'Phiếu số ' + String(data?.data.id)]} />
+      <HelmetSEO title={t('inventory.invoicedetail')} />
+      <BreadCrumb
+        path={[
+          'Fstore',
+          t('maindashboard.admin'),
+          t('maindashboard.inventory'),
+          t('inventory.inboundnote'),
+          t('inventory.no') + String(data?.data.id),
+        ]}
+      />
       {data?.data && (
         <div>
           <aside className='mt-2 max-w-2xl overflow-hidden bg-white shadow sm:rounded-lg'>
             <div className='px-4 py-5 sm:px-6'>
-              <h3 className='text-lg font-medium leading-6 text-gray-900'>Thông tin chi tiết phiếu nhập</h3>
+              <h3 className='text-lg font-medium leading-6 text-gray-900'>{t('inventory.infoinvoice')}</h3>
             </div>
             <div className='border-t border-gray-200'>
               <dl>
                 <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                  <dt className='text-sm font-medium text-gray-500'>Tên phiếu</dt>
-                  <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>Phiếu số {data.data.id}</dd>
+                  <dt className='text-sm font-medium text-gray-500'>{t('inventory.invoicename')}</dt>
+                  <dd className='mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
+                    {t('inventory.no')} {data.data.id}
+                  </dd>
                 </div>
                 <div className='bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                  <dt className='text-sm font-medium text-gray-500'>Ngày lập phiếu</dt>
+                  <dt className='text-sm font-medium text-gray-500'>{t('inventory.invoicedate')}</dt>
                   <dd className='mt-1 flex items-center justify-start text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
                     <span>{convertDate(data.data.create_at)}</span>
                   </dd>
                 </div>
                 <div className='bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6'>
-                  <dt className='text-sm font-medium text-gray-500'>Tình trạng</dt>
+                  <dt className='text-sm font-medium text-gray-500'>{t('inventory.status')}</dt>
                   <dd className='mt-1 flex items-center text-sm text-gray-900 sm:col-span-2 sm:mt-0'>
                     <span>{data.data.status}</span>
                     {data.data.status === 'PENDING' && (
@@ -74,13 +86,13 @@ function InboundNoteDetails() {
                           onClick={() => handleChangeStatus(String(data.data.id), true)}
                           className='ml-2 rounded-sm bg-green-400 px-3 py-1.5 text-white hover:bg-green-600'
                         >
-                          Xác nhận
+                          {t('product.confirm')}
                         </button>
                         <button
                           onClick={() => handleChangeStatus(String(data.data.id), false)}
                           className='ml-2 rounded-sm bg-red-400 px-3 py-1.5 text-white hover:bg-red-600'
                         >
-                          Từ chối
+                          {t('inventory.refuse')}
                         </button>
                       </div>
                     )}
@@ -91,18 +103,18 @@ function InboundNoteDetails() {
           </aside>
 
           <article className='mt-6'>
-            <h2 className='my-2 text-lg font-semibold text-cyan-600'>Sản phẩm trong phiếu nhập:</h2>
+            <h2 className='my-2 text-lg font-semibold text-cyan-600'>{t('inventory.proininvoice')}:</h2>
             <div className='overflow-x-auto rounded-md shadow-md'>
               {data.data.items && (
                 <div>
                   <table className='w-full text-left text-sm text-gray-500'>
                     <thead className='bg-cyan-400 text-xs uppercase text-white md:text-sm'>
                       <tr>
-                        <th className='px-4 py-3'>STT</th>
-                        <th className='px-6 py-3'>Tên</th>
-                        <th className='px-6 py-3'>Hình ảnh</th>
-                        <th className='px-6 py-3'>Cấu hình</th>
-                        <th className='px-6 py-3'>Số lượng</th>
+                        <th className='px-4 py-3'>{t('inventory.no.')}</th>
+                        <th className='px-6 py-3'>{t('product.name')}</th>
+                        <th className='px-6 py-3'>{t('detailproduct.image')}</th>
+                        <th className='px-6 py-3'>{t('inventory.configuration')}</th>
+                        <th className='px-6 py-3'>{t('orders.quantity')}</th>
                       </tr>
                     </thead>
                     <tbody>

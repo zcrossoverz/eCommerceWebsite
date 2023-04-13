@@ -10,7 +10,9 @@ import { AiOutlineDelete, AiOutlineInfoCircle } from 'react-icons/ai';
 import { Link } from 'react-router-dom';
 import BreadCrumb from '../breadcrumb';
 import HelmetSEO from 'src/components/Helmet';
+import { useTranslation } from 'react-i18next';
 export default function UserDashboard() {
+  const { t } = useTranslation('addashboard');
   const query = useQueryParams();
   const queryParams: ProductListConfig = {
     page: query.page ? query.page : '1',
@@ -38,7 +40,7 @@ export default function UserDashboard() {
     if (userId) {
       deleteUserMutation.mutate(userId, {
         onSuccess() {
-          toast.success('Xóa người dùng thành công', { autoClose: 2000 });
+          toast.success(t('user.deleteuser'), { autoClose: 2000 });
           refetch();
         },
         onError(err) {
@@ -51,26 +53,26 @@ export default function UserDashboard() {
   };
   return (
     <section className='px-2'>
-      <HelmetSEO title='Quản lý người dùng' />
-      <BreadCrumb path={['Fstore', 'Admin Dashboard', 'Quản lý người dùng']} />
+      <HelmetSEO title={t('user.manage users')} />
+      <BreadCrumb path={['Fstore', t('user.addashboard'), t('user.manage users')]} />
       <div className='mt-2 overflow-x-auto rounded-lg border border-gray-200 shadow-md'>
         <table className='w-full border-collapse bg-white text-left text-sm text-gray-500'>
           <thead className='bg-teal-400'>
             <tr>
               <th scope='col' className='px-6 py-4 font-medium text-gray-900'>
-                Họ tên
+                {t('user.fullname')}
               </th>
               <th scope='col' className='px-6 py-4 font-medium text-gray-900'>
-                Ngày tạo
+                {t('user.datecre')}
               </th>
               <th scope='col' className='px-6 py-4 font-medium text-gray-900'>
-                Vai trò
+                {t('user.role')}
               </th>
               <th scope='col' className='px-6 py-4 font-medium text-gray-900'>
-                Số điện thoại
+                {t('user.sdt')}
               </th>
               <th scope='col' className='px-6 py-4 font-medium text-gray-900'>
-                Thao tác
+                {t('user.operation')}
               </th>
             </tr>
           </thead>
@@ -90,7 +92,7 @@ export default function UserDashboard() {
                   </td>
                   <td className='px-6 py-4'>{user.role}</td>
                   <td className='px-6 py-4'>
-                    <span>{user.phone ? user.phone : 'Chưa có số điện thoại'}</span>
+                    <span>{user.phone ? user.phone : t('user.nophone')}</span>
                   </td>
                   <td className='px-6 py-4'>
                     <div className='flex gap-4'>

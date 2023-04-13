@@ -7,6 +7,7 @@ import productsApi from 'src/apis/product.api';
 import { toast } from 'react-toastify';
 import HelmetSale from 'src/components/Helmet';
 import { AiOutlineDelete, AiOutlineEdit } from 'react-icons/ai';
+import { useTranslation } from 'react-i18next';
 
 export default function ProductForm() {
   const navigate = useNavigate();
@@ -73,6 +74,7 @@ export default function ProductForm() {
     if (response.status === 200) toast.success('update product success!');
     else toast.error(`an error occured when update product: ${response.statusText}`);
   };
+  const { t } = useTranslation('addashboard');
 
   return (
     <div className='mt-4'>
@@ -86,26 +88,26 @@ export default function ProductForm() {
             <div className='inline-block w-full align-middle '>
               <div className='overflow-hidden rounded-xl border bg-white p-4'>
                 <h1 className='text-lg font-semibold leading-loose'>
-                  {location.state.type === 'create' ? 'CREATE PRODUCT' : 'UPDATE INFORMATION PRODUCT'}
+                  {location.state.type === 'create' ? t('detailproduct.createproduct') : t('detailproduct.updateinfo')}
                 </h1>
                 <div className='grid grid-cols-2 gap-4 pt-4'>
                   <div>
-                    <p className='text-md pb-1 indent-2 leading-normal'>Name</p>
+                    <p className='text-md pb-1 indent-2 leading-normal'>{t('product.name')}</p>
                     <input
                       type='text'
                       className='bg-gray-150 w-full rounded-md border border-gray-300 py-2 px-4'
-                      placeholder='Name...'
+                      placeholder={t('product.name')}
                       defaultValue={name}
                       onChange={(e) => setName(e.target.value)}
                     />
                   </div>
                   <div>
-                    <p className='text-md pb-1 indent-2 leading-normal'>Select Brand</p>
+                    <p className='text-md pb-1 indent-2 leading-normal'>{t('detailproduct.selectbrand')}</p>
                     <select
                       className='bg-gray-150 w-full rounded-md border border-gray-300 py-2 px-4'
                       onChange={(e) => setBrandId(Number(e.target.value))}
                     >
-                      <option>Select Brand</option>
+                      <option>{t('detailproduct.selectbrand')}</option>
                       {brand.data?.data.map((e: { id: number; name: string }, i) => (
                         <option key={i.toString()} value={e.id} selected={brand_id === e.id}>
                           {e.name}
@@ -116,7 +118,7 @@ export default function ProductForm() {
                 </div>
                 {location.state.type === 'create' && (
                   <div className='pt-4'>
-                    <p className='text-md pb-1 indent-2 leading-normal'>Image</p>
+                    <p className='text-md pb-1 indent-2 leading-normal'>{t('detailproduct.image')}</p>
                     <input
                       className='bg-gray-150 w-full cursor-pointer rounded-lg border border-gray-300 text-sm font-medium leading-loose text-gray-900 focus:outline-none'
                       type='file'
@@ -131,9 +133,9 @@ export default function ProductForm() {
                   </div>
                 )}
                 <div className='pt-4'>
-                  <p className='text-md pb-1 indent-2 leading-normal'>Description</p>
+                  <p className='text-md pb-1 indent-2 leading-normal'>{t('product.description')}</p>
                   <textarea
-                    placeholder='Description of product...'
+                    placeholder={t('product.description')}
                     rows={4}
                     className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500'
                     onChange={(e) => setDesc(e.target.value)}
@@ -164,7 +166,7 @@ export default function ProductForm() {
                     </div>
                     <div className='grid grid-cols-2 gap-4 pt-2'>
                       <div>
-                        <p className='text-md pb-1 indent-2 leading-normal'>COLOR</p>
+                        <p className='text-md pb-1 indent-2 leading-normal'>{t('detailproduct.color')}</p>
                         <input
                           type='text'
                           className='bg-gray-150 w-full rounded-md border border-gray-300 py-2 px-4'
@@ -192,13 +194,13 @@ export default function ProductForm() {
                       if (location.state.type === 'edit') await updateProduct();
                     }}
                   >
-                    SAVE
+                    {t('detailproduct.save')}
                   </button>
                   <button
                     className='mr-2 mb-2 rounded-lg border border-gray-300 bg-gray-700 px-5 py-2.5 text-sm font-medium text-white text-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-4 focus:ring-gray-200'
                     onClick={() => navigate('/admin/product')}
                   >
-                    CANCEL
+                    {t('product.cancel')}
                   </button>
                 </div>
               </div>
@@ -208,7 +210,7 @@ export default function ProductForm() {
             <div className='mt-4 overflow-x-auto drop-shadow-lg'>
               <div className='inline-block w-full align-middle '>
                 <div className='overflow-hidden rounded-xl border bg-white p-4'>
-                  <h1 className='text-lg font-semibold leading-loose'>SPECIFICATIONS</h1>
+                  <h1 className='text-lg font-semibold leading-loose'>{t('detailproduct.specifications')}</h1>
                   <div className='mt-2'>
                     <div className='grid grid-cols-6'>
                       <div className='col-span-5 rounded-md border border-gray-300'>
@@ -254,7 +256,7 @@ export default function ProductForm() {
                             openSpecModal(true);
                           }}
                         >
-                          Add new
+                          {t('detailproduct.addnew')}
                         </button>
                       </div>
                     </div>
@@ -288,13 +290,13 @@ export default function ProductForm() {
                       >
                         <path d='M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z'></path>
                       </svg>
-                      <span className='sr-only'>Close modal</span>
+                      <span className='sr-only'>{t('product.close modal')}</span>
                     </button>
                   </div>
 
                   <div className='space-y-6 p-6'>
                     <p className='text-base leading-relaxed text-gray-500'>
-                      <p>Key: </p>
+                      <p>{t('detailproduct.key')}: </p>
                       <input
                         className='w-full rounded-xl border border-gray-400 px-2 py-2'
                         onChange={(e) => setKeySpec(e.target.value)}
@@ -303,7 +305,7 @@ export default function ProductForm() {
                       />
                     </p>
                     <p className='text-base leading-relaxed text-gray-500'>
-                      <p>Value:</p>
+                      <p>{t('product.value')}:</p>
                       <input
                         className='w-full rounded-xl border border-gray-400 px-2 py-2'
                         onChange={(e) => setValueSpec(e.target.value)}
@@ -329,7 +331,7 @@ export default function ProductForm() {
                         _refetch(refetch + 1);
                       }}
                     >
-                      Confirm
+                      {t('product.confirm')}
                     </button>
                     <button
                       onClick={() => {
@@ -339,7 +341,7 @@ export default function ProductForm() {
                       }}
                       className='rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300'
                     >
-                      Cancel
+                      {t('product.cancel')}
                     </button>
                   </div>
                 </div>
