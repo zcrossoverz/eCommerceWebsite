@@ -1,7 +1,7 @@
 import HelmetSale from 'src/components/Helmet/HelmetSEO';
 import BreadCrumb from '../breadcrumb';
 import Datepicker from 'react-tailwindcss-datepicker';
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { Line } from 'react-chartjs-2';
 import { useQuery } from '@tanstack/react-query';
 import analysisApi from 'src/apis/analysis.api';
@@ -22,7 +22,7 @@ export default function ReportDashboard() {
   );
   const componentRef = useRef(null);
   return (
-    <div className='mt-4'>
+    <div className='mt-4 px-2'>
       <HelmetSale title='Admin Dashboard | Manage Order'></HelmetSale>
       <BreadCrumb path={['Product', 'Report Dashboard']} />
       <div className='mt-4 grid grid-cols-2'>
@@ -41,7 +41,11 @@ export default function ReportDashboard() {
         </div>
         <div className='col-span-1 flex justify-end'>
           <ReactToPrint
-            trigger={() => <button className='mr-8 rounded-md bg-blue-400 px-4 py-2'>Export</button>}
+            trigger={() => (
+              <button className=' rounded-md bg-blue-400 px-2 py-1 text-xs lg:mr-8 lg:px-4 lg:py-2 lg:text-sm'>
+                In báo cáo
+              </button>
+            )}
             content={() => componentRef.current}
           />
         </div>
@@ -52,7 +56,7 @@ export default function ReportDashboard() {
             <div className='inline-block w-full align-middle'>
               <div className='overflow-hidden'>
                 <div className='grid grid-cols-2 gap-4'>
-                  <div className='rounded-xl border border-gray-200 bg-white p-4 drop-shadow-xl'>
+                  <div className='col-span-2 rounded-xl border border-gray-200 bg-white p-4 drop-shadow-xl lg:col-span-1'>
                     <Line
                       options={{
                         responsive: true,
@@ -87,7 +91,7 @@ export default function ReportDashboard() {
                       }}
                     />
                   </div>
-                  <div className='rounded-xl border border-gray-200 bg-white p-4 drop-shadow-xl'>
+                  <div className='col-span-2 rounded-xl border border-gray-200 bg-white p-4 drop-shadow-xl lg:col-span-1'>
                     <Line
                       options={{
                         responsive: true,

@@ -47,7 +47,14 @@ const analysisApi = {
     >(`analysis/report_revenue`, { startDate, endDate });
   },
   reportInventory(startDate: string, endDate: string) {
-    return http.post(`analysis/report_inventory`, { startDate, endDate });
+    return http.post<
+      {
+        id: number;
+        date: string;
+        in: number;
+        out: number;
+      }[]
+    >(`analysis/report_inventory`, { startDate, endDate });
   },
 };
 

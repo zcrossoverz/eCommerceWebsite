@@ -103,12 +103,12 @@ export default function InventoryDashboard() {
     }
   };
   return (
-    <div>
+    <div className='px-2'>
       <BreadCrumb path={['Fstore', 'Admin', 'Kho']} />
       <div className='mt-4'>
         <div className='relative'>
           <form
-            className='max-w-[14rem]'
+            className='max-w-full md:max-w-[14rem]'
             onSubmit={(e) => {
               e.preventDefault();
               navigate({ search: createSearchParams({ ...queryParams, query: search ? search : '' }).toString() });
@@ -117,7 +117,7 @@ export default function InventoryDashboard() {
             <label htmlFor='default-search' className='sr-only mb-2 text-sm font-medium text-gray-900 '>
               Search
             </label>
-            <div className='relative mb-2 '>
+            <div className='relative mb-2'>
               <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3'>
                 <svg
                   aria-hidden='true'
