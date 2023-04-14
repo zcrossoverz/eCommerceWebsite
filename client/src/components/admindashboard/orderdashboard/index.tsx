@@ -9,8 +9,10 @@ import { AiOutlineDelete, AiOutlineFileSearch } from 'react-icons/ai';
 import HelmetSale from 'src/components/Helmet';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useTranslation } from 'react-i18next';
 
 export default function OrderDashboard() {
+  const { t } = useTranslation('addashboard');
   const query = useQueryParams();
   const [orderBy, setOrderBy] = useState('newest');
   const [filterSearch, setFilterSearch] = useState('');
@@ -82,7 +84,7 @@ export default function OrderDashboard() {
             className='w-full appearance-none rounded-lg border-2 border-gray-50 bg-gray-50 py-3 px-4 leading-tight text-gray-700 focus:border-purple-500 focus:bg-white focus:shadow-md focus:shadow-purple-300 focus:outline-none'
             id='inline-full-name'
             type='number'
-            placeholder='enter id of order'
+            placeholder={t('orders.enterid')}
             onChange={(e) => setFilterSearch(e.target.value)}
           />
         </div>
@@ -92,10 +94,10 @@ export default function OrderDashboard() {
             onChange={(e) => setOrderBy(e.target.value)}
           >
             <option className='mt-1' value='newest' defaultChecked={true}>
-              Newest
+              {t('orders.newest')}
             </option>
             <option className='mt-1' value='oldest'>
-              Oldest
+              {t('orders.oldest')}
             </option>
           </select>
         </div>
@@ -105,28 +107,28 @@ export default function OrderDashboard() {
             onChange={(e) => setFilterStatus(Number(e.target.value))}
           >
             <option className='mt-1' value='-1'>
-              All Status
+              {t('orders.allstatus')}
             </option>
             <option className='mt-1' value='0'>
-              Status: PENDING
+              {t('orders.statuspending')}
             </option>
             <option className='mt-1' value='1'>
-              Status: PROCESSING
+              {t('orders.statusprocessing')}
             </option>
             <option className='mt-1' value='2'>
-              Status: SHIPPED
+              {t('orders.statusshipped')}
             </option>
             <option className='mt-1' value='3'>
-              Status: COMPLETED
+              {t('orders.statuscompleted')}
             </option>
             <option className='mt-1' value='4'>
-              Status: CANCELLED
+              {t('orders.statuscanceled')}
             </option>
             <option className='mt-1' value='5'>
-              Status: RETURNED
+              {t('orders.statusreturned')}
             </option>
             <option className='mt-1' value='6'>
-              Status: RETURN_COMPLETED
+              {t('orders.statusreturn_completed')}
             </option>
           </select>
         </div>
@@ -136,19 +138,19 @@ export default function OrderDashboard() {
             onChange={(e) => setMethodPayment(Number(e.target.value))}
           >
             <option className='mt-1' value='-1'>
-              All Payment
+              {t('orders.allpayment')}
             </option>
             <option className='mt-1' value='3'>
-              Method: NOT_SET
+              {t('orders.methodnot_set')}
             </option>
             <option className='mt-1' value='1'>
-              Method: CASH_ON_DELIVERY
+              {t('orders.methodcash')}
             </option>
             <option className='mt-1' value='2'>
-              Method: PAYPAL
+              {t('orders.methodpaypal')}
             </option>
             <option className='mt-1' value='4'>
-              Method: RETURNED
+              {t('orders.methodreturned')}
             </option>
           </select>
         </div>
@@ -158,13 +160,13 @@ export default function OrderDashboard() {
             onChange={(e) => setPaymentIsPaid(Number(e.target.value))}
           >
             <option className='mt-1' value='-1'>
-              All
+              {t('orders.all')}
             </option>
             <option className='mt-1' value='1'>
-              Paid: YES
+              {t('orders.allyes')}
             </option>
             <option className='mt-1' value='0'>
-              Paid: NO
+              {t('orders.allno')}
             </option>
           </select>
         </div>
@@ -203,25 +205,25 @@ export default function OrderDashboard() {
                             ID
                           </th>
                           <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            STATUS
+                            {t('orders.status')}
                           </th>
                           <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            CUSTOMER
+                            {t('orders.customer')}
                           </th>
                           <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            METHOD
+                            {t('orders.method')}
                           </th>
                           <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            AMOUNT
+                            {t('orders.amount')}
                           </th>
                           <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            PAID
+                            {t('orders.paid')}
                           </th>
                           <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            TIME
+                            {t('orders.time')}
                           </th>
                           <th scope='col' className='px-6 py-3 text-center text-xs font-bold uppercase text-gray-500 '>
-                            Action
+                            {t('product.actions')}
                           </th>
                         </tr>
                       </thead>

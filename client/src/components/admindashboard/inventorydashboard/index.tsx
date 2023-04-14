@@ -14,11 +14,13 @@ import inboundNoteApi from 'src/apis/inboundnote.api';
 import http from 'src/utils/http';
 import BreadCrumb from '../breadcrumb';
 import HelmetSEO from 'src/components/Helmet';
+import { useTranslation } from 'react-i18next';
 enum Mode {
   'queryProduct',
   'queryInboundNote',
 }
 export default function InventoryDashboard() {
+  const { t } = useTranslation('addashboard');
   const searchParams = useQueryParams();
   const navigate = useNavigate();
   const [search, setSearch] = useState<string>();
@@ -98,15 +100,15 @@ export default function InventoryDashboard() {
     }>(`/inventory/inbound_note/${id}`);
     if (res.data.msg && res.data.msg === 'success') {
       await refetch();
-      toast.success('Xóa thành công', { autoClose: 2000 });
+      toast.success(t('inventory.successfuldeleted'), { autoClose: 2000 });
     } else {
-      toast.error('Thất bại', { autoClose: 2000 });
+      toast.error(t('inventory.failed'), { autoClose: 2000 });
     }
   };
   return (
     <div className='px-2'>
-      <BreadCrumb path={['Fstore', 'Admin', 'Kho']} />
-      <HelmetSEO title='Quản lý kho' />
+      <BreadCrumb path={['Fstore', t('maindashboard.admin'), t('maindashboard.inventory')]} />
+      <HelmetSEO title={t('inventory.manageinven')} />
       <div className='mt-4'>
         <div className='relative'>
           <form
@@ -117,7 +119,7 @@ export default function InventoryDashboard() {
             }}
           >
             <label htmlFor='default-search' className='sr-only mb-2 text-sm font-medium text-gray-900 '>
-              Search
+              {t('inventory.search')}
             </label>
             <div className='relative mb-2'>
               <div className='pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3'>
@@ -141,7 +143,7 @@ export default function InventoryDashboard() {
                 type='search'
                 id='default-search'
                 className='block w-full rounded-lg border border-cyan-600 bg-gray-50 p-2 pl-10 text-sm text-gray-900 '
-                placeholder='Search'
+                placeholder={t('inventory.search')}
                 value={search || ''}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -149,22 +151,22 @@ export default function InventoryDashboard() {
                 type='submit'
                 className='absolute bottom-1.5 right-2 rounded-md bg-cyan-600 px-2 py-1 text-sm font-medium text-white hover:bg-blue-800 focus:outline-none'
               >
-                Search
+                {t('inventory.search')}
               </button>
             </div>
           </form>
           <span className='relative z-10 inline-block rounded-lg bg-cyan-500 px-2 py-4 text-sm font-semibold uppercase text-white shadow-sm md:absolute md:left-1/2 md:-top-1 md:-translate-x-1/2 md:text-xl'>
-            Tổng sản phẩm trong kho: {data?.data.total}
+            {t('inventory.totalinventory')}: {data?.data.total}
           </span>
           <div className='relative mt-1 overflow-auto rounded-lg border border-gray-200 shadow-md'>
             <table className='w-full text-left text-sm text-gray-500 '>
               <thead className='bg-cyan-400 text-xs uppercase text-gray-700'>
                 <tr>
                   <th scope='col' className='px-6 py-6'>
-                    Tên
+                    {t('product.name')}
                   </th>
                   <th scope='col' className='px-6 py-6'>
-                    Màu
+                    {t('detailproduct.color')}
                   </th>
                   <th scope='col' className='px-6 py-6'>
                     RAM
@@ -173,7 +175,7 @@ export default function InventoryDashboard() {
                     ROM
                   </th>
                   <th scope='col' className='px-6 py-6'>
-                    Số lượng
+                    {t('orders.quantity')}
                   </th>
                 </tr>
               </thead>
@@ -203,7 +205,7 @@ export default function InventoryDashboard() {
       {/* manage inbound note */}
       <section className='relative mt-2'>
         <div className='flex items-center justify-between'>
-          <h2 className='text-sm font-semibold text-emerald-500 lg:text-lg'>Quản lý phiếu nhập kho</h2>
+          <h2 className='text-sm font-semibold text-emerald-500 lg:text-lg'>{t('inventory.manageinvoiceinven')}</h2>
           <button
             type='button'
             onClick={() => {
@@ -215,7 +217,7 @@ export default function InventoryDashboard() {
             }}
             className='mr-2 mb-2 rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white hover:bg-emerald-700 focus:outline-none'
           >
-            Thêm phiếu nhập
+            {t('inventory.addinvoice')}
           </button>
         </div>
 
@@ -224,16 +226,16 @@ export default function InventoryDashboard() {
             <thead className='bg-emerald-500 text-sm uppercase text-white lg:text-base'>
               <tr>
                 <th scope='col' className='px-6 py-6'>
-                  tên phiếu
+                  {t('inventory.invoicename')}
                 </th>
                 <th scope='col' className='px-6 py-6'>
-                  Tình trạng
+                  {t('inventory.status')}
                 </th>
                 <th scope='col' className='px-6 py-6'>
-                  Ngày nhập
+                  {t('inventory.invoicedate')}
                 </th>
                 <th scope='col' className='px-6 py-6'>
-                  Thao tác
+                  {t('user.operation')}
                 </th>
               </tr>
             </thead>
@@ -243,7 +245,7 @@ export default function InventoryDashboard() {
                 inboundNote.data.data.map((ib) => (
                   <tr key={ib.id} className='border-b bg-white'>
                     <th scope='row' className='whitespace-nowrap px-6 py-4 font-medium text-gray-900'>
-                      Phiếu số #{ib.id}
+                      {t('inventory.no')} #{ib.id}
                     </th>
                     <td className='px-6 py-4'>{ib.status}</td>
                     <td className='px-6 py-4'>{convertDate(ib.create_at)}</td>
@@ -274,7 +276,7 @@ export default function InventoryDashboard() {
         />
       </section>
       <div className='mt-4'>
-        <LineChart inventory titleText='Biến động kho' />
+        <LineChart inventory titleText={t('inventory.vola')} />
       </div>
     </div>
   );
