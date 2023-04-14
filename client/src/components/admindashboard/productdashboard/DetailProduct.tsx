@@ -97,9 +97,9 @@ const OptionModal = ({
             </button>
           </div>
 
-          <div className='space-y-6 p-6'>
+          <div className='space-y-6 p-2 md:p-6'>
             <div className='grid grid-cols-2 gap-4'>
-              <div className='px-8 text-base leading-relaxed text-gray-500'>
+              <div className='px-4 text-base leading-relaxed text-gray-500 md:px-8'>
                 <p>RAM: </p>
                 <input
                   onChange={(e) => setRam(e.target.value)}
@@ -107,7 +107,7 @@ const OptionModal = ({
                   className='w-full rounded-xl border border-gray-400 px-2 py-2'
                 />
               </div>
-              <div className='-ml-10 mr-8 px-8 text-base leading-relaxed text-gray-500'>
+              <div className='-ml-10 px-8 text-base leading-relaxed text-gray-500 md:mr-8'>
                 <p>ROM:</p>
                 <input
                   onChange={(e) => setRom(e.target.value)}
@@ -117,7 +117,7 @@ const OptionModal = ({
               </div>
             </div>
             <div className='grid grid-cols-2 gap-4'>
-              <div className='px-8 text-base leading-relaxed text-gray-500'>
+              <div className='px-4 text-base leading-relaxed text-gray-500 md:px-8'>
                 <p>{t('detailproduct.color')}: </p>
                 <input
                   defaultValue={color}
@@ -125,7 +125,7 @@ const OptionModal = ({
                   className='w-full rounded-xl border border-gray-400 px-2 py-2'
                 />
               </div>
-              <div className='-ml-10 mr-8 px-8 text-base leading-relaxed text-gray-500'>
+              <div className='-ml-10 px-8 text-base leading-relaxed text-gray-500 md:mr-8'>
                 <p>{t('detailproduct.price')}:</p>
                 <input
                   defaultValue={price}

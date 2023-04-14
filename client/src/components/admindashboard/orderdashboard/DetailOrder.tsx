@@ -78,7 +78,7 @@ export default function DetailOrder() {
                   <div className='mb-32 flex justify-end'>
                     {order?.status === 'PROCESSING' && (
                       <button
-                        className='mx-4 rounded-md border border-gray-300 bg-pink-500 px-8 text-white'
+                        className='mx-4 h-12 rounded-md border border-gray-300 bg-pink-500 px-2 text-white md:h-full md:px-8'
                         onClick={async () => {
                           await orderApi.updateStatus('SHIPPED', order.order_id);
                           toast.success(`update status order #${order.order_id} from PROCESSING to SHIPPED success!`);
@@ -90,7 +90,7 @@ export default function DetailOrder() {
                     )}
                     {order?.status === 'SHIPPED' && (
                       <button
-                        className='mx-4 rounded-md border border-gray-300 bg-green-500 px-8 text-white'
+                        className='mx-4 h-12 rounded-md border border-gray-300 bg-green-500 px-2 text-white md:h-full md:px-8'
                         onClick={async () => {
                           await orderApi.updateStatus('COMPLETED', order.order_id);
                           toast.success(`update status order #${order.order_id} from SHIPPED to COMPLETED success!`);
@@ -102,7 +102,7 @@ export default function DetailOrder() {
                     )}
                     {order?.status === 'COMPLETED' && (
                       <button
-                        className='mx-4 rounded-md border border-gray-300 bg-purple-500 px-8 text-white'
+                        className='mx-4 h-12 rounded-md border border-gray-300 bg-purple-500 px-2 text-white md:h-full md:px-8'
                         onClick={handlePrint}
                       >
                         {t('orders.print')}
@@ -110,7 +110,7 @@ export default function DetailOrder() {
                     )}
                     {order?.status === 'RETURNED' && (
                       <button
-                        className='mx-4 rounded-md border border-gray-300 bg-blue-500 px-8 text-white'
+                        className='mx-4 h-12 rounded-md border border-gray-300 bg-blue-500 px-2 text-white md:h-full md:px-8'
                         onClick={async () => {
                           await orderApi.updateStatus('RETURNED_COMPLETED', order.order_id);
                           toast.success(
@@ -125,60 +125,64 @@ export default function DetailOrder() {
                   </div>
                 </div>
                 <hr className='my-2 bg-gray-600' />
-                <table className='mb-6 min-w-full divide-y divide-gray-200 rounded-md border border-gray-300 bg-white'>
-                  <thead className='bg-cyan-600/20'>
-                    <tr>
-                      <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                        ID
-                      </th>
-                      <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                        {t('product.name')}
-                      </th>
-                      <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                        {t('detailproduct.detail')}
-                      </th>
-                      <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                        {t('detailproduct.price')}
-                      </th>
-                      <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                        {t('orders.quantity')}
-                      </th>
-                      <th scope='col' className='px-6 py-3 text-center text-xs font-bold uppercase text-gray-500 '>
-                        {t('orders.amount')}
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className='divide-y divide-gray-200'>
-                    {order?.order_items.map((e, i) => {
-                      return (
-                        <tr key={i.toString()}>
-                          <td className='whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800'>
-                            {e.product_option_id}
-                          </td>
-                          <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.product_name}</td>
-                          <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{`${e.ram}/${e.rom} - ${e.color}`}</td>
-                          <td className='text-md whitespace-nowrap px-6 py-4 text-gray-800'>{formatPrice(e.prices)}</td>
-                          <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.quantity}</td>
-                          <td className='text-md whitespace-nowrap px-6 py-4 text-center text-gray-800'>
-                            {formatPrice(e.prices * e.quantity)}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                    <tr>
-                      <td colSpan={5}></td>
-                      <td colSpan={1} className='mr-4 flex justify-end py-2'>
-                        {t('orders.discount')}: {formatPrice(Number(order?.payment.discount))}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td colSpan={5}></td>
-                      <td colSpan={1} className='mr-4 flex justify-end py-2'>
-                        {t('orders.total')}: {formatPrice(Number(order?.payment.amount))}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                <div className='overflow-x-scroll'>
+                  <table className='mb-6 min-w-full divide-y divide-gray-200 rounded-md border border-gray-300 bg-white'>
+                    <thead className='bg-cyan-600/20'>
+                      <tr>
+                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                          ID
+                        </th>
+                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                          {t('product.name')}
+                        </th>
+                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                          {t('detailproduct.detail')}
+                        </th>
+                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                          {t('detailproduct.price')}
+                        </th>
+                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                          {t('orders.quantity')}
+                        </th>
+                        <th scope='col' className='px-6 py-3 text-center text-xs font-bold uppercase text-gray-500 '>
+                          {t('orders.amount')}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className='divide-y divide-gray-200'>
+                      {order?.order_items.map((e, i) => {
+                        return (
+                          <tr key={i.toString()}>
+                            <td className='whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800'>
+                              {e.product_option_id}
+                            </td>
+                            <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.product_name}</td>
+                            <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{`${e.ram}/${e.rom} - ${e.color}`}</td>
+                            <td className='text-md whitespace-nowrap px-6 py-4 text-gray-800'>
+                              {formatPrice(e.prices)}
+                            </td>
+                            <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.quantity}</td>
+                            <td className='text-md whitespace-nowrap px-6 py-4 text-center text-gray-800'>
+                              {formatPrice(e.prices * e.quantity)}
+                            </td>
+                          </tr>
+                        );
+                      })}
+                      <tr>
+                        <td colSpan={5}></td>
+                        <td colSpan={1} className='mr-4 flex justify-end py-2'>
+                          {t('orders.discount')}: {formatPrice(Number(order?.payment.discount))}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td colSpan={5}></td>
+                        <td colSpan={1} className='mr-4 flex justify-end py-2'>
+                          {t('orders.total')}: {formatPrice(Number(order?.payment.amount))}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>

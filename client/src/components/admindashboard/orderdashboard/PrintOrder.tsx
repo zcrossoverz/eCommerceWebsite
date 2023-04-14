@@ -1,7 +1,11 @@
 /* eslint-disable react/display-name */
 
+<<<<<<< HEAD
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+=======
+import React, { Ref } from 'react';
+>>>>>>> 8fae6583c8beaf5ecff64d1b98dbe7f9ff536ba1
 import { formatPrice } from 'src/utils/formatPrice';
 import type { TFunction } from 'i18next';
 
@@ -35,7 +39,7 @@ export const PrintOrder = React.forwardRef(
       }[];
       t: TFunction<'addashboard', undefined, 'addashboard'>;
     },
-    ref
+    ref: Ref<HTMLDivElement>
   ) => {
     return (
       <div ref={ref} className='p-8'>
