@@ -202,136 +202,132 @@ export default function ManageCoupon() {
                 )}
 
                 {data?.data && data.data.length > 0 && (
-                  <div className='overflow-x-scroll'>
-                    <table className='min-w-full divide-y divide-gray-200 bg-white shadow-lg'>
-                      <thead className='bg-pink-400/20'>
-                        <tr>
-                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            ID
-                          </th>
-                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            Code
-                          </th>
-                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            Type
-                          </th>
-                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            Value
-                          </th>
-                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            Number
-                          </th>
-                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            Start
-                          </th>
-                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            End
-                          </th>
-                          <th scope='col' className='px-6 py-3 text-center text-xs font-bold uppercase text-gray-500 '>
-                            Action
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className='divide-y divide-gray-200'>
-                        {data?.data.map(
-                          (
-                            e: {
-                              id:
-                                | string
-                                | number
-                                | boolean
-                                | ReactElement<any, string | JSXElementConstructor<any>>
-                                | ReactFragment
-                                | ReactPortal
-                                | null
-                                | undefined;
-                              code:
-                                | string
-                                | number
-                                | boolean
-                                | ReactElement<any, string | JSXElementConstructor<any>>
-                                | ReactFragment
-                                | ReactPortal
-                                | null
-                                | undefined;
-                              type:
-                                | string
-                                | number
-                                | boolean
-                                | ReactElement<any, string | JSXElementConstructor<any>>
-                                | ReactFragment
-                                | ReactPortal
-                                | null
-                                | undefined;
-                              value:
-                                | string
-                                | number
-                                | boolean
-                                | ReactElement<any, string | JSXElementConstructor<any>>
-                                | ReactFragment
-                                | ReactPortal
-                                | null
-                                | undefined;
-                              number:
-                                | string
-                                | number
-                                | boolean
-                                | ReactElement<any, string | JSXElementConstructor<any>>
-                                | ReactFragment
-                                | ReactPortal
-                                | null
-                                | undefined;
-                              start_date:
-                                | string
-                                | number
-                                | boolean
-                                | ReactElement<any, string | JSXElementConstructor<any>>
-                                | ReactFragment
-                                | ReactPortal
-                                | null
-                                | undefined;
-                              end_date:
-                                | string
-                                | number
-                                | boolean
-                                | ReactElement<any, string | JSXElementConstructor<any>>
-                                | ReactFragment
-                                | ReactPortal
-                                | null
-                                | undefined;
-                            },
-                            i: { toString: () => Key | null | undefined }
-                          ) => {
-                            return (
-                              <tr key={i.toString()}>
-                                <td className='whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800'>
-                                  {e.id}
-                                </td>
-                                <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.code}</td>
-                                <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.type}</td>
-                                <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.value}</td>
-                                <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.number}</td>
-                                <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.start_date}</td>
-                                <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.end_date}</td>
-                                <td className='whitespace-nowrap px-6 py-4 text-center text-sm font-medium'>
-                                  <button
-                                    className='text-red-500 hover:text-red-700'
-                                    onClick={async () => {
-                                      await couponApi.deleteCoupon(e.id ? Number(e.id) : 0);
-                                      toast.success('delete success!');
-                                      refetch();
-                                    }}
-                                  >
-                                    <AiOutlineDelete className='text-2xl' />
-                                  </button>
-                                </td>
-                              </tr>
-                            );
-                          }
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
+                  <table className='min-w-full divide-y divide-gray-200 bg-white shadow-lg'>
+                    <thead className='bg-pink-400/20'>
+                      <tr>
+                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                          ID
+                        </th>
+                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                          {t('product.code')}
+                        </th>
+                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                          {t('product.type')}
+                        </th>
+                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                          {t('product.value')}
+                        </th>
+                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                          {t('product.number')}
+                        </th>
+                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                          {t('product.start')}
+                        </th>
+                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                          {t('product.end')}
+                        </th>
+                        <th scope='col' className='px-6 py-3 text-center text-xs font-bold uppercase text-gray-500 '>
+                          {t('product.action')}
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className='divide-y divide-gray-200'>
+                      {data?.data.map(
+                        (
+                          e: {
+                            id:
+                              | string
+                              | number
+                              | boolean
+                              | ReactElement<any, string | JSXElementConstructor<any>>
+                              | ReactFragment
+                              | ReactPortal
+                              | null
+                              | undefined;
+                            code:
+                              | string
+                              | number
+                              | boolean
+                              | ReactElement<any, string | JSXElementConstructor<any>>
+                              | ReactFragment
+                              | ReactPortal
+                              | null
+                              | undefined;
+                            type:
+                              | string
+                              | number
+                              | boolean
+                              | ReactElement<any, string | JSXElementConstructor<any>>
+                              | ReactFragment
+                              | ReactPortal
+                              | null
+                              | undefined;
+                            value:
+                              | string
+                              | number
+                              | boolean
+                              | ReactElement<any, string | JSXElementConstructor<any>>
+                              | ReactFragment
+                              | ReactPortal
+                              | null
+                              | undefined;
+                            number:
+                              | string
+                              | number
+                              | boolean
+                              | ReactElement<any, string | JSXElementConstructor<any>>
+                              | ReactFragment
+                              | ReactPortal
+                              | null
+                              | undefined;
+                            start_date:
+                              | string
+                              | number
+                              | boolean
+                              | ReactElement<any, string | JSXElementConstructor<any>>
+                              | ReactFragment
+                              | ReactPortal
+                              | null
+                              | undefined;
+                            end_date:
+                              | string
+                              | number
+                              | boolean
+                              | ReactElement<any, string | JSXElementConstructor<any>>
+                              | ReactFragment
+                              | ReactPortal
+                              | null
+                              | undefined;
+                          },
+                          i: { toString: () => Key | null | undefined }
+                        ) => {
+                          return (
+                            <tr key={i.toString()}>
+                              <td className='whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800'>{e.id}</td>
+                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.code}</td>
+                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.type}</td>
+                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.value}</td>
+                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.number}</td>
+                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.start_date}</td>
+                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.end_date}</td>
+                              <td className='whitespace-nowrap px-6 py-4 text-center text-sm font-medium'>
+                                <button
+                                  className='text-red-500 hover:text-red-700'
+                                  onClick={async () => {
+                                    await couponApi.deleteCoupon(e.id ? Number(e.id) : 0);
+                                    toast.success('delete success!');
+                                    refetch();
+                                  }}
+                                >
+                                  <AiOutlineDelete className='text-2xl' />
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        }
+                      )}
+                    </tbody>
+                  </table>
                 )}
               </div>
             </div>
