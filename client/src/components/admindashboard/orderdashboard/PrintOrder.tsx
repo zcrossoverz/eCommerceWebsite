@@ -1,6 +1,6 @@
 /* eslint-disable react/display-name */
 
-import React from 'react';
+import React, { Ref } from 'react';
 import { formatPrice } from 'src/utils/formatPrice';
 
 export const PrintOrder = React.forwardRef(
@@ -31,7 +31,7 @@ export const PrintOrder = React.forwardRef(
         prices: number;
       }[];
     },
-    ref
+    ref: Ref<HTMLDivElement>
   ) => {
     return (
       <div ref={ref} className='p-8'>
