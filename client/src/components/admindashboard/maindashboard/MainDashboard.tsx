@@ -13,6 +13,7 @@ import { dateToString } from 'src/utils/convertDate';
 import { baseURL } from 'src/constants/constants';
 
 import Languege from 'src/components/language/Language';
+import { useTranslation } from 'react-i18next';
 
 type card_props = {
   title: string;
@@ -68,6 +69,7 @@ const Card = (props: card_props) => {
 };
 
 function MainDashboard() {
+  const { t } = useTranslation('addashboard');
   const overview = useQuery(['analysis_overview'], () => analysisApi.analysOverview());
   const data_product_sale = useQuery(['top_sales'], () => analysisApi.topSales());
   const feedbacks = useQuery(['get_feedbacks'], () => feedbackApi.getAllFeedback());
@@ -76,10 +78,10 @@ function MainDashboard() {
     <div>
       <HelmetSEO title='Admin'></HelmetSEO>
       <div className='grid md:grid-cols-2 lg:grid-cols-4'>
-        <Card title='Total Products' value={overview.data?.data.countProducts} icon={0} />
-        <Card title='Total Orders' value={overview.data?.data.countOrders} icon={2} />
-        <Card title='Total Brands' value={overview.data?.data.countBrands} icon={1} />
-        <Card title='Total Users' value={overview.data?.data.countUsers} icon={3} />
+        <Card title={t('maindashboard.total products')} value={overview.data?.data.countProducts} icon={0} />
+        <Card title={t('maindashboard.total orders')} value={overview.data?.data.countOrders} icon={2} />
+        <Card title={t('maindashboard.total brands')} value={overview.data?.data.countBrands} icon={1} />
+        <Card title={t('maindashboard.total users')} value={overview.data?.data.countUsers} icon={3} />
       </div>
       <div className='mt-2 grid gap-4 px-4 md:grid-flow-col md:grid-cols-3 md:px-0'>
         <div className='-ml-1 mr-1 rounded-xl bg-white p-2 shadow-lg md:col-span-2'>
@@ -93,7 +95,7 @@ function MainDashboard() {
       <div className='mt-4 -ml-1 grid gap-4 overflow-hidden px-4 md:grid-flow-col md:grid-cols-2 md:px-0'>
         <div className='rounded-xl bg-white p-8 shadow-xl'>
           <div className='-mt-6 -ml-4'>
-            <div className='text-xl font-semibold leading-loose'>Top Sales</div>
+            <div className='text-xl font-semibold leading-loose'>{t('maindashboard.topsales')}</div>
           </div>
           <hr className='-ml-6 bg-gray-300' />
           <div>
@@ -103,8 +105,8 @@ function MainDashboard() {
                   <tr>
                     <th>#</th>
                     <th className='hidden md:block'>Image</th>
-                    <th className='text-center'>Name</th>
-                    <th>Number sold</th>
+                    <th className='text-center'>{t('maindashboard.name')}</th>
+                    <th>{t('maindashboard.numbersold')}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -127,7 +129,7 @@ function MainDashboard() {
         </div>
         <div className='overflow-x-scroll rounded-xl bg-white p-8 shadow-xl'>
           <div className=' -mt-6 -ml-4'>
-            <div className='text-xl font-semibold leading-loose'>Recently feedbacks</div>
+            <div className='text-xl font-semibold leading-loose'>{t('maindashboard.recentactivity')}</div>
           </div>
           <hr className='-ml-6 bg-gray-300' />
           <div className='mb-4 flex flex-col'>

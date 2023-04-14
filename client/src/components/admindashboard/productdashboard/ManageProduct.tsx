@@ -8,8 +8,10 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { AiOutlineDelete, AiOutlineEdit, AiOutlineFileSearch } from 'react-icons/ai';
 import HelmetSEO from 'src/components/Helmet';
+import { useTranslation } from 'react-i18next';
 
 export default function ManageProduct() {
+  const { t } = useTranslation('addashboard');
   const [search, setSearch] = useState('');
   const query = useQueryParams();
   const [filterOrder, setFilterOrder] = useState('newest');
@@ -55,15 +57,15 @@ export default function ManageProduct() {
 
   return (
     <div className='mt-4'>
-      <HelmetSEO title='Quản lý sản phẩm'></HelmetSEO>
-      <BreadCrumb path={['Product', 'Manage Product']} />
+      <HelmetSEO title={t('maindashboard.manage product')}></HelmetSEO>
+      <BreadCrumb path={[t('maindashboard.products'), t('maindashboard.manage product')]} />
       <div className='mt-4 grid grid-cols-6'>
         <div className='col-span-2 mr-4'>
           <input
             className='w-full appearance-none rounded-lg border-2 border-gray-50 bg-gray-50 py-3 px-4 leading-tight text-gray-700 focus:border-purple-500 focus:bg-white focus:shadow-md focus:shadow-purple-300 focus:outline-none'
             id='inline-full-name'
             type='text'
-            placeholder='search'
+            placeholder={t('product.search')}
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
@@ -73,10 +75,10 @@ export default function ManageProduct() {
             onChange={(e) => setFilterOrder(e.target.value)}
           >
             <option className='mt-1' value='newest' defaultChecked={true}>
-              Newest
+              {t('orders.newest')}
             </option>
             <option className='mt-1' value='oldest'>
-              Oldest
+              {t('orders.oldest')}
             </option>
           </select>
         </div>
@@ -91,7 +93,7 @@ export default function ManageProduct() {
               })
             }
           >
-            CREATE
+            {t('product.create')}
           </button>
         </div>
       </div>
@@ -130,13 +132,13 @@ export default function ManageProduct() {
                               ID
                             </th>
                             <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                              Name
+                              {t('product.name')}
                             </th>
                             <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                              Brand
+                              {t('product.brand')}
                             </th>
                             <th scope='col' className='px-6 py-3 text-right text-xs font-bold uppercase text-gray-500 '>
-                              <p className='mr-4'>Actions</p>
+                              <p className='mr-4'>{t('product.actions')}</p>
                             </th>
                           </tr>
                         </thead>

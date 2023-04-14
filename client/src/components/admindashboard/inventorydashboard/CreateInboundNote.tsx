@@ -12,6 +12,7 @@ import inboundNoteApi from 'src/apis/inboundnote.api';
 import analysisApi from 'src/apis/analysis.api';
 import BreadCrumb from '../breadcrumb';
 import HelmetSEO from 'src/components/Helmet';
+import { useTranslation } from 'react-i18next';
 interface ProductData {
   product_option_id: number;
   quantity: number;
@@ -99,7 +100,7 @@ function CreateInboundNote() {
         produce((draft) => {
           const i = draft.findIndex((it) => it.product_option_id === id);
           if (i >= 0) {
-            toast.warning('Sản phẩm đã được thêm', { autoClose: 2000 });
+            toast.warning(t('inventory.addedproduct'), { autoClose: 2000 });
             return;
           }
           draft.push(selected);
@@ -182,17 +183,18 @@ function CreateInboundNote() {
       };
       createInboundNoteMutation.mutate(body, {
         onSuccess() {
-          toast.success('Tạo phiếu thành công', { autoClose: 2000 });
+          toast.success(t('inventory.createsuccess'), { autoClose: 2000 });
           setSelectedArr([]);
           setSelectedQuantity([]);
         },
       });
     }
   };
+  const { t } = useTranslation('addashboard');
   return (
     <>
-      <HelmetSEO title='Tạo phiếu nhập' />
-      <BreadCrumb path={['Fstore', 'Admin', 'Kho', 'Tạo phiếu']} />
+      <HelmetSEO title={t('inventory.createinvoice')} />
+      <BreadCrumb path={['Fstore', t('maindashboard.admin'), t('maindashboard.inventory'), t('inventory.cre')]} />
       <section className='mt-2 flex min-h-full flex-col items-center justify-start bg-white'>
         <header className='flex w-full items-center border-b p-2 lg:w-1/2'>
           <aside className='mr-2 w-full'>
@@ -269,14 +271,12 @@ function CreateInboundNote() {
               }}
               className='rounded-md bg-emerald-500 px-2 py-2 text-xs text-white shadow-sm hover:bg-emerald-600 md:px-4'
             >
-              Thêm
+              {t('inventory.add')}
             </button>
           </aside>
         </header>
         <main className='min-h-[20rem] w-full p-2'>
-          <h2 className='text-center text-lg font-semibold text-emerald-400'>
-            Chọn sản phẩm và ấn thêm để thêm sản phẩm
-          </h2>
+          <h2 className='text-center text-lg font-semibold text-emerald-400'>{t('inventory.selectandpress')}</h2>
           <article className='max-h-[18rem] overflow-y-auto'>
             {selectedArr &&
               selectedArr.map((prod, i) => (
@@ -288,7 +288,7 @@ function CreateInboundNote() {
                       onClick={() => handleDelete(prod.product_option_id)}
                       className='inline-block text-start text-xs text-orange-400 hover:text-orange-600'
                     >
-                      Xóa
+                      {t('product.delete')}
                     </button>
                   </div>
                   <div className='flex items-center pr-2'>
@@ -333,7 +333,7 @@ function CreateInboundNote() {
                 onClick={handleCreateInboundNote}
                 className='mt-2 rounded-md bg-emerald-500 px-4 py-2 text-white shadow-sm hover:bg-emerald-600'
               >
-                Tạo phiếu nhập
+                {t('inventory.createinvoice')}
               </button>
             )}
           </article>

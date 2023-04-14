@@ -10,6 +10,7 @@ import { LineChart } from '../maindashboard/chart/LineChart';
 import { AiOutlineDelete, AiOutlineEdit, AiOutlineFileSearch } from 'react-icons/ai';
 import { baseURL } from 'src/constants/constants';
 import { Dispatch, SetStateAction, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 const OptionModal = ({
   id,
@@ -69,6 +70,7 @@ const OptionModal = ({
     if (response.status === 200) toast.success('update product success!');
     else toast.error(`an error occured when create product: ${response.statusText}`);
   };
+  const { t } = useTranslation('addashboard');
 
   return (
     <div className='z-100 fixed inset-0 -top-80 left-1/3 -translate-x-1/3 -translate-y-1'>
@@ -76,7 +78,7 @@ const OptionModal = ({
         <div className='relative rounded-lg bg-white shadow-xl'>
           <div className='flex items-start justify-between rounded-t border-b p-4'>
             <h3 className='text-xl font-semibold text-gray-900'>
-              {type === 'create' ? 'ADD NEW OPTION' : 'EDIT OPTION'}
+              {type === 'create' ? t('detailproduct.addnewoption') : t('detailproduct.editoption')}
             </h3>
             <button
               onClick={() => setModal({ open: false, type: '' })}
@@ -91,7 +93,7 @@ const OptionModal = ({
               >
                 <path d='M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z'></path>
               </svg>
-              <span className='sr-only'>Close modal</span>
+              <span className='sr-only'>{t('product.close modal')}</span>
             </button>
           </div>
 
@@ -116,7 +118,7 @@ const OptionModal = ({
             </div>
             <div className='grid grid-cols-2 gap-4'>
               <div className='px-4 text-base leading-relaxed text-gray-500 md:px-8'>
-                <p>COLOR: </p>
+                <p>{t('detailproduct.color')}: </p>
                 <input
                   defaultValue={color}
                   onChange={(e) => setColor(e.target.value)}
@@ -124,7 +126,7 @@ const OptionModal = ({
                 />
               </div>
               <div className='-ml-10 px-8 text-base leading-relaxed text-gray-500 md:mr-8'>
-                <p>PRICE:</p>
+                <p>{t('detailproduct.price')}:</p>
                 <input
                   defaultValue={price}
                   onChange={(e) => setPrice(e.target.value)}
@@ -135,7 +137,7 @@ const OptionModal = ({
             {type === 'create' && (
               <div className='mr-8 grid grid-cols-1'>
                 <div className='px-8 text-base leading-relaxed text-gray-500'>
-                  <p>Image: </p>
+                  <p>{t('detailproduct.image')}: </p>
                   <input
                     type='file'
                     onChange={(e) => {
@@ -161,13 +163,13 @@ const OptionModal = ({
               }}
               className='rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 '
             >
-              Confirm
+              {t('product.confirm')}
             </button>
             <button
               className='rounded-lg border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300'
               onClick={() => setModal({ open: false, type: '' })}
             >
-              Cancel
+              {t('product.cancel')}
             </button>
           </div>
         </div>
@@ -196,36 +198,41 @@ export default function DetailProduct() {
   );
   const product = data?.data;
   const product_options = product?.product_options ? product.product_options : [];
+  const { t } = useTranslation('addashboard');
 
   return (
     <div className='mt-4'>
-      <HelmetSale title='Admin Dashboard | Detail Order'></HelmetSale>
-      <BreadCrumb path={['Product', 'Product Dashboard', 'Detail']} />
+      <HelmetSale title={t('detailproduct.ad detail')}></HelmetSale>
+      <BreadCrumb
+        path={[t('maindashboard.products'), t('detailproduct.productdashboard'), t('detailproduct.detail')]}
+      />
       <div>
         <div className='mt-4 flex flex-col'>
           <div className='overflow-x-auto'>
             <div className='grid w-full gap-4 align-middle'>
               <div className=' overflow-hidden rounded-xl border bg-white p-4 shadow-lg'>
-                <h1 className='py-2 text-lg font-semibold'>PRODUCT DETAILS</h1>
+                <h1 className='py-2 text-lg font-semibold'>{t('detailproduct.productdetails')}</h1>
                 <div className='grid grid-cols-4 pt-1'>
-                  <p className='col-span-1'>ID Product</p> <p className='col-span-3'>{product?.id}</p>
+                  <p className='col-span-1'>{t('detailproduct.idproduct')}</p>{' '}
+                  <p className='col-span-3'>{product?.id}</p>
                 </div>
                 <div className='grid grid-cols-4 pt-1'>
-                  <p className='col-span-1'>Name Product</p> <p className='col-span-3'>{product?.name}</p>
+                  <p className='col-span-1'>{t('detailproduct.nameproduct')}</p>{' '}
+                  <p className='col-span-3'>{product?.name}</p>
                 </div>
                 <div className='grid grid-cols-4 pt-1'>
-                  <p className='col-span-1'>Brand</p> <p className='col-span-3'>{product?.brand}</p>
+                  <p className='col-span-1'>{t('product.brand')}</p> <p className='col-span-3'>{product?.brand}</p>
                 </div>
                 <div className='grid h-24 grid-cols-4 overflow-hidden pt-1'>
-                  <p className='col-span-1'>Description</p>{' '}
+                  <p className='col-span-1'>{t('product.description')}</p>{' '}
                   <span className='col-span-3 overflow-ellipsis  line-clamp-4'>{product?.description}</span>
                 </div>
                 <div className='grid grid-cols-4 pt-1'>
-                  <p className='col-span-1'>Create At</p>{' '}
+                  <p className='col-span-1'>{t('detailproduct.createat')}</p>{' '}
                   <p className='col-span-3'>{dateToString(product?.createAt ? product.createAt : '')}</p>
                 </div>
                 <div className='grid grid-cols-4 pt-1'>
-                  <p className='col-span-1'>Update At</p>{' '}
+                  <p className='col-span-1'>{t('detailproduct.updateat')}</p>{' '}
                   <p className='col-span-3'>{dateToString(product?.updateAt ? product.updateAt : '')}</p>
                 </div>
               </div>
@@ -234,7 +241,7 @@ export default function DetailProduct() {
             <div className='mt-4 mb-4 inline-block w-full gap-4 align-middle'>
               <div className='rounded-xl bg-white p-4 drop-shadow-lg'>
                 <div className='grid grid-cols-2'>
-                  <h1 className='py-2 text-lg font-semibold'>PRODUCT OPTIONS</h1>
+                  <h1 className='py-2 text-lg font-semibold'>{t('detailproduct.productoptions')}</h1>
                   <div className='flex justify-end'>
                     <button
                       className='mr-8 rounded-lg bg-red-400 px-4 py-2 text-white'
@@ -245,7 +252,7 @@ export default function DetailProduct() {
                         })
                       }
                     >
-                      ADD OPTION
+                      {t('detailproduct.addoption')}
                     </button>
                   </div>
                 </div>
@@ -253,11 +260,11 @@ export default function DetailProduct() {
                   <table className='w-full text-left text-sm text-gray-500'>
                     <thead className='bg-cyan-100 text-xs uppercase text-gray-700'>
                       <tr>
-                        <th className='px-2 py-3'>ID Option</th>
-                        <th className='px-6 py-3'>Image</th>
-                        <th className='px-6 py-3'>Specifications</th>
-                        <th className='px-6 py-3'>Price</th>
-                        <th className='px-6 py-3 text-center'>Actions</th>
+                        <th className='px-2 py-3'>{t('detailproduct.idoption')}</th>
+                        <th className='px-6 py-3'>{t('detailproduct.image')}</th>
+                        <th className='px-6 py-3'>{t('detailproduct.specifications')}</th>
+                        <th className='px-6 py-3'>{t('detailproduct.price')}</th>
+                        <th className='px-6 py-3 text-center'>{t('product.actions')}</th>
                       </tr>
                     </thead>
                     <tbody>
