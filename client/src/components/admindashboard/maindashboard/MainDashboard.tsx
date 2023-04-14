@@ -4,10 +4,8 @@ import { BsPeopleFill } from 'react-icons/bs';
 import { FaCartPlus, FaFileSignature } from 'react-icons/fa';
 import { PieChart } from './chart/PieChart';
 import { LineChart } from './chart/LineChart';
-import { useQueries, useQuery } from '@tanstack/react-query';
+import {  useQuery } from '@tanstack/react-query';
 import analysisApi from 'src/apis/analysis.api';
-import productsApi from 'src/apis/product.api';
-import { useState } from 'react';
 import HelmetSEO from 'src/components/Helmet';
 import feedbackApi from 'src/apis/feedback.api';
 import { dateToString } from 'src/utils/convertDate';
@@ -92,20 +90,20 @@ function MainDashboard() {
         </div>
       </div>
 
-      <div className='mt-4 -ml-1 grid gap-4 px-4 md:grid-flow-col md:grid-cols-2 md:px-0'>
-        <div className='rounded-xl bg-white p-8 shadow-lg'>
+      <div className='mt-4 -ml-1 grid gap-4 overflow-hidden px-4 md:grid-flow-col md:grid-cols-2 md:px-0'>
+        <div className='rounded-xl bg-white p-8 shadow-xl'>
           <div className='-mt-6 -ml-4'>
             <div className='text-xl font-semibold leading-loose'>Top Sales</div>
           </div>
           <hr className='-ml-6 bg-gray-300' />
           <div>
-            <div>
+            <div className='overflow-x-scroll'>
               <table className='table-fixed'>
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Image</th>
-                    <th>Name</th>
+                    <th className='hidden md:block'>Image</th>
+                    <th className='text-center'>Name</th>
                     <th>Number sold</th>
                   </tr>
                 </thead>
@@ -115,7 +113,7 @@ function MainDashboard() {
                     .map((e: any, i: number) => (
                       <tr key={i.toString()}>
                         <td className='px-10 text-center'>{(i + 1).toString()}</td>
-                        <td className='px-10 text-center'>
+                        <td className='hidden px-10 text-center md:block'>
                           <img src={`${baseURL}/${e.image}`} alt='' className='h-30 w-32' />
                         </td>
                         <td className='px-10 text-left'>{e.name}</td>
@@ -127,7 +125,7 @@ function MainDashboard() {
             </div>
           </div>
         </div>
-        <div className='rounded-xl bg-white p-8 shadow-lg'>
+        <div className='overflow-x-scroll rounded-xl bg-white p-8 shadow-xl'>
           <div className=' -mt-6 -ml-4'>
             <div className='text-xl font-semibold leading-loose'>Recently feedbacks</div>
           </div>
@@ -140,7 +138,7 @@ function MainDashboard() {
                     {`${e.user.firstName} ${e.user.lastName} rate ${e.rate} star for product ${e.product.name}`}{' '}
                   </div>
                   <div className=''>{dateToString(e.create_at)}</div>
-                  <hr className='bg-gray-800' />
+                  <hr className='col-span-3 w-full bg-gray-800' />
                 </div>
               );
             })}

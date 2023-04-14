@@ -122,66 +122,70 @@ export default function ManageProduct() {
                 )}
                 {data?.data && (
                   <div>
-                    <table className='min-w-full divide-y divide-gray-200 bg-white shadow-md'>
-                      <thead className='bg-pink-400/20'>
-                        <tr>
-                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            ID
-                          </th>
-                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            Name
-                          </th>
-                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            Brand
-                          </th>
-                          <th scope='col' className='px-6 py-3 text-right text-xs font-bold uppercase text-gray-500 '>
-                            <p className='mr-4'>Actions</p>
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className='divide-y divide-gray-200'>
-                        {data?.data.data.map((e, i) => {
-                          return (
-                            <tr key={i.toString()}>
-                              <td className='whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800'>{e.id}</td>
-                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.name}</td>
-                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.brand}</td>
-                              <td className='whitespace-nowrap px-6 py-4 text-right text-sm font-medium'>
-                                <button className='px-1 text-blue-500 hover:text-blue-700'>
-                                  <AiOutlineFileSearch
-                                    className='text-2xl'
-                                    onClick={() => navigate(`./detail/${e.id}`)}
-                                  />
-                                </button>
-                                <button className='px-1 text-green-400 hover:text-green-600'>
-                                  <AiOutlineEdit
-                                    className='text-2xl'
-                                    onClick={() => {
-                                      navigate('./form', {
-                                        state: {
-                                          type: 'edit',
-                                          id: e.id,
-                                        },
-                                      });
+                    <div className='overflow-x-scroll'>
+                      <table className='min-w-full divide-y divide-gray-200 bg-white shadow-md '>
+                        <thead className='bg-pink-400/20'>
+                          <tr>
+                            <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                              ID
+                            </th>
+                            <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                              Name
+                            </th>
+                            <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                              Brand
+                            </th>
+                            <th scope='col' className='px-6 py-3 text-right text-xs font-bold uppercase text-gray-500 '>
+                              <p className='mr-4'>Actions</p>
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className='divide-y divide-gray-200'>
+                          {data?.data.data.map((e, i) => {
+                            return (
+                              <tr key={i.toString()}>
+                                <td className='whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800'>
+                                  {e.id}
+                                </td>
+                                <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.name}</td>
+                                <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.brand}</td>
+                                <td className='whitespace-nowrap px-6 py-4 text-right text-sm font-medium'>
+                                  <button className='px-1 text-blue-500 hover:text-blue-700'>
+                                    <AiOutlineFileSearch
+                                      className='text-2xl'
+                                      onClick={() => navigate(`./detail/${e.id}`)}
+                                    />
+                                  </button>
+                                  <button className='px-1 text-green-400 hover:text-green-600'>
+                                    <AiOutlineEdit
+                                      className='text-2xl'
+                                      onClick={() => {
+                                        navigate('./form', {
+                                          state: {
+                                            type: 'edit',
+                                            id: e.id,
+                                          },
+                                        });
+                                      }}
+                                    />
+                                  </button>
+                                  <button
+                                    onClick={async () => {
+                                      await productsApi.deleteProduct(e.id);
+                                      toast.success('delete success!');
+                                      refetch();
                                     }}
-                                  />
-                                </button>
-                                <button
-                                  onClick={async () => {
-                                    await productsApi.deleteProduct(e.id);
-                                    toast.success('delete success!');
-                                    refetch();
-                                  }}
-                                  className='text-red-500 hover:text-red-700'
-                                >
-                                  <AiOutlineDelete className='text-2xl' />
-                                </button>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
+                                    className='text-red-500 hover:text-red-700'
+                                  >
+                                    <AiOutlineDelete className='text-2xl' />
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
                     <div className='flex justify-end pb-4'>
                       <Pagination
                         pageSize={Math.ceil(data.data.total / data.data.data_per_page)}

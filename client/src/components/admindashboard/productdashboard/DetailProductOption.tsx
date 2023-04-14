@@ -10,14 +10,12 @@ export default function DetailProductOption() {
 
   const product_tracking = useQuery(['product_tracking'], () => productsApi.trackingProduct(Number(product_option_id)));
 
-  console.log(product_tracking);
-
   return (
     <div className='mt-4'>
       <HelmetSale title='Admin Dashboard | Product Option Detail'></HelmetSale>
       <BreadCrumb path={['Product', 'Product Dashboard', 'Detail', 'Product Option']} />
-      <div className='mt-4'>
-        <div className='grid md:grid-cols-2 gap-4'>
+      <div className='m-2 mt-4 md:m-0'>
+        <div className='grid gap-4 md:grid-cols-2'>
           <div className='rounded-xl border border-gray-200 bg-white p-4 drop-shadow-xl'>
             <Line
               options={{
@@ -41,7 +39,7 @@ export default function DetailProductOption() {
                 datasets: [
                   {
                     label: 'price (million vnd)',
-                    data: product_tracking.data?.data.prices.map((e: any) => e.new_price),
+                    data: product_tracking.data?.data.prices.map((e: any) => (e.new_price / 1_000_000).toFixed(3)),
                     borderColor: 'rgb(255, 99, 132)',
                     backgroundColor: 'rgba(255, 99, 132, 0.5)',
                     tension: 0.1,
