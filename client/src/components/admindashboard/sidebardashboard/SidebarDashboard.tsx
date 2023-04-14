@@ -14,6 +14,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import logo from 'src/assets/logo.svg';
 import Language from 'src/components/language/Language';
 import useClickOutSide from 'src/hooks/useClickOutSide';
+import { useTranslation } from 'react-i18next';
 type PropsButton = {
   name: string;
   Icon: IconType;
@@ -99,6 +100,7 @@ const ButtonNavDropdown = ({ name, Icon, subnav, active }: PropsNavButton) => {
 };
 
 function SidebarDashboard() {
+  const { t } = useTranslation('addashboard');
   const location = useLocation().pathname.replace('/admin', '');
   const [showMenu, setShowMenu] = useState<boolean>(false);
   const { nodeRef } = useClickOutSide(() => setShowMenu(false));
@@ -113,7 +115,7 @@ function SidebarDashboard() {
           <img src={logo} alt='img' className='max-w-[8rem]' />
         </h2>
         <div className='hidden w-full flex-grow text-left text-base font-semibold uppercase text-white lg:block lg:text-center'>
-          Admin
+          {t('maindashboard.admin')}
         </div>
       </div>
       <hr className='mx-4 border-blue-100/20' />
@@ -127,28 +129,59 @@ function SidebarDashboard() {
             block: showMenu,
           })}
         >
-          <ButtonNav name={'Home'} Icon={AiFillHome} link='/' active={location === '' || location === '/'} />
+          <ButtonNav
+            name={t('maindashboard.home')}
+            Icon={AiFillHome}
+            link='/'
+            active={location === '' || location === '/'}
+          />
           <ButtonNavDropdown
-            name={'Products'}
+            name={t('maindashboard.products')}
             Icon={BsFillCartFill}
             subnav={[
-              { title: 'Manage Product', link: '/product' },
-              { title: 'Manage Brand', link: '/brand' },
-              { title: 'Manage Coupon', link: '/coupon' },
+              { title: t('maindashboard.manage product'), link: '/product' },
+              { title: t('maindashboard.manage brand'), link: '/brand' },
+              { title: t('maindashboard.manage coupon'), link: '/coupon' },
             ]}
             active={location.includes('/product') || location.includes('/brand') || location.includes('/coupon')}
           />
-          <ButtonNav name={'Orders'} Icon={FaMoneyCheckAlt} link='/order' active={location.includes('/order')} />
-          <ButtonNav name={'Inventory'} Icon={MdInventory} link='/inventory' active={location.includes('/inventory')} />
-          <ButtonNav name={'Reports'} Icon={HiDocumentReport} link='/report' active={location.includes('/report')} />
-          <ButtonNav name={'Users'} Icon={MdPeopleAlt} link='/user' active={location.includes('/user')} />
+          <ButtonNav
+            name={t('maindashboard.orders')}
+            Icon={FaMoneyCheckAlt}
+            link='/order'
+            active={location.includes('/order')}
+          />
+          <ButtonNav
+            name={t('maindashboard.inventory')}
+            Icon={MdInventory}
+            link='/inventory'
+            active={location.includes('/inventory')}
+          />
+          <ButtonNav
+            name={t('maindashboard.reports')}
+            Icon={HiDocumentReport}
+            link='/report'
+            active={location.includes('/report')}
+          />
+          <ButtonNav
+            name={t('maindashboard.users')}
+            Icon={MdPeopleAlt}
+            link='/user'
+            active={location.includes('/user')}
+          />
           <div className={`mx-4 flex w-[calc(100%-2rem)] items-center rounded-md px-4`}>
             <IoLanguageSharp className='text-white' />
             <div className='py-4 px-4 text-left text-white'>
               <Language textColor='text-white' />
             </div>
           </div>
-          <ButtonNav name={'Back'} Icon={BsBack} link='/user' back active={location.includes('/not')} />
+          <ButtonNav
+            name={t('maindashboard.back')}
+            Icon={BsBack}
+            link='/user'
+            back
+            active={location.includes('/not')}
+          />
         </div>
       </div>
     </div>

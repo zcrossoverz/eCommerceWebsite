@@ -32,12 +32,13 @@ export default function DetailOrder() {
 
   return (
     <div className='mt-4'>
-      <HelmetSale title='Chi tiết đơn hàng'></HelmetSale>
-      <BreadCrumb path={['Product', 'Order Dashboard', 'Detail']} />
+      <HelmetSale title={t('orders.detailorder')}></HelmetSale>
+      <BreadCrumb path={[t('maindashboard.products'), t('orders.orderdashboard'), t('detailproduct.detail')]} />
       <div>
         <div className='mt-4 flex flex-col'>
           <div className='hidden'>
             <PrintOrder
+              t={t}
               ref={printRef}
               id={Number(order?.order_id) ? Number(order?.order_id) : 0}
               name={`${order?.user.firstName} ${order?.user.lastName}`}
@@ -104,7 +105,7 @@ export default function DetailOrder() {
                         className='mx-4 h-12 rounded-md border border-gray-300 bg-purple-500 px-2 text-white md:h-full md:px-8'
                         onClick={handlePrint}
                       >
-                        PRINT RECEIPT
+                        {t('orders.print')}
                       </button>
                     )}
                     {order?.status === 'RETURNED' && (

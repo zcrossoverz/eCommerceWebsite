@@ -16,7 +16,7 @@
     "total brands": "Total Brands",
     "total users": "Total Users",
     "topsales": "Top Sales",
-    "recentactivity": "Recent Activity",
+    "recentfeedback": "Recent Feedback",
     "name": "Name",
     "numbersold": "Number Sold"
   },
@@ -82,7 +82,15 @@
     "returned_completed": "RETURN_COMPLETED",
     "quantity": "QUANTITY",
     "discount": "Discount",
-    "total": "Total"
+    "total": "Total",
+    "cty": "LIMITED LIABILITY COMPANY 3 MEMBERS FSTORE",
+    "invoice": "RECIEPT",
+    "infoorder": "Information Order",
+    "ordercode": "Order Code",
+    "totalmoney": "Total Money",
+    "pricelist": "Price List",
+    "salesman": "Salesman",
+    "signwritename": "(Sign and write full name)"
   },
   "detailproduct": {
     "color": "COLOR",
@@ -149,7 +157,7 @@
     "status": "STATUS",
     "refuse": "Refuse",
     "proininvoice": "Products in the invoice",
-    "no.": "No.",
+    "No": "No.",
     "configuration": "Configuration",
     "search": "Search",
     "totalinventory": "Total products in inventory",
@@ -159,5 +167,19 @@
     "manageinven": "Manage Inventory",
     "failed": "Failed",
     "successfuldeleted": "Successful deleted"
+  },
+  "report": {
+    "sales": "REVENUE",
+    "soldproduct": "SELLING PRODUCTS",
+    "import": "INTO INVENTORY",
+    "export": "EXPORT INVENTORY",
+    "reports": "Reports",
+    "printreport": "Print Report",
+    "reportdashboard": "Reports Dashboard"
+  },
+  "coupon": {
+    "expirydate": "Expiry Date",
+    "percent": "PERCENT",
+    "crenewcoupon": "CREATE NEW COUPON"
   }
 }

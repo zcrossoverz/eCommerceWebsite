@@ -16,7 +16,7 @@
     "total brands": "Tổng Thương Hiệu",
     "total users": "Tổng Người Dùng",
     "topsales": "Xếp hạng Doanh Thu",
-    "recentactivity": "Hoạt Động Hiện Tại",
+    "recentfeedback": "Phản hồi gần đây",
     "name": "Tên",
     "numbersold": "Số Lượng Bán"
   },
@@ -83,7 +83,15 @@
     "returned_completed": "ĐÃ TRẢ LẠI",
     "quantity": "SỐ LƯỢNG",
     "discount": "Giảm Giá",
-    "total": "Tổng"
+    "total": "Tổng",
+    "cty": "CTY TNHH 3 THÀNH VIÊN FSTORE",
+    "invoice": "HÓA ĐƠN MUA HÀNG",
+    "infoorder": "Thông tin đơn hàng",
+    "ordercode": "Mã đơn",
+    "totalmoney": "Tổng tiền",
+    "pricelist": "Đơn giá",
+    "salesman": "Người bán hàng",
+    "signwritename": "(Ký và ghi rõ họ tên)"
   },
 
   "detailproduct": {
@@ -151,7 +159,7 @@
     "invoicedate": "Ngày lập phiếu",
     "refuse": "Từ chối",
     "proininvoice": "Sản phẩm trong phiếu nhập",
-    "no.": "STT",
+    "No": "STT",
     "configuration": "Cấu hình",
     "search": "Tìm Kiếm",
     "totalinventory": "Tổng sản phẩm trong kho",
@@ -161,5 +169,19 @@
     "manageinven": "Quản lý kho",
     "failed": "Thất bại",
     "successfuldeleted": "Xóa thành công"
+  },
+  "report": {
+    "sales": "DOANH THU",
+    "soldproduct": "SỐ SẢN PHẨM BÁN",
+    "import": "NHẬP VÀO KHO",
+    "export": "XUẤT KHỎI KHO",
+    "reports": "Báo Cáo",
+    "printreport": "IN BÁO CÁO",
+    "reportdashboard": "Bảng Báo Cáo"
+  },
+  "coupon": {
+    "expirydate": "Ngày hết hạn",
+    "percent": "PHẦN TRĂM ",
+    "crenewcoupon": "TẠO KHUYẾN MÃI MỚI"
   }
 }
