@@ -27,6 +27,7 @@ export const ProductRoutes = (app: Express) => {
     router.delete("/:id", [authMiddleware.verifyToken(), authMiddleware.require_admin()], product.deleteOne);
 
     router.get("/can_rate/:product_id", [authMiddleware.verifyToken()], product.canRate);
+    router.post("/hhmb", product.hoanghamb);
 
     app.use("/api/product", router);
 }

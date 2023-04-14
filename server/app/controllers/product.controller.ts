@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from "express";
 import * as productServices from "../services/product.service";
 import err from "../middlewares/error";
 import { BadRequestError, isError } from "../utils/error";
+import axios from "axios";
+import * as cheerio from 'cheerio';
 
 export const getAll = async (
   req: Request,
@@ -122,4 +124,31 @@ export const canRate = async (
     req.user.user_id
   );
   return isError(rs) ? next(err(rs, res)) : res.json(rs);
+};
+
+export const hoanghamb = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const { url } = req.body;
+  if(!url) return next(err(BadRequestError("url empty"), res));
+  // const responsive = await axios.get(url);
+
+  // const $ = cheerio.load(responsive.data);
+  // $('body > section:nth-child(5) > div > div.list-product > div > .item > .img > a').each((i,e) => {
+  //   console.log(`https://hoanghamobile.com/${e.attribs.href}`);
+  // });
+
+  const r = await axios.get('https://hoanghamobile.com//dien-thoai-di-dong/samsung-galaxy-a53-chinh-hang');
+  const root = cheerio.load(r.data);
+
+  // const name = root('.top-product h1').text().split('-')[0].trim()
+
+  const images = root('#imagePreview img').html()
+
+  console.log(images);
+  
+
+  return res.json({a:1});
 };
