@@ -20,6 +20,7 @@ import { toast } from 'react-toastify';
 import { useTranslation } from 'react-i18next';
 import BreadCrumb from 'src/components/admindashboard/breadcrumb';
 import HelmetSEO from 'src/components/Helmet';
+import transBE from 'src/hooks/useTransBE';
 function MyOrder() {
   const { t } = useTranslation('myorder');
   const navigate = useNavigate();
@@ -171,7 +172,7 @@ function MyOrder() {
                         </div>
                         <div className=' '>
                           <h3 className='whitespace-nowrap text-center text-xs font-semibold text-gray-900 md:text-sm'>
-                            {tl.name}
+                            {transBE(tl.name)}
                           </h3>
                         </div>
                       </li>
@@ -209,7 +210,7 @@ function MyOrder() {
                   {order.address}
                 </span>
                 <span className='whitespace-nowrap text-sm font-semibold text-orange-500 lg:text-base'>
-                  {order.timeline[order.timeline.length - 1].content}
+                  {transBE(order.timeline[order.timeline.length - 1].content)}
                 </span>
               </div>
             </div>

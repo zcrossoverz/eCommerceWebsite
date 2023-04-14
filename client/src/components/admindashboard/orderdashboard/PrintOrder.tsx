@@ -1,9 +1,7 @@
 /* eslint-disable react/display-name */
 
 import { useTranslation } from 'react-i18next';
-
 import React, { Ref } from 'react';
-
 import { formatPrice } from 'src/utils/formatPrice';
 import type { TFunction } from 'i18next';
 

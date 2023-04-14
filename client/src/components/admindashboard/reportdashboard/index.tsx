@@ -7,10 +7,13 @@ import { useQuery } from '@tanstack/react-query';
 import analysisApi from 'src/apis/analysis.api';
 import ReactToPrint from 'react-to-print';
 import ContentPrint from './ContentPrint';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/store';
 import { useTranslation } from 'react-i18next';
 
 export default function ReportDashboard() {
   const { t } = useTranslation('addashboard');
+  const user = useSelector((state: RootState) => state.userReducer.userInfo);
   const date_now = new Date();
   const [value, setValue] = useState({
     startDate: `${date_now.getFullYear()}-${date_now.getMonth() + 1}-${date_now.getDate()}`,
@@ -142,6 +145,8 @@ export default function ReportDashboard() {
           inventorySale={inventory_data.data?.data ? inventory_data.data.data : []}
           revenue={revenue_data.data?.data ? revenue_data.data.data : []}
           ref={componentRef}
+          value={value}
+          user={user}
           t={t}
         />
       </footer>

@@ -10,7 +10,7 @@ import { HiChevronDown, HiDocumentReport } from 'react-icons/hi';
 // eslint-disable-next-line import/named
 import { IconType } from 'react-icons/lib';
 import { MdInventory, MdPeopleAlt } from 'react-icons/md';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import logo from 'src/assets/logo.svg';
 import Language from 'src/components/language/Language';
 import useClickOutSide from 'src/hooks/useClickOutSide';
@@ -111,9 +111,9 @@ function SidebarDashboard() {
   return (
     <div>
       <div className='mx-2 flex items-center justify-between py-2 lg:py-6'>
-        <h2>
+        <Link to='/admin'>
           <img src={logo} alt='img' className='max-w-[8rem]' />
-        </h2>
+        </Link>
         <div className='hidden w-full flex-grow text-left text-base font-semibold uppercase text-white lg:block lg:text-center'>
           {t('maindashboard.admin')}
         </div>

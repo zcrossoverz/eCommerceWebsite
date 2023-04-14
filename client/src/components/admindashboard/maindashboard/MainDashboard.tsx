@@ -4,7 +4,7 @@ import { BsPeopleFill } from 'react-icons/bs';
 import { FaCartPlus, FaFileSignature } from 'react-icons/fa';
 import { PieChart } from './chart/PieChart';
 import { LineChart } from './chart/LineChart';
-import {  useQuery } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import analysisApi from 'src/apis/analysis.api';
 import HelmetSEO from 'src/components/Helmet';

@@ -1,7 +1,13 @@
 import { forwardRef } from 'react';
 import type { TFunction } from 'i18next';
+import { UserInfo } from 'src/types/user.type';
+import convertDate from 'src/utils/convertDate';
 
 interface Props {
+  value: {
+    startDate: string;
+    endDate: string;
+  };
   revenue: {
     id: number;
     date: string;
@@ -14,16 +20,29 @@ interface Props {
     in: number;
     out: number;
   }[];
+  user: UserInfo;
   t: TFunction<'addashboard', undefined, 'addashboard'>;
 }
 export type Ref = HTMLDivElement;
 
 const ContentPrint = forwardRef<Ref, Props>((props, ref) => (
-  <div ref={ref} className='MyClassName'>
+  <div ref={ref} className='rounded-sm bg-white p-2 shadow-md'>
     <div className='relative overflow-x-auto'>
+      <h1 className='text-center text-xl font-semibold uppercase'>CTY TNHH 3 thành viên Fstore</h1>
+      <h2 className='text-center text-lg font-semibold uppercase'>Báo cáo doanh thu và sản phẩm trong kho</h2>
+      <time className='block text-center font-semibold'>
+        {convertDate(props.value.startDate)} - {convertDate(props.value.endDate)}
+      </time>
+      <span className='font-semibold text-gray-500 underline'>Thông tin lập báo cáo:</span>
+      <h3 className='font-semibold italic text-gray-500'>
+        Người lập báo cáo: {props.user.firstName + ' ' + props.user.lastName}
+      </h3>
+      <time className='font-semibold italic text-gray-500'>
+        Ngày lập báo cáo: {new Date().toLocaleDateString('vi')}
+      </time>
       {props.inventorySale && props.revenue && props.revenue.length !== 0 && props.inventorySale.length !== 0 && (
-        <table className='w-full text-left text-sm text-gray-500 dark:text-gray-400'>
-          <thead className='bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400'>
+        <table className='mt-2 w-full border text-left text-sm text-gray-500 dark:text-gray-400'>
+          <thead className='bg-gray-100 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400'>
             <tr>
               <th scope='col' className='px-6 py-3'>
                 id
