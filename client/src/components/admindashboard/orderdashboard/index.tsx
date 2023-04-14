@@ -76,8 +76,8 @@ export default function OrderDashboard() {
 
   return (
     <div className='mt-4'>
-      <HelmetSale title='Quản lý đơn hàng'></HelmetSale>
-      <BreadCrumb path={['Product', 'Order Dashboard']} />
+      <HelmetSale title={t('orders.manageorder')}></HelmetSale>
+      <BreadCrumb path={[t('maindashboard.products'), t('orders.orderdashboard')]} />
       <div className='mt-4 grid grid-cols-6 gap-4'>
         <div className='col-span-2 mr-4'>
           <input

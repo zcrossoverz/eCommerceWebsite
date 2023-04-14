@@ -127,7 +127,7 @@ function MainDashboard() {
         </div>
         <div className='rounded-xl bg-white p-8 shadow-lg'>
           <div className=' -mt-6 -ml-4'>
-            <div className='text-xl font-semibold leading-loose'>{t('maindashboard.recentactivity')}</div>
+            <div className='text-xl font-semibold leading-loose'>{t('maindashboard.recentfeedback')}</div>
           </div>
           <hr className='-ml-6 bg-gray-300' />
           <div className='mb-4 flex flex-col'>

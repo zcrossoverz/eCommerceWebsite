@@ -175,7 +175,7 @@ export default function ProductForm() {
                         />
                       </div>
                       <div>
-                        <p className='text-md pb-1 indent-2 leading-normal'>PRICE</p>
+                        <p className='text-md pb-1 indent-2 leading-normal'>{t('detailproduct.price')}</p>
                         <input
                           type='text'
                           className='bg-gray-150 w-full rounded-md border border-gray-300 py-2 px-4'
