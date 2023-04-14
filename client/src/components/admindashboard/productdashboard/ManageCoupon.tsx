@@ -7,6 +7,7 @@ import couponApi from 'src/apis/coupon.api';
 import HelmetSEO from 'src/components/Helmet';
 import Datepicker from 'react-tailwindcss-datepicker';
 import { AiOutlineDelete } from 'react-icons/ai';
+import { useTranslation } from 'react-i18next';
 
 const CouponModal = ({ refetch, openModal }: { refetch: any; openModal: any }) => {
   const date_now = new Date();
@@ -33,13 +34,14 @@ const CouponModal = ({ refetch, openModal }: { refetch: any; openModal: any }) =
     openModal(false);
     refetch();
   };
+  const { t } = useTranslation('addashboard');
 
   return (
     <div className='z-100 fixed inset-0 top-1/2 left-1/2 -translate-x-1/3 -translate-y-3/4'>
       <div className='relative h-full w-full max-w-2xl md:h-auto'>
         <div className='relative rounded-lg bg-white shadow-xl'>
           <div className='flex items-start justify-between rounded-t border-b p-4'>
-            <h3 className='text-xl font-semibold text-gray-900'>CREATE NEW COUPON</h3>
+            <h3 className='text-xl font-semibold text-gray-900'>{t('coupon.crenewcoupon')}</h3>
             <button
               onClick={() => openModal(false)}
               className='ml-auto inline-flex items-center rounded-lg bg-transparent p-1.5 text-sm text-gray-400 hover:bg-gray-200 hover:text-gray-900'
@@ -59,7 +61,7 @@ const CouponModal = ({ refetch, openModal }: { refetch: any; openModal: any }) =
 
           <div className='space-y-6 p-6'>
             <p className='text-base leading-relaxed text-gray-500'>
-              <p>Number: </p>
+              <p>{t('product.number')}: </p>
               <input
                 className='w-full rounded-xl border border-gray-400 px-2 py-2'
                 type='number'
@@ -67,17 +69,17 @@ const CouponModal = ({ refetch, openModal }: { refetch: any; openModal: any }) =
               />
             </p>
             <p className='text-base leading-relaxed text-gray-500'>
-              <p>Type:</p>
+              <p>{t('product.type')}:</p>
               <select
                 className='w-full rounded-xl border border-gray-400 px-2 py-2'
                 onChange={(e) => setType(e.target.value)}
               >
-                <option value='PERCENT'>PERCENT</option>
-                <option value='AMOUNT'>AMOUNT</option>
+                <option value='PERCENT'>{t('coupon.percent')}</option>
+                <option value='AMOUNT'>{t('orders.amount')}</option>
               </select>
             </p>
             <p className='text-base leading-relaxed text-gray-500'>
-              <p>Value:</p>
+              <p>{t('product.value')}:</p>
               <input
                 className='w-full rounded-xl border border-gray-400 px-2 py-2'
                 type='number'
@@ -85,7 +87,7 @@ const CouponModal = ({ refetch, openModal }: { refetch: any; openModal: any }) =
               />
             </p>
             <p className='text-base leading-relaxed text-gray-500'>
-              <p>Expiry date:</p>
+              <p>{t('coupon.expirydate')}:</p>
               <Datepicker
                 value={date}
                 onChange={(e) => {
@@ -104,13 +106,13 @@ const CouponModal = ({ refetch, openModal }: { refetch: any; openModal: any }) =
               onClick={create}
               className='rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 '
             >
-              Confirm
+              {t('product.confirm')}
             </button>
             <button
               onClick={() => openModal(false)}
               className='rounded-lg border border-gray-500 bg-white px-5 py-2.5 text-sm font-medium text-gray-500 hover:bg-gray-100 hover:text-gray-900 focus:z-10 focus:outline-none focus:ring-4 focus:ring-blue-300'
             >
-              Cancel
+              {t('product.cancel')}
             </button>
           </div>
         </div>
@@ -120,6 +122,7 @@ const CouponModal = ({ refetch, openModal }: { refetch: any; openModal: any }) =
 };
 
 export default function ManageCoupon() {
+  const { t } = useTranslation('addashboard');
   const [params, setParams] = useState({
     limit: '20',
     page: '1',
@@ -132,8 +135,8 @@ export default function ManageCoupon() {
 
   return (
     <div className='mt-4'>
-      <HelmetSEO title='Quản lý mã giảm giá'></HelmetSEO>
-      <BreadCrumb path={['Product', 'Manage Coupon']} />
+      <HelmetSEO title={t('maindashboard.manage coupon')}></HelmetSEO>
+      <BreadCrumb path={[t('maindashboard.products'), t('maindashboard.manage coupon')]} />
       <div className='mt-4 grid grid-cols-6'>
         <div className='col-span-2 mr-4 hidden'>
           <input
@@ -152,22 +155,22 @@ export default function ManageCoupon() {
         <div className='col-span-1'>
           <select className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-500 focus:shadow-lg focus:shadow-blue-300 focus:ring-blue-500'>
             <option className='mt-1' value='default'>
-              Sort by
+              {t('product.sort by')}
             </option>
             <option className='mt-1' value='sale'>
-              sale
+              {t('product.sale')}
             </option>
             <option className='mt-1' value='stock'>
-              stock
+              {t('product.stock')}
             </option>
           </select>
         </div>
-        <div className='col-span-1 col-end-7'>
+        <div className='col-span-1 col-end-6 md:col-end-7'>
           <button
             className='rounded-xl bg-blue-900 py-3 px-8 text-gray-400 hover:bg-blue-600 hover:text-white hover:shadow-primary hover:shadow-lg'
             onClick={() => setModalOpen(true)}
           >
-            CREATE
+            {t('product.create')}
           </button>
         </div>
       </div>
@@ -199,132 +202,136 @@ export default function ManageCoupon() {
                 )}
 
                 {data?.data && data.data.length > 0 && (
-                  <table className='min-w-full divide-y divide-gray-200 bg-white shadow-lg'>
-                    <thead className='bg-pink-400/20'>
-                      <tr>
-                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          ID
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          Code
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          Type
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          Value
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          Number
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          Start
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                          End
-                        </th>
-                        <th scope='col' className='px-6 py-3 text-center text-xs font-bold uppercase text-gray-500 '>
-                          Action
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className='divide-y divide-gray-200'>
-                      {data?.data.map(
-                        (
-                          e: {
-                            id:
-                              | string
-                              | number
-                              | boolean
-                              | ReactElement<any, string | JSXElementConstructor<any>>
-                              | ReactFragment
-                              | ReactPortal
-                              | null
-                              | undefined;
-                            code:
-                              | string
-                              | number
-                              | boolean
-                              | ReactElement<any, string | JSXElementConstructor<any>>
-                              | ReactFragment
-                              | ReactPortal
-                              | null
-                              | undefined;
-                            type:
-                              | string
-                              | number
-                              | boolean
-                              | ReactElement<any, string | JSXElementConstructor<any>>
-                              | ReactFragment
-                              | ReactPortal
-                              | null
-                              | undefined;
-                            value:
-                              | string
-                              | number
-                              | boolean
-                              | ReactElement<any, string | JSXElementConstructor<any>>
-                              | ReactFragment
-                              | ReactPortal
-                              | null
-                              | undefined;
-                            number:
-                              | string
-                              | number
-                              | boolean
-                              | ReactElement<any, string | JSXElementConstructor<any>>
-                              | ReactFragment
-                              | ReactPortal
-                              | null
-                              | undefined;
-                            start_date:
-                              | string
-                              | number
-                              | boolean
-                              | ReactElement<any, string | JSXElementConstructor<any>>
-                              | ReactFragment
-                              | ReactPortal
-                              | null
-                              | undefined;
-                            end_date:
-                              | string
-                              | number
-                              | boolean
-                              | ReactElement<any, string | JSXElementConstructor<any>>
-                              | ReactFragment
-                              | ReactPortal
-                              | null
-                              | undefined;
-                          },
-                          i: { toString: () => Key | null | undefined }
-                        ) => {
-                          return (
-                            <tr key={i.toString()}>
-                              <td className='whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800'>{e.id}</td>
-                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.code}</td>
-                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.type}</td>
-                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.value}</td>
-                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.number}</td>
-                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.start_date}</td>
-                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.end_date}</td>
-                              <td className='whitespace-nowrap px-6 py-4 text-center text-sm font-medium'>
-                                <button
-                                  className='text-red-500 hover:text-red-700'
-                                  onClick={async () => {
-                                    await couponApi.deleteCoupon(e.id ? Number(e.id) : 0);
-                                    toast.success('delete success!');
-                                    refetch();
-                                  }}
-                                >
-                                  <AiOutlineDelete className='text-2xl' />
-                                </button>
-                              </td>
-                            </tr>
-                          );
-                        }
-                      )}
-                    </tbody>
-                  </table>
+                  <div className='overflow-x-scroll'>
+                    <table className='min-w-full divide-y divide-gray-200 bg-white shadow-lg'>
+                      <thead className='bg-pink-400/20'>
+                        <tr>
+                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                            ID
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                            Code
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                            Type
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                            Value
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                            Number
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                            Start
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                            End
+                          </th>
+                          <th scope='col' className='px-6 py-3 text-center text-xs font-bold uppercase text-gray-500 '>
+                            Action
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className='divide-y divide-gray-200'>
+                        {data?.data.map(
+                          (
+                            e: {
+                              id:
+                                | string
+                                | number
+                                | boolean
+                                | ReactElement<any, string | JSXElementConstructor<any>>
+                                | ReactFragment
+                                | ReactPortal
+                                | null
+                                | undefined;
+                              code:
+                                | string
+                                | number
+                                | boolean
+                                | ReactElement<any, string | JSXElementConstructor<any>>
+                                | ReactFragment
+                                | ReactPortal
+                                | null
+                                | undefined;
+                              type:
+                                | string
+                                | number
+                                | boolean
+                                | ReactElement<any, string | JSXElementConstructor<any>>
+                                | ReactFragment
+                                | ReactPortal
+                                | null
+                                | undefined;
+                              value:
+                                | string
+                                | number
+                                | boolean
+                                | ReactElement<any, string | JSXElementConstructor<any>>
+                                | ReactFragment
+                                | ReactPortal
+                                | null
+                                | undefined;
+                              number:
+                                | string
+                                | number
+                                | boolean
+                                | ReactElement<any, string | JSXElementConstructor<any>>
+                                | ReactFragment
+                                | ReactPortal
+                                | null
+                                | undefined;
+                              start_date:
+                                | string
+                                | number
+                                | boolean
+                                | ReactElement<any, string | JSXElementConstructor<any>>
+                                | ReactFragment
+                                | ReactPortal
+                                | null
+                                | undefined;
+                              end_date:
+                                | string
+                                | number
+                                | boolean
+                                | ReactElement<any, string | JSXElementConstructor<any>>
+                                | ReactFragment
+                                | ReactPortal
+                                | null
+                                | undefined;
+                            },
+                            i: { toString: () => Key | null | undefined }
+                          ) => {
+                            return (
+                              <tr key={i.toString()}>
+                                <td className='whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800'>
+                                  {e.id}
+                                </td>
+                                <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.code}</td>
+                                <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.type}</td>
+                                <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.value}</td>
+                                <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.number}</td>
+                                <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.start_date}</td>
+                                <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.end_date}</td>
+                                <td className='whitespace-nowrap px-6 py-4 text-center text-sm font-medium'>
+                                  <button
+                                    className='text-red-500 hover:text-red-700'
+                                    onClick={async () => {
+                                      await couponApi.deleteCoupon(e.id ? Number(e.id) : 0);
+                                      toast.success('delete success!');
+                                      refetch();
+                                    }}
+                                  >
+                                    <AiOutlineDelete className='text-2xl' />
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          }
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
                 )}
               </div>
             </div>

@@ -9,8 +9,10 @@ import ReactToPrint from 'react-to-print';
 import ContentPrint from './ContentPrint';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/store';
+import { useTranslation } from 'react-i18next';
 
 export default function ReportDashboard() {
+  const { t } = useTranslation('addashboard');
   const user = useSelector((state: RootState) => state.userReducer.userInfo);
   const date_now = new Date();
   const [value, setValue] = useState({
@@ -29,8 +31,8 @@ export default function ReportDashboard() {
 
   return (
     <div className='mt-4 px-2'>
-      <HelmetSale title='Báo cáo'></HelmetSale>
-      <BreadCrumb path={['Product', 'Report Dashboard']} />
+      <HelmetSale title={t('report.reports')}></HelmetSale>
+      <BreadCrumb path={[t('maindashboard.products'), t('report.reportdashboard')]} />
       <div className='mt-4 grid grid-cols-2'>
         <div className='w-64'>
           <Datepicker
@@ -49,7 +51,7 @@ export default function ReportDashboard() {
           <ReactToPrint
             trigger={() => (
               <button className=' rounded-md bg-blue-400 px-2 py-1 text-xs hover:bg-blue-500 lg:mr-8 lg:px-4 lg:py-2 lg:text-sm'>
-                In báo cáo
+                {t('report.printreport')}
               </button>
             )}
             content={() => componentRef.current}
@@ -145,6 +147,7 @@ export default function ReportDashboard() {
           ref={componentRef}
           value={value}
           user={user}
+          t={t}
         />
       </footer>
     </div>

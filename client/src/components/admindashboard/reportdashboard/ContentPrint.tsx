@@ -1,4 +1,5 @@
 import { forwardRef } from 'react';
+import type { TFunction } from 'i18next';
 import { UserInfo } from 'src/types/user.type';
 import convertDate from 'src/utils/convertDate';
 
@@ -20,6 +21,7 @@ interface Props {
     out: number;
   }[];
   user: UserInfo;
+  t: TFunction<'addashboard', undefined, 'addashboard'>;
 }
 export type Ref = HTMLDivElement;
 
@@ -46,19 +48,19 @@ const ContentPrint = forwardRef<Ref, Props>((props, ref) => (
                 id
               </th>
               <th scope='col' className='px-6 py-3'>
-                Ngày
+                {props.t('orders.date')}
               </th>
               <th scope='col' className='px-6 py-3'>
-                Doanh thu
+                {props.t('report.sales')}
               </th>
               <th scope='col' className='px-6 py-3'>
-                Số sản phẩm bán
+                {props.t('report.soldproduct')}
               </th>
               <th scope='col' className='px-6 py-3'>
-                Nhập vào kho
+                {props.t('report.import')}
               </th>
               <th scope='col' className='px-6 py-3'>
-                Xuất khỏi kho
+                {props.t('report.export')}
               </th>
             </tr>
           </thead>

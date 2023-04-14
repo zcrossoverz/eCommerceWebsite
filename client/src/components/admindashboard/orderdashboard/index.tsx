@@ -76,8 +76,8 @@ export default function OrderDashboard() {
 
   return (
     <div className='mt-4'>
-      <HelmetSale title='Quản lý đơn hàng'></HelmetSale>
-      <BreadCrumb path={['Product', 'Order Dashboard']} />
+      <HelmetSale title={t('orders.manageorder')}></HelmetSale>
+      <BreadCrumb path={[t('maindashboard.products'), t('orders.orderdashboard')]} />
       <div className='mt-4 grid grid-cols-6 gap-4'>
         <div className='col-span-2 mr-4'>
           <input
@@ -198,83 +198,92 @@ export default function OrderDashboard() {
                 )}
                 {data?.data && data.data.data.length > 0 && (
                   <div>
-                    <table className='min-w-full divide-y divide-gray-200 bg-white'>
-                      <thead className='bg-pink-400/20'>
-                        <tr>
-                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            ID
-                          </th>
-                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            {t('orders.status')}
-                          </th>
-                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            {t('orders.customer')}
-                          </th>
-                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            {t('orders.method')}
-                          </th>
-                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            {t('orders.amount')}
-                          </th>
-                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            {t('orders.paid')}
-                          </th>
-                          <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            {t('orders.time')}
-                          </th>
-                          <th scope='col' className='px-6 py-3 text-center text-xs font-bold uppercase text-gray-500 '>
-                            {t('product.actions')}
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className='divide-y divide-gray-200'>
-                        {data?.data.data.map((e, i: { toString: () => Key | null | undefined }) => {
-                          const date = new Date(e.create_at);
-                          const hours = date.getUTCHours();
-                          const minutes = date.getUTCMinutes();
-                          const seconds = date.getUTCSeconds();
-                          const day = date.getUTCDate();
-                          const month = date.getUTCMonth() + 1;
-                          const year = date.getUTCFullYear();
+                    <div className='overflow-x-scroll'>
+                      <table className='min-w-full divide-y divide-gray-200 bg-white'>
+                        <thead className='bg-pink-400/20'>
+                          <tr>
+                            <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                              ID
+                            </th>
+                            <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                              {t('orders.status')}
+                            </th>
+                            <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                              {t('orders.customer')}
+                            </th>
+                            <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                              {t('orders.method')}
+                            </th>
+                            <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                              {t('orders.amount')}
+                            </th>
+                            <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                              {t('orders.paid')}
+                            </th>
+                            <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
+                              {t('orders.time')}
+                            </th>
+                            <th
+                              scope='col'
+                              className='px-6 py-3 text-center text-xs font-bold uppercase text-gray-500 '
+                            >
+                              {t('product.actions')}
+                            </th>
+                          </tr>
+                        </thead>
+                        <tbody className='divide-y divide-gray-200'>
+                          {data?.data.data.map((e, i: { toString: () => Key | null | undefined }) => {
+                            const date = new Date(e.create_at);
+                            const hours = date.getUTCHours();
+                            const minutes = date.getUTCMinutes();
+                            const seconds = date.getUTCSeconds();
+                            const day = date.getUTCDate();
+                            const month = date.getUTCMonth() + 1;
+                            const year = date.getUTCFullYear();
 
-                          return (
-                            <tr key={i.toString()}>
-                              <td className='whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800'>
-                                {e.order_id}
-                              </td>
-                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.status}</td>
-                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{`${e.user.firstName} ${e.user.lastName}`}</td>
-                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.payment.method}</td>
-                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.payment.amount}</td>
-                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>
-                                {e.payment.is_paid ? 'YES' : 'NO'}
-                              </td>
-                              <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{`${('0' + day).slice(
-                                -2
-                              )}/${('0' + month).slice(-2)}/${year} ${hours}:${minutes}:${seconds}`}</td>
-                              <td className='flex whitespace-nowrap px-6 py-4 text-center text-sm font-medium'>
-                                <button className='px-1 text-blue-500 hover:text-blue-700'>
-                                  <AiOutlineFileSearch
-                                    className='text-2xl'
-                                    onClick={() => navigate(`./detail/${e.order_id}`)}
-                                  />
-                                </button>
-                                <button className='px-1 text-red-400 hover:text-red-600'>
-                                  <AiOutlineDelete
-                                    className='text-2xl'
-                                    onClick={async () => {
-                                      await orderApi.deleteOrder(e.order_id);
-                                      toast.success('delete success!');
-                                      refetch();
-                                    }}
-                                  />
-                                </button>
-                              </td>
-                            </tr>
-                          );
-                        })}
-                      </tbody>
-                    </table>
+                            return (
+                              <tr key={i.toString()}>
+                                <td className='whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800'>
+                                  {e.order_id}
+                                </td>
+                                <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{e.status}</td>
+                                <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{`${e.user.firstName} ${e.user.lastName}`}</td>
+                                <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>
+                                  {e.payment.method}
+                                </td>
+                                <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>
+                                  {e.payment.amount}
+                                </td>
+                                <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>
+                                  {e.payment.is_paid ? 'YES' : 'NO'}
+                                </td>
+                                <td className='whitespace-nowrap px-6 py-4 text-sm text-gray-800'>{`${('0' + day).slice(
+                                  -2
+                                )}/${('0' + month).slice(-2)}/${year} ${hours}:${minutes}:${seconds}`}</td>
+                                <td className='flex whitespace-nowrap px-6 py-4 text-center text-sm font-medium'>
+                                  <button className='px-1 text-blue-500 hover:text-blue-700'>
+                                    <AiOutlineFileSearch
+                                      className='text-2xl'
+                                      onClick={() => navigate(`./detail/${e.order_id}`)}
+                                    />
+                                  </button>
+                                  <button className='px-1 text-red-400 hover:text-red-600'>
+                                    <AiOutlineDelete
+                                      className='text-2xl'
+                                      onClick={async () => {
+                                        await orderApi.deleteOrder(e.order_id);
+                                        toast.success('delete success!');
+                                        refetch();
+                                      }}
+                                    />
+                                  </button>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
                     <div className='flex justify-end'>
                       <Pagination
                         pageSize={Math.ceil(data.data.total / data.data.data_per_page)}

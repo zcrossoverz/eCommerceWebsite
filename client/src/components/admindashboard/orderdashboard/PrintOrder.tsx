@@ -1,7 +1,9 @@
 /* eslint-disable react/display-name */
 
-import React from 'react';
+import { useTranslation } from 'react-i18next';
+import React, { Ref } from 'react';
 import { formatPrice } from 'src/utils/formatPrice';
+import type { TFunction } from 'i18next';
 
 export const PrintOrder = React.forwardRef(
   (
@@ -13,6 +15,7 @@ export const PrintOrder = React.forwardRef(
       order_items,
       discount,
       total,
+      t,
     }: {
       id: number;
       name: string;
@@ -30,34 +33,43 @@ export const PrintOrder = React.forwardRef(
         image: string;
         prices: number;
       }[];
+      t: TFunction<'addashboard', undefined, 'addashboard'>;
     },
-    ref
+    ref: Ref<HTMLDivElement>
   ) => {
     return (
       <div ref={ref} className='p-8'>
-        <p className='text-xl font-semibold leading-loose'>CTY TNHH 3 THÀNH VIÊN FSTORE</p>
+        <p className='text-xl font-semibold leading-loose'>{t('orders.cty')}</p>
         <div className='flex flex-col items-center text-center'>
-          <h1 className='text-2xl font-bold leading-loose'>HÓA ĐƠN MUA HÀNG</h1>
+          <h1 className='text-2xl font-bold leading-loose'>{t('orders.invoice')}</h1>
         </div>
-        <p className='mb-1 italic underline underline-offset-2'>Thông tin đơn hàng</p>
-        <p>Mã đơn: #{id}</p>
-        <p>Khách hàng: {name}</p>
+        <p className='mb-1 italic underline underline-offset-2'>{t('orders.infoorder')}</p>
         <p>
-          Trạng thái: <span className='font-semibold'>Đã thanh toán</span>
+          {t('orders.ordercode')}: #{id}
         </p>
-        <p>Phương thức thanh toán: {method_payment}</p>
-        <p>Ngày tạo: {date}</p>
+        <p>
+          {t('orders.customer')}: {name}
+        </p>
+        <p>
+          {t('orders.status')}: <span className='font-semibold'>{t('orders.paid')}</span>
+        </p>
+        <p>
+          {t('orders.methodpayment')}: {method_payment}
+        </p>
+        <p>
+          {t('user.datecre')}: {date}
+        </p>
 
-        <p className='mt-4 italic underline underline-offset-2'>Chi tiết đơn hàng</p>
+        <p className='mt-4 italic underline underline-offset-2'>{t('orders.detailorder')}</p>
         <table className='mt-2 w-full border-collapse border border-slate-500'>
           <thead>
             <tr>
-              <th className='border border-slate-600'>STT</th>
-              <th className='border border-slate-600'>Tên sản phẩm</th>
-              <th className='border border-slate-600'>Chi tiết</th>
-              <th className='border border-slate-600'>Số lượng</th>
-              <th className='border border-slate-600'>Đơn giá</th>
-              <th className='border border-slate-600'>Tổng tiền</th>
+              <th className='border border-slate-600'>{t('inventory.No')}</th>
+              <th className='border border-slate-600'>{t('detailproduct.nameproduct')}</th>
+              <th className='border border-slate-600'>{t('detailproduct.detail')}</th>
+              <th className='border border-slate-600'>{t('orders.quantity')}</th>
+              <th className='border border-slate-600'>{t('orders.pricelist')}</th>
+              <th className='border border-slate-600'>{t('orders.totalmoney')}</th>
             </tr>
           </thead>
           <tbody className='text-center'>
@@ -75,21 +87,21 @@ export const PrintOrder = React.forwardRef(
             })}
             <tr>
               <td className='border border-slate-600' colSpan={5}>
-                Giảm giá
+                {t('orders.discount')}
               </td>
               <td className='border border-slate-600'>{formatPrice(discount)}</td>
             </tr>
             <tr>
               <td className='border border-slate-600' colSpan={5}>
-                Tổng thành tiền
+                {t('orders.totalmoney')}
               </td>
               <td className='border border-slate-600'>{formatPrice(total)}</td>
             </tr>
           </tbody>
         </table>
         <div className='flex flex-col pt-6 text-right'>
-          <p className='mr-4 pr-10 font-bold'>Người bán hàng</p>
-          <p className='mr-4 pr-12'>(Ký ghi rõ họ tên)</p>
+          <p className='mr-4 pr-10 font-bold'>{t('orders.salesman')}</p>
+          <p className='mr-4 pr-12'>{t('orders.signwritename')}</p>
         </div>
       </div>
     );
