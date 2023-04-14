@@ -11,8 +11,8 @@ import ContentPrint from './ContentPrint';
 export default function ReportDashboard() {
   const date_now = new Date();
   const [value, setValue] = useState({
-    startDate: `${date_now.getFullYear()}-${date_now.getMonth()+1}-${date_now.getDate()}`,
-    endDate: `${date_now.getFullYear()}-${date_now.getMonth()+1}-${date_now.getDate()}`,
+    startDate: `${date_now.getFullYear()}-${date_now.getMonth() + 1}-${date_now.getDate()}`,
+    endDate: `${date_now.getFullYear()}-${date_now.getMonth() + 1}-${date_now.getDate()}`,
   });
 
   const revenue_data = useQuery(['get_revenue_report', value], () =>
@@ -45,7 +45,7 @@ export default function ReportDashboard() {
         <div className='col-span-1 flex justify-end'>
           <ReactToPrint
             trigger={() => (
-              <button className=' rounded-md bg-blue-400 px-2 py-1 text-xs lg:mr-8 lg:px-4 lg:py-2 lg:text-sm'>
+              <button className=' rounded-md bg-blue-400 px-2 py-1 text-xs hover:bg-blue-500 lg:mr-8 lg:px-4 lg:py-2 lg:text-sm'>
                 In báo cáo
               </button>
             )}

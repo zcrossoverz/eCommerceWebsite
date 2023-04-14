@@ -9,7 +9,6 @@ interface P {
 export default function Languege(props: P) {
   const currentLanguage = locales[i18n.language as keyof typeof locales];
   const [reRender, setReRender] = useState<boolean>(false);
-  console.log(currentLanguage);
   return (
     <div className='nav-item relative p-0'>
       <Menu as='div' className=''>

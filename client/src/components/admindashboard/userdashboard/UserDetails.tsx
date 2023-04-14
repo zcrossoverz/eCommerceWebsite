@@ -47,7 +47,7 @@ function UserDetails() {
     }
   };
   return (
-    <>
+    <section className='px-2'>
       <HelmetSEO title='Chi tiết người dùng' />
       <BreadCrumb path={['Fstore', '...', 'Quản lý người dùng', 'Chi tiết người dùng']} />
       <div className='mt-2 max-w-2xl overflow-hidden bg-white shadow sm:rounded-lg'>
@@ -107,7 +107,7 @@ function UserDetails() {
           </dl>
         </div>
       </div>
-    </>
+    </section>
   );
 }
 export default UserDetails;
