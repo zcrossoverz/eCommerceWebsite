@@ -23,6 +23,10 @@ AppDataSource.initialize()
     app.use(bodyParser.urlencoded({ extended:true }));
     app.use(passport.initialize());
 
+    app.get("/", (req, res) => {
+      res.json({message: "Hello world"});
+    })
+
     // setup route
     Routes.forEach(setUpRoute => {
         setUpRoute(app);
