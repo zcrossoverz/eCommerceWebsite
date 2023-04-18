@@ -23,16 +23,22 @@ import { Address } from "../entities/address.entity";
 import { Notification } from "../entities/notification.entity";
 import { WorkQueue } from "../entities/workQueue.entity";
 
+
+import { URL } from "url";
+
+const dbUrl = new URL(process.env.DATABASE_URL || '');
+const routingId = dbUrl.searchParams.get("options");
+dbUrl.searchParams.delete("options");
+
 export const AppDataSource = new DataSource({
-  type: "mysql",
-  host: process.env.DB_HOST,
-  port: 3306,
-  username: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_DATABASE,
-  synchronize: false,
+  type: "cockroachdb",
+  synchronize: true,
   logging: ["error", "warn"],
-  timezone: "+7",
+  url: dbUrl.toString(),
+  ssl: true,
+  extra: {
+    options: routingId
+  },
   entities: [
     User,
     Order,
@@ -59,5 +65,44 @@ export const AppDataSource = new DataSource({
   ],
   migrations: [],
   subscribers: [],
-  charset: "utf8_unicode_ci",
+  timeTravelQueries: true
 });
+
+// export const AppDataSource = new DataSource({
+//   type: "mysql",
+//   host: process.env.DB_HOST,
+//   port: 3306,
+//   username: process.env.DB_USER,
+//   password: process.env.DB_PASSWORD,
+//   database: process.env.DB_DATABASE,
+//   synchronize: false,
+//   logging: ["error", "warn"],
+//   timezone: "+7",
+//   entities: [
+//     User,
+//     Order,
+//     Brand,
+//     Product,
+//     Image,
+//     Coupon,
+//     Specification,
+//     ProductOption,
+//     OrderItem,
+//     Timeline,
+//     CouponCondition,
+//     Payment,
+//     Warehouse,
+//     OrderHistory,
+//     Feedback,
+//     Price,
+//     PriceHistory,
+//     InventoryInboundNote,
+//     InventoryTransaction,
+//     Address,
+//     Notification,
+//     WorkQueue,
+//   ],
+//   migrations: [],
+//   subscribers: [],
+//   charset: "utf8_unicode_ci",
+// });
