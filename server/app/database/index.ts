@@ -32,7 +32,7 @@ dbUrl.searchParams.delete("options");
 
 export const AppDataSource = new DataSource({
   type: "cockroachdb",
-  synchronize: false,
+  synchronize: true,
   logging: ["error", "warn"],
   url: dbUrl.toString(),
   ssl: true,
