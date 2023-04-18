@@ -65,7 +65,7 @@ export default function ManageProduct() {
             className='w-full appearance-none rounded-lg border-2 border-gray-50 bg-gray-50 py-3 px-4 leading-tight text-gray-700 focus:border-purple-500 focus:bg-white focus:shadow-md focus:shadow-purple-300 focus:outline-none'
             id='inline-full-name'
             type='text'
-            placeholder={t('product.search')}
+            placeholder='search product...'
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
