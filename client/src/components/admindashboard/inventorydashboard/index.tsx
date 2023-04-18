@@ -143,7 +143,7 @@ export default function InventoryDashboard() {
                 type='search'
                 id='default-search'
                 className='block w-full rounded-lg border border-cyan-600 bg-gray-50 p-2 pl-10 text-sm text-gray-900 '
-                placeholder={t('inventory.search')}
+                placeholder='search inventory..'
                 value={search || ''}
                 onChange={(e) => setSearch(e.target.value)}
               />
@@ -276,7 +276,7 @@ export default function InventoryDashboard() {
         />
       </section>
       <div className='mt-4'>
-        <LineChart inventory titleText={t('inventory.vola')} />
+        <LineChart inventory titleText='Inventory Chart' />
       </div>
     </div>
   );

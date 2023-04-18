@@ -96,7 +96,7 @@ export default function ProductForm() {
                     <input
                       type='text'
                       className='bg-gray-150 w-full rounded-md border border-gray-300 py-2 px-4'
-                      placeholder={t('product.name')}
+                      placeholder='search'
                       defaultValue={name}
                       onChange={(e) => setName(e.target.value)}
                     />
@@ -135,7 +135,7 @@ export default function ProductForm() {
                 <div className='pt-4'>
                   <p className='text-md pb-1 indent-2 leading-normal'>{t('product.description')}</p>
                   <textarea
-                    placeholder={t('product.description')}
+                    placeholder='description'
                     rows={4}
                     className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500'
                     onChange={(e) => setDesc(e.target.value)}
