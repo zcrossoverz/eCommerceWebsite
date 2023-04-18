@@ -22,6 +22,9 @@ database_1.AppDataSource.initialize()
     app.use(express_1.default.static('public'));
     app.use(body_parser_1.default.urlencoded({ extended: true }));
     app.use(passport_1.default.initialize());
+    app.get("/", (req, res) => {
+        res.json({ message: "Hello world" });
+    });
     routes_1.Routes.forEach(setUpRoute => {
         setUpRoute(app);
     });
