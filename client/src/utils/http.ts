@@ -1,8 +1,6 @@
 import axios, { type AxiosInstance } from 'axios';
 import { ResponseApiLogin } from 'src/types/auth.type';
 import { clearAccessToken, getAccessToken, saveAccessToken } from './auth';
-import dotenv from 'dotenv';
-dotenv.config();
 
 class Http {
   instance: AxiosInstance;
