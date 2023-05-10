@@ -10,27 +10,24 @@ import bodyParser from "body-parser";
 
 AppDataSource.initialize()
   .then(() => {
-      
     console.log("database connected!!");
-
     const PORT = process.env.PORT || 5050;
     const app: Express = express();
 
     // setup middleware
     app.use(cors());
     app.use(express.json());
-    app.use(express.static('public'));
-    app.use(bodyParser.urlencoded({ extended:true }));
+    app.use(express.static("public"));
+    app.use(bodyParser.urlencoded({ extended: true }));
     app.use(passport.initialize());
 
     // setup route
-    Routes.forEach(setUpRoute => {
-        setUpRoute(app);
+    Routes.forEach((setUpRoute) => {
+      setUpRoute(app);
     });
 
     app.listen(PORT, () => {
       console.log(`Server is listening on port ${PORT}.`);
     });
-
   })
   .catch((error) => console.log("error when connect to database", error));

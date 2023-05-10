@@ -36,6 +36,20 @@ export class User {
   lastName!: string;
 
   @Column({
+    nullable: true,
+    transformer: {
+      to(value: string) {
+        return value ? value : null;
+      },
+      from(value: null | string) {
+        return value;
+      },
+    },
+    default: null,
+  })
+  verifyAt!: string;
+
+  @Column({
     type: "varchar",
     length: 10,
     unique: true,
@@ -55,7 +69,7 @@ export class User {
 
   @Column({
     type: "boolean",
-    default: true
+    default: true,
   })
   isActive!: boolean;
 
@@ -70,7 +84,7 @@ export class User {
       },
       from(value: null | number) {
         return value;
-      }
+      },
     },
   })
   default_address!: number;
@@ -80,25 +94,16 @@ export class User {
 
   @Column({
     type: "int",
-    default: 0
+    default: 0,
   })
   unread_message!: number;
 
-  @OneToMany(
-    () => Notification,
-    noti => noti.user
-  )
+  @OneToMany(() => Notification, (noti) => noti.user)
   notifications!: Notification[];
 
-  @OneToMany(
-    () => Feedback,
-    feedback => feedback.user
-  )
+  @OneToMany(() => Feedback, (feedback) => feedback.user)
   feedbacks!: Feedback[];
 
-  @OneToMany(
-    () => WorkQueue,
-    workqueue => workqueue.user
-  )
+  @OneToMany(() => WorkQueue, (workqueue) => workqueue.user)
   workqueue!: WorkQueue[];
 }

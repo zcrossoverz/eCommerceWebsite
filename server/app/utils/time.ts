@@ -1,26 +1,26 @@
 const now = new Date();
-now.toLocaleString('vn-VI', { timeZone: 'Asia/Ho_Chi_Minh' }); // set timezone vietnam
+now.toLocaleString("vn-VI", { timeZone: "Asia/Ho_Chi_Minh" }); // set timezone vietnam
 
 export const getDay = () => {
-    return now.getDate();
-}
+  return now.getDate();
+};
 
 export const getMonth = () => {
-    return now.getMonth()+1;
-}
+  return now.getMonth() + 1;
+};
 
 export const getYear = () => {
-    return now.getFullYear();
-}
+  return now.getFullYear();
+};
 
 export const getHours = () => {
-    return now.getHours();
-}
+  return now.getHours();
+};
 
 export const getMinutes = () => {
-    return now.getMinutes();
-}
+  return now.getMinutes();
+};
 
 export const getSeconds = () => {
-    return now.getSeconds();
-}
+  return now.getSeconds();
+};

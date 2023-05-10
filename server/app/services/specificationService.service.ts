@@ -19,15 +19,18 @@ export const create = async (
   if (!product) return BadRequestError("product not found");
   const new_specs: Specification[] = [];
   if (spec.length) {
-    await Promise.all(spec.map(async e => {
-      if(!e.key || !e.value) return BadRequestError("please fill all the information");
-      const new_spec = specificationRepository.create({
-        ...e,
-        product,
-      });
-  
-      return new_specs.push(await specificationRepository.save(new_spec));
-    }));
+    await Promise.all(
+      spec.map(async (e) => {
+        if (!e.key || !e.value)
+          return BadRequestError("please fill all the information");
+        const new_spec = specificationRepository.create({
+          ...e,
+          product,
+        });
+
+        return new_specs.push(await specificationRepository.save(new_spec));
+      })
+    );
     return new_specs;
   }
   return BadRequestError("data empty");
@@ -35,13 +38,13 @@ export const create = async (
 
 export const deleteOne = async (id: number) => {
   const result = await specificationRepository.delete({ id });
-  return result.affected
-    ? success()
-    : failed();
+  return result.affected ? success() : failed();
 };
 
 export const updateOne = async (id: number, data: SpecificationInterface) => {
   const spec = await specificationRepository.findOneBy({ id });
   if (!spec) return BadRequestError("option not found");
-  return (await specificationRepository.update({ id }, { ...data })).affected ? success() : failed();
+  return (await specificationRepository.update({ id }, { ...data })).affected
+    ? success()
+    : failed();
 };
