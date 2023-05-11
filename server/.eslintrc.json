@@ -14,7 +14,6 @@
     "ecmaVersion": "latest",
     "sourceType": "module",
     "project": "./tsconfig.json"
-    // "tsconfigRootDir": "server" //Lỗi về eslint Bên phía Đăng nên thêm dòng config này
   },
   "rules": {
     "no-console": 0,

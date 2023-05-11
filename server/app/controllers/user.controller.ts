@@ -163,10 +163,10 @@ export const resetPassword = async (
   res: Response,
   next: NextFunction
 ) => {
-  const { otp, userId, newPassword } = req.query as {
+  const { otp, email, newPassword } = req.body as {
     [key: string]: string;
   };
 
-  const rs = await userServices.resetPwd(userId, otp, newPassword);
+  const rs = await userServices.resetPwd(email, otp, newPassword);
   return isError(rs) ? next(err(rs, res)) : res.status(200).json(rs);
 };

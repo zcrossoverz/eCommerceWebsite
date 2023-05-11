@@ -7,6 +7,7 @@ import { Address } from "../entities/address.entity";
 import { failed, success } from "../utils/response";
 import sendMail from "../utils/mailer";
 import jwt from "jsonwebtoken";
+import { Token } from "../entities/token.entity";
 enum UserRole {
   ADMIN = "admin",
   MEMBER = "member",
@@ -31,6 +32,7 @@ interface UserReturnInterface extends UserInterface {
 
 export const userRepository = AppDataSource.getRepository(User);
 const addressRepository = AppDataSource.getRepository(Address);
+const tokenRepository = AppDataSource.getRepository(Token);
 
 export const create = async ({
   email,
@@ -164,8 +166,15 @@ export const forgotPwd = async (email: string) => {
     srk,
     { expiresIn: "10m" }
   );
-
-  const rs = await sendMail(
+  const updateTokenRS = await tokenRepository.save(
+    tokenRepository.create({
+      tokenName: "resetPassword",
+      tokenValue: tokenReset,
+      user,
+      expire: "10m",
+    })
+  );
+  await sendMail(
     email,
     "OTP reset password",
     `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -199,8 +208,8 @@ export const forgotPwd = async (email: string) => {
     
     </html>`
   );
-  return rs.accepted.length
-    ? tokenReset
+  return updateTokenRS
+    ? updateTokenRS
     : BadRequestError("Email can not send to you");
 };
 
@@ -212,14 +221,32 @@ export const resetPwd = async (
   const user = await userRepository.findOneBy({
     email,
   });
-  const resetToken = "dasdasdasd";
-  if (!user || !resetToken) {
+  if (!user) {
     return BadRequestError("User not found");
   }
+  const resetToken = await tokenRepository.findOne({
+    where: {
+      tokenName: "resetPassword",
+    },
+  });
+  if (!resetToken) {
+    return BadRequestError("token is not valid");
+  }
   const srk = (process.env.JWT_SECRET_KEY as string) + user.password;
-  const payload = jwt.verify(resetToken, srk);
-  console.log(payload, otp, newPassword);
-  return "ok";
+  const decode = jwt.verify(resetToken.tokenValue, srk);
+  if (typeof decode === "object" && decode !== null) {
+    const payload = decode as { [key: string]: string };
+
+    if (Number(payload.otp) === Number(otp)) {
+      user.password = bcryptjs.hashSync(newPassword, 8);
+      return (await userRepository.update({ email }, user)).affected
+        ? success()
+        : failed();
+    } else {
+      return BadRequestError("OTP is not valid!", 400);
+    }
+  }
+  return BadRequestError("can't update password", 500);
 };
 
 export const getOne = async (

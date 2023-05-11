@@ -10,7 +10,9 @@ import { User } from "./user.entity";
 export class Token {
   @PrimaryGeneratedColumn()
   tokenId!: number;
-  @Column()
+  @Column({
+    unique: true,
+  })
   tokenName!: string;
   @Column()
   tokenValue!: string;
