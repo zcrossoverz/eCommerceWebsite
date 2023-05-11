@@ -242,9 +242,9 @@ export default function DetailProduct() {
               <div className='rounded-xl bg-white p-4 drop-shadow-lg'>
                 <div className='grid grid-cols-2'>
                   <h1 className='py-2 text-lg font-semibold'>{t('detailproduct.productoptions')}</h1>
-                  <div className='flex justify-end'>
+                  <div className='mr-8 flex justify-end'>
                     <button
-                      className='mr-8 rounded-lg bg-red-400 px-4 py-2 text-white'
+                      className='h-12 rounded-lg bg-red-400 px-4 py-2 text-xs text-white'
                       onClick={() =>
                         setModal({
                           type: 'create',
@@ -274,9 +274,9 @@ export default function DetailProduct() {
                             <th className='whitespace-nowrap px-6 py-4 font-medium text-gray-900'>
                               {e.product_option_id}
                             </th>
-                            <td className='px-6 py-4'>
+                            <td className='px-6 py-4 '>
                               <img
-                                className='w-26 h-28 text-left'
+                                className='min-h-[4rem] min-w-[3rem] md:h-32 text-left'
                                 src={`${baseURL}/${e.image?.image_url !== undefined ? e.image?.image_url : ''}`}
                                 alt={`product_image`}
                               />

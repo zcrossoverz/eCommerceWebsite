@@ -1,13 +1,14 @@
 import axios, { type AxiosInstance } from 'axios';
 import { ResponseApiLogin } from 'src/types/auth.type';
 import { clearAccessToken, getAccessToken, saveAccessToken } from './auth';
+
 class Http {
   instance: AxiosInstance;
   token: string | null;
   constructor() {
     this.token = getAccessToken();
     this.instance = axios.create({
-      baseURL: 'http://localhost:3000/api',
+      baseURL: `${import.meta.env.VITE_BASE_URL}/api` || 'http://localhost:3000/api',
       timeout: 10000,
       headers: { 'Content-Type': 'application/json' },
     });

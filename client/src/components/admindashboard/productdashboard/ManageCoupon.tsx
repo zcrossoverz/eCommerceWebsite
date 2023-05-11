@@ -153,7 +153,7 @@ export default function ManageCoupon() {
           />
         </div>
         <div className='col-span-1'>
-          <select className='block w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-500 focus:shadow-lg focus:shadow-blue-300 focus:ring-blue-500'>
+          <select className='block hidden w-full rounded-lg border border-gray-300 bg-gray-50 p-3 text-sm text-gray-900 focus:border-blue-500 focus:shadow-lg focus:shadow-blue-300 focus:ring-blue-500'>
             <option className='mt-1' value='default'>
               {t('product.sort by')}
             </option>
@@ -210,25 +210,25 @@ export default function ManageCoupon() {
                             ID
                           </th>
                           <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            Code
+                            {t('product.code')}
                           </th>
                           <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            Type
+                            {t('product.type')}
                           </th>
                           <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            Value
+                            {t('product.value')}
                           </th>
                           <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            Number
+                            {t('product.number')}
                           </th>
                           <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            Start
+                            {t('product.start')}
                           </th>
                           <th scope='col' className='px-6 py-3 text-left text-xs font-bold uppercase text-gray-500 '>
-                            End
+                            {t('product.end')}
                           </th>
                           <th scope='col' className='px-6 py-3 text-center text-xs font-bold uppercase text-gray-500 '>
-                            Action
+                            {t('product.action')}
                           </th>
                         </tr>
                       </thead>

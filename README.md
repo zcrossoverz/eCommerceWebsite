@@ -1,4 +1,4 @@
-# E-Commerce (not yet complete)
+# E-Commerce website
 
 ## The backend for an e-commerce website built with Express.js, TypeORM, MySQL, and TypeScript.
 
